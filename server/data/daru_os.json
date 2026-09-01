@@ -1,6 +1,6 @@
 {
   "version": "7.0.0",
-  "lastSyncedAt": "2026-09-01T16:45:55.380Z",
+  "lastSyncedAt": "2026-09-01T16:58:36.750Z",
   "state": {
     "todayPursuit": [
       {
@@ -767,6 +767,30 @@
   },
   "transactions": [],
   "syncLogs": [
+    {
+      "id": "log-1788281916754",
+      "timestamp": "2026-09-01T16:58:36.754Z",
+      "type": "OBSIDIAN_SYNC",
+      "message": "Synced 2 files to Dar Vault"
+    },
+    {
+      "id": "log-1788281916751",
+      "timestamp": "2026-09-01T16:58:36.751Z",
+      "type": "STATE_SAVE",
+      "message": "State saved to SQLite/JSON store"
+    },
+    {
+      "id": "log-1788281915935",
+      "timestamp": "2026-09-01T16:58:35.935Z",
+      "type": "OBSIDIAN_SYNC",
+      "message": "Synced 2 files to Dar Vault"
+    },
+    {
+      "id": "log-1788281915931",
+      "timestamp": "2026-09-01T16:58:35.931Z",
+      "type": "STATE_SAVE",
+      "message": "State saved to SQLite/JSON store"
+    },
     {
       "id": "log-1788281155385",
       "timestamp": "2026-09-01T16:45:55.385Z",

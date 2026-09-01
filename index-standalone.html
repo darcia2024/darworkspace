@@ -1842,7 +1842,25 @@
                       const m2Name = new Date(dNow.getFullYear(), dNow.getMonth() + 1, 1).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
                       const m3Name = new Date(dNow.getFullYear(), dNow.getMonth() + 2, 1).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
 
-                      const totalPaidMonth = state.projects.reduce((acc, p) => acc + (p.paidNumeric || 0), 0);
+                      const currentMonthShort = dNow.toLocaleDateString('id-ID', { month: 'short' }).toLowerCase();
+                      const currentMonthLong = curMonth.toLowerCase();
+                      const currentYearNum = dNow.getFullYear();
+
+                      const incomeThisMonth = (report.transactions || []).filter(tx => {
+                        if (tx.type !== 'income') return false;
+                        if (tx.createdAt) {
+                          const d = new Date(tx.createdAt);
+                          if (!isNaN(d.getTime())) {
+                            return d.getMonth() === dNow.getMonth() && d.getFullYear() === currentYearNum;
+                          }
+                        }
+                        const dateStr = (tx.date || '').toLowerCase();
+                        const isThisMonth = dateStr.includes(currentMonthShort) || dateStr.includes(currentMonthLong) || dateStr.includes('-09-') || dateStr.includes('/09/');
+                        const isThisYear = dateStr.includes(currentYearNum.toString());
+                        return isThisMonth && isThisYear;
+                      });
+
+                      const totalPaidMonth = incomeThisMonth.reduce((sum, tx) => sum + (tx.amount || 0), 0);
                       const prog = Math.min(100, Math.round((totalPaidMonth / monthlyTarget) * 100));
                       const remaining = Math.max(0, monthlyTarget - totalPaidMonth);
                       const dailyPace = Math.round(remaining / dRemain);

@@ -117,8 +117,26 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
   const month2Name = month2Date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
   const month3Name = month3Date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
 
-  // Calculations for Monthly Target
-  const totalPaidThisMonth = projects.reduce((sum, p) => sum + (p.paidNumeric || 0), 0);
+  // Calculations for Monthly Target based strictly on income transactions in current month
+  const currentMonthShort = now.toLocaleDateString('id-ID', { month: 'short' }).toLowerCase();
+  const currentMonthLong = now.toLocaleDateString('id-ID', { month: 'long' }).toLowerCase();
+  const currentYearNum = now.getFullYear();
+
+  const incomeThisMonth = (report.transactions || []).filter(tx => {
+    if (tx.type !== 'income') return false;
+    if (tx.createdAt) {
+      const d = new Date(tx.createdAt);
+      if (!isNaN(d.getTime())) {
+        return d.getMonth() === now.getMonth() && d.getFullYear() === currentYearNum;
+      }
+    }
+    const dateStr = (tx.date || '').toLowerCase();
+    const isThisMonth = dateStr.includes(currentMonthShort) || dateStr.includes(currentMonthLong) || dateStr.includes(`-09-`) || dateStr.includes(`/09/`);
+    const isThisYear = dateStr.includes(currentYearNum.toString());
+    return isThisMonth && isThisYear;
+  });
+
+  const totalPaidThisMonth = incomeThisMonth.reduce((sum, tx) => sum + (tx.amount || 0), 0);
   const targetProgressPercent = Math.min(100, Math.round((totalPaidThisMonth / monthlyTarget) * 100));
   const remainingTarget = Math.max(0, monthlyTarget - totalPaidThisMonth);
   const weeklyTarget = Math.round(monthlyTarget / 4);
