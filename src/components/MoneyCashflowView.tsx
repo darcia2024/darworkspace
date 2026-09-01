@@ -37,7 +37,8 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
   onOpenFollowUp,
   onOpenFinanceInput
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'accounts' | 'expenses' | 'projects' | 'history'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'accounts' | 'expenses' | 'projects' | 'history' | 'archive'>('overview');
+  const [selectedMonthArchive, setSelectedMonthArchive] = useState<'current' | '2026-08' | '2026-07'>('current');
   const [zoomedPhoto, setZoomedPhoto] = useState<{ url: string; title: string } | null>(null);
   const [monthlyTarget, setMonthlyTarget] = useState<number>(financialReport?.monthlyIncomeTarget || 10000000);
 
@@ -158,6 +159,71 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
   const calculatedRunwayDays = report.runwayDays || Math.round((report.totalLiquidBalance / (report.estimatedRealBurn || 4500000)) * 30);
   const calculatedRunwayMonths = (calculatedRunwayDays / 30).toFixed(1);
 
+  // Monthly Historical Archives & Pencapaian Bulan-Bulan Sebelumnya
+  const monthlyArchives = [
+    {
+      id: '2026-08',
+      monthName: 'Agustus 2026',
+      periodTag: 'ARCHIVED // AGUSTUS_2026',
+      target: 10000000,
+      realizedIncome: 4806000,
+      realizedExpense: 1700000,
+      netSurplus: 3106000,
+      endingBalance: 4130865,
+      progressPercent: 48.1,
+      modeStatus: 'YELLOW MODE (Surplus Cadangan +Rp130k di atas Floor)',
+      runwayMonths: '±0.92 Bulan',
+      milestones: [
+        'Zalvice & Laptopbisnis Logo System 100% Selesai & Lunas (Nol utang deliverable)',
+        'Closing Deal Rp6.000.000 Barber Underrated & DP 50% Masuk (Rp3.000.000)',
+        'Inflow Operasional Mandiri +Rp906.000 Masuk (31 Agu)',
+        'Nafkah Istri (Rp1.200.000) & Kewajiban Mesir (Rp500.000) Dibayar di Muka per 31 Agu',
+        'Investasi 2 Akun Claude Pro & AI Multi-agent Setup untuk Dev Boost'
+      ],
+      breakdown: [
+        { label: 'DP Kasir Barber POS', client: 'Owner Barber Underrated', category: 'DP 50%', amount: 3000000, tag: 'INFLOW_DP', status: 'RECEIVED ✓' },
+        { label: 'Inflow Kas Masuk Mandiri', client: 'Direct Operasional', category: 'Inflow', amount: 906000, tag: 'INFLOW_MANDIRI', status: 'RECEIVED ✓' },
+        { label: 'Zalvice Logo Package', client: 'Bang Edo / Zalvice', category: 'Design', amount: 600000, tag: 'DELIVERED', status: 'LUNAS ✓' },
+        { label: 'Laptopbisnis Logo Package', client: 'Owner Laptopbisnis', category: 'Design', amount: 600000, tag: 'DELIVERED', status: 'LUNAS ✓' },
+      ],
+      expensesBreakdown: [
+        { label: 'Nafkah Istri September', amount: 1200000, note: 'Transfer 31 Agu 2026 (Lunas)' },
+        { label: 'Kewajiban Rumah Mesir', amount: 500000, note: 'Transfer 31 Agu 2026 (Lunas)' },
+      ],
+      summaryNote: 'Bulan Agustus berhasil keluar dari zona bahaya (<Rp4M) menjadi Rp4.130.865 berkat closing DP Barber POS Rp3M & tuntasnya 2 logo liabilities.'
+    },
+    {
+      id: '2026-07',
+      monthName: 'Juli 2026',
+      periodTag: 'ARCHIVED // JULI_2026',
+      target: 10000000,
+      realizedIncome: 7800000,
+      realizedExpense: 4500000,
+      netSurplus: 3300000,
+      endingBalance: 7810773,
+      progressPercent: 78.0,
+      modeStatus: 'PEAK BALANCE (Pertumbuhan Kas Maksimal Rp7,81M)',
+      runwayMonths: '±1.73 Bulan',
+      milestones: [
+        'Pelunasan Penuh Platform DreamMecca dari Klien & Live Production',
+        'Retainer Maintenance Markaz Fiqih Berjalan Tertib',
+        'Pencapaian Puncak Saldo Kas Likuid Terbesar (Rp7.810.773)',
+        'Inisiasi Riset Desain Sistem KAEL & Temantiket Operations'
+      ],
+      breakdown: [
+        { label: 'DreamMecca Platform Pelunasan', client: 'DreamMecca Core', category: 'Full Payment', amount: 6000000, tag: 'PLATFORM_PAID', status: 'LUNAS ✓' },
+        { label: 'Markaz Fiqih Maintenance Retainer', client: 'Markaz Fiqih', category: 'Retainer', amount: 1800000, tag: 'MAINTENANCE', status: 'PAID ✓' },
+      ],
+      expensesBreakdown: [
+        { label: 'Kebutuhan Rumah Tangga & Nafkah', amount: 3500000, note: 'Operasional bulanan' },
+        { label: 'Server & AI Subscriptions', amount: 1000000, note: 'ChatGPT, Wavebox, Hosting' },
+      ],
+      summaryNote: 'Bulan Juli mencatatkan performa saldo kas terbaik sebesar Rp7.810.773 sebelum terjadi penarikan modal & kebutuhan keluarga di awal Agustus.'
+    }
+  ];
+
+  const activeArchive = monthlyArchives.find(a => a.id === selectedMonthArchive);
+
   return (
     <div className="space-y-5 font-sans animate-fade-in pb-12 max-w-5xl mx-auto select-none">
       
@@ -252,184 +318,346 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
       </div>
 
       {/* =========================================================================
-          2. MONTHLY REVENUE TARGET ENGINE (+Rp10.000.000 / BULAN)
+          2. MONTHLY REVENUE TARGET & HISTORICAL ARCHIVE ENGINE
           ========================================================================= */}
       <div className="figma-shell border-emerald-500/40 ring-1 ring-emerald-500/20">
         <div className="figma-core p-5 sm:p-6 bg-gradient-to-br from-[#101915] via-[#090d0b] to-[#060609] space-y-5">
           
-          {/* Header Target */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-emerald-400 animate-pulse" />
-                <h3 className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
-                  Target Pemasukan {currentMonthName} {currentYear}: <span className="text-emerald-400 font-mono">+{formatRupiah(monthlyTarget)} / Bulan</span>
-                </h3>
-                <span className="dev-tag-emerald text-[9px]">TARGET_{currentMonthName.toUpperCase()}</span>
-              </div>
-              <p className="text-xs text-zinc-300">
-                Pokoknya bulan <strong>{currentMonthName} {currentYear}</strong> minimal harus nambah <strong>{formatRupiah(monthlyTarget)}</strong> agar kas langsung surplus dan keluar dari zona bahaya!
-              </p>
-            </div>
-
-            {/* Target Preset Selector */}
-            <div className="flex items-center gap-1.5 bg-black/60 p-1.5 rounded-2xl border border-white/10 font-mono text-xs">
-              {[
-                { val: 10000000, label: 'Rp10 Jt (Wajib)' },
-                { val: 15000000, label: 'Rp15 Jt (Growth)' },
-                { val: 20000000, label: 'Rp20 Jt (Scale)' },
-              ].map(opt => (
+          {/* Top Month Switcher Pills Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono text-zinc-400 font-semibold uppercase tracking-wider">
+                Pilih Periode Bulan:
+              </span>
+              <div className="flex items-center gap-1.5 bg-black/70 p-1 rounded-2xl border border-white/10 text-xs font-mono">
                 <button
-                  key={opt.val}
                   onClick={() => {
                     soundManager.playClick();
-                    setMonthlyTarget(opt.val);
+                    setSelectedMonthArchive('current');
                   }}
-                  className={`px-3 py-1.5 rounded-xl transition-all ${
-                    monthlyTarget === opt.val
+                  className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1.5 ${
+                    selectedMonthArchive === 'current'
                       ? 'bg-emerald-500 text-black font-bold shadow-md'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
-                  {opt.label}
+                  <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
+                  <span>{currentMonthName} {currentYear} (Live)</span>
                 </button>
-              ))}
+
+                {monthlyArchives.map(arch => (
+                  <button
+                    key={arch.id}
+                    onClick={() => {
+                      soundManager.playClick();
+                      setSelectedMonthArchive(arch.id as any);
+                    }}
+                    className={`px-3 py-1 rounded-xl transition-all ${
+                      selectedMonthArchive === arch.id
+                        ? 'bg-amber-500 text-black font-bold shadow-md'
+                        : 'text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    <span>🏛️ {arch.monthName}</span>
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => {
+                    soundManager.playClick();
+                    setActiveTab('archive');
+                  }}
+                  className="px-2.5 py-1 rounded-xl text-zinc-400 hover:text-white hover:bg-white/10 transition-all text-[11px]"
+                >
+                  <span>📜 Semua Rekap →</span>
+                </button>
+              </div>
             </div>
+
+            {selectedMonthArchive === 'current' && (
+              <div className="flex items-center gap-1.5 bg-black/60 p-1 rounded-2xl border border-white/10 font-mono text-xs">
+                {[
+                  { val: 10000000, label: 'Rp10 Jt (Wajib)' },
+                  { val: 15000000, label: 'Rp15 Jt (Growth)' },
+                  { val: 20000000, label: 'Rp20 Jt (Scale)' },
+                ].map(opt => (
+                  <button
+                    key={opt.val}
+                    onClick={() => {
+                      soundManager.playClick();
+                      setMonthlyTarget(opt.val);
+                    }}
+                    className={`px-2.5 py-1 rounded-xl transition-all text-xs ${
+                      monthlyTarget === opt.val
+                        ? 'bg-emerald-500 text-black font-bold shadow-md'
+                        : 'text-zinc-400 hover:text-white'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Progress Bar & Pacing Metrics */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
-            
-            {/* Progress Gauge */}
-            <div className="lg:col-span-2 p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
-              <div className="flex justify-between items-center text-xs font-mono">
-                <span className="text-zinc-300 font-semibold flex items-center gap-1.5">
-                  <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-                  Progress Pemasukan Bulan {currentMonthName}:
-                </span>
-                <span className="text-emerald-400 font-bold text-sm">
-                  {formatRupiah(totalPaidThisMonth)} / {formatRupiah(monthlyTarget)} ({targetProgressPercent}%)
-                </span>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="w-full h-3.5 rounded-full bg-[#12121a] border border-white/10 overflow-hidden relative">
-                <div 
-                  className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-300 transition-all duration-700 shadow-glow-white"
-                  style={{ width: `${targetProgressPercent}%` }}
-                />
-              </div>
-
-              <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-zinc-400 pt-1 gap-2">
-                <span>
-                  Sisa target {currentMonthName}: <strong className="text-amber-300 font-bold">{formatRupiah(remainingTarget)}</strong>
-                </span>
-                <span className="text-zinc-400">
-                  Hari ke-{dayOfMonth}/{totalDaysInMonth} ({daysRemaining} hari tersisa)
-                </span>
-                <span className="text-emerald-300">
-                  Pacing Harian: <strong>{formatRupiah(dailyRequiredPacing)}/hari</strong>
-                </span>
-              </div>
-            </div>
-
-            {/* Net Surplus Card */}
-            <div className="p-4 rounded-2xl bg-black/50 border border-emerald-500/30 space-y-1.5">
-              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
-                PROYEKSI SURPLUS BERSIH / BULAN
-              </span>
-              <span className="text-2xl font-extrabold text-emerald-300 font-mono block">
-                +{formatRupiah(netMonthlySurplus)}
-              </span>
-              <p className="text-[11px] text-zinc-400 font-mono leading-tight">
-                Pemasukan {formatRupiah(monthlyTarget)} - Real Burn Rp4,5M = <strong>+{formatRupiah(netMonthlySurplus)}</strong> masuk cadangan kas tiap bulan!
-              </p>
-            </div>
-
-          </div>
-
-          {/* Breakdown: Dari Mana Saja Target 10 Juta Ini Didapat? */}
-          <div className="space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-emerald-300 uppercase tracking-wider block font-bold">
-                🗺️ Peta Realisasi Target Bulan {currentMonthName} ({formatRupiah(monthlyTarget)} / Bulan):
-              </span>
-              <span className="text-[10px] font-mono text-zinc-400">
-                Total Pipeline: <strong className="text-emerald-300">Rp10.200.000</strong>
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              
-              {/* Source 1: Barber POS */}
-              <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/20 space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <span className="dev-tag-emerald text-[9px]">DOING // PELUNASAN</span>
-                  <span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span>
+          {/* VIEW A: LIVE ACTIVE MONTH (SEPTEMBER 2026) */}
+          {selectedMonthArchive === 'current' && (
+            <div className="space-y-5">
+              {/* Header Target */}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Target className="w-4 h-4 text-emerald-400 animate-pulse" />
+                    <h3 className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+                      Target Pemasukan {currentMonthName} {currentYear}: <span className="text-emerald-400 font-mono">+{formatRupiah(monthlyTarget)} / Bulan</span>
+                    </h3>
+                    <span className="dev-tag-emerald text-[9px]">TARGET_{currentMonthName.toUpperCase()}</span>
+                  </div>
+                  <p className="text-xs text-zinc-300">
+                    Pokoknya bulan <strong>{currentMonthName} {currentYear}</strong> minimal harus nambah <strong>{formatRupiah(monthlyTarget)}</strong> agar kas langsung surplus dan keluar dari zona bahaya!
+                  </p>
                 </div>
-                <h5 className="text-xs font-bold text-white">Pelunasan Barber Underrated</h5>
-                <p className="text-[11px] text-zinc-400 leading-snug">Finishing sprint sisa dikit lagi! Siapkan demo & tagih pelunasan Rp3jt.</p>
               </div>
 
-              {/* Source 2: Umi Elly LMS */}
-              <div className="p-3.5 rounded-2xl bg-black/60 border border-amber-500/20 space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <span className="dev-tag text-[9px]">WAITING // KICKOFF</span>
-                  <span className="text-xs font-mono font-bold text-amber-300">Rp3.000.000</span>
+              {/* Progress Bar & Pacing Metrics */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
+                
+                {/* Progress Gauge */}
+                <div className="lg:col-span-2 p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
+                  <div className="flex justify-between items-center text-xs font-mono">
+                    <span className="text-zinc-300 font-semibold flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+                      Progress Pemasukan Bulan {currentMonthName}:
+                    </span>
+                    <span className="text-emerald-400 font-bold text-sm">
+                      {formatRupiah(totalPaidThisMonth)} / {formatRupiah(monthlyTarget)} ({targetProgressPercent}%)
+                    </span>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="w-full h-3.5 rounded-full bg-[#12121a] border border-white/10 overflow-hidden relative">
+                    <div 
+                      className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-300 transition-all duration-700 shadow-glow-white"
+                      style={{ width: `${targetProgressPercent}%` }}
+                    />
+                  </div>
+
+                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-zinc-400 pt-1 gap-2">
+                    <span>
+                      Sisa target {currentMonthName}: <strong className="text-amber-300 font-bold">{formatRupiah(remainingTarget)}</strong>
+                    </span>
+                    <span className="text-zinc-400">
+                      Hari ke-{dayOfMonth}/{totalDaysInMonth} ({daysRemaining} hari tersisa)
+                    </span>
+                    <span className="text-emerald-300">
+                      Pacing Harian: <strong>{formatRupiah(dailyRequiredPacing)}/hari</strong>
+                    </span>
+                  </div>
                 </div>
-                <h5 className="text-xs font-bold text-white">DP Termin 1 Umi Elly LMS</h5>
-                <p className="text-[11px] text-zinc-400 leading-snug">Termin 1 dari total deal Rp7jt. Follow up transfer & siap kickoff.</p>
-              </div>
 
-              {/* Source 3: Zalvice, Laptopbisnis & DreamMecca */}
-              <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <span className="dev-tag-emerald text-[9px]">DELIVERY // LUNAS ✓</span>
-                  <span className="text-xs font-mono font-bold text-white">Rp1.200.000</span>
+                {/* Net Surplus Card */}
+                <div className="p-4 rounded-2xl bg-black/50 border border-emerald-500/30 space-y-1.5">
+                  <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
+                    PROYEKSI SURPLUS BERSIH / BULAN
+                  </span>
+                  <span className="text-2xl font-extrabold text-emerald-300 font-mono block">
+                    +{formatRupiah(netMonthlySurplus)}
+                  </span>
+                  <p className="text-[11px] text-zinc-400 font-mono leading-tight">
+                    Pemasukan {formatRupiah(monthlyTarget)} - Real Burn Rp4,5M = <strong>+{formatRupiah(netMonthlySurplus)}</strong> masuk cadangan kas tiap bulan!
+                  </p>
                 </div>
-                <h5 className="text-xs font-bold text-white">DreamMecca + 2 Logo</h5>
-                <p className="text-[11px] text-zinc-400 leading-snug">Logo Zalvice & Laptopbisnis 100% kelar! DreamMecca lunas dari lama.</p>
+
               </div>
 
-              {/* Source 4: KAEL Core & Global Leads */}
-              <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <span className="dev-tag text-[9px]">BIZDEV // SCALE</span>
-                  <span className="text-xs font-mono font-bold text-amber-300">Rp3.000.000+</span>
+              {/* Breakdown: Dari Mana Saja Target 10 Juta Ini Didapat? */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-emerald-300 uppercase tracking-wider block font-bold">
+                    🗺️ Peta Realisasi Target Bulan {currentMonthName} ({formatRupiah(monthlyTarget)} / Bulan):
+                  </span>
+                  <span className="text-[10px] font-mono text-zinc-400">
+                    Total Pipeline: <strong className="text-emerald-300">Rp10.200.000</strong>
+                  </span>
                 </div>
-                <h5 className="text-xs font-bold text-white">KAEL SaaS & Inbound Client</h5>
-                <p className="text-[11px] text-zinc-400 leading-snug">3-5 pilot outlet KAEL + proposal client baru di bulan {currentMonthName}.</p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  
+                  {/* Source 1: Barber POS */}
+                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/20 space-y-1.5">
+                    <div className="flex justify-between items-center">
+                      <span className="dev-tag-emerald text-[9px]">DOING // PELUNASAN</span>
+                      <span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span>
+                    </div>
+                    <h5 className="text-xs font-bold text-white">Pelunasan Barber Underrated</h5>
+                    <p className="text-[11px] text-zinc-400 leading-snug">Finishing sprint sisa dikit lagi! Siapkan demo & tagih pelunasan Rp3jt.</p>
+                  </div>
+
+                  {/* Source 2: Umi Elly LMS */}
+                  <div className="p-3.5 rounded-2xl bg-black/60 border border-amber-500/20 space-y-1.5">
+                    <div className="flex justify-between items-center">
+                      <span className="dev-tag text-[9px]">WAITING // KICKOFF</span>
+                      <span className="text-xs font-mono font-bold text-amber-300">Rp3.000.000</span>
+                    </div>
+                    <h5 className="text-xs font-bold text-white">DP Termin 1 Umi Elly LMS</h5>
+                    <p className="text-[11px] text-zinc-400 leading-snug">Termin 1 dari total deal Rp7jt. Follow up transfer & siap kickoff.</p>
+                  </div>
+
+                  {/* Source 3: Zalvice, Laptopbisnis & DreamMecca */}
+                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
+                    <div className="flex justify-between items-center">
+                      <span className="dev-tag-emerald text-[9px]">DELIVERY // LUNAS ✓</span>
+                      <span className="text-xs font-mono font-bold text-white">Rp1.200.000</span>
+                    </div>
+                    <h5 className="text-xs font-bold text-white">DreamMecca + 2 Logo</h5>
+                    <p className="text-[11px] text-zinc-400 leading-snug">Logo Zalvice & Laptopbisnis 100% kelar! DreamMecca lunas dari lama.</p>
+                  </div>
+
+                  {/* Source 4: KAEL Core & Global Leads */}
+                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
+                    <div className="flex justify-between items-center">
+                      <span className="dev-tag text-[9px]">BIZDEV // SCALE</span>
+                      <span className="text-xs font-mono font-bold text-amber-300">Rp3.000.000+</span>
+                    </div>
+                    <h5 className="text-xs font-bold text-white">KAEL SaaS & Inbound Client</h5>
+                    <p className="text-[11px] text-zinc-400 leading-snug">3-5 pilot outlet KAEL + proposal client baru di bulan {currentMonthName}.</p>
+                  </div>
+
+                </div>
               </div>
 
+              {/* Kas Growth Projection (Efek Nambah 10 Juta Sebulan) */}
+              <div className="p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-2">
+                <span className="text-xs font-mono text-zinc-300 font-bold block">
+                  📈 Efek Pertumbuhan Saldo Kas Mengikuti Tanggal Real (+{formatRupiah(monthlyTarget)}/bln):
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+                  <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
+                    <span className="text-zinc-400 block text-[10px] font-bold uppercase">BULAN 1: {month1Name} (+{formatRupiah(netMonthlySurplus)})</span>
+                    <span className="text-base font-bold text-white block mt-0.5">{formatRupiah(projectedBalanceMonth1)}</span>
+                    <span className="text-[11px] text-amber-300">Runway: ±{runwayMonth1} Bulan (Keluar dari Red Mode)</span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+                    <span className="text-emerald-400 block text-[10px] font-bold uppercase">BULAN 2: {month2Name} (+{formatRupiah(netMonthlySurplus)})</span>
+                    <span className="text-base font-bold text-emerald-300 block mt-0.5">{formatRupiah(projectedBalanceMonth2)}</span>
+                    <span className="text-[11px] text-emerald-400">Runway: ±{runwayMonth2} Bulan (🟢 Green Safe Growth)</span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/40">
+                    <span className="text-emerald-300 block text-[10px] font-bold uppercase">BULAN 3: {month3Name} (+{formatRupiah(netMonthlySurplus)})</span>
+                    <span className="text-base font-bold text-emerald-200 block mt-0.5">{formatRupiah(projectedBalanceMonth3)}</span>
+                    <span className="text-[11px] text-emerald-300">Runway: ±{runwayMonth3} Bulan (Indie SaaS Powerhouse)</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Kas Growth Projection (Efek Nambah 10 Juta Sebulan) */}
-          <div className="p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-2">
-            <span className="text-xs font-mono text-zinc-300 font-bold block">
-              📈 Efek Pertumbuhan Saldo Kas Mengikuti Tanggal Real (+{formatRupiah(monthlyTarget)}/bln):
-            </span>
+          {/* VIEW B: HISTORICAL ARCHIVED MONTH (AGUSTUS 2026 / JULI 2026) */}
+          {selectedMonthArchive !== 'current' && activeArchive && (
+            <div className="space-y-5 animate-fade-in">
+              {/* Header Archive */}
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-amber-400" />
+                    <h3 className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+                      Rekap Pencapaian: <span className="text-amber-400 font-mono">{activeArchive.monthName}</span>
+                    </h3>
+                    <span className="dev-tag text-[9px] bg-amber-500/15 text-amber-300 border border-amber-500/20">{activeArchive.periodTag}</span>
+                  </div>
+                  <p className="text-xs text-zinc-300">
+                    {activeArchive.summaryNote}
+                  </p>
+                </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-              <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
-                <span className="text-zinc-400 block text-[10px] font-bold uppercase">BULAN 1: {month1Name} (+{formatRupiah(netMonthlySurplus)})</span>
-                <span className="text-base font-bold text-white block mt-0.5">{formatRupiah(projectedBalanceMonth1)}</span>
-                <span className="text-[11px] text-amber-300">Runway: ±{runwayMonth1} Bulan (Keluar dari Red Mode)</span>
+                <button
+                  onClick={() => {
+                    soundManager.playClick();
+                    setSelectedMonthArchive('current');
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl bg-emerald-500 text-black font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-md"
+                >
+                  <span>← Kembali ke {currentMonthName} {currentYear} (Live)</span>
+                </button>
               </div>
 
-              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
-                <span className="text-emerald-400 block text-[10px] font-bold uppercase">BULAN 2: {month2Name} (+{formatRupiah(netMonthlySurplus)})</span>
-                <span className="text-base font-bold text-emerald-300 block mt-0.5">{formatRupiah(projectedBalanceMonth2)}</span>
-                <span className="text-[11px] text-emerald-400">Runway: ±{runwayMonth2} Bulan (🟢 Green Safe Growth)</span>
+              {/* Realization Metrics & Progress */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
+                <div className="lg:col-span-2 p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
+                  <div className="flex justify-between items-center text-xs font-mono">
+                    <span className="text-zinc-300 font-semibold">
+                      Realisasi Pemasukan {activeArchive.monthName}:
+                    </span>
+                    <span className="text-amber-400 font-bold text-sm">
+                      {formatRupiah(activeArchive.realizedIncome)} / {formatRupiah(activeArchive.target)} ({activeArchive.progressPercent}%)
+                    </span>
+                  </div>
+
+                  <div className="w-full h-3.5 rounded-full bg-[#12121a] border border-white/10 overflow-hidden relative">
+                    <div 
+                      className="h-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 transition-all duration-700 shadow-glow-white"
+                      style={{ width: `${activeArchive.progressPercent}%` }}
+                    />
+                  </div>
+
+                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-zinc-400 pt-1 gap-2">
+                    <span>Pemasukan: <strong className="text-emerald-300 font-bold">+{formatRupiah(activeArchive.realizedIncome)}</strong></span>
+                    <span>Pengeluaran: <strong className="text-rose-400 font-bold">-{formatRupiah(activeArchive.realizedExpense)}</strong></span>
+                    <span>Saldo Akhir: <strong className="text-white font-bold">{formatRupiah(activeArchive.endingBalance)}</strong></span>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-black/50 border border-amber-500/30 space-y-1.5">
+                  <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block font-bold">
+                    SURPLUS BERSIH YANG TERCATAT
+                  </span>
+                  <span className="text-2xl font-extrabold text-amber-300 font-mono block">
+                    +{formatRupiah(activeArchive.netSurplus)}
+                  </span>
+                  <p className="text-[11px] text-zinc-400 font-mono leading-tight">
+                    Surplus cadangan kas masuk: <strong>+{formatRupiah(activeArchive.netSurplus)}</strong> ({activeArchive.runwayMonths} runway operasional aman).
+                  </p>
+                </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/40">
-                <span className="text-emerald-300 block text-[10px] font-bold uppercase">BULAN 3: {month3Name} (+{formatRupiah(netMonthlySurplus)})</span>
-                <span className="text-base font-bold text-emerald-200 block mt-0.5">{formatRupiah(projectedBalanceMonth3)}</span>
-                <span className="text-[11px] text-emerald-300">Runway: ±{runwayMonth3} Bulan (Indie SaaS Powerhouse)</span>
+              {/* Pencapaian & Key Milestones List */}
+              <div className="p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-2.5">
+                <span className="text-xs font-mono text-amber-300 uppercase tracking-wider block font-bold">
+                  🏆 Milestone & Pencapaian Utama di Bulan {activeArchive.monthName}:
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300">
+                  {activeArchive.milestones.map((m, idx) => (
+                    <div key={idx} className="p-2.5 rounded-xl bg-white/[0.04] border border-white/5 flex items-start gap-2">
+                      <span className="text-emerald-400 font-bold">✓</span>
+                      <span className="leading-snug">{m}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Breakdown Pemasukan & Deliverables */}
+              <div className="space-y-2.5">
+                <span className="text-xs font-mono text-zinc-300 uppercase tracking-wider block font-bold">
+                  💼 Rincian Pemasukan & Deliverable {activeArchive.monthName}:
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {activeArchive.breakdown.map((item, idx) => (
+                    <div key={idx} className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
+                      <div className="flex justify-between items-center">
+                        <span className="dev-tag text-[9px]">{item.tag}</span>
+                        <span className="text-xs font-mono font-bold text-amber-300">{formatRupiah(item.amount)}</span>
+                      </div>
+                      <h5 className="text-xs font-bold text-white">{item.label}</h5>
+                      <p className="text-[11px] text-zinc-400 leading-snug">{item.client} • <span className="text-emerald-400 font-semibold">{item.status}</span></p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
         </div>
       </div>
@@ -438,6 +666,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
       <div className="flex items-center gap-1.5 bg-[#09090d] p-1.5 rounded-2xl border border-white/[0.06] overflow-x-auto no-scrollbar">
         {[
           { id: 'overview', label: '📊 Ringkasan & Roadmap' },
+          { id: 'archive', label: '🏛️ Arsip & Rekap Bulanan' },
           { id: 'accounts', label: '🏦 7 Saldo Rekening' },
           { id: 'expenses', label: '💸 Beban Bulanan (11 Item)' },
           { id: 'projects', label: '💼 Piutang & DP Project' },
@@ -714,6 +943,158 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
             ) : (
               <p className="text-xs text-zinc-500 font-mono text-center py-6">Belum ada transaksi tambahan yang dicatat.</p>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* VIEW 6: MONTHLY HISTORICAL ARCHIVES & PERFORMANCE MATRIX */}
+      {activeTab === 'archive' && (
+        <div className="space-y-4 animate-fade-in">
+          {/* Header Summary */}
+          <div className="figma-shell">
+            <div className="figma-core p-5 sm:p-6 space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+                <div>
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <span>🏛️ Rekap & Arsip Pencapaian Bulanan</span>
+                    <span className="dev-tag-emerald text-[9px]">HISTORICAL_TRACKER</span>
+                  </h3>
+                  <p className="text-xs text-zinc-400 font-mono">// Perbandingan performa target, pemasukan real, pengeluaran & milestone per bulan</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-zinc-400">Total Periode Terekam: <strong>3 Bulan (Jul, Agu, Sep 2026)</strong></span>
+                </div>
+              </div>
+
+              {/* Comparative Matrix Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs font-mono">
+                  <thead>
+                    <tr className="border-b border-white/10 text-zinc-400 uppercase text-[11px]">
+                      <th className="pb-3 pr-3 font-semibold text-white font-sans">Bulan / Periode</th>
+                      <th className="pb-3 px-3 font-semibold">Status</th>
+                      <th className="pb-3 px-3 font-semibold text-emerald-400">Pemasukan Real</th>
+                      <th className="pb-3 px-3 font-semibold text-rose-400">Beban Keluar</th>
+                      <th className="pb-3 px-3 font-semibold text-amber-300">Net Surplus</th>
+                      <th className="pb-3 px-3 font-semibold text-white">Saldo Kas Akhir</th>
+                      <th className="pb-3 px-3 font-semibold">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-zinc-300">
+                    {/* Live Month: September 2026 */}
+                    <tr className="hover:bg-white/5 transition-colors bg-emerald-500/[0.04]">
+                      <td className="py-3.5 pr-3 font-sans font-bold text-emerald-300 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>{currentMonthName} {currentYear} (Live)</span>
+                      </td>
+                      <td className="py-3.5 px-3 text-[11px] text-emerald-400 font-semibold">ONGOING // TARGET 10M</td>
+                      <td className="py-3.5 px-3 text-emerald-300 font-bold">{formatRupiah(totalPaidThisMonth)}</td>
+                      <td className="py-3.5 px-3 text-rose-300 font-bold">~Rp4.500.000 (Burn)</td>
+                      <td className="py-3.5 px-3 text-emerald-300 font-bold">+{formatRupiah(netMonthlySurplus)} (Proyeksi)</td>
+                      <td className="py-3.5 px-3 text-white font-bold">{formatRupiah(report.totalLiquidBalance)}</td>
+                      <td className="py-3.5 px-3">
+                        <button
+                          onClick={() => {
+                            soundManager.playClick();
+                            setSelectedMonthArchive('current');
+                            window.scrollTo({ top: 300, behavior: 'smooth' });
+                          }}
+                          className="text-emerald-300 hover:text-white font-mono bg-emerald-500/15 hover:bg-emerald-500/30 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition-all"
+                        >
+                          Lihat Live ⚡
+                        </button>
+                      </td>
+                    </tr>
+
+                    {/* Historical Months */}
+                    {monthlyArchives.map(arch => (
+                      <tr key={arch.id} className="hover:bg-white/5 transition-colors">
+                        <td className="py-3.5 pr-3 font-sans font-bold text-white flex items-center gap-1.5">
+                          <span>🏛️ {arch.monthName}</span>
+                        </td>
+                        <td className="py-3.5 px-3 text-[11px] text-amber-400">{arch.periodTag}</td>
+                        <td className="py-3.5 px-3 text-emerald-300 font-bold">{formatRupiah(arch.realizedIncome)}</td>
+                        <td className="py-3.5 px-3 text-rose-400 font-bold">-{formatRupiah(arch.realizedExpense)}</td>
+                        <td className="py-3.5 px-3 text-amber-300 font-bold">+{formatRupiah(arch.netSurplus)}</td>
+                        <td className="py-3.5 px-3 text-white font-bold">{formatRupiah(arch.endingBalance)}</td>
+                        <td className="py-3.5 px-3">
+                          <button
+                            onClick={() => {
+                              soundManager.playClick();
+                              setSelectedMonthArchive(arch.id as any);
+                              window.scrollTo({ top: 300, behavior: 'smooth' });
+                            }}
+                            className="text-zinc-300 hover:text-white font-mono bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 transition-all"
+                          >
+                            Detail Rekap 🔍
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Cards for each Historical Month */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {monthlyArchives.map(arch => (
+              <div key={arch.id} className="figma-shell">
+                <div className="figma-core p-5 space-y-3.5">
+                  <div className="flex justify-between items-center border-b border-white/[0.06] pb-2.5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-amber-400" />
+                      <h4 className="text-sm font-bold text-white">{arch.monthName}</h4>
+                      <span className="dev-tag text-[9px] bg-amber-500/10 text-amber-300 border-amber-500/20">{arch.periodTag}</span>
+                    </div>
+                    <span className="text-xs font-mono text-emerald-400 font-bold">{arch.progressPercent}% Target</span>
+                  </div>
+
+                  <p className="text-xs text-zinc-300 leading-relaxed">{arch.summaryNote}</p>
+
+                  <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-[#060609] border border-white/5 text-center text-xs font-mono">
+                    <div>
+                      <span className="text-[10px] text-zinc-500 block uppercase">Pemasukan</span>
+                      <span className="text-emerald-400 font-bold">{formatRupiah(arch.realizedIncome)}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-zinc-500 block uppercase">Pengeluaran</span>
+                      <span className="text-rose-400 font-bold">{formatRupiah(arch.realizedExpense)}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-zinc-500 block uppercase">Surplus</span>
+                      <span className="text-amber-300 font-bold">+{formatRupiah(arch.netSurplus)}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5 pt-1">
+                    <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold block">🏆 Pencapaian Utama:</span>
+                    <ul className="space-y-1 text-xs text-zinc-300">
+                      {arch.milestones.slice(0, 3).map((m, idx) => (
+                        <li key={idx} className="flex items-start gap-1.5">
+                          <span className="text-emerald-400 font-bold text-[10px]">✓</span>
+                          <span className="leading-tight text-[11px]">{m}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      soundManager.playClick();
+                      setSelectedMonthArchive(arch.id as any);
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    className="w-full py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-2"
+                  >
+                    <span>Buka Peta Realisasi {arch.monthName}</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
