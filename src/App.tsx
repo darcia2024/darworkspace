@@ -1,0 +1,503 @@
+import React, { useState, useEffect } from 'react';
+import { Sidebar } from './components/Sidebar';
+import { TopQuickStats } from './components/TopQuickStats';
+import { TodaySuperSmallView } from './components/TodaySuperSmallView';
+import { WorkflowLanes } from './components/WorkflowLanes';
+import { WaitingRadarView } from './components/WaitingRadarView';
+import { MoneyCashflowView } from './components/MoneyCashflowView';
+import { FocusStudio } from './components/FocusStudio';
+import { ExportModal } from './components/ExportModal';
+import { FollowUpModal } from './components/FollowUpModal';
+import { DaruPartnerCopilot } from './components/DaruPartnerCopilot';
+import { DecisionAnchorBox } from './components/DecisionAnchorBox';
+import { QuickFinanceInputModal } from './components/QuickFinanceInputModal';
+import { InvoiceGeneratorModal } from './components/InvoiceGeneratorModal';
+import { loadState, saveState } from './utils/storage';
+import { apiService } from './services/api';
+import { DaruWorkOSState, TodayBlock, ProjectCard, WaitingItem, TransactionRecord, AssetAccount, InvoiceRecord } from './types';
+import { soundManager } from './utils/audio';
+import { ChevronRight, Sparkles, MessageSquare, Bot, Plus, Receipt } from 'lucide-react';
+
+export function App() {
+  const [state, setState] = useState<DaruWorkOSState>(loadState);
+  const [activeTab, setActiveTab] = useState<'today' | 'lanes' | 'waiting' | 'money' | 'deepwork'>('today');
+  const [activeFocusBlock, setActiveFocusBlock] = useState<TodayBlock | null>(null);
+
+  // Load from server if available on mount
+  useEffect(() => {
+    apiService.loadInitialState().then((serverState) => {
+      if (serverState) {
+        setState(serverState);
+      }
+    });
+  }, []);
+
+  // Modals state
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isFollowUpOpen, setIsFollowUpOpen] = useState(false);
+  const [isFinanceInputOpen, setIsFinanceInputOpen] = useState(false);
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
+  const [targetFollowUpProject, setTargetFollowUpProject] = useState<ProjectCard | WaitingItem | null>(null);
+  const [targetInvoiceProject, setTargetInvoiceProject] = useState<ProjectCard | null>(null);
+
+  // Autosave via apiService (LocalStorage + Backend SQLite + Obsidian)
+  useEffect(() => {
+    apiService.saveState(state);
+  }, [state]);
+
+  // Global Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCopilotOpen((prev) => !prev);
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        setIsFollowUpOpen((prev) => !prev);
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'i') {
+        e.preventDefault();
+        setIsInvoiceOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Open Follow-up Modal for specific item
+  const handleOpenFollowUpForItem = (item: ProjectCard | WaitingItem) => {
+    setTargetFollowUpProject(item);
+    setIsFollowUpOpen(true);
+  };
+
+  // Handlers for Today Pursuit
+  const handleTogglePursuit = (id: string) => {
+    setState((prev) => ({
+      ...prev,
+      todayPursuit: prev.todayPursuit.map((p) => (p.id === id ? { ...p, isDone: !p.isDone } : p)),
+    }));
+  };
+
+  // Handlers for Today Blocks
+  const handleToggleBlock = (id: string) => {
+    setState((prev) => ({
+      ...prev,
+      todayBlocks: prev.todayBlocks.map((b) => (b.id === id ? { ...b, isDone: !b.isDone } : b)),
+    }));
+  };
+
+  const handleStartFocus = (block: TodayBlock) => {
+    setActiveFocusBlock(block);
+    setActiveTab('deepwork');
+  };
+
+  const handleStartFocusOnProject = (project: ProjectCard) => {
+    const existing = state.todayBlocks.find((b) => b.projectName.toLowerCase().includes(project.name.toLowerCase()));
+    if (existing) {
+      setActiveFocusBlock(existing);
+    } else {
+      const tempBlock: TodayBlock = {
+        id: `tb-${Date.now()}`,
+        blockType: 'Deep Work 1',
+        projectName: project.name,
+        action: project.nextAction,
+        timeboxMinutes: 50,
+        isDone: false,
+        rule: project.rule || 'Fokus eksekusi next action konkrit.'
+      };
+      setActiveFocusBlock(tempBlock);
+    }
+    setActiveTab('deepwork');
+  };
+
+  // Handlers for Projects
+  const handleUpdateProject = (updatedProject: ProjectCard) => {
+    setState((prev) => ({
+      ...prev,
+      projects: prev.projects.map((p) => (p.id === updatedProject.id ? updatedProject : p)),
+    }));
+  };
+
+  const handleAddProject = (newProject: Omit<ProjectCard, 'id'>) => {
+    const project: ProjectCard = {
+      ...newProject,
+      id: `p-${Date.now()}`
+    };
+    setState((prev) => ({
+      ...prev,
+      projects: [project, ...prev.projects]
+    }));
+  };
+
+  // Handlers for Waiting Items
+  const handleAddWaitingItem = (newItem: Omit<WaitingItem, 'id'>) => {
+    const item: WaitingItem = {
+      ...newItem,
+      id: `w-${Date.now()}`,
+    };
+    setState((prev) => ({
+      ...prev,
+      waitingItems: [item, ...prev.waitingItems],
+      quickStats: {
+        ...prev.quickStats,
+        waitingPaymentKickoff: prev.quickStats.waitingPaymentKickoff + 1
+      }
+    }));
+  };
+
+  const handleResolveWaitingItem = (id: string) => {
+    setState((prev) => ({
+      ...prev,
+      waitingItems: prev.waitingItems.filter((w) => w.id !== id),
+      quickStats: {
+        ...prev.quickStats,
+        waitingPaymentKickoff: Math.max(0, prev.quickStats.waitingPaymentKickoff - 1)
+      }
+    }));
+  };
+
+  // Financial Handlers
+  const handleSaveTransaction = (
+    txData: Omit<TransactionRecord, 'id' | 'createdAt'>,
+    linkedProjectUpdates?: { projectId: string; amountAdded: number }
+  ) => {
+    const newTx: TransactionRecord = {
+      ...txData,
+      id: `tx-${Date.now()}`,
+      createdAt: new Date().toISOString()
+    };
+
+    setState((prev) => {
+      const currentReport = prev.financialReport;
+      
+      const updatedAccounts = currentReport.accounts.map((acc) => {
+        if (acc.name === txData.accountName) {
+          let newBal = acc.balance;
+          if (txData.type === 'income') newBal += txData.amount;
+          else if (txData.type === 'expense') newBal -= txData.amount;
+          else if (txData.type === 'transfer') newBal -= txData.amount;
+          else if (txData.type === 'balance_update') newBal = txData.amount;
+          return { ...acc, balance: newBal, isLatest: true, lastUpdated: 'Live Just Now' };
+        }
+        if (txData.type === 'transfer' && acc.name === txData.toAccountName) {
+          return { ...acc, balance: acc.balance + txData.amount, isLatest: true, lastUpdated: 'Live Just Now' };
+        }
+        return acc;
+      });
+
+      const newTotal = updatedAccounts.reduce((sum, a) => sum + a.balance, 0);
+      const newMode = newTotal < 4000000 
+        ? 'RED MODE — CASH DEFENSE' 
+        : newTotal < 10000000 
+        ? 'YELLOW MODE — CAUTION' 
+        : 'GREEN MODE — GROWTH';
+
+      let updatedProjects = prev.projects;
+      if (linkedProjectUpdates) {
+        updatedProjects = prev.projects.map((p) => {
+          if (p.id === linkedProjectUpdates.projectId) {
+            const newPaid = (p.paidNumeric || 0) + linkedProjectUpdates.amountAdded;
+            const newUnpaid = Math.max(0, (p.nominalNumeric || 0) - newPaid);
+            const isFull = newPaid >= (p.nominalNumeric || 0);
+            return {
+              ...p,
+              paidNumeric: newPaid,
+              unpaidNumeric: newUnpaid,
+              paymentStatus: isFull ? 'Paid' : 'Expected',
+              status: p.status.includes('Waiting') ? 'Doing' : p.status,
+              boardColumn: p.boardColumn === 'WAITING' ? 'DOING' : p.boardColumn
+            };
+          }
+          return p;
+        });
+      }
+
+      const todayStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+      const newTrajectory = [
+        ...currentReport.trajectory,
+        { date: todayStr, balance: newTotal, note: txData.description }
+      ];
+
+      return {
+        ...prev,
+        projects: updatedProjects,
+        financialReport: {
+          ...currentReport,
+          accounts: updatedAccounts,
+          totalLiquidBalance: newTotal,
+          modeStatus: newMode,
+          transactions: [newTx, ...(currentReport.transactions || [])],
+          trajectory: newTrajectory
+        }
+      };
+    });
+  };
+
+  const handleUpdateAllBalances = (newAccounts: AssetAccount[]) => {
+    setState((prev) => {
+      const currentReport = prev.financialReport;
+      const newTotal = newAccounts.reduce((sum, a) => sum + a.balance, 0);
+      const newMode = newTotal < 4000000 
+        ? 'RED MODE — CASH DEFENSE' 
+        : newTotal < 10000000 
+        ? 'YELLOW MODE — CAUTION' 
+        : 'GREEN MODE — GROWTH';
+
+      const todayStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+      const newTrajectory = [
+        ...currentReport.trajectory,
+        { date: todayStr, balance: newTotal, note: 'Multi-account Sync' }
+      ];
+
+      return {
+        ...prev,
+        financialReport: {
+          ...currentReport,
+          accounts: newAccounts,
+          totalLiquidBalance: newTotal,
+          modeStatus: newMode,
+          trajectory: newTrajectory
+        }
+      };
+    });
+  };
+
+  const completedCount = state.todayBlocks.filter((b) => b.isDone).length;
+
+  const tabLabels = {
+    today: 'Command Hub // Today Execution',
+    lanes: 'Board & Lanes // Project Workspace',
+    waiting: 'Radar Pipeline // Pending Deals & Kickoffs',
+    money: 'Cashflow Matrix // Financial Telemetry',
+    deepwork: 'Focus Engine // Deep Work Pomodoro'
+  };
+
+  return (
+    <div className="min-h-screen bg-[#000000] text-[#EDEDED] flex flex-col lg:flex-row font-sans selection:bg-[#0070F3]/30 selection:text-white">
+      
+      {/* 1. Sleek Left Dashboard Sidebar */}
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onOpenExport={() => setIsExportOpen(true)}
+        onOpenCopilot={() => setIsCopilotOpen((prev) => !prev)}
+        onOpenFollowUp={() => {
+          setTargetFollowUpProject(null);
+          setIsFollowUpOpen(true);
+        }}
+        onOpenFinanceInput={() => setIsFinanceInputOpen(true)}
+        onOpenInvoice={() => {
+          setTargetInvoiceProject(null);
+          setIsInvoiceOpen(true);
+        }}
+        todayCompletedCount={completedCount}
+        waitingCount={state.waitingItems.length}
+        financialReport={state.financialReport}
+      />
+
+      {/* 2. Main Dashboard Content View */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-[#000000]">
+        
+        {/* Top Vercel Breadcrumb Bar */}
+        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-white/[0.12] bg-[#000000]/80 backdrop-blur-md sticky top-0 z-20">
+          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
+            <span className="text-white font-medium">Workspace</span>
+            <span className="text-zinc-600">/</span>
+            <span className="text-zinc-200">{tabLabels[activeTab]}</span>
+            <span className="text-zinc-600">/</span>
+            <span className="dev-tag text-[9px] py-0">PROD</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setTargetInvoiceProject(null);
+                setIsInvoiceOpen(true);
+              }}
+              className="px-3 py-1.5 rounded-lg bg-[#0070F3]/10 hover:bg-[#0070F3]/20 text-[#3291ff] border border-[#0070F3]/30 text-xs font-mono transition-all flex items-center gap-1.5"
+            >
+              <Receipt className="w-3.5 h-3.5 text-[#0070F3]" />
+              <span>+ Buat Invoice ⌘I</span>
+            </button>
+
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setIsFinanceInputOpen(true);
+              }}
+              className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/25 text-xs font-mono transition-all flex items-center gap-1.5"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>+ Catat Kas</span>
+            </button>
+
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setTargetFollowUpProject(null);
+                setIsFollowUpOpen(true);
+              }}
+              className="px-3 py-1.5 rounded-lg bg-[#000000] hover:bg-[#111111] text-zinc-300 hover:text-white border border-white/[0.12] hover:border-white/30 text-xs font-mono transition-all flex items-center gap-1.5"
+            >
+              <MessageSquare className="w-3.5 h-3.5 text-zinc-400" />
+              <span>Copas WA</span>
+            </button>
+
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setIsCopilotOpen((prev) => !prev);
+              }}
+              className="px-3 py-1.5 rounded-lg bg-[#000000] hover:bg-[#111111] text-purple-300 border border-purple-500/30 text-xs font-mono transition-all flex items-center gap-1.5"
+            >
+              <Bot className="w-3.5 h-3.5 text-purple-400" />
+              <span>Partner ⌘K</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Content Container */}
+        <main className="flex-1 max-w-6xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+          
+          {/* Top Quick Status (Only show on Today & Board tabs) */}
+          {(activeTab === 'today' || activeTab === 'lanes') && (
+            <TopQuickStats
+              todayPursuit={state.todayPursuit}
+              onTogglePursuit={handleTogglePursuit}
+              quickStats={state.quickStats}
+              onSelectTab={(tab) => setActiveTab(tab as any)}
+              financialReport={state.financialReport}
+            />
+          )}
+
+          {/* TAB 1: TODAY SUPER SMALL VIEW */}
+          {activeTab === 'today' && (
+            <div className="space-y-6">
+              <TodaySuperSmallView
+                todayBlocks={state.todayBlocks}
+                onToggleBlock={handleToggleBlock}
+                onStartFocus={handleStartFocus}
+              />
+
+              <DecisionAnchorBox
+                onSelectAction={(target) => {
+                  const matched = state.todayBlocks.find(b => target.toLowerCase().includes(b.projectName.toLowerCase()));
+                  if (matched) {
+                    handleStartFocus(matched);
+                  } else {
+                    setActiveTab('lanes');
+                  }
+                }}
+              />
+            </div>
+          )}
+
+          {/* TAB 2: WORKFLOW LANES */}
+          {activeTab === 'lanes' && (
+            <WorkflowLanes
+              projects={state.projects}
+              onUpdateProject={handleUpdateProject}
+              onAddProject={handleAddProject}
+              onStartFocusOnProject={handleStartFocusOnProject}
+              onOpenFollowUpForProject={handleOpenFollowUpForItem}
+              onOpenInvoiceForProject={(proj) => {
+                setTargetInvoiceProject(proj);
+                setIsInvoiceOpen(true);
+              }}
+            />
+          )}
+
+          {/* TAB 3: WAITING RADAR VIEW */}
+          {activeTab === 'waiting' && (
+            <WaitingRadarView
+              waitingItems={state.waitingItems}
+              onAddWaitingItem={handleAddWaitingItem}
+              onResolveItem={handleResolveWaitingItem}
+              onOpenFollowUpModal={handleOpenFollowUpForItem}
+            />
+          )}
+
+          {/* TAB 4: MONEY & CASHFLOW MATRIX */}
+          {activeTab === 'money' && (
+            <MoneyCashflowView
+              projects={state.projects}
+              financialReport={state.financialReport}
+              onOpenFollowUp={handleOpenFollowUpForItem}
+              onOpenFinanceInput={() => setIsFinanceInputOpen(true)}
+            />
+          )}
+
+          {/* TAB 5: FOCUS STUDIO POMODORO */}
+          {activeTab === 'deepwork' && (
+            <FocusStudio
+              todayBlocks={state.todayBlocks}
+              activeBlock={activeFocusBlock}
+              setActiveBlock={setActiveFocusBlock}
+              onCompleteBlock={(id) => {
+                handleToggleBlock(id);
+                soundManager.playCompletionChime();
+              }}
+            />
+          )}
+
+        </main>
+      </div>
+
+      {/* Instant Invoice Generator & Printable PDF Modal */}
+      <InvoiceGeneratorModal
+        isOpen={isInvoiceOpen}
+        onClose={() => setIsInvoiceOpen(false)}
+        projects={state.projects}
+        initialProject={targetInvoiceProject}
+        onSaveInvoice={(newInv) => {
+          setState((prev) => ({
+            ...prev,
+            invoices: [newInv, ...(prev.invoices || [])]
+          }));
+        }}
+      />
+
+      {/* Manual Financial Input & Receipt Photo Upload Modal */}
+      <QuickFinanceInputModal
+        isOpen={isFinanceInputOpen}
+        onClose={() => setIsFinanceInputOpen(false)}
+        projects={state.projects}
+        financialReport={state.financialReport}
+        onSaveTransaction={handleSaveTransaction}
+        onUpdateAllBalances={handleUpdateAllBalances}
+      />
+
+      {/* Follow-up Message Generator & Copas Modal */}
+      <FollowUpModal
+        isOpen={isFollowUpOpen}
+        onClose={() => setIsFollowUpOpen(false)}
+        selectedProject={targetFollowUpProject}
+        allProjects={state.projects}
+        allWaitingItems={state.waitingItems}
+      />
+
+      {/* Partner Copilot Sidebar */}
+      <DaruPartnerCopilot
+        isOpen={isCopilotOpen}
+        onClose={() => setIsCopilotOpen(false)}
+        financialReport={state.financialReport}
+        onSelectAction={() => {
+          setActiveTab('today');
+        }}
+      />
+
+      {/* Obsidian Export Modal */}
+      <ExportModal
+        isOpen={isExportOpen}
+        onClose={() => setIsExportOpen(false)}
+        state={state}
+      />
+
+    </div>
+  );
+}
+
+export default App;

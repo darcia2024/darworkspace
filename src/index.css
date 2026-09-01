@@ -1,0 +1,293 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#000000] text-[#EDEDED] font-sans antialiased selection:bg-[#0070F3]/30 selection:text-white;
+    font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.02em;
+    background-color: #000000;
+    background-image: 
+      radial-gradient(ellipse 70% 40% at 50% -15%, rgba(0, 112, 243, 0.10), transparent),
+      radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+    background-size: 100% 100%, 24px 24px;
+    background-attachment: fixed;
+  }
+}
+
+/* ==========================================================================
+   VERCEL / GEIST DESIGN SYSTEM SPECIFICATION
+   ========================================================================== */
+
+/* 1. Vercel Geist Card (Laser Hairline Border & Crisp Elevation) */
+.figma-shell, .geist-card {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.9),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.375rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.figma-shell:hover, .geist-card:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 
+    0 0 0 1px rgba(0, 0, 0, 0.9),
+    0 12px 40px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.figma-core, .geist-surface {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.03);
+}
+
+/* 2. Vercel Glass & Command Surfaces */
+.dev-glass {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  border-radius: 12px;
+}
+
+/* 3. Obsidian Vercel Card */
+.dev-card {
+  background: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.dev-card:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: #080808;
+  transform: translateY(-1px);
+}
+
+/* 4. Vercel Hero Active Card */
+.dev-card-hero {
+  background: radial-gradient(circle at top left, #111111 0%, #000000 100%);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 12px;
+  box-shadow: 
+    0 12px 36px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: all 0.15s ease;
+}
+
+.dev-card-hero:hover {
+  border-color: rgba(255, 255, 255, 0.36);
+  transform: translateY(-1px);
+}
+
+/* 5. Vercel Geist Badges & Tags */
+.dev-tag, .geist-badge {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: #111111;
+  border: 1px solid #333333;
+  color: #888888;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dev-tag-emerald, .geist-badge-success {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+
+.dev-tag-blue, .geist-badge-blue {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(0, 112, 243, 0.12);
+  border: 1px solid rgba(0, 112, 243, 0.35);
+  color: #3291ff;
+}
+
+.dev-tag-amber, .geist-badge-warning {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(245, 166, 35, 0.12);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+  color: #f5a623;
+}
+
+.dev-tag-rose, .geist-badge-error {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: rgba(238, 0, 0, 0.12);
+  border: 1px solid rgba(238, 0, 0, 0.35);
+  color: #ff4444;
+}
+
+/* 6. Vercel Geist Buttons */
+.dev-btn-primary, .geist-btn-primary {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #ffffff;
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.15s ease;
+}
+
+.dev-btn-primary:hover, .geist-btn-primary:hover {
+  background: #eaeaea;
+  border-color: #eaeaea;
+  transform: translateY(-1px);
+}
+
+.dev-btn-primary:active, .geist-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.dev-btn-secondary, .geist-btn-secondary {
+  background: #000000;
+  color: #888888;
+  font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid #333333;
+  transition: all 0.15s ease;
+}
+
+.dev-btn-secondary:hover, .geist-btn-secondary:hover {
+  background: #0a0a0a;
+  border-color: #666666;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.dev-btn-secondary:active, .geist-btn-secondary:active {
+  transform: scale(0.98);
+}
+
+.dev-btn-blue, .geist-btn-blue {
+  background: #0070F3;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #0070F3;
+  box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.35);
+  transition: all 0.15s ease;
+}
+
+.dev-btn-blue:hover, .geist-btn-blue:hover {
+  background: #0060df;
+  transform: translateY(-1px);
+}
+
+.dev-btn-blue:active, .geist-btn-blue:active {
+  transform: scale(0.98);
+}
+
+/* Vercel Custom Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ==========================================================================
+   A4 PRINT SPECIFICATION FOR INVOICES (STRICT 1-PAGE A4)
+   ========================================================================== */
+@page {
+  size: A4 portrait;
+  margin: 5mm 6mm;
+}
+
+@media print {
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    background-image: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+  
+  aside, header, nav, footer, .no-print, button, .modal-backdrop {
+    display: none !important;
+  }
+
+  .fixed {
+    position: static !important;
+    background: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .max-h-\[98vh\], .max-h-\[96vh\], .max-h-\[94vh\], .overflow-y-auto {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  
+  #printable-a4-sheet {
+    box-shadow: none !important;
+    border: 1.5px solid #0f172a !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    page-break-inside: avoid !important;
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
