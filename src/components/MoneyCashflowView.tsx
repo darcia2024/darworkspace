@@ -99,18 +99,40 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
     defenseProtocolRule: 'Belum masuk rekening = belum jadi uang. Pengeluaran hanya untuk yang wajib/produktif. Fokus: Delivery kewajiban + Closing DP project.'
   };
 
+  // Real Live Date & Time Engine
+  const now = new Date();
+  const currentMonthName = now.toLocaleDateString('id-ID', { month: 'long' });
+  const currentYear = now.getFullYear();
+  const currentFullDateStr = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dayOfMonth = now.getDate();
+  const totalDaysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const daysRemaining = Math.max(1, totalDaysInMonth - dayOfMonth + 1);
+
+  // Dynamic 3-Month Projection Sequence
+  const month1Date = new Date(now.getFullYear(), now.getMonth(), 1);
+  const month2Date = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const month3Date = new Date(now.getFullYear(), now.getMonth() + 2, 1);
+  
+  const month1Name = month1Date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+  const month2Name = month2Date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+  const month3Name = month3Date.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
   // Calculations for Monthly Target
   const totalPaidThisMonth = projects.reduce((sum, p) => sum + (p.paidNumeric || 0), 0);
   const targetProgressPercent = Math.min(100, Math.round((totalPaidThisMonth / monthlyTarget) * 100));
   const remainingTarget = Math.max(0, monthlyTarget - totalPaidThisMonth);
   const weeklyTarget = Math.round(monthlyTarget / 4);
-  const dailyTarget = Math.round(monthlyTarget / 30);
+  const dailyRequiredPacing = Math.round(remainingTarget / daysRemaining);
 
   // Net Surplus Projection: Income (Rp10M) - Real Burn (Rp4.5M) = +Rp5.5M / bulan
   const netMonthlySurplus = monthlyTarget - (report.estimatedRealBurn || 4500000);
   const projectedBalanceMonth1 = report.totalLiquidBalance + netMonthlySurplus;
   const projectedBalanceMonth2 = projectedBalanceMonth1 + netMonthlySurplus;
   const projectedBalanceMonth3 = projectedBalanceMonth2 + netMonthlySurplus;
+
+  const runwayMonth1 = (projectedBalanceMonth1 / (report.estimatedRealBurn || 4500000)).toFixed(1);
+  const runwayMonth2 = (projectedBalanceMonth2 / (report.estimatedRealBurn || 4500000)).toFixed(1);
+  const runwayMonth3 = (projectedBalanceMonth3 / (report.estimatedRealBurn || 4500000)).toFixed(1);
 
   const isRed = report.totalLiquidBalance < (report.hardFloor || 4000000);
   const isGreen = report.totalLiquidBalance >= (report.monthlyIncomeTarget || 10000000);
@@ -136,7 +158,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     ? '🟢 GREEN MODE — GROWTH & EXPANSION' 
                     : '🟡 YELLOW MODE — RECOVERY STAGE 2 (SAFE BUFFER)'}
               </span>
-              <span className="text-xs text-zinc-500 font-mono">// as of {report.asOfDate}</span>
+              <span className="text-xs text-zinc-400 font-mono">// as of {currentFullDateStr} (Live)</span>
             </div>
 
             <div className="flex items-center gap-2">
@@ -178,25 +200,25 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
             {/* Metric 2: Monthly Burn */}
             <div className="p-4 rounded-2xl bg-[#060609] border border-white/[0.05] space-y-1">
               <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block">
-                02 // BEBAN KELUAR BULANAN
+                02 // REAL BURN RATE
               </span>
-              <span className="text-2xl sm:text-3xl font-extrabold text-amber-300 font-mono block">
-                Rp2,67M <span className="text-xs text-zinc-400 font-normal">fixed</span>
+              <span className="text-2xl sm:text-3xl font-extrabold text-white font-mono block">
+                ~{formatRupiah(report.estimatedRealBurn || 4500000)}
               </span>
-              <span className="text-[11px] text-zinc-400 font-mono block">
-                Real burn: ~Rp4M – Rp5M / bulan
+              <span className="text-[11px] font-mono text-zinc-400 block">
+                Rp2,66M Wajib Tetap + ~Rp1,8M Fleksibel
               </span>
             </div>
 
-            {/* Metric 3: Runway */}
+            {/* Metric 3: Dynamic Runway */}
             <div className="p-4 rounded-2xl bg-[#060609] border border-white/[0.05] space-y-1">
-              <span className={`text-[10px] font-mono uppercase tracking-widest block ${isRed ? 'text-rose-300' : 'text-emerald-300'}`}>
-                03 // SISA RUNWAY KAS
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block">
+                03 // DEFENSE RUNWAY
               </span>
-              <span className={`text-2xl sm:text-3xl font-extrabold font-mono block ${isRed ? 'text-rose-400' : 'text-emerald-400'}`}>
+              <span className="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono block">
                 ±{calculatedRunwayDays} Hari
               </span>
-              <span className="text-[11px] text-zinc-400 font-mono block">
+              <span className="text-[11px] font-mono text-zinc-400 block">
                 ~{calculatedRunwayMonths} Bulan operasional aman
               </span>
             </div>
@@ -205,7 +227,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
 
           {/* Golden Rule Callout */}
           <div className="p-3 rounded-xl bg-[#060609] border border-white/[0.06] text-xs font-mono text-zinc-300">
-            <span className={`${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'} font-bold`}>// STRATEGI:</span> "Belum masuk rekening = belum jadi uang. Target mutlak: <strong>Minimal +Rp10 Juta Masuk Tiap Bulan</strong>."
+            <span className={`${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'} font-bold`}>// STRATEGI BULAN {currentMonthName.toUpperCase()} {currentYear}:</span> "Belum masuk rekening = belum jadi uang. Target mutlak: <strong>Minimal +Rp10 Juta Masuk di Bulan {currentMonthName}</strong>."
           </div>
 
         </div>
@@ -223,12 +245,12 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-emerald-400 animate-pulse" />
                 <h3 className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
-                  Target Pemasukan Bulanan: <span className="text-emerald-400 font-mono">+{formatRupiah(monthlyTarget)} / Bulan</span>
+                  Target Pemasukan {currentMonthName} {currentYear}: <span className="text-emerald-400 font-mono">+{formatRupiah(monthlyTarget)} / Bulan</span>
                 </h3>
-                <span className="dev-tag-emerald text-[9px]">TARGET_MANDATE</span>
+                <span className="dev-tag-emerald text-[9px]">TARGET_{currentMonthName.toUpperCase()}</span>
               </div>
               <p className="text-xs text-zinc-300">
-                Pokoknya sebulan minimal harus nambah <strong>{formatRupiah(monthlyTarget)}</strong> agar kas langsung surplus dan keluar dari zona bahaya!
+                Pokoknya bulan <strong>{currentMonthName} {currentYear}</strong> minimal harus nambah <strong>{formatRupiah(monthlyTarget)}</strong> agar kas langsung surplus dan keluar dari zona bahaya!
               </p>
             </div>
 
@@ -265,7 +287,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
               <div className="flex justify-between items-center text-xs font-mono">
                 <span className="text-zinc-300 font-semibold flex items-center gap-1.5">
                   <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-                  Progress Pemasukan Bulan Ini:
+                  Progress Pemasukan Bulan {currentMonthName}:
                 </span>
                 <span className="text-emerald-400 font-bold text-sm">
                   {formatRupiah(totalPaidThisMonth)} / {formatRupiah(monthlyTarget)} ({targetProgressPercent}%)
@@ -280,12 +302,15 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                 />
               </div>
 
-              <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-zinc-400 pt-1">
+              <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-zinc-400 pt-1 gap-2">
                 <span>
-                  Sisa target yang harus dikejar: <strong className="text-amber-300 font-bold">{formatRupiah(remainingTarget)}</strong>
+                  Sisa target {currentMonthName}: <strong className="text-amber-300 font-bold">{formatRupiah(remainingTarget)}</strong>
+                </span>
+                <span className="text-zinc-400">
+                  Hari ke-{dayOfMonth}/{totalDaysInMonth} ({daysRemaining} hari tersisa)
                 </span>
                 <span className="text-emerald-300">
-                  Target Mingguan: <strong>{formatRupiah(weeklyTarget)}/minggu</strong>
+                  Pacing Harian: <strong>{formatRupiah(dailyRequiredPacing)}/hari</strong>
                 </span>
               </div>
             </div>
@@ -307,50 +332,55 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
 
           {/* Breakdown: Dari Mana Saja Target 10 Juta Ini Didapat? */}
           <div className="space-y-2.5">
-            <span className="text-xs font-mono text-emerald-300 uppercase tracking-wider block font-bold">
-              🗺️ Peta Realisasi Target {formatRupiah(monthlyTarget)} / Bulan:
-            </span>
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono text-emerald-300 uppercase tracking-wider block font-bold">
+                🗺️ Peta Realisasi Target Bulan {currentMonthName} ({formatRupiah(monthlyTarget)} / Bulan):
+              </span>
+              <span className="text-[10px] font-mono text-zinc-400">
+                Total Pipeline: <strong className="text-emerald-300">Rp10.200.000</strong>
+              </span>
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               
               {/* Source 1: Barber POS */}
               <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/20 space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <span className="dev-tag text-[9px]">P1_CLIENT_DP</span>
+                  <span className="dev-tag-emerald text-[9px]">DOING // PELUNASAN</span>
                   <span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span>
                 </div>
-                <h5 className="text-xs font-bold text-white">DP Kasir Barber POS</h5>
-                <p className="text-[11px] text-zinc-400 leading-snug">DP 50% dari total deal Rp6jt. Siapkan invoice & scope.</p>
+                <h5 className="text-xs font-bold text-white">Pelunasan Barber Underrated</h5>
+                <p className="text-[11px] text-zinc-400 leading-snug">Finishing sprint sisa dikit lagi! Siapkan demo & tagih pelunasan Rp3jt.</p>
               </div>
 
               {/* Source 2: Umi Elly LMS */}
-              <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/20 space-y-1.5">
+              <div className="p-3.5 rounded-2xl bg-black/60 border border-amber-500/20 space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <span className="dev-tag text-[9px]">P1_CLIENT_DP</span>
-                  <span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span>
+                  <span className="dev-tag text-[9px]">WAITING // KICKOFF</span>
+                  <span className="text-xs font-mono font-bold text-amber-300">Rp3.000.000</span>
                 </div>
-                <h5 className="text-xs font-bold text-white">Termin 1 Umi Elly LMS</h5>
-                <p className="text-[11px] text-zinc-400 leading-snug">Termin pertama dari total deal Rp7jt. Follow up transfer.</p>
+                <h5 className="text-xs font-bold text-white">DP Termin 1 Umi Elly LMS</h5>
+                <p className="text-[11px] text-zinc-400 leading-snug">Termin 1 dari total deal Rp7jt. Follow up transfer & siap kickoff.</p>
               </div>
 
-              {/* Source 3: Zalvice & Laptopbisnis */}
+              {/* Source 3: Zalvice, Laptopbisnis & DreamMecca */}
               <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <span className="dev-tag-emerald text-[9px]">DELIVERY_PAID</span>
+                  <span className="dev-tag-emerald text-[9px]">DELIVERY // LUNAS ✓</span>
                   <span className="text-xs font-mono font-bold text-white">Rp1.200.000</span>
                 </div>
-                <h5 className="text-xs font-bold text-white">Zalvice + Laptopbisnis</h5>
-                <p className="text-[11px] text-zinc-400 leading-snug">Paket logo sudah lunas. Selesaikan deliverable.</p>
+                <h5 className="text-xs font-bold text-white">DreamMecca + 2 Logo</h5>
+                <p className="text-[11px] text-zinc-400 leading-snug">Logo Zalvice & Laptopbisnis 100% kelar! DreamMecca lunas dari lama.</p>
               </div>
 
               {/* Source 4: KAEL Core & Global Leads */}
               <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
                 <div className="flex justify-between items-center">
-                  <span className="dev-tag text-[9px]">P2_SAAS_BIZDEV</span>
+                  <span className="dev-tag text-[9px]">BIZDEV // SCALE</span>
                   <span className="text-xs font-mono font-bold text-amber-300">Rp3.000.000+</span>
                 </div>
-                <h5 className="text-xs font-bold text-white">KAEL SaaS & Upwork</h5>
-                <p className="text-[11px] text-zinc-400 leading-snug">3-5 pilot outlet KAEL + apply proposal USD high-ticket.</p>
+                <h5 className="text-xs font-bold text-white">KAEL SaaS & Inbound Client</h5>
+                <p className="text-[11px] text-zinc-400 leading-snug">3-5 pilot outlet KAEL + proposal client baru di bulan {currentMonthName}.</p>
               </div>
 
             </div>
@@ -359,26 +389,26 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
           {/* Kas Growth Projection (Efek Nambah 10 Juta Sebulan) */}
           <div className="p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-2">
             <span className="text-xs font-mono text-zinc-300 font-bold block">
-              📈 Efek Pertumbuhan Saldo Kas Jika Target +{formatRupiah(monthlyTarget)}/bln Tercapai:
+              📈 Efek Pertumbuhan Saldo Kas Mengikuti Tanggal Real (+{formatRupiah(monthlyTarget)}/bln):
             </span>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
               <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
-                <span className="text-zinc-400 block text-[10px]">BULAN KE-1 (+{formatRupiah(netMonthlySurplus)})</span>
+                <span className="text-zinc-400 block text-[10px] font-bold uppercase">BULAN 1: {month1Name} (+{formatRupiah(netMonthlySurplus)})</span>
                 <span className="text-base font-bold text-white block mt-0.5">{formatRupiah(projectedBalanceMonth1)}</span>
-                <span className="text-[11px] text-amber-300">Runway: ±2.1 Bulan (Keluar dari Red Mode)</span>
+                <span className="text-[11px] text-amber-300">Runway: ±{runwayMonth1} Bulan (Keluar dari Red Mode)</span>
               </div>
 
               <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
-                <span className="text-emerald-400 block text-[10px] font-bold">BULAN KE-2 (+{formatRupiah(netMonthlySurplus)})</span>
+                <span className="text-emerald-400 block text-[10px] font-bold uppercase">BULAN 2: {month2Name} (+{formatRupiah(netMonthlySurplus)})</span>
                 <span className="text-base font-bold text-emerald-300 block mt-0.5">{formatRupiah(projectedBalanceMonth2)}</span>
-                <span className="text-[11px] text-emerald-400">Runway: ±3.3 Bulan (🟢 Green Safe Growth)</span>
+                <span className="text-[11px] text-emerald-400">Runway: ±{runwayMonth2} Bulan (🟢 Green Safe Growth)</span>
               </div>
 
               <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/40">
-                <span className="text-emerald-300 block text-[10px] font-bold">BULAN KE-3 (+{formatRupiah(netMonthlySurplus)})</span>
+                <span className="text-emerald-300 block text-[10px] font-bold uppercase">BULAN 3: {month3Name} (+{formatRupiah(netMonthlySurplus)})</span>
                 <span className="text-base font-bold text-emerald-200 block mt-0.5">{formatRupiah(projectedBalanceMonth3)}</span>
-                <span className="text-[11px] text-emerald-300">Runway: ±4.5 Bulan (Indie SaaS Powerhouse)</span>
+                <span className="text-[11px] text-emerald-300">Runway: ±{runwayMonth3} Bulan (Indie SaaS Powerhouse)</span>
               </div>
             </div>
           </div>
