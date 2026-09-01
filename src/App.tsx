@@ -16,9 +16,18 @@ import { loadState, saveState } from './utils/storage';
 import { apiService } from './services/api';
 import { DaruWorkOSState, TodayBlock, ProjectCard, WaitingItem, TransactionRecord, AssetAccount, InvoiceRecord } from './types';
 import { soundManager } from './utils/audio';
-import { ChevronRight, Sparkles, MessageSquare, Bot, Plus, Receipt } from 'lucide-react';
+import { ChevronRight, Sparkles, MessageSquare, Bot, Plus, Receipt, Lock } from 'lucide-react';
+import { PinLockScreen, AUTH_STORAGE_KEY } from './components/PinLockScreen';
 
 export function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(AUTH_STORAGE_KEY) === 'AUTHENTICATED_120426';
+    } catch {
+      return false;
+    }
+  });
+
   const [state, setState] = useState<DaruWorkOSState>(loadState);
   const [activeTab, setActiveTab] = useState<'today' | 'lanes' | 'waiting' | 'money' | 'deepwork'>('today');
   const [activeFocusBlock, setActiveFocusBlock] = useState<TodayBlock | null>(null);
@@ -274,6 +283,10 @@ export function App() {
     deepwork: 'Focus Engine // Deep Work Pomodoro'
   };
 
+  if (!isAuthenticated) {
+    return <PinLockScreen onUnlock={() => setIsAuthenticated(true)} />;
+  }
+
   return (
     <div className="min-h-screen bg-[#000000] text-[#EDEDED] flex flex-col lg:flex-row font-sans selection:bg-[#0070F3]/30 selection:text-white">
       
@@ -355,6 +368,18 @@ export function App() {
             >
               <Bot className="w-3.5 h-3.5 text-purple-400" />
               <span>Partner ⌘K</span>
+            </button>
+
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                localStorage.removeItem(AUTH_STORAGE_KEY);
+                setIsAuthenticated(false);
+              }}
+              title="Kunci Layar (Lock Device)"
+              className="p-2 rounded-lg bg-[#000000] hover:bg-red-500/10 text-zinc-400 hover:text-red-400 border border-white/[0.12] hover:border-red-500/30 text-xs font-mono transition-all flex items-center gap-1.5"
+            >
+              <Lock className="w-3.5 h-3.5" />
             </button>
           </div>
         </header>

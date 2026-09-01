@@ -1,6 +1,6 @@
 {
   "version": "7.0.0",
-  "lastSyncedAt": "2026-09-01T07:59:07.198Z",
+  "lastSyncedAt": "2026-09-01T16:18:41.162Z",
   "state": {
     "todayPursuit": [
       {
@@ -11,8 +11,8 @@
       },
       {
         "id": "tp-2",
-        "project": "Zalvice & Laptopbisnis Logo",
-        "action": "🎨 2 LOGO DESIGN KELAR! (Zalvice Bang Edo & Laptopbisnis Selesai 100% ✓)",
+        "project": "Zalvice & Laptopbisnis",
+        "action": "🎨 2 LOGO DESIGN KELAR! (Zalvice & Laptopbisnis 100% Selesai ✓)",
         "isDone": true
       },
       {
@@ -421,7 +421,7 @@
         "boardColumn": "DOING",
         "status": "Doing",
         "paymentStatus": "Partial",
-        "valueText": "Rp6.000.000 (Paket Full PWA + Add-on HPP/Absensi: DP 50% Rp3.000.000)",
+        "valueText": "Rp6.000.000 (DP 50% Rp3.000.000 Lunas • Sisa Rp3M Siap Ditagih)",
         "nominalNumeric": 6000000,
         "paidNumeric": 3000000,
         "unpaidNumeric": 3000000,
@@ -430,8 +430,8 @@
         "nextAction": "Kirim link preview final & instruksi handover ke owner barber",
         "definitionOfDone": "Website & POS Kasir tuntas live -> Handover ke owner & tagih pelunasan Rp3.000.000",
         "rule": "Barbershop tuntas: kirim ke owner untuk opening.",
-        "billingMilestone": "Termin 1 (DP 50% Rp3.000.000) • Termin 2 (30% Rp1.800.000) • Termin 3 (20% Rp1.200.000)",
-        "followUpDeadline": "Target Opening & Handover"
+        "billingMilestone": "DP Rp3.000.000 (Lunas Masuk) • Pelunasan Rp3.000.000 (Siap Ditagih)",
+        "followUpDeadline": "Kirim handover hari ini"
       },
       {
         "id": "p-kael-product",
@@ -483,12 +483,12 @@
         "paidNumeric": 0,
         "unpaidNumeric": 7000000,
         "priority": "P1",
-        "currentGoal": "Deal Rp7M sudah disepakati (skema 3jt → 2jt → 2jt). Siapkan kickoff termin 1",
-        "nextAction": "Konfirmasi transfer termin 1 DP Rp3.000.000 lalu mulai eksekusi modul LMS Azhariyah",
+        "currentGoal": "Demo prototype LMS Azhariyah SUDAH TERKIRIM ke Umi Elly! Menunggu respon & transfer Termin 1 DP Rp3.000.000",
+        "nextAction": "Tunggu respon Umi Elly & konfirmasi transfer Termin 1 (Rp3M) untuk mulai eksekusi modul lengkap",
         "definitionOfDone": "Modul LMS Peradaban Islam Azhariyah live & deploy",
-        "rule": "Sudah Deal: Eksekusi jalan setelah transfer termin 1 (Rp3jt) masuk.",
+        "rule": "Demo terkirim: Eksekusi modul lengkap jalan setelah transfer termin 1 (Rp3jt) masuk.",
         "billingMilestone": "Termin 1: DP Rp3.000.000 • Termin 2: Rp2.000.000 • Termin 3: Rp2.000.000",
-        "followUpDeadline": "Konfirmasi transfer termin 1"
+        "followUpDeadline": "Menunggu transfer termin 1"
       },
       {
         "id": "p-el-massa",
@@ -726,11 +726,11 @@
       {
         "id": "w-umi-elly",
         "name": "Umi Elly — LMS Peradaban Islam Azhariyah",
-        "reason": "Menunggu transfer termin pertama Rp3.000.000 (dari total Rp7jt)",
-        "value": "Rp7.000.000",
+        "reason": "Demo prototype sudah dikirim — Menunggu feedback & transfer Termin 1 DP Rp3.000.000 (Deal Rp7M)",
+        "value": "Deal Rp7.000.000 (DP Rp3jt OTW)",
         "nextTrigger": "Transfer termin 1 (Rp3jt) masuk",
-        "actionToUnblock": "Konfirmasi tanggal transfer termin 1 ke Umi Elly",
-        "followUpDate": "Besok",
+        "actionToUnblock": "Konfirmasi feedback demo & tanggal transfer termin 1",
+        "followUpDate": "Hari ini / Besok",
         "status": "Waiting Payment"
       },
       {
@@ -767,6 +767,30 @@
   },
   "transactions": [],
   "syncLogs": [
+    {
+      "id": "log-1788279521166",
+      "timestamp": "2026-09-01T16:18:41.166Z",
+      "type": "OBSIDIAN_SYNC",
+      "message": "Synced 2 files to Dar Vault"
+    },
+    {
+      "id": "log-1788279521164",
+      "timestamp": "2026-09-01T16:18:41.164Z",
+      "type": "STATE_SAVE",
+      "message": "State saved to SQLite/JSON store"
+    },
+    {
+      "id": "log-1788279520615",
+      "timestamp": "2026-09-01T16:18:40.615Z",
+      "type": "OBSIDIAN_SYNC",
+      "message": "Synced 2 files to Dar Vault"
+    },
+    {
+      "id": "log-1788279520599",
+      "timestamp": "2026-09-01T16:18:40.599Z",
+      "type": "STATE_SAVE",
+      "message": "State saved to SQLite/JSON store"
+    },
     {
       "id": "log-1788249547202",
       "timestamp": "2026-09-01T07:59:07.202Z",
