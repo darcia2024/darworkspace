@@ -484,23 +484,23 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   
                   {/* Source 1: Barber POS */}
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/20 space-y-1.5">
+                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
                     <div className="flex justify-between items-center">
-                      <span className="dev-tag-emerald text-[9px]">DOING // PELUNASAN</span>
+                      <span className="dev-tag-emerald text-[9px]">100% LUNAS FULL ✓</span>
                       <span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span>
                     </div>
-                    <h5 className="text-xs font-bold text-white">Pelunasan Barber Underrated</h5>
-                    <p className="text-[11px] text-zinc-400 leading-snug">Finishing sprint sisa dikit lagi! Siapkan demo & tagih pelunasan Rp3jt.</p>
+                    <h5 className="text-xs font-bold text-white">Barber Underrated (Lunas)</h5>
+                    <p className="text-[11px] text-zinc-400 leading-snug">Pelunasan Rp3.000.000 masuk kas Mandiri! Total deal Rp6.000.000 lunas penuh ✓</p>
                   </div>
 
                   {/* Source 2: Umi Elly LMS */}
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-amber-500/20 space-y-1.5">
+                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
                     <div className="flex justify-between items-center">
-                      <span className="dev-tag text-[9px]">WAITING // KICKOFF</span>
-                      <span className="text-xs font-mono font-bold text-amber-300">Rp3.000.000</span>
+                      <span className="dev-tag-emerald text-[9px]">DP MASUK // KICKOFF</span>
+                      <span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span>
                     </div>
-                    <h5 className="text-xs font-bold text-white">DP Termin 1 Umi Elly LMS</h5>
-                    <p className="text-[11px] text-zinc-400 leading-snug">Termin 1 dari total deal Rp7jt. Follow up transfer & siap kickoff.</p>
+                    <h5 className="text-xs font-bold text-white">DP Umi Elly LMS (Kickoff)</h5>
+                    <p className="text-[11px] text-zinc-400 leading-snug">Termin 1 DP Rp3.000.000 masuk kas! Gaspol sprint pengerjaan modul LMS Azhariyah.</p>
                   </div>
 
                   {/* Source 3: Zalvice, Laptopbisnis & DreamMecca */}
@@ -513,14 +513,14 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     <p className="text-[11px] text-zinc-400 leading-snug">Logo Zalvice & Laptopbisnis 100% kelar! DreamMecca lunas dari lama.</p>
                   </div>
 
-                  {/* Source 4: KAEL Core & Global Leads */}
+                  {/* Source 4: KAEL Core & Sisa Termin Umi Elly */}
                   <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
                     <div className="flex justify-between items-center">
-                      <span className="dev-tag text-[9px]">BIZDEV // SCALE</span>
-                      <span className="text-xs font-mono font-bold text-amber-300">Rp3.000.000+</span>
+                      <span className="dev-tag text-[9px]">NEXT SPRINT // SCALE</span>
+                      <span className="text-xs font-mono font-bold text-amber-300">Rp4.000.000+</span>
                     </div>
-                    <h5 className="text-xs font-bold text-white">KAEL SaaS & Inbound Client</h5>
-                    <p className="text-[11px] text-zinc-400 leading-snug">3-5 pilot outlet KAEL + proposal client baru di bulan {currentMonthName}.</p>
+                    <h5 className="text-xs font-bold text-white">Termin 2 & 3 + KAEL SaaS</h5>
+                    <p className="text-[11px] text-zinc-400 leading-snug">Sisa termin LMS Umi Elly (Rp4M) + pilot KAEL SaaS untuk amankan target scale Rp15M+.</p>
                   </div>
 
                 </div>

@@ -2,61 +2,57 @@ import { DaruWorkOSState } from '../types';
 
 export const INITIAL_STATE: DaruWorkOSState = {
   todayPursuit: [
-    { id: 'tp-1', project: 'DreamMecca & Barber', action: '🚀 FINISHING SPRINT: Beresin sisa DreamMecca (Lunas lama) & Barbershop Underrated (Siap Pelunasan Rp3M)', isDone: false },
-    { id: 'tp-2', project: 'Zalvice & Laptopbisnis', action: '🎨 2 LOGO DESIGN KELAR! (Zalvice & Laptopbisnis 100% Selesai ✓)', isDone: true },
-    { id: 'tp-3', project: 'Umi Elly LMS', action: '📚 DEMO PROTOTYPE LMS TERKIRIM KE UMI ELLY! (Siap-siap kickoff modul setelah transfer DP Rp3.000.000)', isDone: true },
-    { id: 'tp-4', project: 'Setting KAEL Core', action: 'Setting config core product, role kasir vs owner & demo tenant', isDone: false },
+    { id: 'tp-1', project: 'Barbershop Underrated', action: '🏆 BARBERSHOP 100% LUNAS FULL PAYMENT! (+Pelunasan Rp3.000.000 Masuk Mandiri ✓)', isDone: true },
+    { id: 'tp-2', project: 'Umi Elly LMS', action: '🚀 KICKOFF SPRINT: DP Termin 1 Rp3.000.000 LUNAS MASUK! Gaspol eksekusi modul LMS Azhariyah', isDone: false },
+    { id: 'tp-3', project: 'Zalvice & Laptopbisnis', action: '🎨 2 LOGO DESIGN KELAR! (Zalvice & Laptopbisnis 100% Selesai & Lunas ✓)', isDone: true },
+    { id: 'tp-4', project: 'DreamMecca & KAEL Core', action: 'Finishing touch platform DreamMecca & setting config tenant KAEL', isDone: false },
   ],
   quickStats: {
-    paidClientActive: 3, // DreamMecca (Lunas lama), Barber (DP 3M), Umi Elly Deal (7M)
-    waitingPaymentKickoff: 1, // Umi Elly Termin 1 (Rp3M)
+    paidClientActive: 3, // DreamMecca (Lunas lama), Barber (100% Lunas Rp6M), Umi Elly Kickoff (DP Rp3M)
+    waitingPaymentKickoff: 0, // All Kickoff payments confirmed!
     maintenanceOpen: 1, // Markaz Fiqih
     salesAndProductActive: 2, // Setting KAEL & Upwork
   },
   financialReport: {
-    asOfDate: '1 September 2026',
-    totalLiquidBalance: 4130865,
-    modeStatus: 'YELLOW MODE — CAUTION',
+    asOfDate: '2 September 2026',
+    totalLiquidBalance: 10130865,
+    modeStatus: 'GREEN MODE — GROWTH',
     hardFloor: 4000000,
     financialDebt: 0,
-    projectLiabilityNote: 'SEMUA UTANG DELIVERABLE TUNTAS! (Zalvice & Laptopbisnis KELAR 100% ✓). Nol liability design!',
+    projectLiabilityNote: 'SEMUA UTANG DELIVERABLE TUNTAS! (Barber POS Lunas Penuh Rp6M & Umi Elly DP Rp3M Kickoff Aktif). Nol liability design!',
     dropFrom26Aug: 0,
-    dropFrom12Aug: 3679908,
-    dropPercentageFrom12Aug: 47.1,
+    dropFrom12Aug: 0,
+    dropPercentageFrom12Aug: 0,
     accounts: [
-      { name: 'Mandiri', balance: 4050398, isLatest: true, lastUpdated: '1 Sep 2026 (Live)', type: 'bank' },
-      { name: 'Bank Jago', balance: 30252, isLatest: true, lastUpdated: '1 Sep 2026 (Live)', type: 'bank' },
-      { name: 'blu by BCA', balance: 17722, isLatest: true, lastUpdated: '1 Sep 2026 (Live)', type: 'bank' },
-      { name: 'LINE Bank', balance: 15512, isLatest: true, lastUpdated: '1 Sep 2026 (Live)', type: 'bank' },
-      { name: 'DANA', balance: 13596, isLatest: true, lastUpdated: '1 Sep 2026 (Live)', type: 'ewallet' },
-      { name: 'GoPay', balance: 3385, isLatest: true, lastUpdated: '1 Sep 2026 (Live)', type: 'ewallet' },
-      { name: 'Cash', balance: 0, isLatest: true, lastUpdated: '1 Sep 2026 (Live)', type: 'cash' },
+      { name: 'Mandiri', balance: 10050398, isLatest: true, lastUpdated: '2 Sep 2026 (Live)', type: 'bank' },
+      { name: 'Bank Jago', balance: 30252, isLatest: true, lastUpdated: '2 Sep 2026 (Live)', type: 'bank' },
+      { name: 'blu by BCA', balance: 17722, isLatest: true, lastUpdated: '2 Sep 2026 (Live)', type: 'bank' },
+      { name: 'LINE Bank', balance: 15512, isLatest: true, lastUpdated: '2 Sep 2026 (Live)', type: 'bank' },
+      { name: 'DANA', balance: 13596, isLatest: true, lastUpdated: '2 Sep 2026 (Live)', type: 'ewallet' },
+      { name: 'GoPay', balance: 3385, isLatest: true, lastUpdated: '2 Sep 2026 (Live)', type: 'ewallet' },
+      { name: 'Cash', balance: 0, isLatest: true, lastUpdated: '2 Sep 2026 (Live)', type: 'cash' },
     ],
     trajectory: [
-      { date: '12 Agu', balance: 7810773, note: 'Peak Balance' },
+      { date: '12 Agu', balance: 7810773, note: 'Peak Balance Agustus' },
       { date: '20 Agu', balance: 5885040, note: '-Rp1.92M' },
       { date: '26 Agu', balance: 4755625, note: '-Rp1.13M' },
-      { date: '29 Agu (Pagi)', balance: 3945918, note: 'Red Defense Zone (< Rp4M)' },
-      { date: '29 Agu (Live)', balance: 6844233, note: '+DP Barber Underrated (Lolos Hard Floor!)' },
-      { date: '30 Agu (Pagi)', balance: 6195902, note: 'Mandiri Rp6,11M + blu Rp17k' },
-      { date: '30 Agu (Sore)', balance: 5909902, note: 'Mandiri Rp5,82M' },
-      { date: '31 Agu (Sore)', balance: 5368508, note: 'Mandiri Rp5,28M (Kewajiban Sep Lunas ✓)' },
-      { date: '31 Agu (Malam)', balance: 5333508, note: 'Mandiri Rp5,25M (-Rp35k)' },
-      { date: '1 Sep (Live)', balance: 5333508, note: 'Zalvice & Laptopbisnis KELAR 100% ✓ (Nol Utang Design!)' },
-      { date: '1 Sep (Malam)', balance: 4130865, note: 'Mandiri Rp4,05M (Investasi Claude Pro 2 Akun • Sisa Di Atas Floor Rp4M)' },
+      { date: '29 Agu', balance: 3945918, note: 'Red Defense Zone (< Rp4M)' },
+      { date: '31 Agu', balance: 5333508, note: 'Kewajiban Sep Lunas ✓' },
+      { date: '1 Sep', balance: 4130865, note: 'Mandiri Rp4,05M (Investasi Claude Pro 2 Akun • Sisa Di Atas Floor Rp4M)' },
+      { date: '2 Sep (Live)', balance: 10130865, note: '🟢 GREEN MODE! Mandiri Rp10,05M (+Pelunasan Barber Rp3M & +DP Umi Elly Rp3M)' },
     ],
     recoveryRoadmap: {
-      stage1: 'Rp4.000.000 (Hard Floor Defense Zone — HOLDING ✓)',
-      stage2: 'Rp4.130.865 (Current Live Buffer + 2 Akun Claude Pro — ACTIVE)',
-      stage3: 'Rp7.130.865 (Pelunasan Barber Underrated Rp3M Masuk — TARGET 1)',
-      stage4: 'Rp10.130.865 (Termin 1 DP Umi Elly Rp3M Masuk — TARGET 2 / Green Safe Zone)',
+      stage1: 'Rp4.000.000 (Hard Floor Defense Zone — PASSED ✓)',
+      stage2: 'Rp4.130.865 (Buffer + 2 Akun Claude Pro — PASSED ✓)',
+      stage3: 'Rp7.130.865 (Pelunasan Barber Underrated Rp3M — PASSED ✓)',
+      stage4: 'Rp10.130.865 (DP Umi Elly Rp3M — ACHIEVED ✓ / 🟢 GREEN MODE ACTIVE)',
     },
-    defenseProtocolRule: 'Saldo real Rp4,13M (Surplus +Rp130k di atas Floor Rp4M). Senjata AI makin gacor (Claude Pro 2 Akun)! Momentum sekarang: Gaspol cairkan Pelunasan Barber (Rp3M) & amankan transfer DP Umi Elly (Rp3M) agar kas langsung melompat ke Rp10M+!',
+    defenseProtocolRule: '🟢 GREEN MODE AKTIF (Total Saldo Likuid Rp10.130.865)! Target awal bulan tembus 60% dalam 2 hari (+Rp6.000.000 masuk kas). Fokus sekarang: Eksekusi sprint modul LMS Umi Elly dengan kualitas tier-1 & kembangkan KAEL SaaS pilot!',
     fixedMonthlyBurn: 3025000,
     estimatedRealBurn: 4500000,
     monthlyIncomeTarget: 10000000,
-    runwayDays: 28,
-    runwayMonths: 0.92,
+    runwayDays: 68,
+    runwayMonths: 2.25,
     monthlyExpenses: [
       { id: 'exp-1', category: 'Uang istri', estimatedAmount: 1200000, amountText: 'Rp1.200.000 (Lunas Sep ✓)', status: 'Wajib', isFixed: true, notes: 'Nafkah rutin bulanan September 2026 LUNAS terkirim' },
       { id: 'exp-2', category: 'Kewajiban rumah Mesir', estimatedAmount: 500000, amountText: 'Rp500.000 (Lunas Sep ✓)', status: 'Wajib', isFixed: true, notes: 'Kewajiban bulanan Mesir September 2026 LUNAS ✓' },
@@ -71,6 +67,26 @@ export const INITIAL_STATE: DaruWorkOSState = {
       { id: 'exp-11', category: 'Imunisasi / kesehatan', estimatedAmount: 'tidak selalu bulanan', amountText: 'tidak selalu bulanan', status: 'Wajib, fleksibel', isFixed: false, notes: 'Medis darurat / jadwal vaksin' },
     ],
     transactions: [
+      {
+        id: 'tx-barber-lunas-sep2',
+        date: '2 Sep 2026',
+        type: 'income',
+        amount: 3000000,
+        accountName: 'Mandiri',
+        category: 'Client Payment (Pelunasan 100%)',
+        description: 'Pelunasan 100% Barber POS & Membership System (+Rp3.000.000 Lunas Penuh ✓)',
+        createdAt: '2026-09-02T15:45:00.000Z'
+      },
+      {
+        id: 'tx-umi-elly-dp-sep2',
+        date: '2 Sep 2026',
+        type: 'income',
+        amount: 3000000,
+        accountName: 'Mandiri',
+        category: 'Client Payment (Termin 1 DP)',
+        description: 'Termin 1 DP 50% Kickoff LMS Peradaban Islam Azhariyah Umi Elly (+Rp3.000.000 Masuk ✓)',
+        createdAt: '2026-09-02T15:50:00.000Z'
+      },
       {
         id: 'tx-claude-2acc',
         date: '1 Sep 2026',
@@ -147,38 +163,38 @@ export const INITIAL_STATE: DaruWorkOSState = {
     {
       id: 'tb-1',
       blockType: 'Deep Work 1',
-      projectName: 'DreamMecca & Barber Underrated',
-      action: 'Finishing deliverable DreamMecca (Lunas lama) + sisa dikit Barber Underrated (Siap tagih pelunasan Rp3M)',
+      projectName: 'Umi Elly — LMS Azhariyah',
+      action: '🚀 KICKOFF SPRINT: DP Rp3M LUNAS! Setup arsitektur modular LMS Azhariyah & struktur materi pembelajaran',
       timeboxMinutes: 90,
       isDone: false,
-      rule: 'Double finishing: Tuntaskan sisa 2 deliverable ini agar bebas tanggungan & unlock kas Rp3M.'
+      rule: 'KICKOFF SPRINT: Bangun pondasi LMS dengan clean UI & arsitektur cepat untuk Umi Elly.'
     },
     {
       id: 'tb-2',
       blockType: 'Deep Work 2',
       projectName: 'Website & Kasir Barber',
-      action: 'Website & modul transaksi kasir POS, membership, & katalog layanan KELAR (Tinggal sisa dikit handover)!',
-      timeboxMinutes: 90,
+      action: '🏆 100% LUNAS FULL PAYMENT! Pelunasan Rp3.000.000 masuk kas Mandiri & serah terima live',
+      timeboxMinutes: 60,
       isDone: true,
-      rule: 'BARBERSHOP TUNTAS ✓: Siap opening & tagih termin pelunasan Rp3.000.000.'
+      rule: 'BARBERSHOP 100% TUNTAS ✓: Selesai penuh dan uang lunas Rp6.000.000 di rekening!'
     },
     {
       id: 'tb-3',
       blockType: 'Growth Block',
-      projectName: 'Umi Elly — LMS Azhariyah',
-      action: 'Setup arsitektur modular LMS & siapkan workspace sprint begitu transfer DP Rp3M masuk',
+      projectName: 'DreamMecca Platform',
+      action: 'Finishing touch platform DreamMecca (Lunas dari lama) agar bebas tanggungan deliverable',
       timeboxMinutes: 60,
-      isDone: true,
-      rule: 'PROTOTYPE DEMO TERKIRIM ✓: Menunggu transfer Termin 1 DP Rp3.000.000 untuk kickoff sprint.'
+      isDone: false,
+      rule: 'Finishing deliverable platform & serahkan tuntas ke klien.'
     },
     {
       id: 'tb-4',
       blockType: 'Admin/Product',
-      projectName: 'Setting KAEL',
-      action: 'Setting config core product, role kasir vs owner & demo tenant',
+      projectName: 'Setting KAEL SaaS',
+      action: 'Setting config core product, role kasir vs owner & persiapan pilot tenant',
       timeboxMinutes: 45,
       isDone: false,
-      rule: 'Fokus setting & fix hal yang mendukung operasional.'
+      rule: 'Fokus setting & fix hal yang mendukung operasional closing pilot.'
     }
   ],
   projects: [
@@ -224,20 +240,20 @@ export const INITIAL_STATE: DaruWorkOSState = {
       id: 'p-barber',
       name: 'Barber Membership & Loyalty System (Barber Underrated)',
       lane: 'client_delivery',
-      boardColumn: 'DOING',
-      status: 'Doing',
-      paymentStatus: 'Partial',
-      valueText: 'Rp6.000.000 (DP 50% Rp3.000.000 Lunas • Sisa Rp3M Siap Ditagih)',
+      boardColumn: 'DONE',
+      status: 'Done',
+      paymentStatus: 'Paid',
+      valueText: 'Rp6.000.000 (100% LUNAS FULL PAYMENT ✓)',
       nominalNumeric: 6000000,
-      paidNumeric: 3000000,
-      unpaidNumeric: 3000000,
+      paidNumeric: 6000000,
+      unpaidNumeric: 0,
       priority: 'P1',
-      currentGoal: 'Website & POS Kasir Barber KELAR! Siap opening & siapkan serah terima / pelunasan',
-      nextAction: 'Kirim link preview final & instruksi handover ke owner barber',
-      definitionOfDone: 'Website & POS Kasir tuntas live -> Handover ke owner & tagih pelunasan Rp3.000.000',
-      rule: 'Barbershop tuntas: kirim ke owner untuk opening.',
-      billingMilestone: 'DP Rp3.000.000 (Lunas Masuk) • Pelunasan Rp3.000.000 (Siap Ditagih)',
-      followUpDeadline: 'Kirim handover hari ini'
+      currentGoal: '100% TUNTAS & LUNAS FULL PAYMENT! (DP Rp3M + Pelunasan Rp3M Masuk Kas Mandiri)',
+      nextAction: 'Dampingi operasional opening & maintenance bila ada request minor',
+      definitionOfDone: 'Website & POS Kasir Barber live, serah terima tuntas, uang lunas Rp6.000.000 ✓',
+      rule: 'Barbershop 100% LUNAS & tuntas.',
+      billingMilestone: '100% Paid in Full (Rp6.000.000 Lunas ✓)',
+      followUpDeadline: 'Done ✓'
     },
     {
       id: 'p-kael-product',
@@ -283,18 +299,18 @@ export const INITIAL_STATE: DaruWorkOSState = {
       lane: 'client_delivery',
       boardColumn: 'DOING',
       status: 'Doing',
-      paymentStatus: 'Deal Confirmed',
-      valueText: 'Deal Rp7.000.000 (Termin 1: DP Rp3M • Termin 2: Rp2M • Termin 3: Rp2M)',
+      paymentStatus: 'Partial',
+      valueText: 'Deal Rp7.000.000 (Termin 1: DP Rp3M LUNAS ✓ • Sisa Termin 2 & 3 Rp4M)',
       nominalNumeric: 7000000,
-      paidNumeric: 0,
-      unpaidNumeric: 7000000,
+      paidNumeric: 3000000,
+      unpaidNumeric: 4000000,
       priority: 'P1',
-      currentGoal: 'Demo prototype LMS Azhariyah SUDAH TERKIRIM ke Umi Elly! Menunggu respon & transfer Termin 1 DP Rp3.000.000',
-      nextAction: 'Tunggu respon Umi Elly & konfirmasi transfer Termin 1 (Rp3M) untuk mulai eksekusi modul lengkap',
+      currentGoal: 'DP Termin 1 Rp3.000.000 SUDAH MASUK! 🚀 Gaspol kickoff sprint pengerjaan modul lengkap LMS Azhariyah',
+      nextAction: 'Eksekusi modul LMS Peradaban Islam Azhariyah & struktur materi pembelajaran',
       definitionOfDone: 'Modul LMS Peradaban Islam Azhariyah live & deploy',
-      rule: 'Demo terkirim: Eksekusi modul lengkap jalan setelah transfer termin 1 (Rp3jt) masuk.',
-      billingMilestone: 'Termin 1: DP Rp3.000.000 • Termin 2: Rp2.000.000 • Termin 3: Rp2.000.000',
-      followUpDeadline: 'Menunggu transfer termin 1'
+      rule: 'DP Rp3M sudah masuk kas: Gaspol sprint pengerjaan modul lengkap dengan standar kualitas tinggi.',
+      billingMilestone: 'Termin 1: DP Rp3.000.000 (LUNAS ✓) • Termin 2: Rp2.000.000 • Termin 3: Rp2.000.000',
+      followUpDeadline: 'Sprint Kickoff Aktif'
     },
     {
       id: 'p-el-massa',
