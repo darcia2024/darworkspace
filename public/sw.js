@@ -1,45 +1,34 @@
-// Daru Work OS Service Worker (Offline Cache & PWA Support)
-
-const CACHE_NAME = 'daru-work-os-v2.7';
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
-];
+// Daru Work OS Service Worker (Network First for fresh updates)
+const CACHE_NAME = 'daru-work-os-v2.7.2';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
-    })
-  );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
+      return Promise.all(keys.map((key) => caches.delete(key)));
     })
   );
   self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  // Let API requests bypass service worker cache
-  if (event.request.url.includes('/api/')) {
+  if (event.request.method !== 'GET' || event.request.url.includes('/api/')) {
     return;
   }
 
+  // Network First for HTML, assets and scripts
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
+        return networkResponse;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
