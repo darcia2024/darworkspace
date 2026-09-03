@@ -164,3 +164,5 @@ export interface DaruWorkOSState {
   invoices?: InvoiceRecord[];
   currentFocusTaskId?: string;
 }
+
+export type ActiveTabType = 'today' | 'nextgo' | 'lanes' | 'waiting' | 'money' | 'deepwork';

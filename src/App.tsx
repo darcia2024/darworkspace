@@ -5,6 +5,7 @@ import { TodaySuperSmallView } from './components/TodaySuperSmallView';
 import { WorkflowLanes } from './components/WorkflowLanes';
 import { WaitingRadarView } from './components/WaitingRadarView';
 import { MoneyCashflowView } from './components/MoneyCashflowView';
+import { NextShouldBeGoView } from './components/NextShouldBeGoView';
 import { FocusStudio } from './components/FocusStudio';
 import { ExportModal } from './components/ExportModal';
 import { FollowUpModal } from './components/FollowUpModal';
@@ -14,7 +15,7 @@ import { QuickFinanceInputModal } from './components/QuickFinanceInputModal';
 import { InvoiceGeneratorModal } from './components/InvoiceGeneratorModal';
 import { loadState, saveState } from './utils/storage';
 import { apiService } from './services/api';
-import { DaruWorkOSState, TodayBlock, ProjectCard, WaitingItem, TransactionRecord, AssetAccount, InvoiceRecord } from './types';
+import { DaruWorkOSState, TodayBlock, ProjectCard, WaitingItem, TransactionRecord, AssetAccount, InvoiceRecord, ActiveTabType } from './types';
 import { soundManager } from './utils/audio';
 import { ChevronRight, Sparkles, MessageSquare, Bot, Plus, Receipt, Lock } from 'lucide-react';
 import { PinLockScreen, AUTH_STORAGE_KEY } from './components/PinLockScreen';
@@ -29,7 +30,7 @@ export function App() {
   });
 
   const [state, setState] = useState<DaruWorkOSState>(loadState);
-  const [activeTab, setActiveTab] = useState<'today' | 'lanes' | 'waiting' | 'money' | 'deepwork'>('today');
+  const [activeTab, setActiveTab] = useState<ActiveTabType>('today');
   const [activeFocusBlock, setActiveFocusBlock] = useState<TodayBlock | null>(null);
 
   // Load from server if available on mount
@@ -277,6 +278,7 @@ export function App() {
 
   const tabLabels = {
     today: 'Command Hub // Today Execution',
+    nextgo: 'Next Should Be Go // Strategic Directive Matrix',
     lanes: 'Board & Lanes // Project Workspace',
     waiting: 'Radar Pipeline // Pending Deals & Kickoffs',
     money: 'Cashflow Matrix // Financial Telemetry',
@@ -418,6 +420,16 @@ export function App() {
                 }}
               />
             </div>
+          )}
+
+          {/* TAB: NEXT SHOULD BE GO (STRATEGIC DIRECTIVE MATRIX) */}
+          {activeTab === 'nextgo' && (
+            <NextShouldBeGoView
+              state={state}
+              onStartFocus={handleStartFocus}
+              onSelectTab={(tab) => setActiveTab(tab as any)}
+              onToggleBlock={handleToggleBlock}
+            />
           )}
 
           {/* TAB 2: WORKFLOW LANES */}

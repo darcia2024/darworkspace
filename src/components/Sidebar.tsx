@@ -24,15 +24,16 @@ import {
   Triangle,
   Zap,
   DollarSign,
-  Receipt
+  Receipt,
+  Compass
 } from 'lucide-react';
 import { soundManager } from '../utils/audio';
-import { FinancialReport } from '../types';
+import { FinancialReport, ActiveTabType } from '../types';
 import { apiService, ServerSyncStatus } from '../services/api';
 
 interface SidebarProps {
-  activeTab: 'today' | 'lanes' | 'waiting' | 'money' | 'deepwork';
-  setActiveTab: (tab: 'today' | 'lanes' | 'waiting' | 'money' | 'deepwork') => void;
+  activeTab: ActiveTabType;
+  setActiveTab: (tab: ActiveTabType) => void;
   onOpenExport: () => void;
   onOpenCopilot: () => void;
   onOpenFollowUp: () => void;
@@ -106,6 +107,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: Terminal,
       badge: todayCompletedCount > 0 ? `${todayCompletedCount}/4` : '4 Tasks',
       badgeColor: 'bg-white/10 text-zinc-300'
+    },
+    {
+      id: 'nextgo' as const,
+      label: 'Next Should Be Go',
+      sublabel: 'Strategic Move Matrix',
+      icon: Compass,
+      badge: '3 Moves ⚡',
+      badgeColor: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
     },
     {
       id: 'lanes' as const,

@@ -837,6 +837,7 @@
 
       const navItems = [
         { id: 'today', label: 'Command Hub', sub: 'Today Focus & Triad', badge: completedCount > 0 ? `${completedCount}/4` : '4 Tasks', badgeColor: 'bg-white/10 text-zinc-300' },
+        { id: 'nextgo', label: 'Next Should Be Go', sub: 'Strategic Move Matrix', badge: '3 Moves ⚡', badgeColor: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' },
         { id: 'lanes', label: 'Board & Lanes', sub: 'Active Kanban Projects', badge: 'Doing', badgeColor: 'bg-blue-500/15 text-blue-400 border border-blue-500/20' },
         { id: 'waiting', label: 'Radar Pipeline', sub: 'Pending Deals & Kickoff', badge: `${state.waitingItems.length} Deals`, badgeColor: 'bg-amber-500/15 text-amber-300 border border-amber-500/20' },
         { 
@@ -855,6 +856,7 @@
 
       const tabLabels = {
         today: 'Command Hub // Today Execution',
+        nextgo: 'Next Should Be Go // Strategic Directive Matrix',
         lanes: 'Board & Lanes // Project Workspace',
         waiting: 'Radar Pipeline // Pending Deals & Kickoffs',
         money: 'Cashflow Matrix // Financial Telemetry',
@@ -1388,6 +1390,285 @@
                 </div>
               </div>
             )}
+
+            {/* TAB: NEXT SHOULD BE GO (STRATEGIC DIRECTIVE MATRIX) */}
+            {activeTab === 'nextgo' && (() => {
+              const strategicMoves = [
+                {
+                  id: 'move-1',
+                  rank: 1,
+                  badge: 'PRIORITAS MUTLAK #1 // CASH ACCELERATOR',
+                  badgeColor: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30',
+                  title: 'LMS Umi Elly Azhariyah — Sprint Modul 1 & Portal Santri',
+                  subtitle: 'DP Rp3.000.000 Sudah Masuk Kas ➔ Kunci Pencairan Termin 2 (+Rp2.000.000)',
+                  projectTarget: 'Umi Elly — LMS Peradaban Islam Azhariyah',
+                  cashImpactText: '+Rp2.000.000 (Termin 2) + Rp2.000.000 (Termin 3)',
+                  timeboxMinutes: 90,
+                  energyLevel: 'high',
+                  description: 'DP Termin 1 (Rp3M) sudah cair ke Mandiri. Klien sedang dalam momentum antusias tinggi. Eksekusi cepat modul tahap 1 adalah kartu as untuk langsung trigger invoice Termin 2 (+Rp2M) minggu ini.',
+                  keyWhy: 'Kunci paling cepat melesatkan saldo kas dari Rp9,89M ke Rp11,89M+ dan menyempurnakan target September 100%!',
+                  actionChecklist: [
+                    'Setup folder arsitektur & struktur modular LMS Azhariyah',
+                    'Buat dashboard kurikulum & portal akses materi santri (Clean Geist UI)',
+                    'Siapkan video/demo interaktif prototype modul 1 untuk approval Umi Elly',
+                    'Kirim preview & siapkan draft penagihan Termin 2 (+Rp2.000.000)',
+                  ],
+                  financialUnlockNote: 'Jika modul 1 selesai: Langsung mencairkan Termin 2 (+Rp2M). Total pembayaran proyek ini: Rp7.000.000.',
+                },
+                {
+                  id: 'move-2',
+                  rank: 2,
+                  badge: 'PRIORITAS #2 // CLEAN DESK & MIND CLARITY',
+                  badgeColor: 'bg-blue-500/15 text-blue-300 border border-blue-500/30',
+                  title: 'DreamMecca Platform — Final Polish & Official Handover',
+                  subtitle: 'Sudah Lunas dari Lama ➔ Tuntaskan 100% Biar Bebas Utang Deliverable',
+                  projectTarget: 'DreamMecca Platform',
+                  cashImpactText: 'Nol Utang Mental (100% Zero Historical Debt)',
+                  timeboxMinutes: 50,
+                  energyLevel: 'medium',
+                  description: 'Uang platform DreamMecca sudah lunas dibayar klien dari lama. Menuntaskan dan menyerahkan deliverable terakhir platform ini akan membersihkan sisa beban pikiran masa lalu.',
+                  keyWhy: 'Membuat kapasitas otak 100% plong dan bebas dari risiko revisi menumpuk.',
+                  actionChecklist: [
+                    'Review kelengkapan UI paket umrah & alur kontak inquiry WhatsApp',
+                    'Testing respon form & checklist deploy production',
+                    'Kirim link akses final & pesan serah terima resmi ke owner DreamMecca',
+                    'Tandai status Done & arsipkan ke portfolio selesai ✓',
+                  ],
+                  financialUnlockNote: 'Memberikan reputasi tier-1 dan membebaskan 100% fokus untuk scaling SaaS.',
+                },
+                {
+                  id: 'move-3',
+                  rank: 3,
+                  badge: 'PRIORITAS #3 // HIGH-LEVERAGE ASSET (MRR)',
+                  badgeColor: 'bg-purple-500/15 text-purple-300 border border-purple-500/30',
+                  title: 'KAEL POS SaaS — Repackage Core Engine & Demo Multi-Tenant',
+                  subtitle: 'Validasi Sukses di Barber Rp6M ➔ Jadikan Mesin Recurring Revenue (MRR)',
+                  projectTarget: 'Setting KAEL (Core Product)',
+                  cashImpactText: 'Langganan Bulanan (MRR) dari Jaringan Outlet',
+                  timeboxMinutes: 45,
+                  energyLevel: 'creative',
+                  description: 'Engine kasir & membership Barber Underrated kemarin terbukti berhasil lo jual Rp6 Juta lunas. Sekarang saatnya membungkus core yang sama jadi SaaS multi-outlet untuk passive recurring cashflow.',
+                  keyWhy: 'Mengubah solo-developer service (aktif barter waktu) menjadi software asset yang menghasilkan uang saat tidur.',
+                  actionChecklist: [
+                    'Kunci konfigurasi permission role Kasir vs Owner vs Admin',
+                    'Rapikan demo tenant kafe/barber siap live pitch ke calon klien',
+                    'Siapkan list 3–5 calon outlet prospek pilot pertama',
+                  ],
+                  financialUnlockNote: 'Potensi penambahan kas stabil Rp1.500.000 – Rp5.000.000/bulan per cluster tenant.',
+                }
+              ];
+
+              return (
+                <div className="space-y-6 select-none animate-fade-in pb-12">
+                  
+                  {/* Executive Directive Hero */}
+                  <div className="figma-shell border-emerald-500/40 ring-1 ring-emerald-500/20">
+                    <div className="figma-core p-6 sm:p-7 space-y-4 bg-gradient-to-br from-[#0c1410] via-[#080b09] to-[#050508]">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3.5">
+                        <div className="flex items-center gap-2.5">
+                          <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
+                          <h2 className="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+                            <span>🎯 NEXT SHOULD BE GO — ENGINE KEPUTUSAN STRATEGIS</span>
+                            <span className="dev-tag-emerald text-[9px]">ZERO_DECISION_FATIGUE</span>
+                          </h2>
+                        </div>
+                        <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                          // SALDO KAS REAL: {formatRupiah(report.totalLiquidBalance)}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-1">
+                          <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest block">01 // POSISI MOMENTUM</span>
+                          <span className="text-sm font-bold text-emerald-300 block">60% Target September Tembus!</span>
+                          <p className="text-[11px] text-zinc-400 leading-snug">Kas aman di Rp9,89M (Surplus +Rp5,89M di atas Floor). Nol utang deliverable.</p>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-1">
+                          <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block">02 // SISA TARGET SEPTEMBER</span>
+                          <span className="text-sm font-bold text-amber-300 block">Sisa Rp4.000.000 OTW</span>
+                          <p className="text-[11px] text-zinc-400 leading-snug">Terkunci di Termin 2 (Rp2M) & Termin 3 (Rp2M) project LMS Umi Elly.</p>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-1">
+                          <span className="text-[10px] font-mono text-blue-400 uppercase tracking-widest block">03 // STRATEGI GOLDEN MOVE</span>
+                          <span className="text-sm font-bold text-white block">Sprint Cepat ➔ Cairkan Sisa</span>
+                          <p className="text-[11px] text-zinc-400 leading-snug">Kerjakan hal dengan dampak cash & mental clarity tertinggi sekarang.</p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-xl bg-[#090d0b] border border-emerald-500/30 text-xs font-mono text-zinc-200">
+                        <span className="text-emerald-400 font-bold">🧭 ATURAN UTAMA SAAT INI:</span> "Jangan buka kerjaan baru yang gak jelas! Fokus tuntaskan <strong>Modul 1 Umi Elly</strong> (buka kunci Rp2M) & serahkan <strong>DreamMecca</strong> (otak 100% plong)."
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3 Golden Moves Cards */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider font-semibold">
+                        // DAFTAR LANGKAH PALING BERDAMPAK (URUTAN PRIORITAS):
+                      </span>
+                      <span className="text-[11px] font-mono text-emerald-400">3 Rekomendasi Terpilih</span>
+                    </div>
+
+                    <div className="space-y-4">
+                      {strategicMoves.map(move => (
+                        <div 
+                          key={move.id}
+                          className={`figma-shell transition-all duration-300 ${
+                            move.rank === 1 
+                              ? 'border-emerald-500/40 ring-1 ring-emerald-500/20' 
+                              : move.rank === 2
+                              ? 'border-blue-500/30'
+                              : 'border-white/[0.1]'
+                          }`}
+                        >
+                          <div className={`figma-core p-5 sm:p-6 space-y-4 ${
+                            move.rank === 1 
+                              ? 'bg-gradient-to-b from-[#0e1612] to-[#07070b]' 
+                              : move.rank === 2
+                              ? 'bg-gradient-to-b from-[#0c1218] to-[#07070b]'
+                              : 'bg-[#07070b]'
+                          }`}>
+                            <div className="flex flex-wrap items-center justify-between gap-2.5">
+                              <div className="flex items-center gap-2">
+                                <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider ${move.badgeColor}`}>
+                                  {move.badge}
+                                </span>
+                                <span className="text-xs font-mono text-zinc-400">
+                                  ⏱️ {move.timeboxMinutes} Menit Timebox
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                                  {move.cashImpactText}
+                                </span>
+                                <button
+                                  onClick={() => {
+                                    sound.playClick();
+                                    startFocus({
+                                      id: `tb-next-${Date.now()}`,
+                                      blockType: 'Deep Work 1',
+                                      projectName: move.projectTarget,
+                                      action: move.title,
+                                      timeboxMinutes: move.timeboxMinutes,
+                                      rule: move.keyWhy
+                                    });
+                                  }}
+                                  className="px-4 py-1.5 dev-btn-primary text-xs font-bold font-mono shadow-md active:scale-95 transition-all"
+                                >
+                                  ▶ Kunci Focus Lock →
+                                </button>
+                              </div>
+                            </div>
+
+                            <div>
+                              <h3 className="text-base sm:text-lg font-extrabold text-white tracking-tight">
+                                #{move.rank} — {move.title}
+                              </h3>
+                              <p className="text-xs text-zinc-300 mt-1 font-medium leading-relaxed">
+                                {move.subtitle}
+                              </p>
+                              <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                                {move.description}
+                              </p>
+                            </div>
+
+                            <div className="p-4 rounded-xl bg-black/50 border border-white/[0.06] space-y-2">
+                              <span className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block">
+                                📋 Checklist Eksekusi Micro-Step:
+                              </span>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300">
+                                {move.actionChecklist.map((act, i) => (
+                                  <div key={i} className="p-2 rounded-lg bg-[#060609] border border-white/[0.05] flex items-center gap-2">
+                                    <span className="w-4 h-4 rounded-full bg-white/10 text-[10px] font-bold flex items-center justify-center text-zinc-400 shrink-0">{i+1}</span>
+                                    <span className="leading-tight">{act}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="p-3 rounded-xl bg-[#090d0b] border border-emerald-500/30 text-xs font-mono text-zinc-300">
+                              <strong className="text-emerald-400">// EFEK KE SALDO REKENING: </strong>
+                              {move.financialUnlockNote}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* September 4-Phase Blueprint */}
+                  <div className="figma-shell">
+                    <div className="figma-core p-5 sm:p-6 space-y-4">
+                      <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+                        <div>
+                          <h3 className="text-sm font-bold text-white">🗺️ Peta Roadmap Eksekusi Bulan September 2026</h3>
+                          <p className="text-xs text-zinc-400 font-mono mt-0.5">// 4 Fase strategis untuk mengunci target +Rp10 Juta dan scaling SaaS</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+                        <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="dev-tag-emerald text-[9px]">FASE 1 // 1–3 SEP</span>
+                            <span className="text-emerald-400 font-bold">100% TUNTAS ✓</span>
+                          </div>
+                          <h5 className="font-bold text-white text-xs">Cash Defense & Kickoff</h5>
+                          <p className="text-[11px] text-zinc-300 leading-snug">
+                            • Barber lunas Rp6M ✓<br />
+                            • DP Umi Elly Rp3M masuk ✓<br />
+                            • Saldo aman Rp9,89M ✓
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/40 space-y-2 ring-1 ring-amber-500/20">
+                          <div className="flex justify-between items-center">
+                            <span className="dev-tag text-[9px] bg-amber-500/20 text-amber-300 border-amber-500/30">FASE 2 // 4–10 SEP</span>
+                            <span className="text-amber-400 font-bold animate-pulse">SEDANG AKTIF ⚡</span>
+                          </div>
+                          <h5 className="font-bold text-white text-xs">Sprint Modul 1 & Handover</h5>
+                          <p className="text-[11px] text-zinc-300 leading-snug">
+                            • Modul 1 LMS Umi Elly<br />
+                            • Handover DreamMecca<br />
+                            • Siap tagih Termin 2 (+Rp2M)
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="dev-tag text-[9px]">FASE 3 // 11–20 SEP</span>
+                            <span className="text-zinc-400 font-bold">NEXT HARVEST</span>
+                          </div>
+                          <h5 className="font-bold text-white text-xs">Cairkan Termin 2 & KAEL</h5>
+                          <p className="text-[11px] text-zinc-400 leading-snug">
+                            • Masuk Termin 2 (+Rp2M)<br />
+                            • Demo KAEL ke 3 outlet<br />
+                            • Kas tembus Rp11M+
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="dev-tag text-[9px]">FASE 4 // 21–30 SEP</span>
+                            <span className="text-zinc-400 font-bold">SCALE & MRR</span>
+                          </div>
+                          <h5 className="font-bold text-white text-xs">Termin 3 & Growth Mode</h5>
+                          <p className="text-[11px] text-zinc-400 leading-snug">
+                            • Masuk Termin 3 (+Rp2M)<br />
+                            • Pilot pertama KAEL jalan<br />
+                            • Kas surplus +Rp5,5M bersih
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              );
+            })()}
 
             {/* TAB: LANES / BOARD (FULLY FUNCTIONAL) */}
             {activeTab === 'lanes' && (
