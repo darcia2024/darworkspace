@@ -262,6 +262,36 @@
         ],
         transactions: [
           {
+            id: 'tx-ifdony-azharuna-sep',
+            date: '4 Sep 2026',
+            type: 'income',
+            amount: 500000,
+            accountName: 'Mandiri',
+            category: 'Client Payment (Lunas)',
+            description: 'Desain Branding & Logo Azharuna (Ustadz Ifdony) (+Rp500.000 Lunas ✓)',
+            photoUrl: null
+          },
+          {
+            id: 'tx-barber-lunas-sep2',
+            date: '2 Sep 2026',
+            type: 'income',
+            amount: 3000000,
+            accountName: 'Mandiri',
+            category: 'Client Payment (Pelunasan 100%)',
+            description: 'Pelunasan 100% Barber POS & Membership System (+Rp3.000.000 Lunas Penuh ✓)',
+            photoUrl: null
+          },
+          {
+            id: 'tx-umi-elly-dp-sep2',
+            date: '2 Sep 2026',
+            type: 'income',
+            amount: 3000000,
+            accountName: 'Mandiri',
+            category: 'Client Payment (Termin 1 DP)',
+            description: 'Termin 1 DP 50% Kickoff LMS Peradaban Islam Azhariyah Umi Elly (+Rp3.000.000 Masuk ✓)',
+            photoUrl: null
+          },
+          {
             id: 'tx-claude-2acc',
             date: '1 Sep 2026',
             type: 'expense',
@@ -2090,51 +2120,57 @@
                       monthName: 'Agustus 2026',
                       periodTag: 'ARCHIVED // AGUSTUS_2026',
                       target: 10000000,
-                      realizedIncome: 4806000,
-                      realizedExpense: 1700000,
-                      netSurplus: 3106000,
+                      realizedIncome: 60650000,
+                      realizedExpense: 51783310,
+                      netSurplus: 8866690,
                       endingBalance: 4130865,
-                      progressPercent: 48.1,
-                      modeStatus: 'YELLOW MODE (Surplus +Rp130k di atas Floor)',
+                      progressPercent: 88.7,
+                      modeStatus: 'PROFIT SOLID (Omset Gross Rp60,65M • Net Profit Rp8.866.690)',
                       runwayMonths: '±0.92 Bulan',
                       milestones: [
-                        'Zalvice & Laptopbisnis Logo System 100% Selesai & Lunas (Nol utang deliverable)',
-                        'Closing Deal Rp6.000.000 Barber Underrated & DP 50% Masuk (Rp3.000.000)',
-                        'Inflow Operasional Mandiri +Rp906.000 Masuk (31 Agu)',
-                        'Nafkah Istri (Rp1.200.000) & Kewajiban Mesir (Rp500.000) Dibayar di Muka per 31 Agu',
-                        'Investasi 2 Akun Claude Pro & AI Multi-agent Setup untuk Dev Boost'
+                        'Tiket Pesawat Saudia Airlines (3 Pax): Omset Rp39.600.000 (Net Profit +Rp906.000 Lunas)',
+                        'VOA Mesir & Tiket EgyptAir Abdurrahman: Omset Rp14.550.000 (Net Profit +Rp1.460.690 Lunas)',
+                        'Closing Deal Rp6.000.000 Barber Underrated & DP 50% Masuk (Rp3.000.000 Lunas)',
+                        'Bang Ridwan Zalbina: Bundle Logo Laptopbisnis & Zalvice Rp1.200.000 Lunas Penuh',
+                        'Sidi Ifdony: Logo Hamasah Bakery & Laundry Rp1.000.000 Lunas',
+                        'Ziaudin Azzam: Brand Identity & Logo KOLOHAGA Rp700.000 Lunas',
+                        'Zaky Fakhru Ar-Rozi: Landing Page Kampanye Rp600.000 Lunas'
                       ],
                       breakdown: [
-                        { label: 'DP Kasir Barber POS', client: 'Owner Barber Underrated', category: 'DP 50%', amount: 3000000, tag: 'INFLOW_DP', status: 'RECEIVED ✓' },
-                        { label: 'Inflow Kas Masuk Mandiri', client: 'Direct Operasional', category: 'Inflow', amount: 906000, tag: 'INFLOW_MANDIRI', status: 'RECEIVED ✓' },
-                        { label: 'Zalvice Logo Package', client: 'Bang Edo / Zalvice', category: 'Design', amount: 600000, tag: 'DELIVERED', status: 'LUNAS ✓' },
-                        { label: 'Laptopbisnis Logo Package', client: 'Owner Laptopbisnis', category: 'Design', amount: 600000, tag: 'DELIVERED', status: 'LUNAS ✓' },
+                        { label: 'Tiket Saudia Airlines (3 Pax)', client: 'Temantiket Operations', category: 'Flight Tickets', amount: 39600000, profit: 906000, tag: 'TICKETING', status: 'LUNAS ✓' },
+                        { label: 'VOA Mesir & EgyptAir', client: 'Abdurrahman Ja\'far M.', category: 'Visa & Flight', amount: 14550000, profit: 1460690, tag: 'TRAVEL_OPS', status: 'LUNAS ✓' },
+                        { label: 'DP Kasir Barber POS (50%)', client: 'Owner Barber Underrated', category: 'DP 50%', amount: 3000000, profit: 3000000, tag: 'INFLOW_DP', status: 'LUNAS ✓' },
+                        { label: 'Bundle Logo Zalvice & Laptopbisnis', client: 'Bang Ridwan Zalbina', category: 'Branding', amount: 1200000, profit: 1200000, tag: 'DESIGN_BUNDLE', status: 'LUNAS ✓' },
+                        { label: 'Logo Hamasah Bakery & Laundry', client: 'Sidi Ifdony', category: 'Branding', amount: 1000000, profit: 1000000, tag: 'DESIGN', status: 'LUNAS ✓' },
+                        { label: 'Brand & Logo KOLOHAGA', client: 'Ziaudin Azzam (Ajam)', category: 'Branding', amount: 700000, profit: 700000, tag: 'DESIGN', status: 'LUNAS ✓' },
+                        { label: 'Landing Page Kampanye Digital', client: 'Zaky Fakhru Ar-Rozi', category: 'Web Dev', amount: 600000, profit: 600000, tag: 'LANDING', status: 'LUNAS ✓' },
                       ],
-                      summaryNote: 'Bulan Agustus berhasil keluar dari zona bahaya (<Rp4M) menjadi Rp4.130.865 berkat closing DP Barber POS Rp3M & tuntasnya 2 logo liabilities.'
+                      summaryNote: 'Total omset gross Agustus mencapai Rp60.650.000 dengan realisasi keuntungan bersih (paid net profit) sebesar Rp8.866.690 dari 7 invoice lunas terverifikasi di portal billing.'
                     },
                     {
                       id: '2026-07',
                       monthName: 'Juli 2026',
                       periodTag: 'ARCHIVED // JULI_2026',
                       target: 10000000,
-                      realizedIncome: 7800000,
-                      realizedExpense: 4500000,
-                      netSurplus: 3300000,
+                      realizedIncome: 9800000,
+                      realizedExpense: 500000,
+                      netSurplus: 9300000,
                       endingBalance: 7810773,
-                      progressPercent: 78.0,
-                      modeStatus: 'PEAK BALANCE (Pertumbuhan Kas Maksimal Rp7,81M)',
+                      progressPercent: 93.0,
+                      modeStatus: 'PEAK PROFIT (Net Profit Rp9.300.000 dari 3 Invoice Lunas)',
                       runwayMonths: '±1.73 Bulan',
                       milestones: [
-                        'Pelunasan Penuh Platform DreamMecca dari Klien & Live Production',
-                        'Retainer Maintenance Markaz Fiqih Berjalan Tertib',
-                        'Pencapaian Puncak Saldo Kas Likuid Terbesar (Rp7.810.773)',
-                        'Inisiasi Riset Desain Sistem KAEL & Temantiket Operations'
+                        'Markaz Fiqih: Web Portal Syariah, LMS & Redesign Logo Omset Rp8.500.000 (Net Profit +Rp8.000.000 Lunas)',
+                        'DreamMecca - Umrahme: Platform Landing Page (20 Pax) Rp700.000 Lunas Penuh',
+                        'Haramain Capture: Desain Logo H. Aris Azhari Harahap Rp600.000 Lunas Penuh',
+                        'Pencapaian Puncak Saldo Kas Likuid Terbesar (Rp7.810.773)'
                       ],
                       breakdown: [
-                        { label: 'DreamMecca Platform Pelunasan', client: 'DreamMecca Core', category: 'Full Payment', amount: 6000000, tag: 'PLATFORM_PAID', status: 'LUNAS ✓' },
-                        { label: 'Markaz Fiqih Maintenance Retainer', client: 'Markaz Fiqih', category: 'Retainer', amount: 1800000, tag: 'MAINTENANCE', status: 'PAID ✓' },
+                        { label: 'Portal Web & LMS Markaz Fiqih', client: 'Markaz Fiqih', category: 'Web & LMS', amount: 8500000, profit: 8000000, tag: 'PLATFORM_PAID', status: 'LUNAS ✓' },
+                        { label: 'Platform Umrahme Landing (20 Pax)', client: 'DreamMecca Core', category: 'Full Payment', amount: 700000, profit: 700000, tag: 'WEB_DEV', status: 'LUNAS ✓' },
+                        { label: 'Desain Logo Haramain Capture', client: 'H. Aris Azhari Harahap', category: 'Branding', amount: 600000, profit: 600000, tag: 'DESIGN', status: 'LUNAS ✓' },
                       ],
-                      summaryNote: 'Bulan Juli mencatatkan performa saldo kas terbaik sebesar Rp7.810.773 sebelum terjadi penarikan modal & kebutuhan keluarga di awal Agustus.'
+                      summaryNote: 'Bulan Juli mencatatkan performa profit terbaik sebesar Rp9.300.000 dari 3 invoice resmi (Markaz Fiqih, DreamMecca, Haramain Capture) sebelum terjadi penarikan modal di awal Agustus.'
                     }
                   ];
 
@@ -2672,39 +2708,41 @@
                       monthName: 'Agustus 2026',
                       periodTag: 'ARCHIVED // AGUSTUS_2026',
                       target: 10000000,
-                      realizedIncome: 4806000,
-                      realizedExpense: 1700000,
-                      netSurplus: 3106000,
+                      realizedIncome: 60650000,
+                      realizedExpense: 51783310,
+                      netSurplus: 8866690,
                       endingBalance: 4130865,
-                      progressPercent: 48.1,
-                      modeStatus: 'YELLOW MODE (Surplus +Rp130k di atas Floor)',
+                      progressPercent: 88.7,
+                      modeStatus: 'PROFIT SOLID (Omset Gross Rp60,65M • Net Profit Rp8.866.690)',
                       milestones: [
-                        'Zalvice & Laptopbisnis Logo System 100% Selesai & Lunas (Nol utang deliverable)',
-                        'Closing Deal Rp6.000.000 Barber Underrated & DP 50% Masuk (Rp3.000.000)',
-                        'Inflow Operasional Mandiri +Rp906.000 Masuk (31 Agu)',
-                        'Nafkah Istri (Rp1.200.000) & Kewajiban Mesir (Rp500.000) Dibayar di Muka per 31 Agu',
-                        'Investasi 2 Akun Claude Pro & AI Multi-agent Setup untuk Dev Boost'
+                        'Tiket Pesawat Saudia Airlines (3 Pax): Omset Rp39.600.000 (Net Profit +Rp906.000 Lunas)',
+                        'VOA Mesir & Tiket EgyptAir Abdurrahman: Omset Rp14.550.000 (Net Profit +Rp1.460.690 Lunas)',
+                        'Closing Deal Rp6.000.000 Barber Underrated & DP 50% Masuk (Rp3.000.000 Lunas)',
+                        'Bang Ridwan Zalbina: Bundle Logo Laptopbisnis & Zalvice Rp1.200.000 Lunas Penuh',
+                        'Sidi Ifdony: Logo Hamasah Bakery & Laundry Rp1.000.000 Lunas',
+                        'Ziaudin Azzam: Brand Identity & Logo KOLOHAGA Rp700.000 Lunas',
+                        'Zaky Fakhru Ar-Rozi: Landing Page Kampanye Rp600.000 Lunas'
                       ],
-                      summaryNote: 'Bulan Agustus berhasil keluar dari zona bahaya (<Rp4M) menjadi Rp4.130.865 berkat closing DP Barber POS Rp3M & tuntasnya 2 logo liabilities.'
+                      summaryNote: 'Total omset gross Agustus mencapai Rp60.650.000 dengan realisasi keuntungan bersih (paid net profit) sebesar Rp8.866.690 dari 7 invoice lunas terverifikasi di portal billing.'
                     },
                     {
                       id: '2026-07',
                       monthName: 'Juli 2026',
                       periodTag: 'ARCHIVED // JULI_2026',
                       target: 10000000,
-                      realizedIncome: 7800000,
-                      realizedExpense: 4500000,
-                      netSurplus: 3300000,
+                      realizedIncome: 9800000,
+                      realizedExpense: 500000,
+                      netSurplus: 9300000,
                       endingBalance: 7810773,
-                      progressPercent: 78.0,
-                      modeStatus: 'PEAK BALANCE (Pertumbuhan Kas Maksimal Rp7,81M)',
+                      progressPercent: 93.0,
+                      modeStatus: 'PEAK PROFIT (Net Profit Rp9.300.000 dari 3 Invoice Lunas)',
                       milestones: [
-                        'Pelunasan Penuh Platform DreamMecca dari Klien & Live Production',
-                        'Retainer Maintenance Markaz Fiqih Berjalan Tertib',
-                        'Pencapaian Puncak Saldo Kas Likuid Terbesar (Rp7.810.773)',
-                        'Inisiasi Riset Desain Sistem KAEL & Temantiket Operations'
+                        'Markaz Fiqih: Web Portal Syariah, LMS & Redesign Logo Omset Rp8.500.000 (Net Profit +Rp8.000.000 Lunas)',
+                        'DreamMecca - Umrahme: Platform Landing Page (20 Pax) Rp700.000 Lunas Penuh',
+                        'Haramain Capture: Desain Logo H. Aris Azhari Harahap Rp600.000 Lunas Penuh',
+                        'Pencapaian Puncak Saldo Kas Likuid Terbesar (Rp7.810.773)'
                       ],
-                      summaryNote: 'Bulan Juli mencatatkan performa saldo kas terbaik sebesar Rp7.810.773 sebelum terjadi penarikan modal & kebutuhan keluarga di awal Agustus.'
+                      summaryNote: 'Bulan Juli mencatatkan performa profit terbaik sebesar Rp9.300.000 dari 3 invoice resmi (Markaz Fiqih, DreamMecca, Haramain Capture) sebelum terjadi penarikan modal di awal Agustus.'
                     }
                   ];
 

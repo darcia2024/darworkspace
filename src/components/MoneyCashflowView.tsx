@@ -159,66 +159,73 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
   const calculatedRunwayDays = report.runwayDays || Math.round((report.totalLiquidBalance / (report.estimatedRealBurn || 4500000)) * 30);
   const calculatedRunwayMonths = (calculatedRunwayDays / 30).toFixed(1);
 
-  // Monthly Historical Archives & Pencapaian Bulan-Bulan Sebelumnya
+  // Monthly Historical Archives & Pencapaian Bulan-Bulan Sebelumnya (Sync Resmi dari Repo Invoice Portal)
   const monthlyArchives = [
     {
       id: '2026-08',
       monthName: 'Agustus 2026',
       periodTag: 'ARCHIVED // AGUSTUS_2026',
       target: 10000000,
-      realizedIncome: 4806000,
-      realizedExpense: 1700000,
-      netSurplus: 3106000,
+      realizedIncome: 60650000,
+      realizedExpense: 51783310,
+      netSurplus: 8866690,
       endingBalance: 4130865,
-      progressPercent: 48.1,
-      modeStatus: 'YELLOW MODE (Surplus Cadangan +Rp130k di atas Floor)',
+      progressPercent: 88.7,
+      modeStatus: 'PROFIT SOLID (Omset Gross Rp60,65M • Net Profit Rp8.866.690)',
       runwayMonths: '±0.92 Bulan',
       milestones: [
-        'Zalvice & Laptopbisnis Logo System 100% Selesai & Lunas (Nol utang deliverable)',
-        'Closing Deal Rp6.000.000 Barber Underrated & DP 50% Masuk (Rp3.000.000)',
-        'Inflow Operasional Mandiri +Rp906.000 Masuk (31 Agu)',
-        'Nafkah Istri (Rp1.200.000) & Kewajiban Mesir (Rp500.000) Dibayar di Muka per 31 Agu',
-        'Investasi 2 Akun Claude Pro & AI Multi-agent Setup untuk Dev Boost'
+        'Tiket Pesawat Saudia Airlines (3 Pax): Omset Rp39.600.000 (Net Profit +Rp906.000 Lunas)',
+        'VOA Mesir & Tiket EgyptAir Abdurrahman: Omset Rp14.550.000 (Net Profit +Rp1.460.690 Lunas)',
+        'Closing Deal Rp6.000.000 Barber Underrated & DP 50% Masuk (Rp3.000.000 Lunas)',
+        'Bang Ridwan Zalbina: Bundle Logo Laptopbisnis & Zalvice Rp1.200.000 Lunas Penuh',
+        'Sidi Ifdony: Logo Hamasah Bakery & Laundry Rp1.000.000 Lunas',
+        'Ziaudin Azzam: Brand Identity & Logo KOLOHAGA Rp700.000 Lunas',
+        'Zaky Fakhru Ar-Rozi: Landing Page Kampanye Rp600.000 Lunas'
       ],
       breakdown: [
-        { label: 'DP Kasir Barber POS', client: 'Owner Barber Underrated', category: 'DP 50%', amount: 3000000, tag: 'INFLOW_DP', status: 'RECEIVED ✓' },
-        { label: 'Inflow Kas Masuk Mandiri', client: 'Direct Operasional', category: 'Inflow', amount: 906000, tag: 'INFLOW_MANDIRI', status: 'RECEIVED ✓' },
-        { label: 'Zalvice Logo Package', client: 'Bang Edo / Zalvice', category: 'Design', amount: 600000, tag: 'DELIVERED', status: 'LUNAS ✓' },
-        { label: 'Laptopbisnis Logo Package', client: 'Owner Laptopbisnis', category: 'Design', amount: 600000, tag: 'DELIVERED', status: 'LUNAS ✓' },
+        { label: 'Tiket Saudia Airlines (3 Pax)', client: 'Temantiket Operations', category: 'Flight Tickets', amount: 39600000, profit: 906000, tag: 'TICKETING', status: 'LUNAS ✓' },
+        { label: 'VOA Mesir & EgyptAir', client: 'Abdurrahman Ja\'far M.', category: 'Visa & Flight', amount: 14550000, profit: 1460690, tag: 'TRAVEL_OPS', status: 'LUNAS ✓' },
+        { label: 'DP Kasir Barber POS (50%)', client: 'Owner Barber Underrated', category: 'DP 50%', amount: 3000000, profit: 3000000, tag: 'INFLOW_DP', status: 'LUNAS ✓' },
+        { label: 'Bundle Logo Zalvice & Laptopbisnis', client: 'Bang Ridwan Zalbina', category: 'Branding', amount: 1200000, profit: 1200000, tag: 'DESIGN_BUNDLE', status: 'LUNAS ✓' },
+        { label: 'Logo Hamasah Bakery & Laundry', client: 'Sidi Ifdony', category: 'Branding', amount: 1000000, profit: 1000000, tag: 'DESIGN', status: 'LUNAS ✓' },
+        { label: 'Brand & Logo KOLOHAGA', client: 'Ziaudin Azzam (Ajam)', category: 'Branding', amount: 700000, profit: 700000, tag: 'DESIGN', status: 'LUNAS ✓' },
+        { label: 'Landing Page Kampanye Digital', client: 'Zaky Fakhru Ar-Rozi', category: 'Web Dev', amount: 600000, profit: 600000, tag: 'LANDING', status: 'LUNAS ✓' },
       ],
       expensesBreakdown: [
+        { label: 'Biaya Operasional Tiket & Visa (Vendor)', amount: 51783310, note: 'Tiket Saudia Rp38,69M + VOA Mesir & EgyptAir Rp13,09M' },
         { label: 'Nafkah Istri September', amount: 1200000, note: 'Transfer 31 Agu 2026 (Lunas)' },
         { label: 'Kewajiban Rumah Mesir', amount: 500000, note: 'Transfer 31 Agu 2026 (Lunas)' },
       ],
-      summaryNote: 'Bulan Agustus berhasil keluar dari zona bahaya (<Rp4M) menjadi Rp4.130.865 berkat closing DP Barber POS Rp3M & tuntasnya 2 logo liabilities.'
+      summaryNote: 'Total omset gross Agustus mencapai Rp60.650.000 dengan realisasi keuntungan bersih (paid net profit) sebesar Rp8.866.690 dari 7 invoice lunas terverifikasi di portal billing.'
     },
     {
       id: '2026-07',
       monthName: 'Juli 2026',
       periodTag: 'ARCHIVED // JULI_2026',
       target: 10000000,
-      realizedIncome: 7800000,
-      realizedExpense: 4500000,
-      netSurplus: 3300000,
+      realizedIncome: 9800000,
+      realizedExpense: 500000,
+      netSurplus: 9300000,
       endingBalance: 7810773,
-      progressPercent: 78.0,
-      modeStatus: 'PEAK BALANCE (Pertumbuhan Kas Maksimal Rp7,81M)',
+      progressPercent: 93.0,
+      modeStatus: 'PEAK PROFIT (Net Profit Rp9.300.000 dari 3 Invoice Lunas)',
       runwayMonths: '±1.73 Bulan',
       milestones: [
-        'Pelunasan Penuh Platform DreamMecca dari Klien & Live Production',
-        'Retainer Maintenance Markaz Fiqih Berjalan Tertib',
-        'Pencapaian Puncak Saldo Kas Likuid Terbesar (Rp7.810.773)',
-        'Inisiasi Riset Desain Sistem KAEL & Temantiket Operations'
+        'Markaz Fiqih: Web Portal Syariah, LMS & Redesign Logo Omset Rp8.500.000 (Net Profit +Rp8.000.000 Lunas)',
+        'DreamMecca - Umrahme: Platform Landing Page (20 Pax) Rp700.000 Lunas Penuh',
+        'Haramain Capture: Desain Logo H. Aris Azhari Harahap Rp600.000 Lunas Penuh',
+        'Pencapaian Puncak Saldo Kas Likuid Terbesar (Rp7.810.773)'
       ],
       breakdown: [
-        { label: 'DreamMecca Platform Pelunasan', client: 'DreamMecca Core', category: 'Full Payment', amount: 6000000, tag: 'PLATFORM_PAID', status: 'LUNAS ✓' },
-        { label: 'Markaz Fiqih Maintenance Retainer', client: 'Markaz Fiqih', category: 'Retainer', amount: 1800000, tag: 'MAINTENANCE', status: 'PAID ✓' },
+        { label: 'Portal Web & LMS Markaz Fiqih', client: 'Markaz Fiqih', category: 'Web & LMS', amount: 8500000, profit: 8000000, tag: 'PLATFORM_PAID', status: 'LUNAS ✓' },
+        { label: 'Platform Umrahme Landing (20 Pax)', client: 'DreamMecca Core', category: 'Full Payment', amount: 700000, profit: 700000, tag: 'WEB_DEV', status: 'LUNAS ✓' },
+        { label: 'Desain Logo Haramain Capture', client: 'H. Aris Azhari Harahap', category: 'Branding', amount: 600000, profit: 600000, tag: 'DESIGN', status: 'LUNAS ✓' },
       ],
       expensesBreakdown: [
-        { label: 'Kebutuhan Rumah Tangga & Nafkah', amount: 3500000, note: 'Operasional bulanan' },
-        { label: 'Server & AI Subscriptions', amount: 1000000, note: 'ChatGPT, Wavebox, Hosting' },
+        { label: 'Biaya Operasional Dev & Hosting', amount: 500000, note: 'Server & setup operasional' },
+        { label: 'Kebutuhan Rumah Tangga & Nafkah', amount: 3500000, note: 'Operasional bulanan keluarga' },
       ],
-      summaryNote: 'Bulan Juli mencatatkan performa saldo kas terbaik sebesar Rp7.810.773 sebelum terjadi penarikan modal & kebutuhan keluarga di awal Agustus.'
+      summaryNote: 'Bulan Juli mencatatkan performa profit terbaik sebesar Rp9.300.000 dari 3 invoice resmi (Markaz Fiqih, DreamMecca, Haramain Capture) sebelum terjadi penarikan modal di awal Agustus.'
     }
   ];
 
@@ -477,7 +484,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     🗺️ Peta Realisasi Target Bulan {currentMonthName} ({formatRupiah(monthlyTarget)} / Bulan):
                   </span>
                   <span className="text-[10px] font-mono text-zinc-400">
-                    Total Pipeline: <strong className="text-emerald-300">Rp10.200.000</strong>
+                    Total Realisasi + Pipeline: <strong className="text-emerald-300">Rp15.100.000</strong>
                   </span>
                 </div>
 
@@ -503,24 +510,24 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     <p className="text-[11px] text-zinc-400 leading-snug">Termin 1 DP Rp3.000.000 masuk kas! Gaspol sprint pengerjaan modul LMS Azhariyah.</p>
                   </div>
 
-                  {/* Source 3: Zalvice, Laptopbisnis & DreamMecca */}
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
+                  {/* Source 3: Ustadz Ifdony Logo Azharuna */}
+                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
                     <div className="flex justify-between items-center">
-                      <span className="dev-tag-emerald text-[9px]">DELIVERY // LUNAS ✓</span>
-                      <span className="text-xs font-mono font-bold text-white">Rp1.200.000</span>
+                      <span className="dev-tag-emerald text-[9px]">100% LUNAS ✓</span>
+                      <span className="text-xs font-mono font-bold text-emerald-300">Rp500.000</span>
                     </div>
-                    <h5 className="text-xs font-bold text-white">DreamMecca + 2 Logo</h5>
-                    <p className="text-[11px] text-zinc-400 leading-snug">Logo Zalvice & Laptopbisnis 100% kelar! DreamMecca lunas dari lama.</p>
+                    <h5 className="text-xs font-bold text-white">Logo Azharuna (Ifdony)</h5>
+                    <p className="text-[11px] text-zinc-400 leading-snug">Pembayaran Rp500.000 lunas di portal invoice! Desain branding tuntas diserahkan.</p>
                   </div>
 
-                  {/* Source 4: KAEL Core & Sisa Termin Umi Elly */}
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
+                  {/* Source 4: Sisa Pipeline September */}
+                  <div className="p-3.5 rounded-2xl bg-black/60 border border-amber-500/40 space-y-1.5 ring-1 ring-amber-500/20">
                     <div className="flex justify-between items-center">
-                      <span className="dev-tag text-[9px]">NEXT SPRINT // SCALE</span>
-                      <span className="text-xs font-mono font-bold text-amber-300">Rp4.000.000+</span>
+                      <span className="dev-tag text-[9px] bg-amber-500/10 text-amber-300 border-amber-500/20">PIPELINE AKTIF</span>
+                      <span className="text-xs font-mono font-bold text-amber-300">Rp8.600.000</span>
                     </div>
-                    <h5 className="text-xs font-bold text-white">Termin 2 & 3 + KAEL SaaS</h5>
-                    <p className="text-[11px] text-zinc-400 leading-snug">Sisa termin LMS Umi Elly (Rp4M) + pilot KAEL SaaS untuk amankan target scale Rp15M+.</p>
+                    <h5 className="text-xs font-bold text-white">Sisa Piutang September</h5>
+                    <p className="text-[11px] text-zinc-400 leading-snug">Al Madroj (Rp3,5M) + Sisa Termin Umi Elly (Rp4M) + Ibrahim Visa (Rp1,1M).</p>
                   </div>
 
                 </div>

@@ -47,7 +47,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
       stage3: 'Rp7.130.865 (Pelunasan Barber Underrated Rp3M — PASSED ✓)',
       stage4: 'Rp9.892.741 (Live Saldo Kas Aman • Surplus +Rp5,89M di atas Floor!)',
     },
-    defenseProtocolRule: 'Saldo likuid Rp9,89M (Surplus masif +Rp5,89M di atas Floor Rp4M). Pemasukan September sudah tembus Rp6.000.000 (60% tercapai di tgl 2). Fokus sekarang: Eksekusi sprint modul LMS Umi Elly & scale KAEL SaaS!',
+    defenseProtocolRule: 'Saldo likuid Rp9,89M (Surplus masif +Rp5,89M di atas Floor Rp4M). Pemasukan September sudah tembus Rp6.500.000 (65.0% tercapai). Fokus sekarang: Eksekusi sprint modul LMS Umi Elly & scale KAEL SaaS!',
     fixedMonthlyBurn: 3025000,
     estimatedRealBurn: 4500000,
     monthlyIncomeTarget: 10000000,
@@ -67,6 +67,16 @@ export const INITIAL_STATE: DaruWorkOSState = {
       { id: 'exp-11', category: 'Imunisasi / kesehatan', estimatedAmount: 'tidak selalu bulanan', amountText: 'tidak selalu bulanan', status: 'Wajib, fleksibel', isFixed: false, notes: 'Medis darurat / jadwal vaksin' },
     ],
     transactions: [
+      {
+        id: 'tx-ifdony-azharuna-sep',
+        date: '4 Sep 2026',
+        type: 'income',
+        amount: 500000,
+        accountName: 'Mandiri',
+        category: 'Client Payment (Lunas)',
+        description: 'Desain Branding & Logo Azharuna (Ustadz Ifdony) (+Rp500.000 Lunas ✓)',
+        createdAt: '2026-09-04T10:00:00.000Z'
+      },
       {
         id: 'tx-barber-lunas-sep2',
         date: '2 Sep 2026',
@@ -294,6 +304,24 @@ export const INITIAL_STATE: DaruWorkOSState = {
       followUpDeadline: 'Done ✓'
     },
     {
+      id: 'p-ifdony-azharuna',
+      name: 'Logo Azharuna (Ustadz Ifdony)',
+      lane: 'client_delivery',
+      boardColumn: 'DONE',
+      status: 'Done',
+      paymentStatus: 'Paid',
+      valueText: 'Rp500.000 (Lunas September 2026 ✓)',
+      nominalNumeric: 500000,
+      paidNumeric: 500000,
+      unpaidNumeric: 0,
+      priority: 'P2',
+      currentGoal: 'Desain Branding & Logo Azharuna Tuntas & Lunas',
+      nextAction: 'Handover master vector AI, EPS, SVG, PNG & PDF',
+      definitionOfDone: 'Master file logo diserahkan & pembayaran Rp500.000 lunas ✓',
+      billingMilestone: '100% Paid in Full (Rp500.000 Lunas)',
+      followUpDeadline: 'Done ✓'
+    },
+    {
       id: 'p-umi-elly',
       name: 'Umi Elly — LMS Peradaban Islam Azhariyah',
       lane: 'client_delivery',
@@ -348,6 +376,24 @@ export const INITIAL_STATE: DaruWorkOSState = {
       definitionOfDone: 'Client memilih salah satu konsep logo final',
       billingMilestone: 'Paid in Advance (Rp600k)',
       followUpDeadline: 'Touchpoint santai via WA'
+    },
+    {
+      id: 'p-ibrahim-visa',
+      name: 'Ibrahim Nawawi (Visa Student Kairo)',
+      lane: 'client_delivery',
+      boardColumn: 'WAITING',
+      status: 'Waiting Payment',
+      paymentStatus: 'Waiting Payment',
+      valueText: 'Rp1.100.000 (Invoice Terbit)',
+      nominalNumeric: 1100000,
+      paidNumeric: 0,
+      unpaidNumeric: 1100000,
+      priority: 'P2',
+      currentGoal: 'Pengurusan Visa Entry Student Kairo',
+      nextAction: 'Follow-up pembayaran & verifikasi kelengkapan dokumen (Paspor, Pasfoto, Tadaruj Dirasi)',
+      definitionOfDone: 'Pembayaran Rp1.100.000 masuk & proses kedutaan berjalan',
+      billingMilestone: 'Invoice INV/VES/2026/016 (Rp1.100.000)',
+      followUpDeadline: 'Follow-up invoice via WA'
     },
 
     // 2. MAINTENANCE
