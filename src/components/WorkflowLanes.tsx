@@ -7,6 +7,7 @@ import {
   Activity, 
   Archive,
   ArrowRight,
+  ArrowLeft,
   Filter,
   Columns,
   MessageSquare,
@@ -18,7 +19,9 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
-  Receipt
+  Receipt,
+  ChevronRight,
+  Check
 } from 'lucide-react';
 import { ProjectCard, LaneType, BoardColumn, PriorityLevel } from '../types';
 import { soundManager } from '../utils/audio';
@@ -671,15 +674,83 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                             )}
                           </div>
 
-                          {/* Action Buttons */}
-                          {project.boardColumn !== 'PARKED' && (
-                            <div className="pt-2 border-t border-zinc-200 flex items-center justify-between gap-1 text-[11px] font-mono">
+                          {/* Action Buttons & Fast Column Transit */}
+                          <div className="pt-2 border-t border-zinc-200 space-y-2 text-[11px] font-mono">
+                            
+                            {/* Fast Phase Advance Button (Lanjut ke Fase Selanjutnya) */}
+                            {project.boardColumn === 'QUEUE' && (
+                              <button
+                                onClick={() => handleSwitchColumn(project, 'DOING')}
+                                className="w-full py-1.5 px-3 rounded-xl bg-[#111111] text-white hover:bg-black font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
+                              >
+                                <span>⚡ Lanjut Eksekusi (Mulai DOING)</span>
+                                <ChevronRight className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+
+                            {project.boardColumn === 'WAITING' && (
+                              <div className="grid grid-cols-2 gap-1.5">
+                                <button
+                                  onClick={() => handleSwitchColumn(project, 'DOING')}
+                                  className="py-1.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
+                                  title="Feedback masuk / DP cair → lanjut eksekusi"
+                                >
+                                  <span>⚡ Lanjut Doing</span>
+                                  <ChevronRight className="w-3 h-3" />
+                                </button>
+                                <button
+                                  onClick={() => handleSwitchColumn(project, 'DONE')}
+                                  className="py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
+                                  title="Pembayaran lunas & tuntas"
+                                >
+                                  <span>✓ Lunas/Done</span>
+                                  <Check className="w-3 h-3" />
+                                </button>
+                              </div>
+                            )}
+
+                            {project.boardColumn === 'DOING' && (
+                              <div className="grid grid-cols-2 gap-1.5">
+                                <button
+                                  onClick={() => handleSwitchColumn(project, 'WAITING')}
+                                  className="py-1.5 px-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-bold flex items-center justify-center gap-1 border border-zinc-300 shadow-xs active:scale-95 transition-all text-[10px]"
+                                  title="Tunggu review klien / termin invoice"
+                                >
+                                  <span>⏳ Nunggu Klien</span>
+                                  <ChevronRight className="w-3 h-3" />
+                                </button>
+                                <button
+                                  onClick={() => handleSwitchColumn(project, 'DONE')}
+                                  className="py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
+                                  title="Selesai tuntas & lunas"
+                                >
+                                  <span>✅ Beres 100%</span>
+                                  <Check className="w-3 h-3" />
+                                </button>
+                              </div>
+                            )}
+
+                            {project.boardColumn === 'DONE' && (
+                              <div className="flex items-center justify-between px-1 text-[10px] text-emerald-800 font-bold">
+                                <span>✓ 100% Selesai & Bebas Tanggungan</span>
+                                <button
+                                  onClick={() => handleSwitchColumn(project, 'DOING')}
+                                  className="text-zinc-500 hover:text-black underline"
+                                  title="Revisi / Buka kembali ke Doing"
+                                >
+                                  Re-open
+                                </button>
+                              </div>
+                            )}
+
+                            {/* Secondary Actions: Focus, Invoice, WA */}
+                            <div className="flex items-center justify-between gap-1 pt-1">
                               <button
                                 onClick={() => {
                                   soundManager.playClick();
                                   onStartFocusOnProject(project);
                                 }}
-                                className="text-[#111111] hover:text-black font-medium flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-zinc-200 hover:bg-[#fafafa] transition-colors shadow-sm"
+                                className="text-[#111111] hover:text-black font-semibold flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-zinc-200 hover:bg-[#fafafa] transition-colors shadow-xs text-[10px]"
                               >
                                 <span>Focus</span>
                                 <ArrowRight className="w-3 h-3" />
@@ -692,7 +763,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                       soundManager.playClick();
                                       onOpenInvoiceForProject(project);
                                     }}
-                                    className="text-[#111111] hover:text-black flex items-center gap-1 bg-[#adc6ed]/40 px-2 py-1 rounded-lg border border-[#adc6ed] hover:bg-[#adc6ed]/70 transition-colors shadow-sm"
+                                    className="text-[#111111] hover:text-black flex items-center gap-1 bg-[#adc6ed]/40 px-2 py-1 rounded-lg border border-[#adc6ed] hover:bg-[#adc6ed]/70 transition-colors shadow-xs text-[10px]"
                                     title="Buat invoice tagihan untuk project ini"
                                   >
                                     <Receipt className="w-3 h-3 text-[#111111]" />
@@ -706,7 +777,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                       soundManager.playClick();
                                       onOpenFollowUpForProject(project);
                                     }}
-                                    className="text-[#925f18] hover:text-amber-900 flex items-center gap-1 bg-[#ffb99f]/40 px-2 py-1 rounded-lg border border-[#ffb99f] hover:bg-[#ffb99f]/70 transition-colors shadow-sm"
+                                    className="text-[#925f18] hover:text-amber-900 flex items-center gap-1 bg-[#ffb99f]/40 px-2 py-1 rounded-lg border border-[#ffb99f] hover:bg-[#ffb99f]/70 transition-colors shadow-xs text-[10px]"
                                     title="Copas follow up ke client"
                                   >
                                     <MessageSquare className="w-3 h-3" />
@@ -715,7 +786,8 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                 )}
                               </div>
                             </div>
-                          )}
+
+                          </div>
 
                         </div>
                       );

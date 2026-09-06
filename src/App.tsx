@@ -122,12 +122,65 @@ export function App() {
     setActiveTab('deepwork');
   };
 
-  // Handlers for Projects
+  // Handlers for Projects with Full Cross-System Auto-Sync
   const handleUpdateProject = (updatedProject: ProjectCard) => {
-    setState((prev) => ({
-      ...prev,
-      projects: prev.projects.map((p) => (p.id === updatedProject.id ? updatedProject : p)),
-    }));
+    setState((prev) => {
+      const updatedProjects = prev.projects.map((p) => (p.id === updatedProject.id ? updatedProject : p));
+
+      // 1. Recalculate QuickStats automatically
+      const paidClientActive = updatedProjects.filter(p => p.boardColumn === 'DOING' && p.lane === 'client_delivery').length;
+      const waitingPaymentKickoff = updatedProjects.filter(p => p.boardColumn === 'WAITING').length;
+      const maintenanceOpen = updatedProjects.filter(p => p.boardColumn === 'DOING' && p.lane === 'maintenance').length;
+      const salesAndProductActive = updatedProjects.filter(p => p.boardColumn === 'DOING' && (p.lane === 'own_product' || p.lane === 'bizdev')).length;
+
+      // 2. Automatically sync waitingItems list
+      let updatedWaitingItems = [...prev.waitingItems];
+      if (updatedProject.boardColumn === 'WAITING') {
+        const existingWaitingIdx = updatedWaitingItems.findIndex(w => w.id === `w-${updatedProject.id}` || w.name.toLowerCase().includes(updatedProject.name.toLowerCase()));
+        const waitingEntry: WaitingItem = {
+          id: existingWaitingIdx >= 0 ? updatedWaitingItems[existingWaitingIdx].id : `w-${updatedProject.id}`,
+          name: updatedProject.name,
+          reason: updatedProject.nextAction || 'Menunggu respon atau pembayaran klien',
+          value: updatedProject.valueText || 'Pending',
+          nextTrigger: 'Konfirmasi dari klien / transfer pembayaran',
+          actionToUnblock: updatedProject.nextAction || 'Follow-up via WhatsApp',
+          followUpDate: 'Hari ini',
+          status: (updatedProject.paidNumeric || 0) > 0 ? 'Waiting Approval' : 'Waiting Payment'
+        };
+        if (existingWaitingIdx >= 0) {
+          updatedWaitingItems[existingWaitingIdx] = waitingEntry;
+        } else {
+          updatedWaitingItems.unshift(waitingEntry);
+        }
+      } else {
+        // If project moved out of WAITING (to DOING or DONE), remove from waiting radar
+        updatedWaitingItems = updatedWaitingItems.filter(w => w.id !== `w-${updatedProject.id}` && !w.name.toLowerCase().includes(updatedProject.name.toLowerCase()));
+      }
+
+      // 3. Automatically sync TodayPursuit status if completed
+      const updatedTodayPursuit = prev.todayPursuit.map(tp => {
+        if (updatedProject.name.toLowerCase().includes(tp.project.toLowerCase()) || tp.project.toLowerCase().includes(updatedProject.name.toLowerCase())) {
+          return {
+            ...tp,
+            isDone: updatedProject.boardColumn === 'DONE'
+          };
+        }
+        return tp;
+      });
+
+      return {
+        ...prev,
+        projects: updatedProjects,
+        waitingItems: updatedWaitingItems,
+        todayPursuit: updatedTodayPursuit,
+        quickStats: {
+          paidClientActive,
+          waitingPaymentKickoff,
+          maintenanceOpen,
+          salesAndProductActive
+        }
+      };
+    });
   };
 
   const handleAddProject = (newProject: Omit<ProjectCard, 'id'>) => {
