@@ -19,7 +19,10 @@ import {
   TrendingUp,
   CheckCircle2,
   DollarSign,
-  Calendar
+  Calendar,
+  Check,
+  CheckSquare,
+  Square
 } from 'lucide-react';
 import { ProjectCard, FinancialReport } from '../types';
 import { soundManager } from '../utils/audio';
@@ -29,13 +32,15 @@ interface MoneyCashflowViewProps {
   financialReport?: FinancialReport;
   onOpenFollowUp?: (project: ProjectCard) => void;
   onOpenFinanceInput?: () => void;
+  onToggleExpensePaid?: (expenseId: string) => void;
 }
 
 export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
   projects,
   financialReport,
   onOpenFollowUp,
-  onOpenFinanceInput
+  onOpenFinanceInput,
+  onToggleExpensePaid
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'accounts' | 'expenses' | 'projects' | 'history' | 'archive'>('overview');
   const [selectedMonthArchive, setSelectedMonthArchive] = useState<'current' | '2026-08' | '2026-07'>('current');
@@ -861,62 +866,203 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
         </div>
       )}
 
-      {/* VIEW 3: MONTHLY EXPENSES */}
-      {activeTab === 'expenses' && (
-        <div className="space-y-4">
-          <div className="figma-shell">
-            <div className="figma-core p-5 sm:p-6 space-y-4">
-              <div className="flex justify-between items-center border-b border-zinc-200 pb-3">
-                <div>
-                  <h3 className="text-sm font-bold text-[#111111]">A. Pengeluaran Fixed Bulanan</h3>
-                  <p className="text-xs text-zinc-700 font-mono">// Wajib / Rutin: Rp2.665.000/bln</p>
-                </div>
-                <span className="dev-tag">6_ITEMS_FIXED</span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {(report.monthlyExpenses?.filter(e => e.isFixed) || []).map(item => (
-                  <div key={item.id} className="p-3.5 rounded-2xl bg-white border border-zinc-200 flex justify-between items-center">
-                    <div>
-                      <p className="text-xs font-bold text-[#111111]">{item.category}</p>
-                      <p className="text-[10px] text-zinc-500 font-mono mt-0.5">{item.notes}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-xs font-mono font-bold text-[#111111]">{item.amountText}</span>
-                      <span className="text-[9px] font-mono block text-emerald-400">{item.status}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      {/* VIEW 3: MONTHLY EXPENSES WITH MANUAL CHECKLIST */}
+      {activeTab === 'expenses' && (() => {
+        const fixedItems = report.monthlyExpenses?.filter(e => e.isFixed) || [];
+        const flexItems = report.monthlyExpenses?.filter(e => !e.isFixed) || [];
+        const fixedPaidCount = fixedItems.filter(e => e.isPaid).length;
+        const flexPaidCount = flexItems.filter(e => e.isPaid).length;
+        const totalItemsCount = fixedItems.length + flexItems.length;
+        const totalPaidCount = fixedPaidCount + flexPaidCount;
 
-          <div className="figma-shell">
-            <div className="figma-core p-5 sm:p-6 space-y-4">
-              <div className="flex justify-between items-center border-b border-zinc-200 pb-3">
-                <div>
-                  <h3 className="text-sm font-bold text-[#111111]">B. Kebutuhan Wajib Fleksibel</h3>
-                  <p className="text-xs text-zinc-700 font-mono">// Estimasi Tambahan: ~Rp1,5M – Rp2,5M/bln</p>
+        const fixedPaidTotal = fixedItems
+          .filter(e => e.isPaid && typeof e.estimatedAmount === 'number')
+          .reduce((sum, e) => sum + (e.estimatedAmount as number), 0);
+        const fixedTotalNominal = fixedItems
+          .filter(e => typeof e.estimatedAmount === 'number')
+          .reduce((sum, e) => sum + (e.estimatedAmount as number), 0);
+
+        return (
+          <div className="space-y-5 animate-fade-in">
+            {/* Top Telemetry Summary Banner */}
+            <div className="bento-card p-5 bg-[#fafafa] border border-zinc-200/90 rounded-[26px] shadow-xs flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#111111] text-white flex items-center justify-center font-black">
+                  ✓
                 </div>
-                <span className="dev-tag">5_CATEGORIES</span>
+                <div>
+                  <h4 className="text-sm font-extrabold text-[#111111]">Checklist Pengeluaran Bulanan</h4>
+                  <p className="text-xs text-zinc-600 font-mono mt-0.5">
+                    Klik kartu atau kotak centang untuk tandai pengeluaran yang sudah lo bayar/lunasin bulan ini
+                  </p>
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {(report.monthlyExpenses?.filter(e => !e.isFixed) || []).map(item => (
-                  <div key={item.id} className="p-3.5 rounded-2xl bg-white/70 border border-zinc-200 flex justify-between items-center">
-                    <div>
-                      <p className="text-xs font-semibold text-[#111111]">{item.category}</p>
-                      <p className="text-[10px] text-zinc-500 font-mono mt-0.5">{item.notes}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-xs font-mono text-zinc-700">{item.amountText}</span>
-                      <span className="text-[9px] font-mono block text-amber-400">Wajib, fleksibel</span>
-                    </div>
+
+              <div className="flex items-center gap-3 font-mono text-xs">
+                <div className="bg-white px-3.5 py-1.5 rounded-full border border-zinc-200 text-zinc-800 shadow-xs">
+                  Progres: <strong className="text-emerald-700 font-black">{totalPaidCount}/{totalItemsCount} Lunas</strong>
+                </div>
+                <div className="bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 text-emerald-800 font-bold shadow-xs">
+                  Fixed Terbayar: {formatRupiah(fixedPaidTotal)} / {formatRupiah(fixedTotalNominal)}
+                </div>
+              </div>
+            </div>
+
+            {/* A. Fixed Expenses */}
+            <div className="bento-card p-6 sm:p-7 space-y-4 border border-zinc-200/90 rounded-[28px] shadow-sm bg-white">
+              <div className="flex flex-wrap justify-between items-center border-b border-zinc-100 pb-3 gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-extrabold text-[#111111] font-sans">A. Pengeluaran Fixed Bulanan</h3>
+                    <span className="sticker-pill sticker-lime text-[10px]">
+                      {fixedPaidCount}/{fixedItems.length} SELESAI
+                    </span>
                   </div>
-                ))}
+                  <p className="text-xs text-zinc-500 font-mono mt-0.5">
+                    // Wajib / Rutin: Rp2.665.000/bln • Sudah Lunas: {formatRupiah(fixedPaidTotal)}
+                  </p>
+                </div>
+                <span className="text-[11px] font-mono text-zinc-500">
+                  Klik kartu untuk centang/uncheck
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                {fixedItems.map(item => {
+                  const isPaid = !!item.isPaid;
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        soundManager.playClick();
+                        if (onToggleExpensePaid) {
+                          onToggleExpensePaid(item.id);
+                        }
+                      }}
+                      className={`p-4 rounded-[22px] border transition-all cursor-pointer select-none flex items-start justify-between gap-3 group ${
+                        isPaid
+                          ? 'bg-emerald-50/70 border-emerald-300/80 shadow-xs'
+                          : 'bg-[#fafafa] border-zinc-200 hover:border-black/40 hover:bg-white shadow-xs'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3 min-w-0 flex-1">
+                        <button
+                          type="button"
+                          className={`mt-0.5 w-5 h-5 rounded-lg border flex items-center justify-center transition-all shrink-0 ${
+                            isPaid
+                              ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
+                              : 'bg-white border-zinc-300 group-hover:border-black'
+                          }`}
+                        >
+                          {isPaid && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                        </button>
+                        <div className="min-w-0">
+                          <p className={`text-xs font-bold leading-tight ${isPaid ? 'text-emerald-950 font-extrabold' : 'text-[#111111]'}`}>
+                            {item.category}
+                          </p>
+                          <p className="text-[10px] text-zinc-500 font-mono mt-1 leading-snug truncate">
+                            {item.notes}
+                          </p>
+                          {isPaid && item.paidDate && (
+                            <span className="inline-block mt-1 text-[9px] font-mono text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full font-semibold">
+                              Lunas {item.paidDate}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <span className={`text-xs font-mono font-black block ${isPaid ? 'text-emerald-800' : 'text-[#111111]'}`}>
+                          {item.amountText}
+                        </span>
+                        <span className={`text-[9px] font-mono block mt-1 font-bold ${
+                          isPaid ? 'text-emerald-700' : 'text-zinc-500'
+                        }`}>
+                          {isPaid ? '✓ LUNAS' : item.status}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* B. Flexible Expenses */}
+            <div className="bento-card p-6 sm:p-7 space-y-4 border border-zinc-200/90 rounded-[28px] shadow-sm bg-white">
+              <div className="flex flex-wrap justify-between items-center border-b border-zinc-100 pb-3 gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-extrabold text-[#111111] font-sans">B. Kebutuhan Wajib Fleksibel</h3>
+                    <span className="sticker-pill sticker-apricot text-[10px]">
+                      {flexPaidCount}/{flexItems.length} SELESAI
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-500 font-mono mt-0.5">
+                    // Estimasi Tambahan: ~Rp1,5M – Rp2,5M/bln • Disesuaikan kebutuhan riil harian
+                  </p>
+                </div>
+                <span className="text-[11px] font-mono text-zinc-500">
+                  Klik kartu untuk centang/uncheck
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                {flexItems.map(item => {
+                  const isPaid = !!item.isPaid;
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        soundManager.playClick();
+                        if (onToggleExpensePaid) {
+                          onToggleExpensePaid(item.id);
+                        }
+                      }}
+                      className={`p-4 rounded-[22px] border transition-all cursor-pointer select-none flex items-start justify-between gap-3 group ${
+                        isPaid
+                          ? 'bg-emerald-50/70 border-emerald-300/80 shadow-xs'
+                          : 'bg-[#fafafa] border-zinc-200 hover:border-black/40 hover:bg-white shadow-xs'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3 min-w-0 flex-1">
+                        <button
+                          type="button"
+                          className={`mt-0.5 w-5 h-5 rounded-lg border flex items-center justify-center transition-all shrink-0 ${
+                            isPaid
+                              ? 'bg-emerald-600 border-emerald-600 text-white shadow-xs'
+                              : 'bg-white border-zinc-300 group-hover:border-black'
+                          }`}
+                        >
+                          {isPaid && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                        </button>
+                        <div className="min-w-0">
+                          <p className={`text-xs font-bold leading-tight ${isPaid ? 'text-emerald-950 font-extrabold' : 'text-[#111111]'}`}>
+                            {item.category}
+                          </p>
+                          <p className="text-[10px] text-zinc-500 font-mono mt-1 leading-snug truncate">
+                            {item.notes}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <span className={`text-xs font-mono font-bold block ${isPaid ? 'text-emerald-800' : 'text-zinc-700'}`}>
+                          {item.amountText}
+                        </span>
+                        <span className={`text-[9px] font-mono block mt-1 font-bold ${
+                          isPaid ? 'text-emerald-700' : 'text-amber-700'
+                        }`}>
+                          {isPaid ? '✓ LUNAS' : item.status}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* VIEW 4: PROJECTS CASHFLOW */}
       {activeTab === 'projects' && (

@@ -274,6 +274,34 @@ export function App() {
     });
   };
 
+  const handleToggleExpensePaid = (expenseId: string) => {
+    setState((prev) => {
+      const currentReport = prev.financialReport;
+      if (!currentReport || !currentReport.monthlyExpenses) return prev;
+
+      const updatedExpenses = currentReport.monthlyExpenses.map((exp) => {
+        if (exp.id === expenseId) {
+          const nextPaid = !exp.isPaid;
+          const todayFormatted = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+          return {
+            ...exp,
+            isPaid: nextPaid,
+            paidDate: nextPaid ? todayFormatted : undefined
+          };
+        }
+        return exp;
+      });
+
+      return {
+        ...prev,
+        financialReport: {
+          ...currentReport,
+          monthlyExpenses: updatedExpenses
+        }
+      };
+    });
+  };
+
   const completedCount = state.todayBlocks.filter((b) => b.isDone).length;
 
   const tabLabels = {
@@ -469,6 +497,7 @@ export function App() {
               financialReport={state.financialReport}
               onOpenFollowUp={handleOpenFollowUpForItem}
               onOpenFinanceInput={() => setIsFinanceInputOpen(true)}
+              onToggleExpensePaid={handleToggleExpensePaid}
             />
           )}
 

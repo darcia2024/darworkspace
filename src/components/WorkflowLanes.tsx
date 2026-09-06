@@ -41,7 +41,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
   onOpenFollowUpForProject,
   onOpenInvoiceForProject
 }) => {
-  const [viewMode, setViewMode] = useState<'board' | 'lanes'>('lanes');
+  const [viewMode, setViewMode] = useState<'board' | 'lanes'>('board');
   const [selectedLane, setSelectedLane] = useState<string>('ALL');
   
   // Drag and drop state
@@ -112,10 +112,10 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
   const allLanes: LaneType[] = ['client_delivery', 'maintenance', 'bizdev', 'own_product', 'operations', 'parking_lot'];
 
   const boardColumns: { id: BoardColumn; label: string; desc: string; color: string }[] = [
-    { id: 'QUEUE', label: '1. QUEUE // ANTRIAN', desc: 'Siap dieksekusi berikutnya', color: 'border-zinc-200 text-[#111111]' },
-    { id: 'DOING', label: '2. DOING // SEDANG AKTIF', desc: 'Max 1-2 Task bersamaan', color: 'border-[#305d46]/40 text-[#305d46]' },
-    { id: 'WAITING', label: '3. WAITING // FEEDBACK & DP', desc: 'Menunggu respon/uang masuk', color: 'border-[#b87e2b]/40 text-[#925f18]' },
-    { id: 'PARKED', label: '4. PARKED // DISIMPAN', desc: 'Ide & project yang di-pause', color: 'border-zinc-200 text-zinc-700' }
+    { id: 'DOING', label: '⚡ SEDANG DIGARAP', desc: 'Fokus aktif lo hari ini', color: 'border-[#305d46]/40 text-[#305d46]' },
+    { id: 'WAITING', label: '⏳ LAGI NUNGGU', desc: 'Menunggu respon / pembayaran klien', color: 'border-[#b87e2b]/40 text-[#925f18]' },
+    { id: 'QUEUE', label: '📋 ANTRIAN KICKOFF', desc: 'Siap dieksekusi giliran berikutnya', color: 'border-zinc-200 text-[#111111]' },
+    { id: 'DONE', label: '✅ BERES & LUNAS', desc: '100% Selesai tanpa beban pikiran', color: 'border-emerald-300 text-emerald-800' }
   ];
 
   const formatRupiah = (num: number) => {
@@ -155,6 +155,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     else if (targetCol === 'QUEUE') newStatus = 'Queue';
     else if (targetCol === 'WAITING') newStatus = (project.paidNumeric || 0) > 0 ? 'Waiting Approval' : 'Waiting Payment';
     else if (targetCol === 'PARKED') newStatus = 'Parked';
+    else if (targetCol === 'DONE') newStatus = 'Done';
 
     onUpdateProject({
       ...project,
@@ -163,7 +164,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     });
 
     soundManager.playCompletionChime();
-    if (targetCol === 'DOING') {
+    if (targetCol === 'DOING' || targetCol === 'DONE') {
       confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
     }
   };
@@ -208,6 +209,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     else if (newCol === 'QUEUE') newStatus = 'Queue';
     else if (newCol === 'WAITING') newStatus = (project.paidNumeric > 0 ? 'Waiting Approval' : 'Waiting Payment');
     else if (newCol === 'PARKED') newStatus = 'Parked';
+    else if (newCol === 'DONE') newStatus = 'Done';
 
     onUpdateProject({
       ...project,
@@ -215,7 +217,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       status: newStatus
     });
 
-    if (newCol === 'DOING') {
+    if (newCol === 'DOING' || newCol === 'DONE') {
       soundManager.playCompletionChime();
       confetti({ particleCount: 25, spread: 45, origin: { y: 0.6 } });
     }

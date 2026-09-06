@@ -84,6 +84,9 @@ export interface MonthlyExpenseItem {
   status: 'Wajib' | 'Produktif / langganan aktif' | 'Wajib, fleksibel';
   isFixed: boolean;
   notes?: string;
+  isPaid?: boolean;
+  paidDate?: string;
+  paidMonth?: string;
 }
 
 export interface FinancialReport {
