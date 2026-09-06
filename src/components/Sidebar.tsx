@@ -47,7 +47,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const totalLiquid = financialReport?.totalLiquidBalance || 9892741;
+  const totalLiquid = financialReport?.totalLiquidBalance || 8306524;
+  const hardFloor = financialReport?.hardFloor || 4000000;
+  const surplusFloor = totalLiquid - hardFloor;
 
   const navItems: { id: ActiveTabType; label: string; icon: any; badge?: string; badgeColor?: string }[] = [
     { id: 'today', label: 'Sikat Hari Ini', icon: Target, badge: todayCompletedCount > 0 ? `${todayCompletedCount}/4 Tuntas` : undefined, badgeColor: 'bg-[#ecfccb] text-[#14532d] font-bold border-[#bef264]' },
@@ -195,7 +197,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <div className="text-[10px] text-zinc-500 font-mono flex items-center justify-between">
             <span>Surplus Kas Likuid</span>
-            <span className="text-emerald-800 font-extrabold">+Rp5,89M</span>
+            <span className="text-emerald-800 font-extrabold">+{formatShortRupiah(surplusFloor)}</span>
           </div>
         </div>
 

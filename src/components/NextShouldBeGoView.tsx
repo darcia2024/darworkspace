@@ -60,7 +60,10 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
   const [expandedMoveId, setExpandedMoveId] = useState<string>('move-1');
 
   const report = state.financialReport;
-  const totalLiquid = report?.totalLiquidBalance || 9892741;
+  const totalLiquid = report?.totalLiquidBalance || 8306524;
+  const hardFloor = report?.hardFloor || 4000000;
+  const surplusFloor = totalLiquid - hardFloor;
+  const formatShortRupiah = (num: number) => `Rp${(num / 1000000).toFixed(2)}M`;
 
   const strategicMoves: StrategicMove[] = [
     {
@@ -77,7 +80,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       urgency: 'IMMEDIATE',
       energyLevel: 'high',
       description: 'DP Termin 1 (Rp3M) sudah cair ke Mandiri. Klien sedang dalam momentum antusias tinggi. Eksekusi cepat modul tahap 1 adalah kartu as untuk langsung trigger invoice Termin 2 (+Rp2M) minggu ini.',
-      keyWhy: 'Ini cara paling instan buat naikin saldo kas lo jadi Rp11,89M+ dan lunasin target September 100%!',
+      keyWhy: 'Ini cara paling instan buat naikin saldo kas lo jadi Rp12,3M+ dan lunasin target September 100%!',
       actionChecklist: [
         { id: 'act-1-1', text: 'Setup folder arsitektur & struktur modular LMS Azhariyah', done: false },
         { id: 'act-1-2', text: 'Bikin dashboard kurikulum & akses santri yang rapi & estetik', done: false },
@@ -193,7 +196,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
           <div className="bento-card bento-lime p-5 rounded-[22px] border border-[#d9f99d] space-y-1.5">
             <span className="sticker-pill sticker-lime text-[9px]">01 // POSISI MOMENTUM</span>
             <span className="text-base font-extrabold text-[#111111] block font-sans">65% Target Tembus!</span>
-            <p className="text-xs text-zinc-800 font-semibold leading-snug">Kas aman di Rp9,89M (Surplus +Rp5,89M di atas Floor). Bebas utang deliverable.</p>
+            <p className="text-xs text-zinc-800 font-semibold leading-snug">Kas aman di {formatShortRupiah(totalLiquid)} (Surplus +{formatShortRupiah(surplusFloor)} di atas Floor). Bebas utang deliverable.</p>
           </div>
 
           <div className="bento-card bento-apricot p-5 rounded-[22px] border border-[#fed7aa] space-y-1.5">

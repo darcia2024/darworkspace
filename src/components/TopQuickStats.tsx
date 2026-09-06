@@ -30,12 +30,6 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
   onSelectTab,
   financialReport
 }) => {
-  const totalLiquid = financialReport?.totalLiquidBalance || 9892741;
-  const targetIncome = financialReport?.monthlyIncomeTarget || 10000000;
-  // Realized income September from verified invoices
-  const realizedIncome = 6500000;
-  const progressPercent = Math.round((realizedIncome / targetIncome) * 100);
-
   const formatRupiah = (num: number) => {
     return `Rp${num.toLocaleString('id-ID')}`;
   };
@@ -47,6 +41,16 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
     }
     return formatRupiah(num);
   };
+
+  const totalLiquid = financialReport?.totalLiquidBalance || 8306524;
+  const hardFloor = financialReport?.hardFloor || 4000000;
+  const surplusFloor = totalLiquid - hardFloor;
+  const mandiriAccount = financialReport?.accounts?.find((a) => a.name.toLowerCase().includes('mandiri'));
+  const mandiriBalanceText = mandiriAccount ? formatShortRupiah(mandiriAccount.balance) : 'Rp6,85M';
+  const targetIncome = financialReport?.monthlyIncomeTarget || 10000000;
+  // Realized income September from verified invoices
+  const realizedIncome = 6500000;
+  const progressPercent = Math.round((realizedIncome / targetIncome) * 100);
 
   // Sample micro-bar heights for the pink bento card
   const barSurges = [40, 65, 30, 85, 95, 70, 100, 80];
@@ -121,14 +125,14 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
                 {formatShortRupiah(totalLiquid)}
               </div>
               <p className="text-xs text-zinc-900 font-bold mt-1 font-medium leading-snug">
-                Total uang cair di 7 rekening (Mandiri Rp9,78M + e-wallet)
+                Total uang cair di 7 rekening (Mandiri {mandiriBalanceText} + e-wallet)
               </p>
             </div>
           </div>
 
           <div className="flex items-center justify-between pt-3 border-t border-black/10">
             <span className="text-[11px] font-mono text-zinc-700 font-medium">
-              Aman +Rp5,89M di atas batas minimal
+              Aman +{formatShortRupiah(surplusFloor)} di atas batas minimal
             </span>
             <div className="btn-circle-arrow group-hover:bg-[#111111] group-hover:text-white transition-all">
               <ArrowUpRight className="w-4 h-4" />
