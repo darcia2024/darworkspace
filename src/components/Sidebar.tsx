@@ -51,13 +51,53 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const hardFloor = financialReport?.hardFloor || 4000000;
   const surplusFloor = totalLiquid - hardFloor;
 
-  const navItems: { id: ActiveTabType; label: string; icon: any; badge?: string; badgeColor?: string }[] = [
-    { id: 'today', label: 'Sikat Hari Ini', icon: Target, badge: todayCompletedCount > 0 ? `${todayCompletedCount}/4 Tuntas` : undefined, badgeColor: 'bg-[#ecfccb] text-[#14532d] font-bold border-[#bef264]' },
-    { id: 'nextgo', label: 'Abis Ini Ngapain?', icon: Compass, badge: 'GAS', badgeColor: 'bg-[#fce7f3] text-[#9d174d] font-bold border-[#fbcfe8]' },
-    { id: 'lanes', label: 'Markas Project', icon: Layers, badge: '6 Jalur', badgeColor: 'bg-zinc-100 text-zinc-900 font-bold border-zinc-300' },
-    { id: 'waiting', label: 'Radar Tagihan & Klien', icon: Clock, badge: waitingCount > 0 ? `${waitingCount} Nunggu` : undefined, badgeColor: 'bg-[#e0f2fe] text-[#075985] font-bold border-[#bae6fd]' },
-    { id: 'money', label: 'Cek Dompet & Cuan', icon: DollarSign, badge: 'Real-Time', badgeColor: 'bg-[#ffedd5] text-[#9a3412] font-bold border-[#fed7aa]' },
-    { id: 'deepwork', label: 'Kamar Fokus 40Hz', icon: Flame, badge: 'Zen Mode', badgeColor: 'bg-[#f3e8ff] text-[#581c87] font-bold border-[#e9d5ff]' }
+  const navItems: { 
+    id: ActiveTabType; 
+    label: string; 
+    icon: any; 
+    badge?: string; 
+    badgeColor?: string;
+    subPills?: { label: string; activeTab: ActiveTabType; count?: number }[];
+  }[] = [
+    { 
+      id: 'today', 
+      label: 'Sikat Hari Ini', 
+      icon: Target, 
+      badge: todayCompletedCount > 0 ? `${todayCompletedCount}/4 Tuntas` : undefined, 
+      badgeColor: 'bg-[#ecfccb] text-[#14532d] font-bold border-[#bef264]' 
+    },
+    { 
+      id: 'nextgo', 
+      label: 'Abis Ini Ngapain?', 
+      icon: Compass, 
+      badge: 'GAS', 
+      badgeColor: 'bg-[#fce7f3] text-[#9d174d] font-bold border-[#fbcfe8]' 
+    },
+    { 
+      id: 'lanes', 
+      label: 'Markas Project & Radar', 
+      icon: Layers, 
+      badge: waitingCount > 0 ? `${waitingCount} Nunggu` : '6 Jalur', 
+      badgeColor: waitingCount > 0 ? 'bg-[#e0f2fe] text-[#075985] font-bold border-[#bae6fd]' : 'bg-zinc-100 text-zinc-900 font-bold border-zinc-300',
+      subPills: [
+        { label: '6 Jalur Kerja', activeTab: 'lanes' },
+        { label: `Radar Tagihan (${waitingCount})`, activeTab: 'waiting', count: waitingCount }
+      ]
+    },
+    { 
+      id: 'money', 
+      label: 'Cek Dompet & Cuan', 
+      icon: DollarSign, 
+      badge: 'Live Cloud', 
+      badgeColor: 'bg-[#ffedd5] text-[#9a3412] font-bold border-[#fed7aa]' 
+    },
+    { 
+      id: 'deepwork', 
+      label: 'Kamar Fokus 40Hz', 
+      icon: Flame, 
+      badge: 'Zen Mode', 
+      badgeColor: 'bg-[#f3e8ff] text-[#581c87] font-bold border-[#e9d5ff]' 
+    }
   ];
 
   const formatShortRupiah = (num: number) => {
@@ -107,35 +147,63 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <nav className="space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = activeTab === item.id;
+              const isItemActive = activeTab === item.id || (item.subPills && item.subPills.some(sp => sp.activeTab === activeTab));
 
               return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    soundManager.playClick();
-                    setActiveTab(item.id);
-                    setIsMobileOpen(false);
-                  }}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full transition-all text-xs font-semibold ${
-                    isActive
-                      ? 'bg-[#111111] text-white shadow-sm'
-                      : 'text-zinc-800 hover:text-black hover:bg-zinc-100'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-zinc-700'}`} />
-                    <span>{item.label}</span>
-                  </div>
+                <div key={item.id} className="space-y-1">
+                  <button
+                    onClick={() => {
+                      soundManager.playClick();
+                      setActiveTab(item.id);
+                      setIsMobileOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full transition-all text-xs font-semibold ${
+                      isItemActive
+                        ? 'bg-[#111111] text-white shadow-sm'
+                        : 'text-zinc-800 hover:text-black hover:bg-zinc-100'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Icon className={`w-4 h-4 ${isItemActive ? 'text-white' : 'text-zinc-700'}`} />
+                      <span>{item.label}</span>
+                    </div>
 
-                  {item.badge && (
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
-                      isActive ? 'bg-white/20 text-white border-white/20' : item.badgeColor
-                    }`}>
-                      {item.badge}
-                    </span>
+                    {item.badge && (
+                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                        isItemActive ? 'bg-white/20 text-white border-white/20' : item.badgeColor
+                      }`}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Compact Blend Sub-pills (When active or hovered) */}
+                  {item.subPills && isItemActive && (
+                    <div className="flex items-center gap-1.5 px-2 py-1 bg-zinc-100/90 rounded-2xl border border-zinc-200/80 mx-1 animate-fade-in font-mono text-[10px]">
+                      {item.subPills.map((sub) => {
+                        const isSubActive = activeTab === sub.activeTab;
+                        return (
+                          <button
+                            key={sub.activeTab}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              soundManager.playClick();
+                              setActiveTab(sub.activeTab);
+                              setIsMobileOpen(false);
+                            }}
+                            className={`flex-1 py-1 px-2 rounded-xl transition-all font-bold text-center flex items-center justify-center gap-1 ${
+                              isSubActive 
+                                ? 'bg-white text-[#111111] shadow-xs border border-black/10' 
+                                : 'text-zinc-600 hover:text-black hover:bg-white/50'
+                            }`}
+                          >
+                            <span>{sub.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
-                </button>
+                </div>
               );
             })}
           </nav>

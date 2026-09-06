@@ -243,16 +243,16 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
           <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse" />
             <h3 className="text-xl font-extrabold text-[#111111] tracking-tight font-sans">
-              <span className="lead-italic font-normal">Cashflow</span> & Treasury Radar
+              <span className="lead-italic font-normal">Dompet</span> & Radar Cuan Daru 💰
             </h3>
-            <span className="sticker-pill sticker-lime text-[9px]">
+            <span className={`sticker-pill ${isRed ? 'sticker-pink text-rose-700' : isGreen ? 'sticker-lime text-emerald-700' : 'sticker-apricot text-amber-800'} text-[9px]`}>
               {isRed 
-                ? 'RED MODE — CASH DEFENSE' 
+                ? '🚨 MODE SIAGA — DEFENSE KAS' 
                 : isGreen 
-                  ? 'GREEN MODE — GROWTH & EXPANSION' 
-                  : 'YELLOW MODE — RECOVERY STAGE 2'}
+                  ? '🚀 MODE SULTAN — GAS EXPANSION' 
+                  : '⚡ KAS NAFAS LEGA — BUFFER SOLID'}
             </span>
-            <span className="text-xs text-zinc-500 font-mono">// as of {currentFullDateStr} (Live)</span>
+            <span className="text-xs text-zinc-500 font-mono">// Update per {currentFullDateStr} (Live)</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -265,7 +265,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                 className="pill-black px-4 py-2 text-xs font-bold flex items-center gap-1.5 shadow-sm"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>+ Catat Kas / Foto Bukti</span>
+                <span>+ Catat Kas / Struk Bukti</span>
               </button>
             )}
           </div>
@@ -277,51 +277,57 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
           {/* Metric 1: Total Saldo Likuid (Apricot) */}
           <div className="bento-card bento-apricot p-5 rounded-[22px] border border-[#fed7aa] space-y-1.5">
             <span className="sticker-pill sticker-apricot text-[9px]">
-              01 // SALDO LIKUID TOTAL
+              01 // TOTAL AMUNISI CAIR
             </span>
             <span className="text-2xl sm:text-3xl font-extrabold text-[#111111] font-sans block">
               {formatRupiah(report.totalLiquidBalance)}
             </span>
             <span className="text-[11px] font-mono block text-[#c2410c] font-semibold">
               {isRed 
-                ? `< Rp4,00M Hard Floor (Mandiri Live)` 
+                ? `⚠️ Bahaya bro! Di bawah batas floor Rp4,00M` 
                 : isGreen 
-                  ? `Target +10M Tercapai! (Zona Bebas)` 
-                  : `+${formatRupiah(report.totalLiquidBalance - (report.hardFloor || 4000000))} di atas Floor (Aman)`}
+                  ? `🔥 Target 10 Jt Tembus! Saldo bebas berekspresi` 
+                  : `🛡️ Surplus +${formatRupiah(report.totalLiquidBalance - (report.hardFloor || 4000000))} di atas batas aman`}
             </span>
           </div>
 
           {/* Metric 2: Monthly Burn (Pink) */}
           <div className="bento-card bento-pink p-5 rounded-[22px] border border-[#fbcfe8] space-y-1.5">
             <span className="sticker-pill sticker-pink text-[9px]">
-              02 // REAL BURN RATE
+              02 // RITUAL PENGELUARAN BULANAN
             </span>
             <span className="text-2xl sm:text-3xl font-extrabold text-[#111111] font-sans block">
               ~{formatRupiah(report.estimatedRealBurn || 4500000)}
             </span>
             <span className="text-[11px] font-mono text-zinc-600 block">
-              Rp2,66M Wajib Tetap + ~Rp1,8M Fleksibel
+              Rp2,66M Wajib & Produktif + ~Rp1,8M Fleksibel Harian
             </span>
           </div>
 
           {/* Metric 3: Dynamic Runway (Lime) */}
           <div className="bento-card bento-lime p-5 rounded-[22px] border border-[#d9f99d] space-y-1.5">
             <span className="sticker-pill sticker-lime text-[9px]">
-              03 // DEFENSE RUNWAY
+              03 // RUNWAY NAFAS TENANG
             </span>
             <span className="text-2xl sm:text-3xl font-extrabold text-[#111111] font-sans block">
-              ±{calculatedRunwayDays} Hari
+              ±{calculatedRunwayDays} Hari Aman
             </span>
             <span className="text-[11px] font-mono text-zinc-600 block">
-              ~{calculatedRunwayMonths} Bulan operasional aman
+              Santai bro, dapur & server ngebul aman ~{calculatedRunwayMonths} bulan ke depan!
             </span>
           </div>
 
         </div>
 
         {/* Golden Rule Callout */}
-        <div className="p-4 rounded-2xl bg-[#fef9c3]/70 border border-[#fef08a] text-xs font-mono text-zinc-800">
-          <span className="text-[#854d0e] font-bold">// STRATEGI BULAN {currentMonthName.toUpperCase()} {currentYear}:</span> "Belum masuk rekening = belum jadi uang. Target mutlak: <strong>Minimal +Rp10 Juta Masuk di Bulan {currentMonthName}</strong>."
+        <div className="p-4 rounded-2xl bg-[#fef9c3]/80 border border-[#fef08a] text-xs font-mono text-zinc-800 flex items-start gap-2.5">
+          <span className="text-base leading-none mt-0.5">💡</span>
+          <div>
+            <span className="text-[#854d0e] font-bold uppercase tracking-wider">// HUKUM MUTLAK BULAN {currentMonthName.toUpperCase()} {currentYear}:</span>
+            <p className="mt-0.5 font-sans font-medium text-zinc-900 leading-relaxed text-xs">
+              "Sebelum notif mutasi bank bunyi clink, itu <strong>belum sah jadi duit</strong> bro! Fokus tagih invoice & gaspol minimal <strong className="text-emerald-800 font-mono">+Rp10.000.000</strong> masuk bulan ini."
+            </p>
+          </div>
         </div>
 
       </div>
