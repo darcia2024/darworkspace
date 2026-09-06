@@ -79,7 +79,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </span>
                 <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
               </div>
-              <p className="text-[11px] text-zinc-700 font-semibold font-mono">Markas Tempur Daru 🚀</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-[11px] text-zinc-700 font-semibold font-mono">Markas Tempur Daru 🚀</p>
+                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[9px] font-mono font-bold border border-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                  Cloud Redis
+                </span>
+              </div>
             </div>
           </div>
 

@@ -323,6 +323,11 @@ export function App() {
             <span className="text-zinc-800 font-medium">{tabLabels[activeTab]}</span>
             <span className="text-zinc-300">/</span>
             <span className="px-2.5 py-0.5 rounded-full bg-[#ecfccb] text-[#3f6212] text-[10px] font-mono font-bold border border-[#d9f99d]">LIVE ACTIVE</span>
+            <span className="text-zinc-300">/</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-mono font-bold border border-blue-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+              Cloud Sync ☁️
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
