@@ -16,6 +16,8 @@ import {
   Play, 
   Compass, 
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
   Award
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -69,73 +71,72 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
     {
       id: 'move-1',
       rank: 1,
-      badge: 'LANGKAH #1 // DUIT PALING CEPET MASUK 🚀',
+      badge: 'LANGKAH #1 // TUNTASKAN CLIENT BRANDING & KAEL FINISHING 🎯',
       badgeColor: 'bg-[#e2ecdc] text-[#305d46] border border-[#305d46]/30',
-      title: 'LMS Umi Elly Azhariyah — Sprint Modul 1 & Portal Santri',
-      subtitle: 'DP Rp3 Juta Udah Masuk Rekening → Selesaiin Modul 1 Buat Cairin +Rp2 Juta Lagi!',
-      projectTarget: 'Umi Elly — LMS Peradaban Islam Azhariyah',
+      title: 'Logo Azharuna & KAEL Finishing — Eksekusi Desain & Konfigurasi Core',
+      subtitle: 'Logo Azharuna Rp500k Udah Lunas Masuk Kas + Finishing KAEL Siap Buka Demo Tenant!',
+      projectTarget: 'Logo Azharuna & KAEL Finishing',
       roiType: 'CASH_ACCELERATOR',
-      cashImpactText: '+Rp2.000.000 (Termin 2) + Rp2.000.000 (Termin 3)',
-      timeboxMinutes: 90,
+      cashImpactText: 'Rp500.000 (Lunas Kas Mandiri) + Aset Core SaaS Pilot',
+      timeboxMinutes: 75,
       urgency: 'IMMEDIATE',
       energyLevel: 'high',
-      description: 'DP Termin 1 (Rp3M) sudah cair ke Mandiri. Klien sedang dalam momentum antusias tinggi. Eksekusi cepat modul tahap 1 adalah kartu as untuk langsung trigger invoice Termin 2 (+Rp2M) minggu ini.',
-      keyWhy: 'Ini cara paling instan buat naikin saldo kas lo jadi Rp12,3M+ dan lunasin target September 100%!',
+      description: 'Dua tugas deliverable utama yang sedang lo kerjakan aktif sekarang: tuntaskan eksplorasi konsep simbol logo Azharuna Ustadz Ifdony, dan tuntaskan finishing konfigurasi role POS & QRIS flow KAEL.',
+      keyWhy: 'Biar delivery desain Azharuna tuntas rapi dan software KAEL lo langsung siap ditawarin ke calon klien outlet!',
       actionChecklist: [
-        { id: 'act-1-1', text: 'Setup folder arsitektur & struktur modular LMS Azhariyah', done: false },
-        { id: 'act-1-2', text: 'Bikin dashboard kurikulum & akses santri yang rapi & estetik', done: false },
-        { id: 'act-1-3', text: 'Bikin video singkat demo modul 1 buat dikirim ke WA Umi Elly', done: false },
-        { id: 'act-1-4', text: 'Kirim preview ke Umi Elly & langsung tagih Termin 2 (+Rp2 Juta)', done: false },
+        { id: 'act-1-1', text: 'Eksplorasi konsep simbol, tipografi arab/modern & visual mockup Logo Azharuna', done: false },
+        { id: 'act-1-2', text: 'Finishing konfigurasi role Kasir vs Owner & sinkronisasi data POS KAEL', done: false },
+        { id: 'act-1-3', text: 'Validasi flow QRIS static & self-order checkout di tenant demo KAEL', done: false },
+        { id: 'act-1-4', text: 'Export aset logo Azharuna & siapkan preview presentasi ke Ustadz Ifdony', done: false },
       ],
-      financialUnlockNote: 'Jika modul 1 selesai: Langsung mencairkan Termin 2 (+Rp2M). Total pembayaran proyek ini: Rp7.000.000.',
-      projectRefId: 'p-umi-elly'
+      financialUnlockNote: 'Delivery tuntas untuk Logo Azharuna dan mengamankan engine KAEL siap demo pilot ke UMKM.',
+      projectRefId: 'p-ifdony-azharuna'
     },
     {
       id: 'move-2',
       rank: 2,
-      badge: 'LANGKAH #2 // BEBASKAN OTAK DARI BEBAN ✨',
+      badge: 'LANGKAH #2 // SISA TESTING & VERIFIKASI AKHIR 🧪',
       badgeColor: 'bg-[#e2edf9] text-[#2b5675] border border-[#3c6b8c]/30',
-      title: 'DreamMecca Platform — Final Polish & Official Handover',
-      subtitle: 'Udah Dibayar Lunas dari Dulu → Tinggal Serah Terima Biar Gak Ada Utang Pikiran!',
-      projectTarget: 'DreamMecca Platform',
+      title: 'Umi Elly LMS Azhariyah — Testing Modul & Verifikasi Bareng Klien',
+      subtitle: 'Modul Udah Selesai! Tinggal Sisa Testing Flow Santri Buat Cairkan Termin 2 (+Rp2 Juta)',
+      projectTarget: 'Umi Elly — LMS Peradaban Islam Azhariyah',
       roiType: 'CLEAN_DESK',
-      cashImpactText: 'Nol Utang Mental (100% Zero Historical Debt)',
-      timeboxMinutes: 50,
+      cashImpactText: '+Rp2.000.000 (Termin 2) Menunggu Verifikasi Akhir',
+      timeboxMinutes: 45,
       urgency: 'HIGH',
       energyLevel: 'medium',
-      description: 'Uang platform DreamMecca sudah lunas dibayar klien dari lama. Menuntaskan dan menyerahkan deliverable terakhir platform ini akan membersihkan sisa beban pikiran masa lalu.',
-      keyWhy: 'Biar kepala lo plong 100% dan lo bisa fokus total tanpa kepikiran sisa revisi lama!',
+      description: 'Modul utama LMS Umi Elly sudah rampung dibangun. Sekarang posisinya tinggal sisa testing modul, uji coba alur santri, dan verifikasi respon bareng Umi Elly untuk buka invoice Termin 2.',
+      keyWhy: 'Tinggal selangkah lagi testing bareng Umi Elly kelar, kas lo langsung ketambahan Rp2 Juta lagi!',
       actionChecklist: [
-        { id: 'act-2-1', text: 'Review kelengkapan UI paket umrah & alur kontak WhatsApp', done: false },
-        { id: 'act-2-2', text: 'Testing respon form & checklist deploy production', done: false },
-        { id: 'act-2-3', text: 'Kirim link akses final & pesan serah terima resmi ke owner DreamMecca', done: false },
-        { id: 'act-2-4', text: 'Tandai status Done & arsipkan ke portfolio selesai', done: false },
+        { id: 'act-2-1', text: 'Simulasi alur santri login, buka materi kurikulum & pengerjaan latihan', done: false },
+        { id: 'act-2-2', text: 'Testing respon form & checklist validasi akses bareng Umi Elly', done: false },
+        { id: 'act-2-3', text: 'Konfirmasi hasil testing ke Umi Elly via WA & ajukan invoice Termin 2 (+Rp2M)', done: false },
       ],
-      financialUnlockNote: 'Memberikan reputasi tier-1 dan membebaskan 100% fokus untuk scaling SaaS.',
-      projectRefId: 'p-dreammecca'
+      financialUnlockNote: 'Testing sukses langsung membuka pencairan Termin 2 (+Rp2.000.000). Total deal Rp7.000.000.',
+      projectRefId: 'p-umi-elly'
     },
     {
       id: 'move-3',
       rank: 3,
-      badge: 'LANGKAH #3 // MESIN CUAN PASIF (RECURRING) 💼',
+      badge: 'LANGKAH #3 // BLUEPRINT ARSITEKTUR & PIPELINE CUAN 📐',
       badgeColor: 'bg-[#f0e6f9] text-[#4e3a68] border border-[#4e3a68]/30',
-      title: 'KAEL POS SaaS — Repackage Core Engine & Demo Multi-Tenant',
-      subtitle: 'Kemarin Sukses Dijual Rp6M di Barber → Sekarang Waktunya Dijual Berulang Tiap Bulan!',
-      projectTarget: 'Setting KAEL (Core Product)',
+      title: 'Rancangan Komisi Peduli Interaksi & Rancangan LMS Al Madroj',
+      subtitle: 'Dua Fondasi Sistem Baru Sedang Dirancang: Pipeline Alur Komisi & Arsitektur Kelas Al Madroj!',
+      projectTarget: 'Rancangan Komisi Interaksi & LMS Al Madroj',
       roiType: 'WEALTH_SCALE',
-      cashImpactText: 'Langganan Bulanan (MRR) dari Jaringan Outlet',
-      timeboxMinutes: 45,
+      cashImpactText: 'Sistem Pipeline Komisi + Prospek Deal Proyek Platform LMS',
+      timeboxMinutes: 60,
       urgency: 'STRATEGIC',
       energyLevel: 'creative',
-      description: 'Engine kasir & membership Barber Underrated kemarin terbukti berhasil lo jual Rp6 Juta lunas. Sekarang saatnya membungkus core yang sama jadi SaaS multi-outlet untuk passive recurring cashflow.',
-      keyWhy: 'Biar lo gak terus-terusan barter waktu sama uang, tapi punya aset software yang ngasilin cuan terus.',
+      description: 'Lagi aktif menyusun blueprint alur kerja dan sistem Komisi Peduli Interaksi, sekaligus merancang struktur fitur modul & kurikulum platform kelas LMS Al Madroj.',
+      keyWhy: 'Rancangan arsitektur yang solid bikin closing deal jauh lebih gampang dan deliverable nanti gak berantakan.',
       actionChecklist: [
-        { id: 'act-3-1', text: 'Kunci konfigurasi permission role Kasir vs Owner vs Admin', done: false },
-        { id: 'act-3-2', text: 'Rapikan demo tenant kafe/barber siap live pitch ke calon klien', done: false },
-        { id: 'act-3-3', text: 'Siapkan list 3-5 calon outlet prospek pilot pertama', done: false },
+        { id: 'act-3-1', text: 'Susun mapping workflow alur kerja & sistem struktur komisi Peduli Interaksi', done: false },
+        { id: 'act-3-2', text: 'Petakan arsitektur modul kurikulum & user flow platform kelas Al Madroj', done: false },
+        { id: 'act-3-3', text: 'Dokumentasikan technical scope & wireframe konsep siap presentasi', done: false },
       ],
-      financialUnlockNote: 'Potensi penambahan kas stabil Rp1.500.000 - Rp5.000.000/bulan per cluster tenant.',
-      projectRefId: 'p-kael-product'
+      financialUnlockNote: 'Membangun pipeline pendapatan baru dari komisi operasional dan kesepakatan build platform Al Madroj.',
+      projectRefId: 'p-komisi-interaksi'
     }
   ];
 
@@ -266,6 +267,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
             const isExpanded = expandedMoveId === move.id;
             const completedCount = move.actionChecklist.filter(a => completedActions[`${move.id}_${a.id}`]).length;
             const totalActionCount = move.actionChecklist.length;
+            const progress = totalActionCount > 0 ? Math.round((completedCount / totalActionCount) * 100) : 0;
 
             const moveThemes = {
               'move-1': { bg: 'bento-apricot', border: 'border-[#fed7aa]', sticker: 'sticker-apricot' },
@@ -325,76 +327,94 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
                     Progress Tindakan: <strong className={completedCount > 0 ? "text-[#15803d] font-bold" : "text-[#111111]"}>{completedCount}/{totalActionCount} Selesai</strong>
                   </div>
 
-                  <button
-                    onClick={() => {
-                      soundManager.playClick();
-                      setExpandedMoveId(isExpanded ? '' : move.id);
-                    }}
-                    className="text-xs text-zinc-800 hover:text-black font-semibold flex items-center gap-1 underline underline-offset-4"
-                  >
-                    <span>{isExpanded ? 'Tutup Detail Rencana' : 'Buka Checklist & Roadmap Eksekusi'}</span>
-                    <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleLaunchMoveFocus(move)}
+                      className="pill-black px-4 py-2 text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm hover:scale-105 transition-all"
+                    >
+                      <Zap className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Sikat Fokus</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        soundManager.playClick();
+                        setExpandedMoveId(isExpanded ? '' : move.id);
+                      }}
+                      className="p-2 rounded-full border border-zinc-200 hover:bg-zinc-100 transition-colors text-zinc-600"
+                    >
+                      {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
 
-                {/* Expanded Action Checklist & Details */}
+                {/* Progress Mini Bar */}
+                <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between gap-4 text-xs font-mono">
+                  <div className="flex-1 flex items-center gap-2">
+                    <span className="text-[11px] text-zinc-500">Progress:</span>
+                    <div className="flex-1 bg-zinc-100 h-2 rounded-full overflow-hidden max-w-[200px]">
+                      <div 
+                        className="bg-[#111111] h-full rounded-full transition-all duration-300" 
+                        style={{ width: `${progress}%` }} 
+                      />
+                    </div>
+                    <span className="text-[11px] font-bold text-[#111111]">{completedCount}/{move.actionChecklist.length}</span>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                      {move.cashImpactText}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Expanded Action Detail */}
                 {isExpanded && (
-                  <div className="pt-4 border-t border-black/10 space-y-4 animate-fade-in">
+                  <div className="mt-5 pt-4 border-t border-zinc-100 space-y-4 animate-fade-in text-xs font-mono">
+                    <div className="p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/70 text-zinc-700 leading-relaxed font-sans">
+                      <strong className="text-black font-mono font-bold block mb-1">// KENAPA INI PENTING BANGET:</strong>
+                      {move.description} <br />
+                      <span className="font-semibold text-emerald-800 font-sans mt-1 inline-block">💡 {move.keyWhy}</span>
+                    </div>
+
                     <div className="space-y-2">
-                      <span className="text-[11px] font-mono text-zinc-800 font-semibold uppercase font-bold tracking-wider block">
-                        Checklist Eksekusi Micro-Step (Tandai Saat Selesai):
+                      <span className="text-[11px] uppercase font-bold text-zinc-500 tracking-wider">
+                        CHECKLIST AKSI PRAKTIS:
                       </span>
-                      <div className="space-y-2">
+                      <div className="space-y-1.5">
                         {move.actionChecklist.map((act) => {
                           const isDone = !!completedActions[`${move.id}_${act.id}`];
                           return (
-                            <button
+                            <div
                               key={act.id}
                               onClick={() => toggleAction(move.id, act.id)}
-                              className={`w-full p-3.5 rounded-2xl border text-left transition-all flex items-start gap-3 ${
+                              className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                                 isDone 
-                                  ? 'bg-[#ecfccb] border-[#d9f99d] text-[#15803d]' 
-                                  : 'bg-white/80 border-black/10 hover:border-black/30 text-zinc-900'
+                                  ? 'bg-emerald-50/70 border-emerald-200 text-zinc-400 line-through' 
+                                  : 'bg-white border-zinc-200 hover:border-black/40 text-[#111111]'
                               }`}
                             >
-                              <div className="mt-0.5 shrink-0">
-                                {isDone ? (
-                                  <CheckCircle2 className="w-4 h-4 text-[#15803d]" />
-                                ) : (
-                                  <Circle className="w-4 h-4 text-zinc-600 font-bold" />
-                                )}
+                              <div className="flex items-center gap-3 font-sans text-xs">
+                                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                                  isDone ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-zinc-400'
+                                }`}>
+                                  {isDone && <CheckCircle2 className="w-3.5 h-3.5" />}
+                                </div>
+                                <span className={isDone ? 'font-normal' : 'font-semibold'}>{act.text}</span>
                               </div>
-                              <span className={`text-xs font-sans font-medium leading-relaxed ${isDone ? 'line-through text-zinc-700 font-medium' : ''}`}>
-                                {act.text}
+                              <span className="text-[10px] font-mono text-zinc-400">
+                                {isDone ? 'DONE' : 'KLIK UNTUK SELESAIKAN'}
                               </span>
-                            </button>
+                            </div>
                           );
                         })}
                       </div>
                     </div>
 
-                    {/* Financial Unlock Impact Simulation Box */}
-                    <div className="p-3.5 rounded-2xl bg-white/70 border border-black/5 text-xs font-mono space-y-1">
-                      <span className="text-[#15803d] font-bold block">// EFEK KE SALDO REKENING:</span>
-                      <p className="text-zinc-700">{move.financialUnlockNote}</p>
-                    </div>
-
-                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                      <button
-                        onClick={() => onSelectTab('lanes')}
-                        className="text-xs text-zinc-700 hover:text-black font-mono font-semibold flex items-center gap-1"
-                      >
-                        <span>Lihat detail di Board Kanban</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
-
-                      <button
-                        onClick={() => handleLaunchMoveFocus(move)}
-                        className="pill-black text-xs font-bold font-mono flex items-center gap-1.5 shadow-md"
-                      >
-                        <Play className="w-3 h-3 fill-current" />
-                        <span>Mulai Eksekusi {move.timeboxMinutes}m Sekarang</span>
-                      </button>
+                    <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-900 font-sans text-xs flex items-center justify-between">
+                      <span>{move.financialUnlockNote}</span>
+                      <span className="font-mono text-[10px] font-bold text-amber-800 uppercase px-2 py-0.5 bg-amber-200/60 rounded">
+                        UNLOCK
+                      </span>
                     </div>
                   </div>
                 )}
@@ -424,11 +444,11 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
               <span className="sticker-pill sticker-lime text-[9px]">FASE 1 // 1-3 SEP</span>
               <span className="text-[#15803d] font-bold">✓ TUNTAS</span>
             </div>
-            <h5 className="font-extrabold text-[#111111] font-sans text-xs">Cash Defense & Kickoff</h5>
+            <h5 className="font-extrabold text-[#111111] font-sans text-xs">Cash Defense & Closing</h5>
             <p className="text-[11px] text-zinc-700 font-sans leading-snug">
-              • Barber lunas Rp6M<br />
-              • DP Umi Elly Rp3M masuk<br />
-              • Saldo aman Rp9,89M
+              • Barber lunas Rp6M ✓<br />
+              • DreamMecca 100% selesai ✓<br />
+              • DP Umi Elly Rp3M masuk ✓
             </p>
           </div>
 
@@ -438,11 +458,11 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
               <span className="sticker-pill sticker-apricot text-[9px]">FASE 2 // 4-10 SEP</span>
               <span className="text-[#c2410c] font-bold animate-pulse">SEDANG AKTIF</span>
             </div>
-            <h5 className="font-extrabold text-[#111111] font-sans text-xs">Sprint Modul 1 & Handover</h5>
+            <h5 className="font-extrabold text-[#111111] font-sans text-xs">Active Build & Architecture</h5>
             <p className="text-[11px] text-zinc-700 font-sans leading-snug">
-              • Modul 1 LMS Umi Elly<br />
-              • Handover DreamMecca<br />
-              • Siap tagih Termin 2 (+Rp2M)
+              • Logo Azharuna & KAEL Finishing<br />
+              • Umi Elly sisa testing modul<br />
+              • Rancang Komisi & LMS Al Madroj
             </p>
           </div>
 
@@ -452,11 +472,11 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
               <span className="sticker-pill sticker-blue text-[9px]">FASE 3 // 11-20 SEP</span>
               <span className="text-[#0369a1] font-bold">NEXT HARVEST</span>
             </div>
-            <h5 className="font-extrabold text-[#111111] font-sans text-xs">Cairkan Termin 2 & KAEL</h5>
+            <h5 className="font-extrabold text-[#111111] font-sans text-xs">Cairkan Termin 2 & Demo KAEL</h5>
             <p className="text-[11px] text-zinc-700 font-sans leading-snug">
-              • Masuk Termin 2 (+Rp2M)<br />
-              • Demo KAEL ke 3 outlet<br />
-              • Kas tembus Rp11M+
+              • Masuk Termin 2 Umi Elly (+Rp2M)<br />
+              • Pitching demo KAEL ke outlet<br />
+              • Kas tembus Rp10,3M+
             </p>
           </div>
 
@@ -468,9 +488,9 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
             </div>
             <h5 className="font-extrabold text-[#111111] font-sans text-xs">Termin 3 & Growth Mode</h5>
             <p className="text-[11px] text-zinc-700 font-sans leading-snug">
-              • Masuk Termin 3 (+Rp2M)<br />
+              • Pelunasan Termin 3 (+Rp2M)<br />
               • Pilot pertama KAEL jalan<br />
-              • Kas surplus +Rp5,5M bersih
+              • Kas tembus Rp12,3M+ bersih
             </p>
           </div>
 
@@ -496,7 +516,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
           }}
           className="pill-black px-6 py-3 text-xs font-bold font-mono flex items-center gap-2 shadow-lg hover:scale-105 transition-transform"
         >
-          <span>Mulai Move #1: LMS Umi Elly (90m)</span>
+          <span>Mulai Move #1: Logo Azharuna & KAEL (75m)</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

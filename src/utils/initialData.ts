@@ -2,16 +2,18 @@ import { DaruWorkOSState } from '../types';
 
 export const INITIAL_STATE: DaruWorkOSState = {
   todayPursuit: [
-    { id: 'tp-1', project: 'Barbershop Underrated', action: '🏆 BARBERSHOP 100% LUNAS FULL PAYMENT! (+Pelunasan Rp3.000.000 Masuk Mandiri ✓)', isDone: true },
-    { id: 'tp-2', project: 'Umi Elly LMS', action: '🚀 KICKOFF SPRINT: DP Termin 1 Rp3.000.000 LUNAS MASUK! Gaspol eksekusi modul LMS Azhariyah', isDone: false },
-    { id: 'tp-3', project: 'Zalvice & Laptopbisnis', action: '🎨 2 LOGO DESIGN KELAR! (Zalvice & Laptopbisnis 100% Selesai & Lunas ✓)', isDone: true },
-    { id: 'tp-4', project: 'DreamMecca & KAEL Core', action: 'Finishing touch platform DreamMecca & setting config tenant KAEL', isDone: false },
+    { id: 'tp-1', project: 'Logo Azharuna', action: '🎨 Pengerjaan konsep & eksplorasi visual identitas Logo Azharuna', isDone: false },
+    { id: 'tp-2', project: 'KAEL Finishing', action: '⚡ Finishing konfigurasi core product, flow POS & persiapan pilot', isDone: false },
+    { id: 'tp-3', project: 'Rancangan Komisi Peduli Interaksi', action: '📑 Susun rancangan sistem & alur kerja Komisi Peduli Interaksi', isDone: false },
+    { id: 'tp-4', project: 'Rancangan LMS Al Madroj', action: '📐 Pemetaan arsitektur fitur & modul platform LMS Al Madroj', isDone: false },
+    { id: 'tp-5', project: 'Umi Elly LMS', action: '🧪 Sisa testing modul & validasi akhir bareng Umi Elly', isDone: false },
+    { id: 'tp-6', project: 'DreamMecca & Barber Underrated', action: '🏆 100% Selesai & Lunas tuntas! (Bebas utang pikiran ✓)', isDone: true },
   ],
   quickStats: {
-    paidClientActive: 3, // DreamMecca (Lunas lama), Barber (100% Lunas Rp6M), Umi Elly Kickoff (DP Rp3M)
-    waitingPaymentKickoff: 0, // All Kickoff payments confirmed!
+    paidClientActive: 3, // Umi Elly (Testing), Logo Azharuna (Aktif), KAEL Finishing
+    waitingPaymentKickoff: 0, // Kickoff aman
     maintenanceOpen: 1, // Markaz Fiqih
-    salesAndProductActive: 2, // Setting KAEL & Upwork
+    salesAndProductActive: 3, // KAEL Finishing, Rancangan Komisi Peduli Interaksi, Rancangan LMS Al Madroj
   },
   financialReport: {
     asOfDate: '6 September 2026',
@@ -174,38 +176,47 @@ export const INITIAL_STATE: DaruWorkOSState = {
     {
       id: 'tb-1',
       blockType: 'Deep Work 1',
-      projectName: 'Umi Elly — LMS Azhariyah',
-      action: '🚀 KICKOFF SPRINT: DP Rp3M LUNAS! Setup arsitektur modular LMS Azhariyah & struktur materi pembelajaran',
-      timeboxMinutes: 90,
+      projectName: 'Logo Azharuna',
+      action: '🎨 Eksplorasi konsep simbol & typography identitas visual Logo Azharuna',
+      timeboxMinutes: 60,
       isDone: false,
-      rule: 'KICKOFF SPRINT: Bangun pondasi LMS dengan clean UI & arsitektur cepat untuk Umi Elly.'
+      rule: 'Fokus desain logo clean, bermakna, dan siap presentasi ke klien.'
     },
     {
       id: 'tb-2',
       blockType: 'Deep Work 2',
-      projectName: 'Website & Kasir Barber',
-      action: '🏆 100% LUNAS FULL PAYMENT! Pelunasan Rp3.000.000 masuk kas Mandiri & serah terima live',
+      projectName: 'KAEL Finishing',
+      action: '⚡ Finishing konfigurasi core product, flow POS kasir & validasi fitur pilot',
       timeboxMinutes: 60,
-      isDone: true,
-      rule: 'BARBERSHOP 100% TUNTAS ✓: Selesai penuh dan uang lunas Rp6.000.000 di rekening!'
+      isDone: false,
+      rule: 'Kunci stabilitas flow kasir vs owner agar langsung siap demo/closing pilot.'
     },
     {
       id: 'tb-3',
       blockType: 'Growth Block',
-      projectName: 'DreamMecca Platform',
-      action: 'Finishing touch platform DreamMecca (Lunas dari lama) agar bebas tanggungan deliverable',
+      projectName: 'Rancangan Komisi Peduli Interaksi',
+      action: '📑 Susun konsep & perancangan sistem alur kerja Komisi Peduli Interaksi',
       timeboxMinutes: 60,
       isDone: false,
-      rule: 'Finishing deliverable platform & serahkan tuntas ke klien.'
+      rule: 'Petakan blueprint alur interaksi dan struktur komisi secara komprehensif.'
     },
     {
       id: 'tb-4',
       blockType: 'Admin/Product',
-      projectName: 'Setting KAEL SaaS',
-      action: 'Setting config core product, role kasir vs owner & persiapan pilot tenant',
+      projectName: 'Rancangan LMS Al Madroj',
+      action: '📐 Rancang struktur fitur, modul kurikulum & arsitektur LMS Al Madroj',
+      timeboxMinutes: 50,
+      isDone: false,
+      rule: 'Susun scope arsitektur platform kelas yang solid sebelum masuk fase build.'
+    },
+    {
+      id: 'tb-5',
+      blockType: 'Admin/Maintenance',
+      projectName: 'Umi Elly — LMS Azhariyah',
+      action: '🧪 Sisa testing modul, flow santri & verifikasi respon bareng Umi Elly',
       timeboxMinutes: 45,
       isDone: false,
-      rule: 'Fokus setting & fix hal yang mendukung operasional closing pilot.'
+      rule: 'Tinggal sisa testing akhir untuk verifikasi kelancaran sebelum handover total.'
     }
   ],
   projects: [
@@ -214,20 +225,20 @@ export const INITIAL_STATE: DaruWorkOSState = {
       id: 'p-dreammecca',
       name: 'DreamMecca Platform',
       lane: 'client_delivery',
-      boardColumn: 'DOING',
-      status: 'Doing',
+      boardColumn: 'DONE',
+      status: 'Done',
       paymentStatus: 'Paid',
-      valueText: 'Lunas dari lama (Finishing Deliverables)',
+      valueText: 'Lunas & Selesai Tuntas ✓',
       nominalNumeric: 0,
       paidNumeric: 0,
       unpaidNumeric: 0,
       priority: 'P1',
-      currentGoal: 'Finishing deliverable platform & landing DreamMecca sampai tuntas',
-      nextAction: 'Final touch UI/UX, konten paket umrah & handover ke klien',
+      currentGoal: '100% SELESAI & TUNTAS! (Platform live & serah terima beres)',
+      nextAction: 'Project tuntas 100% — Bebas utang deliverable & pikiran plong ✓',
       definitionOfDone: 'Platform DreamMecca live & tuntas diserahkan ke klien ✓',
-      rule: 'Finishing deliverable yang sudah lunas dari lama agar bebas tanggungan.',
-      billingMilestone: 'Paid in Full (Historical)',
-      followUpDeadline: 'Finishing malam ini'
+      rule: '100% Selesai & beres.',
+      billingMilestone: 'Paid in Full & Handover Done ✓',
+      followUpDeadline: 'Done ✓'
     },
     {
       id: 'p-zalvice',
@@ -308,19 +319,19 @@ export const INITIAL_STATE: DaruWorkOSState = {
       id: 'p-ifdony-azharuna',
       name: 'Logo Azharuna (Ustadz Ifdony)',
       lane: 'client_delivery',
-      boardColumn: 'DONE',
-      status: 'Done',
+      boardColumn: 'DOING',
+      status: 'Doing',
       paymentStatus: 'Paid',
       valueText: 'Rp500.000 (Lunas September 2026 ✓)',
       nominalNumeric: 500000,
       paidNumeric: 500000,
       unpaidNumeric: 0,
-      priority: 'P2',
-      currentGoal: 'Desain Branding & Logo Azharuna Tuntas & Lunas',
-      nextAction: 'Handover master vector AI, EPS, SVG, PNG & PDF',
-      definitionOfDone: 'Master file logo diserahkan & pembayaran Rp500.000 lunas ✓',
+      priority: 'P1',
+      currentGoal: 'Pengerjaan Desain Branding & Eksplorasi Logo Azharuna',
+      nextAction: 'Eksplorasi konsep simbol, tipografi arab/modern & visual mockup',
+      definitionOfDone: 'Konsep logo final terpilih & master vector diserahkan ✓',
       billingMilestone: '100% Paid in Full (Rp500.000 Lunas)',
-      followUpDeadline: 'Done ✓'
+      followUpDeadline: 'Sedang dikerjakan hari ini'
     },
     {
       id: 'p-umi-elly',
@@ -329,17 +340,17 @@ export const INITIAL_STATE: DaruWorkOSState = {
       boardColumn: 'DOING',
       status: 'Doing',
       paymentStatus: 'Partial',
-      valueText: 'Deal Rp7.000.000 (Termin 1: DP Rp3M LUNAS ✓ • Sisa Termin 2 & 3 Rp4M)',
+      valueText: 'Deal Rp7.000.000 (DP Rp3M Lunas ✓ • Tinggal Sisa Testing)',
       nominalNumeric: 7000000,
       paidNumeric: 3000000,
       unpaidNumeric: 4000000,
       priority: 'P1',
-      currentGoal: 'DP Termin 1 Rp3.000.000 SUDAH MASUK! 🚀 Gaspol kickoff sprint pengerjaan modul lengkap LMS Azhariyah',
-      nextAction: 'Eksekusi modul LMS Peradaban Islam Azhariyah & struktur materi pembelajaran',
-      definitionOfDone: 'Modul LMS Peradaban Islam Azhariyah live & deploy',
-      rule: 'DP Rp3M sudah masuk kas: Gaspol sprint pengerjaan modul lengkap dengan standar kualitas tinggi.',
+      currentGoal: 'Modul Selesai! Sisa fase testing flow santri & verifikasi akhir sebelum serah terima',
+      nextAction: 'Testing fungsionalitas modul & validasi akses bareng Umi Elly',
+      definitionOfDone: 'Testing tuntas, feedback clear, siap trigger pelunasan Termin 2 (+Rp2M) ✓',
+      rule: 'Sisa testing: Pastikan semua alur modul lancar sebelum handover total.',
       billingMilestone: 'Termin 1: DP Rp3.000.000 (LUNAS ✓) • Termin 2: Rp2.000.000 • Termin 3: Rp2.000.000',
-      followUpDeadline: 'Sprint Kickoff Aktif'
+      followUpDeadline: 'Sesi testing hari ini'
     },
     {
       id: 'p-el-massa',
@@ -459,22 +470,40 @@ export const INITIAL_STATE: DaruWorkOSState = {
       followUpDeadline: 'Malam ini saat rilis job baru'
     },
     {
-      id: 'p-watra',
-      name: 'Al Madroj / Watra',
+      id: 'p-komisi-interaksi',
+      name: 'Rancangan Komisi Peduli Interaksi',
       lane: 'bizdev',
-      boardColumn: 'WAITING',
-      status: 'Discovery / Lead',
+      boardColumn: 'DOING',
+      status: 'Doing',
       paymentStatus: 'Expected',
-      valueText: 'Website/Platform Kelas LMS',
+      valueText: 'Perancangan Sistem & Pipeline Alur Kerja',
       nominalNumeric: 0,
       paidNumeric: 0,
       unpaidNumeric: 0,
-      priority: 'P3',
-      currentGoal: 'Gali scope yang sebenarnya untuk platform kelas/LMS',
-      nextAction: 'Follow-up dan gali scope yang sebenarnya',
-      definitionOfDone: 'Scope proposal terkirim',
-      billingMilestone: 'Proposal Acceptance',
-      followUpDeadline: 'Follow-up chat'
+      priority: 'P1',
+      currentGoal: 'Penyusunan blueprint & arsitektur sistem Komisi Peduli Interaksi',
+      nextAction: 'Pemetaan workflow alur interaksi, struktur komisi & dokumentasi sistem',
+      definitionOfDone: 'Draft rancangan komisi disetujui & siap masuk implementasi teknis',
+      billingMilestone: 'System Blueprint Accepted',
+      followUpDeadline: 'Sedang dirancang aktif'
+    },
+    {
+      id: 'p-watra',
+      name: 'Rancangan LMS Al Madroj',
+      lane: 'bizdev',
+      boardColumn: 'DOING',
+      status: 'Doing',
+      paymentStatus: 'Expected',
+      valueText: 'Platform Kelas LMS (Fase Rancangan Arsitektur)',
+      nominalNumeric: 0,
+      paidNumeric: 0,
+      unpaidNumeric: 0,
+      priority: 'P1',
+      currentGoal: 'Perancangan komprehensif arsitektur platform & modul kelas Al Madroj',
+      nextAction: 'Penyusunan modul kurikulum, alur santri, role pengajar & scope teknis',
+      definitionOfDone: 'Scope proposal & blueprint teknis LMS Al Madroj tuntas',
+      billingMilestone: 'Scope & Architecture Accepted',
+      followUpDeadline: 'Penyusunan blueprint arsitektur'
     },
 
     // 4. OWN PRODUCT — KAEL Demo by Industry
@@ -605,12 +634,12 @@ export const INITIAL_STATE: DaruWorkOSState = {
     {
       id: 'w-umi-elly',
       name: 'Umi Elly — LMS Peradaban Islam Azhariyah',
-      reason: 'Demo prototype sudah dikirim — Menunggu feedback & transfer Termin 1 DP Rp3.000.000 (Deal Rp7M)',
-      value: 'Deal Rp7.000.000 (DP Rp3jt OTW)',
-      nextTrigger: 'Transfer termin 1 (Rp3jt) masuk',
-      actionToUnblock: 'Konfirmasi feedback demo & tanggal transfer termin 1',
+      reason: 'Modul siap & live — Sisa testing flow santri & verifikasi respon bareng Umi Elly sebelum pelunasan Termin 2 (+Rp2M)',
+      value: 'Deal Rp7.000.000 (Termin 2 Rp2jt OTW)',
+      nextTrigger: 'Testing modul selesai & feedback Umi Elly oke',
+      actionToUnblock: 'Testing bareng Umi Elly & trigger invoice Termin 2',
       followUpDate: 'Hari ini / Besok',
-      status: 'Waiting Payment'
+      status: 'Waiting Client'
     },
     {
       id: 'w-el-massa',
@@ -631,16 +660,6 @@ export const INITIAL_STATE: DaruWorkOSState = {
       actionToUnblock: 'Touchpoint santai via WhatsApp',
       followUpDate: 'Bulan ini',
       status: 'Waiting Approval'
-    },
-    {
-      id: 'w-watra',
-      name: 'Al Madroj / Watra',
-      reason: 'Menunggu eksplorasi scope kebutuhan website/LMS kelas',
-      value: 'Lead Pipeline',
-      nextTrigger: 'Meeting/Chat discovery scope',
-      actionToUnblock: 'Follow-up dan gali scope yang sebenarnya',
-      followUpDate: 'Minggu ini',
-      status: 'Discovery'
     }
   ]
 };

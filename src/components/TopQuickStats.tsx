@@ -241,22 +241,22 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
                 ACTION HARI INI
               </span>
               <span className="text-[10px] font-mono bg-white/80 px-2 py-0.5 rounded-full text-[#3f6212] font-bold border border-[#d9f99d]">
-                STEP 1
+                ACTIVE
               </span>
             </div>
             <div className="mt-3">
               <div className="text-xl font-bold tracking-tight text-[#111111]">
-                Sprint Modul 1
+                Azharuna & KAEL
               </div>
               <p className="text-xs text-zinc-900 font-medium mt-1 leading-relaxed">
-                Kelar Modul 1 LMS Umi Elly → Langsung cair Termin 2 (+Rp2 Juta!)
+                Desain Logo Azharuna (Lunas) + Finishing Konfigurasi POS Kasir KAEL
               </p>
             </div>
           </div>
 
           <div className="flex items-center justify-between pt-3 border-t border-black/10">
             <span className="text-[11px] font-mono text-[#3f6212] font-bold">
-              Fokus: 90 Menit Aja
+              Fokus: 75 Menit Aja
             </span>
             <div className="btn-circle-arrow group-hover:bg-[#111111] group-hover:text-white transition-all">
               <ArrowUpRight className="w-4 h-4" />
@@ -269,15 +269,16 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
       {/* 3. CLIENT / PARTNER MONOCHROME LOGOS STRIP */}
       <div className="py-2 px-4 rounded-2xl bg-white border border-zinc-200/70 shadow-sm flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-zinc-500">
         <span className="text-[10px] uppercase font-bold text-zinc-700 font-bold tracking-wider">
-          PARTNER & PROJECT AKTIF LO:
+          PROJECT AKTIF & SELESAI:
         </span>
         <div className="flex flex-wrap items-center gap-5 sm:gap-8 font-semibold text-zinc-700">
-          <span className="hover:text-black transition-colors cursor-default">BARBER UNDERRATED</span>
-          <span className="hover:text-black transition-colors cursor-default">UMI ELLY AZHARIYAH</span>
-          <span className="hover:text-black transition-colors cursor-default">DREAMMECCA</span>
-          <span className="hover:text-black transition-colors cursor-default">ZALVICE STUDIO</span>
-          <span className="hover:text-black transition-colors cursor-default">MARKAZ FIQIH</span>
-          <span className="hover:text-black transition-colors cursor-default">KAEL POS SAAS</span>
+          <span className="hover:text-black transition-colors cursor-default">LOGO AZHARUNA</span>
+          <span className="hover:text-black transition-colors cursor-default">KAEL FINISHING</span>
+          <span className="hover:text-black transition-colors cursor-default">KOMISI PEDULI INTERAKSI</span>
+          <span className="hover:text-black transition-colors cursor-default">LMS AL MADROJ</span>
+          <span className="hover:text-black transition-colors cursor-default text-emerald-700">✓ UMI ELLY (TESTING)</span>
+          <span className="hover:text-black transition-colors cursor-default text-emerald-700">✓ DREAMMECCA (DONE)</span>
+          <span className="hover:text-black transition-colors cursor-default text-emerald-700">✓ BARBER (LUNAS)</span>
         </div>
       </div>
 
@@ -297,36 +298,36 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
             onClick={() => onSelectTab('nextgo')}
             className="pill-black px-4 py-2 hover:scale-105 transition-all shadow-sm flex items-center gap-1.5"
           >
-            <span>🚀 Kerjain LMS Umi Elly (Cairkan Rp2 Juta)</span>
+            <span>🚀 Logo Azharuna & KAEL (Aktif Dikerjakan)</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
-          </button>
-
-          <button
-            onClick={() => onSelectTab('today')}
-            className="pill-white px-4 py-2 hover:scale-105 transition-all shadow-sm"
-          >
-            DreamMecca Handover (Otak Plong)
-          </button>
-
-          <button
-            onClick={() => onSelectTab('lanes')}
-            className="pill-white px-4 py-2 hover:scale-105 transition-all shadow-sm"
-          >
-            KAEL POS (Demo Multi-Tenant)
-          </button>
-
-          <button
-            onClick={() => onSelectTab('lanes')}
-            className="pill-black px-4 py-2 hover:scale-105 transition-all shadow-sm"
-          >
-            Barber Kasir (Lunas Rp6M)
           </button>
 
           <button
             onClick={() => onSelectTab('waiting')}
             className="pill-white px-4 py-2 hover:scale-105 transition-all shadow-sm"
           >
-            Radar Follow-up WA
+            Umi Elly (Sisa Testing Modul)
+          </button>
+
+          <button
+            onClick={() => onSelectTab('lanes')}
+            className="pill-white px-4 py-2 hover:scale-105 transition-all shadow-sm"
+          >
+            Rancangan Komisi Peduli Interaksi
+          </button>
+
+          <button
+            onClick={() => onSelectTab('lanes')}
+            className="pill-black px-4 py-2 hover:scale-105 transition-all shadow-sm"
+          >
+            Rancangan LMS Al Madroj
+          </button>
+
+          <button
+            onClick={() => onSelectTab('today')}
+            className="pill-white px-4 py-2 hover:scale-105 transition-all shadow-sm"
+          >
+            Checklist 5 Target Hari Ini
           </button>
 
           <button
