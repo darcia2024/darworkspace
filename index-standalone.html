@@ -8,7 +8,7 @@
   <!-- Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,19 +18,22 @@
       theme: {
         extend: {
           colors: {
-            background: '#000000',
+            cream: '#f1eddf',
+            card: '#fffdf5',
+            border: '#ded7c8',
+            charcoal: '#292a24',
             surface: {
-              50: '#111111',
-              100: '#0a0a0a',
-              200: '#141414',
-              300: '#1c1c1c',
-              400: '#262626',
-              500: '#333333',
+              50: '#fffdf5',
+              100: '#faf9f3',
+              200: '#eae5d8',
+              300: '#ded7c8',
+              400: '#928876',
+              500: '#59594f',
             }
           },
           fontFamily: {
-            sans: ['"Geist"', '"Inter"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-            mono: ['"Geist Mono"', '"JetBrains Mono"', 'monospace'],
+            sans: ['"Sora"', 'sans-serif'],
+            mono: ['"Space Mono"', '"JetBrains Mono"', 'monospace'],
           }
         }
       }
@@ -44,111 +47,162 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 
   <style>
-    body {
-      background-color: #000000;
-      color: #ededed;
-      font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow-x: hidden;
-      letter-spacing: -0.02em;
-      -webkit-font-smoothing: antialiased;
-      background-image: 
-        radial-gradient(ellipse 70% 40% at 50% -15%, rgba(0, 112, 243, 0.10), transparent),
-        radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-      background-size: 100% 100%, 24px 24px;
-      background-attachment: fixed;
+    :root {
+      --bg-dark: #f1eddf;
+      --card-bg: #fffdf5;
+      --card-strong: #eae5d8;
+      --card-border: #ded7c8;
+      --card-border-hover: #928876;
+      --text-main: #252520;
+      --text-muted: #59594f;
+      --accent: #292a24;
+      --font-sora: 'Sora', sans-serif;
+      --font-mono: 'Space Mono', monospace;
     }
-    /* 1. Vercel Geist Card (Laser Hairline Border & Crisp Elevation) */
+    body {
+      background-color: #f1eddf;
+      color: #252520;
+      font-family: var(--font-sora);
+      overflow-x: hidden;
+      letter-spacing: -0.01em;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* 1. Warm Cream Card Shells */
     .figma-shell, .geist-card {
-      background: #000000;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.9), 0 8px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
+      background: #fffdf5;
+      border: 1px solid #ded7c8;
+      box-shadow: 0 4px 18px rgba(41, 42, 36, 0.04);
+      border-radius: 18px;
       padding: 0.375rem;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
     .figma-shell:hover, .geist-card:hover {
-      border-color: rgba(255, 255, 255, 0.28);
-      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.9), 0 12px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      border-color: #928876;
+      box-shadow: 0 8px 24px rgba(41, 42, 36, 0.07);
     }
     .figma-core, .geist-surface {
-      background: #0a0a0a;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.03);
+      background: #fffdf5;
+      border: 1px solid transparent;
+      border-radius: 14px;
     }
     .dev-glass {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-      border-radius: 12px;
+      background: rgba(255, 253, 245, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid #ded7c8;
+      box-shadow: 0 10px 30px rgba(41, 42, 36, 0.06);
+      border-radius: 16px;
     }
     .dev-card {
-      background: #000000;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-      transition: all 0.15s ease;
+      background: #fffdf5;
+      border: 1px solid #ded7c8;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(41, 42, 36, 0.03);
+      transition: all 0.2s ease;
     }
     .dev-card:hover {
-      border-color: rgba(255, 255, 255, 0.28);
-      background: #080808;
-      transform: translateY(-1px);
+      border-color: #928876;
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(41, 42, 36, 0.06);
     }
     .dev-card-hero {
-      background: radial-gradient(circle at top left, #111111 0%, #000000 100%);
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 12px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-      transition: all 0.15s ease;
+      background: #fffdf5;
+      border: 1px solid #ded7c8;
+      border-radius: 18px;
+      box-shadow: 0 6px 22px rgba(41, 42, 36, 0.05);
+      transition: all 0.2s ease;
     }
     .dev-card-hero:hover {
-      border-color: rgba(255, 255, 255, 0.36);
-      transform: translateY(-1px);
+      border-color: #928876;
     }
+    /* 2. The 4 Iconic Pastel Stat Cards */
+    .stat-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      border-radius: 18px;
+      border: 0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(41, 42, 36, 0.08);
+    }
+    .stat-card.profit-stat { background: #d0b4e9; color: #292923; }
+    .stat-card.paid-stat { background: #ffb99f; color: #292923; }
+    .stat-card.unpaid-stat { background: #adc6ed; color: #292923; }
+    .stat-card.total-stat { background: #e3e6c7; color: #292923; }
+    .stat-icon-circle {
+      height: 30px;
+      width: 30px;
+      background: #272722;
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* 3. Badges */
     .dev-tag, .geist-badge {
-      font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+      font-family: 'Space Mono', monospace;
       font-size: 10px;
       font-weight: 500;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
-      padding: 2px 8px;
+      padding: 3px 10px;
       border-radius: 9999px;
-      background: #111111;
-      border: 1px solid #333333;
-      color: #888888;
+      background: #eae5d8;
+      border: 1px solid #ded7c8;
+      color: #59594f;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
     }
     .dev-tag-emerald, .geist-badge-success {
-      font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+      font-family: 'Space Mono', monospace;
       font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 2px 8px;
+      font-weight: 600;
+      padding: 3px 10px;
       border-radius: 9999px;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      color: #34d399;
+      background: #e2ecdc;
+      border: 1px solid #305d46;
+      color: #305d46;
     }
-      border-radius: 0.625rem;
-      transition: all 0.15s ease-out;
+    .dev-btn-primary {
+      background: #292a24;
+      color: #fffdf5;
+      border: 1px solid #292a24;
+      border-radius: 12px;
+      padding: 8px 16px;
+      font-weight: 600;
+      transition: all 0.18s ease;
+    }
+    .dev-btn-primary:hover {
+      background: #3c3e34;
+      border-color: #3c3e34;
+      transform: translateY(-1px);
+    }
+    .dev-btn-secondary {
+      background: #faf9f3;
+      color: #252520;
+      border: 1px solid #ded7c8;
+      border-radius: 12px;
+      padding: 8px 16px;
+      transition: all 0.18s ease;
     }
     .dev-btn-secondary:hover {
-      background: #1c1c24;
-      border-color: rgba(255, 255, 255, 0.18);
-      color: #ffffff;
+      background: #eae5d8;
+      border-color: #928876;
     }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #070709; }
-    ::-webkit-scrollbar-thumb { background: #1c1c24; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #2a2a36; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1eddf; }
+    ::-webkit-scrollbar-thumb { background: #ded7c8; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #928876; }
   </style>
 </head>
-<body class="bg-[#070709] text-zinc-100 min-h-screen selection:bg-white/20 selection:text-white pb-16">
+<body class="bg-[#f1eddf] text-[#252520] min-h-screen selection:bg-[#292a24]/20 selection:text-[#252520] pb-16 font-sans">
   <div id="root"></div>
 
   <script type="text/babel">
@@ -535,7 +589,7 @@
               <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full mb-1">
                 COMMAND CENTER
               </span>
-              <h1 className="text-2xl font-black text-white">DARU WORK OS</h1>
+              <h1 className="text-2xl font-black text-[#252520]">DARU WORK OS</h1>
               <p className="text-xs text-slate-400 mt-1">Akses Terproteksi. Masukkan PIN Otorisasi 6-Digit.</p>
             </div>
 
@@ -551,7 +605,7 @@
                   onChange={e => handleChange(i, e.target.value)}
                   onKeyDown={e => { if (e.key === 'Backspace' && !pin[i] && i > 0) inputRefs.current[i - 1]?.focus(); }}
                   className={`w-11 h-14 text-center text-xl font-bold rounded-xl border bg-slate-950/80 focus:outline-none transition-all ${
-                    d ? 'border-amber-500 text-amber-300' : 'border-slate-800 text-white'
+                    d ? 'border-amber-500 text-amber-300' : 'border-slate-800 text-[#252520]'
                   } ${error ? 'border-red-500/80 text-red-400' : isSuccess ? 'border-emerald-500/80 text-emerald-400' : 'focus:border-amber-400'}`}
                 />
               ))}
@@ -562,12 +616,12 @@
 
             <div className="grid grid-cols-3 gap-2.5 max-w-xs mx-auto mb-6">
               {['1','2','3','4','5','6','7','8','9'].map(n => (
-                <button key={n} type="button" onClick={() => handleKeypad(n)} className="h-12 rounded-xl bg-slate-800/60 hover:bg-slate-700 border border-slate-700 text-lg font-bold text-white transition-all">
+                <button key={n} type="button" onClick={() => handleKeypad(n)} className="h-12 rounded-xl bg-slate-800/60 hover:bg-slate-700 border border-slate-700 text-lg font-bold text-[#252520] transition-all">
                   {n}
                 </button>
               ))}
               <button type="button" onClick={() => setPin(['','','','','',''])} className="h-12 rounded-xl bg-slate-800/30 border border-slate-800 text-xs text-slate-400">Clear</button>
-              <button type="button" onClick={() => handleKeypad('0')} className="h-12 rounded-xl bg-slate-800/60 hover:bg-slate-700 border border-slate-700 text-lg font-bold text-white">0</button>
+              <button type="button" onClick={() => handleKeypad('0')} className="h-12 rounded-xl bg-slate-800/60 hover:bg-slate-700 border border-slate-700 text-lg font-bold text-[#252520]">0</button>
               <button type="button" onClick={() => {
                 const last = [...pin].reverse().findIndex(x => x !== '');
                 if (last !== -1) {
@@ -868,7 +922,7 @@
       const dynamicRunwayMonths = (dynamicRunwayDays / 30).toFixed(1);
 
       const navItems = [
-        { id: 'today', label: 'Command Hub', sub: 'Today Focus & Triad', badge: completedCount > 0 ? `${completedCount}/4` : '4 Tasks', badgeColor: 'bg-white/10 text-zinc-300' },
+        { id: 'today', label: 'Command Hub', sub: 'Today Focus & Triad', badge: completedCount > 0 ? `${completedCount}/4` : '4 Tasks', badgeColor: 'bg-white/10 text-[#59594f]' },
         { id: 'nextgo', label: 'Next Should Be Go', sub: 'Strategic Move Matrix', badge: '3 Moves ⚡', badgeColor: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' },
         { id: 'lanes', label: 'Board & Lanes', sub: 'Active Kanban Projects', badge: 'Doing', badgeColor: 'bg-blue-500/15 text-blue-400 border border-blue-500/20' },
         { id: 'waiting', label: 'Radar Pipeline', sub: 'Pending Deals & Kickoff', badge: `${state.waitingItems.length} Deals`, badgeColor: 'bg-amber-500/15 text-amber-300 border border-amber-500/20' },
@@ -896,7 +950,7 @@
       };
 
       const renderSidebarContent = () => (
-        <div className="h-full flex flex-col justify-between bg-[#0b0b0f] border-r border-white/[0.07] p-4 text-zinc-300 select-none">
+        <div className="h-full flex flex-col justify-between bg-[#0b0b0f] border-r border-white/[0.07] p-4 text-[#59594f] select-none">
           <div className="space-y-4">
             
             {/* Brand */}
@@ -907,30 +961,30 @@
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-white tracking-tight text-sm">DARU WORK OS</span>
-                    <span className="text-[9px] font-mono bg-white/[0.08] px-1.5 py-0.2 rounded text-zinc-400 border border-white/10">v2.7</span>
+                    <span className="font-bold text-[#252520] tracking-tight text-sm">DARU WORK OS</span>
+                    <span className="text-[9px] font-mono bg-white/[0.08] px-1.5 py-0.2 rounded text-[#59594f] border border-[#ded7c8]">v2.7</span>
                   </div>
-                  <p className="text-[11px] text-zinc-400 font-mono">Solo Dev Workstation</p>
+                  <p className="text-[11px] text-[#59594f] font-mono">Solo Dev Workstation</p>
                 </div>
               </div>
-              <button onClick={() => setIsMobileOpen(false)} className="lg:hidden p-1.5 rounded-lg text-zinc-400 hover:text-white bg-white/5">✕</button>
+              <button onClick={() => setIsMobileOpen(false)} className="lg:hidden p-1.5 rounded-lg text-[#59594f] hover:text-[#252520] bg-white/5">✕</button>
             </div>
 
             {/* Active Sprint Status */}
-            <div className="p-2.5 rounded-xl bg-[#121218] border border-white/[0.06] space-y-1">
-              <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
+            <div className="p-2.5 rounded-xl bg-[#121218] border border-[#ded7c8] space-y-1">
+              <div className="flex items-center justify-between text-[10px] font-mono text-[#59594f]">
                 <span className="flex items-center gap-1.5 text-emerald-400">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   ACTIVE SPRINT
                 </span>
                 <span>{time}</span>
               </div>
-              <p className="text-[11px] text-zinc-200 font-medium truncate">Zalvice • Barber POS • KAEL Core</p>
+              <p className="text-[11px] text-[#252520] font-medium truncate">Zalvice • Barber POS • KAEL Core</p>
             </div>
 
             {/* Navigation Menu */}
             <div className="space-y-1 pt-1">
-              <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider px-2 block mb-1.5">NAVIGATION</span>
+              <span className="text-[10px] font-mono text-[#59594f] uppercase tracking-wider px-2 block mb-1.5">NAVIGATION</span>
               {navItems.map(item => {
                 const isActive = activeTab === item.id;
                 return (
@@ -942,7 +996,7 @@
                       setIsMobileOpen(false);
                     }}
                     className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs transition-all ${
-                      isActive ? 'bg-white text-zinc-950 font-semibold shadow-md translate-x-0.5' : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+                      isActive ? 'bg-white text-zinc-950 font-semibold shadow-md translate-x-0.5' : 'text-[#59594f] hover:text-[#252520] hover:bg-white/[0.04]'
                     }`}
                   >
                     <span className="block truncate">{item.label}</span>
@@ -955,14 +1009,14 @@
             </div>
 
             {/* Quick Actions */}
-            <div className="space-y-1.5 pt-2 border-t border-white/[0.06]">
-              <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider px-2 block mb-1">QUICK ACTIONS</span>
+            <div className="space-y-1.5 pt-2 border-t border-[#ded7c8]">
+              <span className="text-[10px] font-mono text-[#59594f] uppercase tracking-wider px-2 block mb-1">QUICK ACTIONS</span>
               <button
                 onClick={() => { sound.playClick(); setIsInvoiceModalOpen(true); setIsMobileOpen(false); }}
                 className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-blue-300 bg-[#0070F3]/15 hover:bg-[#0070F3]/25 border border-[#0070F3]/30 transition-all font-mono"
               >
                 <span>📄 + Buat Invoice</span>
-                <span className="text-[10px] text-blue-400/80 bg-black/40 px-1.5 py-0.2 rounded border border-white/5">⌘I</span>
+                <span className="text-[10px] text-blue-400/80 bg-[#eae5d8] px-1.5 py-0.2 rounded border border-[#ded7c8]">⌘I</span>
               </button>
               <button
                 onClick={() => { sound.playClick(); setIsFinanceModalOpen(true); setIsMobileOpen(false); }}
@@ -972,23 +1026,23 @@
               </button>
               <button
                 onClick={() => { sound.playClick(); openFollowUpModal('Kasir Barber Underrated'); setIsMobileOpen(false); }}
-                className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-zinc-300 bg-[#121218] hover:bg-[#181822] border border-white/5 hover:border-white/15 transition-all font-mono"
+                className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-[#59594f] bg-[#121218] hover:bg-[#181822] border border-[#ded7c8] hover:border-[#ded7c8] transition-all font-mono"
               >
                 <span>💬 Copas Pesan WA</span>
-                <span className="text-[10px] text-zinc-500 bg-black/40 px-1.5 py-0.2 rounded border border-white/5">⌘F</span>
+                <span className="text-[10px] text-[#928876] bg-[#eae5d8] px-1.5 py-0.2 rounded border border-[#ded7c8]">⌘F</span>
               </button>
               <button
                 onClick={() => { sound.playClick(); setIsCopilotOpen(true); setIsMobileOpen(false); }}
-                className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-zinc-300 bg-[#121218] hover:bg-[#181822] border border-white/5 hover:border-white/15 transition-all font-mono"
+                className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-[#59594f] bg-[#121218] hover:bg-[#181822] border border-[#ded7c8] hover:border-[#ded7c8] transition-all font-mono"
               >
                 <span>🤖 Partner Copilot</span>
-                <span className="text-[10px] text-zinc-500 bg-black/40 px-1.5 py-0.2 rounded border border-white/5">⌘K</span>
+                <span className="text-[10px] text-[#928876] bg-[#eae5d8] px-1.5 py-0.2 rounded border border-[#ded7c8]">⌘K</span>
               </button>
             </div>
           </div>
 
           {/* Bottom Telemetry Card */}
-          <div className="space-y-3 pt-3 border-t border-white/[0.06]">
+          <div className="space-y-3 pt-3 border-t border-[#ded7c8]">
             <div
               onClick={() => { sound.playClick(); setActiveTab('money'); setIsMobileOpen(false); }}
               className={`p-3 rounded-xl bg-gradient-to-br from-[#161622] to-[#0f0f15] border ${isRed ? 'border-rose-500/30 hover:border-rose-500/60' : isGreen ? 'border-emerald-500/30 hover:border-emerald-500/60' : 'border-amber-500/30 hover:border-amber-500/60'} cursor-pointer transition-all space-y-1 shadow-inner`}
@@ -997,16 +1051,16 @@
                 <span className={`font-bold ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'}`}>
                   {isRed ? '🛡️ CASH DEFENSE' : isGreen ? '📈 SAFE GROWTH' : '🟡 STAGE 2 BUFFER'}
                 </span>
-                <span className="text-zinc-400">±{dynamicRunwayDays} Hari</span>
+                <span className="text-[#59594f]">±{dynamicRunwayDays} Hari</span>
               </div>
               <div className="flex items-baseline justify-between">
-                <span className="text-base font-bold text-white font-mono">{formatRupiahK(report.totalLiquidBalance)}</span>
-                <span className="text-[10px] text-zinc-400 font-mono">Burn: ~Rp4,5M</span>
+                <span className="text-base font-bold text-[#252520] font-mono">{formatRupiahK(report.totalLiquidBalance)}</span>
+                <span className="text-[10px] text-[#59594f] font-mono">Burn: ~Rp4,5M</span>
               </div>
             </div>
 
-            <div className="flex items-center justify-between px-1 text-xs text-zinc-500 font-mono">
-              <button onClick={() => { sound.playClick(); setIsExportOpen(true); }} className="hover:text-zinc-300">📥 Export</button>
+            <div className="flex items-center justify-between px-1 text-xs text-[#928876] font-mono">
+              <button onClick={() => { sound.playClick(); setIsExportOpen(true); }} className="hover:text-[#59594f]">📥 Export</button>
               <span>{time.split(' ')[0]}</span>
             </div>
           </div>
@@ -1018,21 +1072,21 @@
       }
 
       return (
-        <div className="min-h-screen bg-[#070709] text-zinc-100 flex flex-col lg:flex-row font-sans selection:bg-white/20 selection:text-white">
+        <div className="min-h-screen bg-[#f1eddf] text-[#252520] flex flex-col lg:flex-row font-sans selection:bg-white/20 selection:text-[#252520]">
           
           {/* Mobile Top Bar */}
-          <header className="lg:hidden sticky top-0 z-40 bg-[#0b0b0f] border-b border-white/[0.08] px-4 py-3 flex items-center justify-between">
+          <header className="lg:hidden sticky top-0 z-40 bg-[#0b0b0f] border-b border-[#ded7c8] px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-lg bg-white text-zinc-950 flex items-center justify-center font-mono font-bold text-xs">D_</div>
               <div>
-                <span className="font-bold text-white text-sm">DARU WORK OS</span>
-                <span className="text-[10px] text-zinc-400 block font-mono">{navItems.find(n => n.id === activeTab)?.label}</span>
+                <span className="font-bold text-[#252520] text-sm">DARU WORK OS</span>
+                <span className="text-[10px] text-[#59594f] block font-mono">{navItems.find(n => n.id === activeTab)?.label}</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <button onClick={() => setIsInvoiceModalOpen(true)} className="px-2.5 py-1 rounded-lg bg-[#0070F3]/20 text-blue-300 border border-[#0070F3]/30 text-xs font-mono">📄 Invoice</button>
               <button onClick={() => setIsFinanceModalOpen(true)} className="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 text-xs font-mono">+ Kas</button>
-              <button onClick={() => setIsMobileOpen(true)} className="p-2 rounded-lg bg-[#14141c] text-zinc-300 border border-white/10">☰</button>
+              <button onClick={() => setIsMobileOpen(true)} className="p-2 rounded-lg bg-[#fffdf5] text-[#59594f] border border-[#ded7c8]">☰</button>
             </div>
           </header>
 
@@ -1044,7 +1098,7 @@
           {/* Mobile Drawer */}
           {isMobileOpen && (
             <div className="lg:hidden fixed inset-0 z-50 flex">
-              <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsMobileOpen(false)} />
+              <div className="fixed inset-0 bg-[#292a24]/40 backdrop-blur-sm" onClick={() => setIsMobileOpen(false)} />
               <div className="relative w-72 max-w-[85vw] h-full z-10 shadow-2xl">
                 {renderSidebarContent()}
               </div>
@@ -1055,11 +1109,11 @@
           <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
             
             {/* Top Breadcrumb Bar */}
-            <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-white/[0.06] bg-[#09090d]/80 backdrop-blur-md sticky top-0 z-20">
-              <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-                <span className="text-white font-semibold">Workspace</span>
-                <span className="text-zinc-600">/</span>
-                <span className="text-zinc-200">{tabLabels[activeTab]}</span>
+            <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-[#ded7c8] bg-[#09090d]/80 backdrop-blur-md sticky top-0 z-20">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#59594f]">
+                <span className="text-[#252520] font-semibold">Workspace</span>
+                <span className="text-[#928876]">/</span>
+                <span className="text-[#252520]">{tabLabels[activeTab]}</span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -1077,13 +1131,13 @@
                 </button>
                 <button
                   onClick={() => openFollowUpModal('Kasir Barber Underrated')}
-                  className="px-3 py-1 rounded-lg bg-[#14141c] hover:bg-[#1a1a26] text-zinc-200 border border-white/10 text-xs font-mono transition-all"
+                  className="px-3 py-1 rounded-lg bg-[#fffdf5] hover:bg-[#1a1a26] text-[#252520] border border-[#ded7c8] text-xs font-mono transition-all"
                 >
                   💬 Copas WA
                 </button>
                 <button
                   onClick={() => setIsCopilotOpen(!isCopilotOpen)}
-                  className="px-3 py-1 rounded-lg bg-[#14141c] hover:bg-[#1a1a26] text-zinc-200 border border-white/10 text-xs font-mono transition-all"
+                  className="px-3 py-1 rounded-lg bg-[#fffdf5] hover:bg-[#1a1a26] text-[#252520] border border-[#ded7c8] text-xs font-mono transition-all"
                 >
                   Partner ⌘K
                 </button>
@@ -1100,11 +1154,11 @@
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                      <h2 className="text-base sm:text-lg font-semibold text-white tracking-tight">
+                      <h2 className="text-base sm:text-lg font-semibold text-[#252520] tracking-tight">
                         Hari ini gue harus ngejar apa?
                       </h2>
                     </div>
-                    <p className="text-xs text-zinc-400 font-normal mt-0.5">
+                    <p className="text-xs text-[#59594f] font-normal mt-0.5">
                       Fokus aktif sekarang: Zalvice Logo • Kasir Barber Underrated • Setting KAEL Core
                     </p>
                   </div>
@@ -1120,25 +1174,25 @@
                       onClick={() => togglePursuit(item.id)}
                       className={`p-3.5 rounded-xl border text-left transition-all duration-150 flex items-start gap-3 ${
                         item.isDone
-                          ? 'bg-black/50 border-white/[0.04] opacity-50'
-                          : 'bg-[#121218] border-white/[0.08] hover:border-white/20 hover:bg-[#161620]'
+                          ? 'bg-[#faf9f3]/50 border-white/[0.04] opacity-50'
+                          : 'bg-[#121218] border-[#ded7c8] hover:border-[#ded7c8] hover:bg-[#161620]'
                       }`}
                     >
                       <div className={`mt-0.5 w-4 h-4 rounded-md flex items-center justify-center border transition-all ${
                         item.isDone
                           ? 'bg-white border-white text-zinc-950 font-bold text-[10px]'
-                          : 'border-zinc-700 hover:border-white bg-black/40'
+                          : 'border-zinc-700 hover:border-white bg-[#eae5d8]'
                       }`}>
                         {item.isDone && '✓'}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <p className={`text-xs ${item.isDone ? 'line-through text-zinc-500' : 'text-zinc-100 font-semibold'}`}>
+                          <p className={`text-xs ${item.isDone ? 'line-through text-[#928876]' : 'text-[#252520] font-semibold'}`}>
                             {item.project}
                           </p>
-                          <span className="text-[10px] font-mono text-zinc-600">0{idx + 1}</span>
+                          <span className="text-[10px] font-mono text-[#928876]">0{idx + 1}</span>
                         </div>
-                        <p className={`text-[11px] leading-snug mt-1 ${item.isDone ? 'text-zinc-600' : 'text-zinc-400 font-normal'}`}>
+                        <p className={`text-[11px] leading-snug mt-1 ${item.isDone ? 'text-[#928876]' : 'text-[#59594f] font-normal'}`}>
                           {item.action}
                         </p>
                       </div>
@@ -1150,21 +1204,21 @@
               {/* 4 Telemetry Metrics */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
                 <div onClick={() => setActiveTab('lanes')} className="dev-card p-4 hover:border-white/25 transition-all cursor-pointer">
-                  <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider block mb-1">01 // Paid Delivery</span>
+                  <span className="text-[11px] font-mono text-[#59594f] uppercase tracking-wider block mb-1">01 // Paid Delivery</span>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-semibold text-white tracking-tight">2</span>
-                    <span className="text-xs text-zinc-400 font-mono">(Zalvice, Laptopbisnis)</span>
+                    <span className="text-3xl font-semibold text-[#252520] tracking-tight">2</span>
+                    <span className="text-xs text-[#59594f] font-mono">(Zalvice, Laptopbisnis)</span>
                   </div>
-                  <p className="text-[11px] text-zinc-400 mt-1 font-mono">Rp1,2M Paid • Priority #1</p>
+                  <p className="text-[11px] text-[#59594f] mt-1 font-mono">Rp1,2M Paid • Priority #1</p>
                 </div>
 
                 <div onClick={() => setActiveTab('waiting')} className="dev-card p-4 hover:border-white/25 transition-all cursor-pointer">
-                  <span className="text-[11px] font-mono text-zinc-300 uppercase tracking-wider block mb-1">02 // Pipeline Deals</span>
+                  <span className="text-[11px] font-mono text-[#59594f] uppercase tracking-wider block mb-1">02 // Pipeline Deals</span>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-semibold text-white tracking-tight">6</span>
-                    <span className="text-xs text-zinc-400 font-mono">(Umi Elly, Bedug, dll.)</span>
+                    <span className="text-3xl font-semibold text-[#252520] tracking-tight">6</span>
+                    <span className="text-xs text-[#59594f] font-mono">(Umi Elly, Bedug, dll.)</span>
                   </div>
-                  <p className="text-[11px] text-zinc-400 mt-1 font-mono">~Rp15,5M OTW • Radar</p>
+                  <p className="text-[11px] text-[#59594f] mt-1 font-mono">~Rp15,5M OTW • Radar</p>
                 </div>
 
                 <div onClick={() => setActiveTab('money')} className="dev-card p-4 hover:border-white/25 transition-all cursor-pointer">
@@ -1172,7 +1226,7 @@
                     {isRed ? '🔴 Cash Defense' : isGreen ? '🟢 Safe Growth' : '🟡 Cash Buffer'}
                   </span>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-mono">
+                    <span className="text-2xl sm:text-3xl font-bold text-[#252520] tracking-tight font-mono">
                       {formatRupiahK(report.totalLiquidBalance)}
                     </span>
                   </div>
@@ -1186,12 +1240,12 @@
                 </div>
 
                 <div onClick={() => setActiveTab('lanes')} className="dev-card p-4 hover:border-white/25 transition-all cursor-pointer">
-                  <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider block mb-1">04 // SaaS & BizDev</span>
+                  <span className="text-[11px] font-mono text-[#59594f] uppercase tracking-wider block mb-1">04 // SaaS & BizDev</span>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-semibold text-white tracking-tight">3</span>
-                    <span className="text-xs text-zinc-400 font-mono">(Setting KAEL Core)</span>
+                    <span className="text-3xl font-semibold text-[#252520] tracking-tight">3</span>
+                    <span className="text-xs text-[#59594f] font-mono">(Setting KAEL Core)</span>
                   </div>
-                  <p className="text-[11px] text-zinc-400 mt-1 font-mono">Active Product Setup</p>
+                  <p className="text-[11px] text-[#59594f] mt-1 font-mono">Active Product Setup</p>
                 </div>
               </div>
             </div>
@@ -1205,22 +1259,22 @@
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <h3 className="text-sm font-bold text-white tracking-tight">Hari ini mau ngerjain apa dulu?</h3>
+                        <h3 className="text-sm font-bold text-[#252520] tracking-tight">Hari ini mau ngerjain apa dulu?</h3>
                         <span className="dev-tag text-[9px]">{todayStrategyMode === 'single' ? 'MONOTASK_LOCK' : 'MULTI_SPRINT_BATCH'}</span>
                       </div>
-                      <p className="text-xs text-zinc-400 mt-0.5">Pilih mode: Fokus 1 hal sampai tuntas tanpa distraksi, atau batch beberapa hal sekaligus.</p>
+                      <p className="text-xs text-[#59594f] mt-0.5">Pilih mode: Fokus 1 hal sampai tuntas tanpa distraksi, atau batch beberapa hal sekaligus.</p>
                     </div>
 
-                    <div className="flex items-center gap-1.5 bg-black/60 p-1.5 rounded-2xl border border-white/10 font-mono text-xs">
+                    <div className="flex items-center gap-1.5 bg-[#eae5d8] p-1.5 rounded-2xl border border-[#ded7c8] font-mono text-xs">
                       <button
                         onClick={() => { sound.playClick(); setTodayStrategyMode('single'); }}
-                        className={`px-3.5 py-2 rounded-xl transition-all ${todayStrategyMode === 'single' ? 'bg-white text-zinc-950 font-bold shadow-md' : 'text-zinc-400 hover:text-white'}`}
+                        className={`px-3.5 py-2 rounded-xl transition-all ${todayStrategyMode === 'single' ? 'bg-white text-zinc-950 font-bold shadow-md' : 'text-[#59594f] hover:text-[#252520]'}`}
                       >
                         🎯 1 Hal Dulu (Single Focus)
                       </button>
                       <button
                         onClick={() => { sound.playClick(); setTodayStrategyMode('multi'); }}
-                        className={`px-3.5 py-2 rounded-xl transition-all ${todayStrategyMode === 'multi' ? 'bg-white text-zinc-950 font-bold shadow-md' : 'text-zinc-400 hover:text-white'}`}
+                        className={`px-3.5 py-2 rounded-xl transition-all ${todayStrategyMode === 'multi' ? 'bg-white text-zinc-950 font-bold shadow-md' : 'text-[#59594f] hover:text-[#252520]'}`}
                       >
                         ⚡ Beberapa Hal (Multi-Sprint)
                       </button>
@@ -1236,38 +1290,38 @@
                       {singleBlock && (
                         <div className="figma-shell border-emerald-500/30 ring-1 ring-emerald-500/20">
                           <div className="figma-core p-5 sm:p-6 bg-gradient-to-br from-[#12121c] via-[#09090e] to-[#07070a] space-y-4">
-                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                               <div className="flex items-center gap-2">
                                 <span className="dev-tag-emerald">EXCLUSIVE MONOTASK LOCK</span>
                                 <span className="dev-tag text-[9px]">{singleBlock.blockType.toUpperCase()}</span>
                               </div>
-                              <span className="text-xs font-mono text-zinc-400 bg-black/40 px-3 py-1 rounded-xl border border-white/5">
-                                Timebox: <strong className="text-white">{singleBlock.timeboxMinutes} Menit</strong>
+                              <span className="text-xs font-mono text-[#59594f] bg-[#eae5d8] px-3 py-1 rounded-xl border border-[#ded7c8]">
+                                Timebox: <strong className="text-[#252520]">{singleBlock.timeboxMinutes} Menit</strong>
                               </span>
                             </div>
 
                             <div className="space-y-2">
-                              <h4 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">{singleBlock.projectName}</h4>
-                              <p className="text-sm text-zinc-200 leading-relaxed"><span className="text-amber-400 font-bold font-mono">⚡ Action Langkah Demi Langkah:</span> {singleBlock.action}</p>
+                              <h4 className="text-xl sm:text-2xl font-extrabold text-[#252520] tracking-tight">{singleBlock.projectName}</h4>
+                              <p className="text-sm text-[#252520] leading-relaxed"><span className="text-amber-400 font-bold font-mono">⚡ Action Langkah Demi Langkah:</span> {singleBlock.action}</p>
                               {singleBlock.rule && (
-                                <div className="p-3 rounded-2xl bg-[#060609] border border-white/[0.06] text-xs font-mono text-zinc-300">
+                                <div className="p-3 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] text-xs font-mono text-[#59594f]">
                                   <span className="text-emerald-400 font-bold">// ATURAN FOKUS:</span> {singleBlock.rule}
                                 </div>
                               )}
                             </div>
 
-                            <div className="pt-3 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
-                              <div className="text-xs text-zinc-400 font-mono">💡 Kunci pikiran ke 1 hal ini sampai timebox selesai.</div>
+                            <div className="pt-3 border-t border-[#ded7c8] flex flex-wrap items-center justify-between gap-3">
+                              <div className="text-xs text-[#59594f] font-mono">💡 Kunci pikiran ke 1 hal ini sampai timebox selesai.</div>
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => toggleBlock(singleBlock.id)}
-                                  className={`px-4 py-2 rounded-xl text-xs font-mono font-medium ${singleBlock.isDone ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' : 'bg-[#14141c] text-zinc-300 border border-white/10'}`}
+                                  className={`px-4 py-2 rounded-xl text-xs font-mono font-medium ${singleBlock.isDone ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' : 'bg-[#fffdf5] text-[#59594f] border border-[#ded7c8]'}`}
                                 >
                                   {singleBlock.isDone ? '✓ Selesai' : 'Tandai Beres'}
                                 </button>
                                 <button
                                   onClick={() => startFocus(singleBlock)}
-                                  className="px-5 py-2 dev-btn-primary text-xs font-bold shadow-lg"
+                                  className="px-5 py-2 dev-btn-primary text-xs font-bold text-[#fffdf5] shadow-lg"
                                 >
                                   Mulai Focus Lock ({singleBlock.timeboxMinutes}m) →
                                 </button>
@@ -1278,20 +1332,20 @@
                       )}
 
                       <div className="space-y-2">
-                        <span className="text-xs font-mono text-zinc-400 px-1">Atau klik untuk ganti fokus ke tugas lain:</span>
+                        <span className="text-xs font-mono text-[#59594f] px-1">Atau klik untuk ganti fokus ke tugas lain:</span>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                           {state.todayBlocks.map(b => (
                             <button
                               key={b.id}
                               onClick={() => { sound.playClick(); setTodaySelectedSingleId(b.id); }}
-                              className={`p-3.5 rounded-2xl border text-left transition-all space-y-1.5 ${b.id === todaySelectedSingleId ? 'bg-white/[0.08] border-white/40 ring-1 ring-white/20' : 'bg-[#060609] border-white/[0.06] hover:border-white/20'}`}
+                              className={`p-3.5 rounded-2xl border text-left transition-all space-y-1.5 ${b.id === todaySelectedSingleId ? 'bg-white/[0.08] border-white/40 ring-1 ring-white/20' : 'bg-[#faf9f3] border-[#ded7c8] hover:border-[#ded7c8]'}`}
                             >
                               <div className="flex justify-between items-center">
                                 <span className="dev-tag text-[9px] py-0">{b.blockType}</span>
-                                <span className="text-[10px] font-mono text-zinc-400">{b.timeboxMinutes}m</span>
+                                <span className="text-[10px] font-mono text-[#59594f]">{b.timeboxMinutes}m</span>
                               </div>
-                              <h5 className="text-xs font-bold text-white truncate">{b.projectName}</h5>
-                              <p className="text-[11px] text-zinc-400 line-clamp-2">{b.action}</p>
+                              <h5 className="text-xs font-bold text-[#252520] truncate">{b.projectName}</h5>
+                              <p className="text-[11px] text-[#59594f] line-clamp-2">{b.action}</p>
                             </button>
                           ))}
                         </div>
@@ -1309,10 +1363,10 @@
                     <div className="space-y-4">
                       <div className="figma-shell border-amber-500/30 ring-1 ring-amber-500/20">
                         <div className="figma-core p-5 bg-gradient-to-br from-[#16141c] via-[#09090e] to-[#07070a] space-y-4">
-                          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+                          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                             <div className="flex items-center gap-2">
                               <span className="dev-tag-amber">PARALLEL MULTI-SPRINT BATCH</span>
-                              <span className="text-xs font-mono font-bold text-white bg-white/5 px-2.5 py-1 rounded-lg border border-white/10">
+                              <span className="text-xs font-mono font-bold text-[#252520] bg-white/5 px-2.5 py-1 rounded-lg border border-[#ded7c8]">
                                 {multiBlocks.length} Task Dipilih ({totalMinutes}m Total)
                               </span>
                             </div>
@@ -1320,7 +1374,7 @@
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => { sound.playClick(); setTodaySelectedMultiIds(state.todayBlocks.map(b => b.id)); }}
-                                className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 text-xs font-mono border border-white/10"
+                                className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-[#59594f] text-xs font-mono border border-[#ded7c8]"
                               >
                                 Pilih Semua (4 Task)
                               </button>
@@ -1329,7 +1383,7 @@
                                   if (multiBlocks[0]) startFocus(multiBlocks[0]);
                                 }}
                                 disabled={multiBlocks.length === 0}
-                                className="px-4 py-1.5 dev-btn-primary text-xs font-bold"
+                                className="px-4 py-1.5 dev-btn-primary text-xs font-bold text-[#fffdf5]"
                               >
                                 Jalankan Batch ({totalMinutes}m) →
                               </button>
@@ -1337,13 +1391,13 @@
                           </div>
 
                           <div className="space-y-1.5">
-                            <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider block">Urutan Eksekusi:</span>
+                            <span className="text-[10px] font-mono text-[#59594f] uppercase tracking-wider block">Urutan Eksekusi:</span>
                             <div className="flex flex-wrap items-center gap-2">
                               {multiBlocks.map((b, idx) => (
-                                <div key={b.id} className="flex items-center gap-2 bg-[#060609] border border-white/10 px-3 py-1.5 rounded-xl text-xs font-mono">
+                                <div key={b.id} className="flex items-center gap-2 bg-[#faf9f3] border border-[#ded7c8] px-3 py-1.5 rounded-xl text-xs font-mono">
                                   <span className="w-4 h-4 rounded-full bg-amber-400/20 text-amber-300 font-bold text-[10px] flex items-center justify-center">{idx + 1}</span>
-                                  <span className="text-white font-semibold">{b.projectName}</span>
-                                  <span className="text-zinc-500">({b.timeboxMinutes}m)</span>
+                                  <span className="text-[#252520] font-semibold">{b.projectName}</span>
+                                  <span className="text-[#928876]">({b.timeboxMinutes}m)</span>
                                 </div>
                               ))}
                             </div>
@@ -1370,20 +1424,20 @@
                               <div className={`figma-core p-5 h-full flex flex-col justify-between space-y-3 ${isSel ? 'bg-gradient-to-br from-[#14141e] to-[#0a0a0f]' : ''}`}>
                                 <div className="flex justify-between items-center">
                                   <div className="flex items-center gap-2">
-                                    <div className={`w-5 h-5 rounded-lg flex items-center justify-center border ${isSel ? 'bg-amber-400 border-amber-300 text-black font-bold text-xs' : 'border-white/20 bg-black/40'}`}>
+                                    <div className={`w-5 h-5 rounded-lg flex items-center justify-center border ${isSel ? 'bg-amber-400 border-amber-300 text-black font-bold text-xs' : 'border-[#ded7c8] bg-[#eae5d8]'}`}>
                                       {isSel && '✓'}
                                     </div>
                                     <span className="dev-tag">{block.blockType}</span>
                                   </div>
-                                  <span className="text-xs font-mono text-zinc-400">{block.timeboxMinutes}m</span>
+                                  <span className="text-xs font-mono text-[#59594f]">{block.timeboxMinutes}m</span>
                                 </div>
                                 <div>
-                                  <h4 className="text-base font-bold text-white">{block.projectName}</h4>
-                                  <p className="text-xs text-zinc-300 mt-1">{block.action}</p>
+                                  <h4 className="text-base font-bold text-[#252520]">{block.projectName}</h4>
+                                  <p className="text-xs text-[#59594f] mt-1">{block.action}</p>
                                 </div>
-                                <div className="pt-2 border-t border-white/[0.05] flex justify-between items-center text-xs font-mono">
-                                  <span className={isSel ? 'text-amber-300 font-semibold' : 'text-zinc-500'}>{isSel ? '✓ Masuk Batch' : '+ Klik untuk pilih'}</span>
-                                  <button onClick={(e) => { e.stopPropagation(); startFocus(block); }} className="text-zinc-400 hover:text-white">Fokus ini saja →</button>
+                                <div className="pt-2 border-t border-[#ded7c8] flex justify-between items-center text-xs font-mono">
+                                  <span className={isSel ? 'text-amber-300 font-semibold' : 'text-[#928876]'}>{isSel ? '✓ Masuk Batch' : '+ Klik untuk pilih'}</span>
+                                  <button onClick={(e) => { e.stopPropagation(); startFocus(block); }} className="text-[#59594f] hover:text-[#252520]">Fokus ini saja →</button>
                                 </div>
                               </div>
                             </div>
@@ -1397,23 +1451,23 @@
                 {/* Kalau Gue Bingung Mau Ngerjain Apa */}
                 <div className="figma-shell">
                   <div className="figma-core p-5 sm:p-6 space-y-4">
-                    <div className="border-b border-white/[0.06] pb-3">
-                      <h3 className="text-sm font-bold text-white tracking-tight">Kalau Gue Bingung Mau Ngerjain Apa</h3>
-                      <p className="text-xs text-zinc-400 font-mono mt-0.5">// decision_tree.ts • urutan mutlak eksekusi:</p>
+                    <div className="border-b border-[#ded7c8] pb-3">
+                      <h3 className="text-sm font-bold text-[#252520] tracking-tight">Kalau Gue Bingung Mau Ngerjain Apa</h3>
+                      <p className="text-xs text-[#59594f] font-mono mt-0.5">// decision_tree.ts • urutan mutlak eksekusi:</p>
                     </div>
                     <div className="space-y-2 text-xs">
-                      <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-white/[0.12] flex items-center justify-between">
+                      <div className="p-3.5 rounded-2xl bg-white/[0.04] border border-[#ded7c8] flex items-center justify-between">
                         <div>
-                          <span className="text-zinc-300">1. Ada client yang sudah bayar dan masih nunggu?</span>
-                          <p className="text-white mt-0.5">→ <strong className="font-semibold text-white">Kerjain itu.</strong> (Zalvice & Laptopbisnis, Total Rp1,2M paid)</p>
+                          <span className="text-[#59594f]">1. Ada client yang sudah bayar dan masih nunggu?</span>
+                          <p className="text-[#252520] mt-0.5">→ <strong className="font-semibold text-[#252520]">Kerjain itu.</strong> (Zalvice & Laptopbisnis, Total Rp1,2M paid)</p>
                         </div>
                         <button onClick={() => startFocus(state.todayBlocks[0])} className="px-3.5 py-1.5 dev-btn-primary text-xs font-semibold">Pilih →</button>
                       </div>
 
-                      <div className="p-3.5 rounded-2xl bg-[#060609] border border-white/[0.06] flex items-center justify-between">
+                      <div className="p-3.5 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] flex items-center justify-between">
                         <div>
-                          <span className="text-zinc-400">2. Project besar sudah DP / tunggu kickoff?</span>
-                          <p className="text-white mt-0.5">→ <strong className="font-semibold text-white">Eksekusi Fase 0 Opening Barber (30 Agu) & Kickoff Umi Elly LMS.</strong> (DP Barber Rp3M masuk, follow up Umi Elly Rp3M)</p>
+                          <span className="text-[#59594f]">2. Project besar sudah DP / tunggu kickoff?</span>
+                          <p className="text-[#252520] mt-0.5">→ <strong className="font-semibold text-[#252520]">Eksekusi Fase 0 Opening Barber (30 Agu) & Kickoff Umi Elly LMS.</strong> (DP Barber Rp3M masuk, follow up Umi Elly Rp3M)</p>
                         </div>
                         <button onClick={() => setActiveTab('lanes')} className="px-3.5 py-1.5 dev-btn-secondary text-xs">Lihat →</button>
                       </div>
@@ -1496,10 +1550,10 @@
                   {/* Executive Directive Hero */}
                   <div className="figma-shell border-emerald-500/40 ring-1 ring-emerald-500/20">
                     <div className="figma-core p-6 sm:p-7 space-y-4 bg-gradient-to-br from-[#0c1410] via-[#080b09] to-[#050508]">
-                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3.5">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3.5">
                         <div className="flex items-center gap-2.5">
                           <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
-                          <h2 className="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2">
+                          <h2 className="text-base sm:text-lg font-extrabold text-[#252520] tracking-tight flex items-center gap-2">
                             <span>🎯 NEXT SHOULD BE GO — ENGINE KEPUTUSAN STRATEGIS</span>
                             <span className="dev-tag-emerald text-[9px]">ZERO_DECISION_FATIGUE</span>
                           </h2>
@@ -1510,26 +1564,26 @@
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-1">
-                          <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest block">01 // POSISI MOMENTUM</span>
+                        <div className="p-3.5 rounded-xl bg-[#eae5d8] border border-[#ded7c8] space-y-1">
+                          <span className="text-[10px] font-mono text-[#59594f] uppercase tracking-widest block">01 // POSISI MOMENTUM</span>
                           <span className="text-sm font-bold text-emerald-300 block">60% Target September Tembus!</span>
-                          <p className="text-[11px] text-zinc-400 leading-snug">Kas aman di Rp9,89M (Surplus +Rp5,89M di atas Floor). Nol utang deliverable.</p>
+                          <p className="text-[11px] text-[#59594f] leading-snug">Kas aman di Rp9,89M (Surplus +Rp5,89M di atas Floor). Nol utang deliverable.</p>
                         </div>
 
-                        <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-1">
+                        <div className="p-3.5 rounded-xl bg-[#eae5d8] border border-[#ded7c8] space-y-1">
                           <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block">02 // SISA TARGET SEPTEMBER</span>
                           <span className="text-sm font-bold text-amber-300 block">Sisa Rp4.000.000 OTW</span>
-                          <p className="text-[11px] text-zinc-400 leading-snug">Terkunci di Termin 2 (Rp2M) & Termin 3 (Rp2M) project LMS Umi Elly.</p>
+                          <p className="text-[11px] text-[#59594f] leading-snug">Terkunci di Termin 2 (Rp2M) & Termin 3 (Rp2M) project LMS Umi Elly.</p>
                         </div>
 
-                        <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-1">
+                        <div className="p-3.5 rounded-xl bg-[#eae5d8] border border-[#ded7c8] space-y-1">
                           <span className="text-[10px] font-mono text-blue-400 uppercase tracking-widest block">03 // STRATEGI GOLDEN MOVE</span>
-                          <span className="text-sm font-bold text-white block">Sprint Cepat ➔ Cairkan Sisa</span>
-                          <p className="text-[11px] text-zinc-400 leading-snug">Kerjakan hal dengan dampak cash & mental clarity tertinggi sekarang.</p>
+                          <span className="text-sm font-bold text-[#252520] block">Sprint Cepat ➔ Cairkan Sisa</span>
+                          <p className="text-[11px] text-[#59594f] leading-snug">Kerjakan hal dengan dampak cash & mental clarity tertinggi sekarang.</p>
                         </div>
                       </div>
 
-                      <div className="p-3.5 rounded-xl bg-[#090d0b] border border-emerald-500/30 text-xs font-mono text-zinc-200">
+                      <div className="p-3.5 rounded-xl bg-[#090d0b] border border-emerald-500/30 text-xs font-mono text-[#252520]">
                         <span className="text-emerald-400 font-bold">🧭 ATURAN UTAMA SAAT INI:</span> "Jangan buka kerjaan baru yang gak jelas! Fokus tuntaskan <strong>Modul 1 Umi Elly</strong> (buka kunci Rp2M) & serahkan <strong>DreamMecca</strong> (otak 100% plong)."
                       </div>
                     </div>
@@ -1538,7 +1592,7 @@
                   {/* 3 Golden Moves Cards */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between px-1">
-                      <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider font-semibold">
+                      <span className="text-xs font-mono text-[#59594f] uppercase tracking-wider font-semibold">
                         // DAFTAR LANGKAH PALING BERDAMPAK (URUTAN PRIORITAS):
                       </span>
                       <span className="text-[11px] font-mono text-emerald-400">3 Rekomendasi Terpilih</span>
@@ -1553,7 +1607,7 @@
                               ? 'border-emerald-500/40 ring-1 ring-emerald-500/20' 
                               : move.rank === 2
                               ? 'border-blue-500/30'
-                              : 'border-white/[0.1]'
+                              : 'border-[#ded7c8]'
                           }`}
                         >
                           <div className={`figma-core p-5 sm:p-6 space-y-4 ${
@@ -1568,7 +1622,7 @@
                                 <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider ${move.badgeColor}`}>
                                   {move.badge}
                                 </span>
-                                <span className="text-xs font-mono text-zinc-400">
+                                <span className="text-xs font-mono text-[#59594f]">
                                   ⏱️ {move.timeboxMinutes} Menit Timebox
                                 </span>
                               </div>
@@ -1589,7 +1643,7 @@
                                       rule: move.keyWhy
                                     });
                                   }}
-                                  className="px-4 py-1.5 dev-btn-primary text-xs font-bold font-mono shadow-md active:scale-95 transition-all"
+                                  className="px-4 py-1.5 dev-btn-primary text-xs font-bold text-[#fffdf5] font-mono shadow-md active:scale-95 transition-all"
                                 >
                                   ▶ Kunci Focus Lock →
                                 </button>
@@ -1597,32 +1651,32 @@
                             </div>
 
                             <div>
-                              <h3 className="text-base sm:text-lg font-extrabold text-white tracking-tight">
+                              <h3 className="text-base sm:text-lg font-extrabold text-[#252520] tracking-tight">
                                 #{move.rank} — {move.title}
                               </h3>
-                              <p className="text-xs text-zinc-300 mt-1 font-medium leading-relaxed">
+                              <p className="text-xs text-[#59594f] mt-1 font-medium leading-relaxed">
                                 {move.subtitle}
                               </p>
-                              <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                              <p className="text-xs text-[#59594f] mt-1 leading-relaxed">
                                 {move.description}
                               </p>
                             </div>
 
-                            <div className="p-4 rounded-xl bg-black/50 border border-white/[0.06] space-y-2">
-                              <span className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block">
+                            <div className="p-4 rounded-xl bg-[#faf9f3]/50 border border-[#ded7c8] space-y-2">
+                              <span className="text-[11px] font-mono text-[#59594f] uppercase font-bold tracking-wider block">
                                 📋 Checklist Eksekusi Micro-Step:
                               </span>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#59594f]">
                                 {move.actionChecklist.map((act, i) => (
-                                  <div key={i} className="p-2 rounded-lg bg-[#060609] border border-white/[0.05] flex items-center gap-2">
-                                    <span className="w-4 h-4 rounded-full bg-white/10 text-[10px] font-bold flex items-center justify-center text-zinc-400 shrink-0">{i+1}</span>
+                                  <div key={i} className="p-2 rounded-lg bg-[#faf9f3] border border-[#ded7c8] flex items-center gap-2">
+                                    <span className="w-4 h-4 rounded-full bg-white/10 text-[10px] font-bold flex items-center justify-center text-[#59594f] shrink-0">{i+1}</span>
                                     <span className="leading-tight">{act}</span>
                                   </div>
                                 ))}
                               </div>
                             </div>
 
-                            <div className="p-3 rounded-xl bg-[#090d0b] border border-emerald-500/30 text-xs font-mono text-zinc-300">
+                            <div className="p-3 rounded-xl bg-[#090d0b] border border-emerald-500/30 text-xs font-mono text-[#59594f]">
                               <strong className="text-emerald-400">// EFEK KE SALDO REKENING: </strong>
                               {move.financialUnlockNote}
                             </div>
@@ -1635,10 +1689,10 @@
                   {/* September 4-Phase Blueprint */}
                   <div className="figma-shell">
                     <div className="figma-core p-5 sm:p-6 space-y-4">
-                      <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+                      <div className="flex items-center justify-between border-b border-[#ded7c8] pb-3">
                         <div>
-                          <h3 className="text-sm font-bold text-white">🗺️ Peta Roadmap Eksekusi Bulan September 2026</h3>
-                          <p className="text-xs text-zinc-400 font-mono mt-0.5">// 4 Fase strategis untuk mengunci target +Rp10 Juta dan scaling SaaS</p>
+                          <h3 className="text-sm font-bold text-[#252520]">🗺️ Peta Roadmap Eksekusi Bulan September 2026</h3>
+                          <p className="text-xs text-[#59594f] font-mono mt-0.5">// 4 Fase strategis untuk mengunci target +Rp10 Juta dan scaling SaaS</p>
                         </div>
                       </div>
 
@@ -1648,8 +1702,8 @@
                             <span className="dev-tag-emerald text-[9px]">FASE 1 // 1–3 SEP</span>
                             <span className="text-emerald-400 font-bold">100% TUNTAS ✓</span>
                           </div>
-                          <h5 className="font-bold text-white text-xs">Cash Defense & Kickoff</h5>
-                          <p className="text-[11px] text-zinc-300 leading-snug">
+                          <h5 className="font-bold text-[#252520] text-xs">Cash Defense & Kickoff</h5>
+                          <p className="text-[11px] text-[#59594f] leading-snug">
                             • Barber lunas Rp6M ✓<br />
                             • DP Umi Elly Rp3M masuk ✓<br />
                             • Saldo aman Rp9,89M ✓
@@ -1661,34 +1715,34 @@
                             <span className="dev-tag text-[9px] bg-amber-500/20 text-amber-300 border-amber-500/30">FASE 2 // 4–10 SEP</span>
                             <span className="text-amber-400 font-bold animate-pulse">SEDANG AKTIF ⚡</span>
                           </div>
-                          <h5 className="font-bold text-white text-xs">Sprint Modul 1 & Handover</h5>
-                          <p className="text-[11px] text-zinc-300 leading-snug">
+                          <h5 className="font-bold text-[#252520] text-xs">Sprint Modul 1 & Handover</h5>
+                          <p className="text-[11px] text-[#59594f] leading-snug">
                             • Modul 1 LMS Umi Elly<br />
                             • Handover DreamMecca<br />
                             • Siap tagih Termin 2 (+Rp2M)
                           </p>
                         </div>
 
-                        <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-2">
+                        <div className="p-4 rounded-xl bg-white/[0.04] border border-[#ded7c8] space-y-2">
                           <div className="flex justify-between items-center">
                             <span className="dev-tag text-[9px]">FASE 3 // 11–20 SEP</span>
-                            <span className="text-zinc-400 font-bold">NEXT HARVEST</span>
+                            <span className="text-[#59594f] font-bold">NEXT HARVEST</span>
                           </div>
-                          <h5 className="font-bold text-white text-xs">Cairkan Termin 2 & KAEL</h5>
-                          <p className="text-[11px] text-zinc-400 leading-snug">
+                          <h5 className="font-bold text-[#252520] text-xs">Cairkan Termin 2 & KAEL</h5>
+                          <p className="text-[11px] text-[#59594f] leading-snug">
                             • Masuk Termin 2 (+Rp2M)<br />
                             • Demo KAEL ke 3 outlet<br />
                             • Kas tembus Rp11M+
                           </p>
                         </div>
 
-                        <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-2">
+                        <div className="p-4 rounded-xl bg-white/[0.04] border border-[#ded7c8] space-y-2">
                           <div className="flex justify-between items-center">
                             <span className="dev-tag text-[9px]">FASE 4 // 21–30 SEP</span>
-                            <span className="text-zinc-400 font-bold">SCALE & MRR</span>
+                            <span className="text-[#59594f] font-bold">SCALE & MRR</span>
                           </div>
-                          <h5 className="font-bold text-white text-xs">Termin 3 & Growth Mode</h5>
-                          <p className="text-[11px] text-zinc-400 leading-snug">
+                          <h5 className="font-bold text-[#252520] text-xs">Termin 3 & Growth Mode</h5>
+                          <p className="text-[11px] text-[#59594f] leading-snug">
                             • Masuk Termin 3 (+Rp2M)<br />
                             • Pilot pertama KAEL jalan<br />
                             • Kas surplus +Rp5,5M bersih
@@ -1710,14 +1764,14 @@
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                        <h3 className="text-base font-bold text-white tracking-tight">Daru Project Workspace</h3>
+                        <h3 className="text-base font-bold text-[#252520] tracking-tight">Daru Project Workspace</h3>
                         <span className="dev-tag text-[9px]">{viewMode === 'lanes' ? '6_LANES_MODE' : 'KANBAN_BOARD'}</span>
                       </div>
-                      <p className="text-xs text-zinc-400 font-normal mt-0.5">Kelola beban kerja per Lane strategis • Drag & Drop antar Lane/Kolom • Direct Focus & WhatsApp Trigger</p>
+                      <p className="text-xs text-[#59594f] font-normal mt-0.5">Kelola beban kerja per Lane strategis • Drag & Drop antar Lane/Kolom • Direct Focus & WhatsApp Trigger</p>
                     </div>
                     <div className="flex gap-2">
-                      <button onClick={() => { sound.playClick(); setViewMode('lanes'); }} className={`px-3.5 py-1.5 rounded-xl text-xs font-mono transition-all ${viewMode === 'lanes' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white'}`}>Lanes View</button>
-                      <button onClick={() => { sound.playClick(); setViewMode('board'); }} className={`px-3.5 py-1.5 rounded-xl text-xs font-mono transition-all ${viewMode === 'board' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white'}`}>Board View</button>
+                      <button onClick={() => { sound.playClick(); setViewMode('lanes'); }} className={`px-3.5 py-1.5 rounded-xl text-xs font-mono transition-all ${viewMode === 'lanes' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-[#59594f] hover:text-[#252520]'}`}>Lanes View</button>
+                      <button onClick={() => { sound.playClick(); setViewMode('board'); }} className={`px-3.5 py-1.5 rounded-xl text-xs font-mono transition-all ${viewMode === 'board' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-[#59594f] hover:text-[#252520]'}`}>Board View</button>
                     </div>
                   </div>
                 </div>
@@ -1726,10 +1780,10 @@
                 {viewMode === 'lanes' && (
                   <div className="space-y-6">
                     {/* Lane Filter Switcher */}
-                    <div className="flex items-center gap-1.5 bg-[#09090d] p-1.5 rounded-2xl border border-white/[0.06] overflow-x-auto no-scrollbar font-mono text-xs">
+                    <div className="flex items-center gap-1.5 bg-[#09090d] p-1.5 rounded-2xl border border-[#ded7c8] overflow-x-auto no-scrollbar font-mono text-xs">
                       <button
                         onClick={() => { sound.playClick(); setSelectedLaneFilter('ALL'); }}
-                        className={`px-4 py-2 rounded-xl transition-all whitespace-nowrap ${selectedLaneFilter === 'ALL' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'}`}
+                        className={`px-4 py-2 rounded-xl transition-all whitespace-nowrap ${selectedLaneFilter === 'ALL' ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-[#59594f] hover:text-[#252520] hover:bg-white/[0.04]'}`}
                       >
                         ALL_LANES ({state.projects.length})
                       </button>
@@ -1746,7 +1800,7 @@
                           <button
                             key={l.id}
                             onClick={() => { sound.playClick(); setSelectedLaneFilter(l.id); }}
-                            className={`px-3.5 py-2 rounded-xl transition-all whitespace-nowrap ${selectedLaneFilter === l.id ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'}`}
+                            className={`px-3.5 py-2 rounded-xl transition-all whitespace-nowrap ${selectedLaneFilter === l.id ? 'bg-white text-zinc-950 font-bold shadow-sm' : 'text-[#59594f] hover:text-[#252520] hover:bg-white/[0.04]'}`}
                           >
                             {l.tag} ({count})
                           </button>
@@ -1762,7 +1816,7 @@
                         { key: 'bizdev', title: 'Lane 3 — Business Development / Sales', subtitle: 'KAEL Offline Marketing, Upwork Global, Lead Pipeline, Watra', rule: '📈 CLOSING FIRST: Follow up lead hangat, ajak demo, amankan DP 50%.', tag: 'LANE_03', color: 'border-amber-500/40 text-amber-300' },
                         { key: 'own_product', title: 'Lane 4 — Own Product (KAEL Core & Demo)', subtitle: 'Hanya Eksekusi yang Mendukung Demo / Penjualan (Bukan Fitur Random)', rule: '🚀 DEMO READY: Setting role kasir/owner & QRIS flow agar siap demo closing.', tag: 'LANE_04', color: 'border-purple-500/40 text-purple-300' },
                         { key: 'operations', title: 'Lane 5 — Business Operations', subtitle: 'Temantiket — Eksekusi hanya jika ada order / issue konkret', rule: '⚡ ON-DEMAND: Jangan ngulik kalau belum ada transaksi atau tiket masuk.', tag: 'LANE_05', color: 'border-cyan-500/40 text-cyan-300' },
-                        { key: 'parking_lot', title: 'Lane 6 — Parking Lot', subtitle: 'Paused / Dormant — Jangan rebutan perhatian dengan kerjaan aktif', rule: '🔒 ARSIP / DORMANT: Simpan ide liar di sini sampai ada kapasitas eksekusi.', tag: 'PARKED', color: 'border-zinc-700 text-zinc-500' }
+                        { key: 'parking_lot', title: 'Lane 6 — Parking Lot', subtitle: 'Paused / Dormant — Jangan rebutan perhatian dengan kerjaan aktif', rule: '🔒 ARSIP / DORMANT: Simpan ide liar di sini sampai ada kapasitas eksekusi.', tag: 'PARKED', color: 'border-zinc-700 text-[#928876]' }
                       ]
                         .filter(l => selectedLaneFilter === 'ALL' || selectedLaneFilter === l.key)
                         .map(lane => {
@@ -1802,18 +1856,18 @@
                               }}
                             >
                               <div className="figma-core p-5 sm:p-6 space-y-4">
-                                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+                                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                                   <div>
                                     <div className="flex items-center gap-2">
-                                      <h4 className="text-base font-bold text-white tracking-tight">{lane.title}</h4>
+                                      <h4 className="text-base font-bold text-[#252520] tracking-tight">{lane.title}</h4>
                                       <span className={`dev-tag ${lane.color}`}>{lane.tag}</span>
                                     </div>
-                                    <p className="text-xs text-zinc-400 mt-0.5">{lane.subtitle}</p>
+                                    <p className="text-xs text-[#59594f] mt-0.5">{lane.subtitle}</p>
                                   </div>
                                   <span className="dev-tag">{laneProjects.length} ITEMS</span>
                                 </div>
 
-                                <div className="p-2.5 rounded-xl bg-[#060609] border border-white/[0.05] text-xs font-mono text-zinc-300">
+                                <div className="p-2.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-xs font-mono text-[#59594f]">
                                   <span className="text-amber-400 font-bold">// STRATEGI:</span> {lane.rule}
                                 </div>
 
@@ -1842,28 +1896,28 @@
                                         }}
                                         className={`p-4 rounded-2xl border text-left transition-all duration-200 space-y-3 cursor-grab active:cursor-grabbing ${
                                           isBeingDragged
-                                            ? 'opacity-30 scale-95 border-dashed border-white/50 bg-[#161624]'
-                                            : 'bg-[#060609] border-white/[0.06] hover:border-white/20 hover:bg-[#0c0c14] hover:-translate-y-0.5 shadow-md'
+                                            ? 'opacity-30 scale-95 border-dashed border-[#ded7c8]0 bg-[#161624]'
+                                            : 'bg-[#faf9f3] border-[#ded7c8] hover:border-[#ded7c8] hover:bg-[#0c0c14] hover:-translate-y-0.5 shadow-md'
                                         }`}
                                       >
                                         <div className="flex justify-between items-start gap-1">
                                           <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-1.5">
                                               <span className="dev-tag text-[9px] py-0 px-2">{p.priority}</span>
-                                              <span className="text-[10px] font-mono text-zinc-400">{p.paymentStatus}</span>
+                                              <span className="text-[10px] font-mono text-[#59594f]">{p.paymentStatus}</span>
                                             </div>
-                                            <h5 className="text-sm font-bold text-white mt-1.5 truncate">{p.name}</h5>
-                                            <p className="text-[11px] text-zinc-400 font-mono">{p.valueText}</p>
+                                            <h5 className="text-sm font-bold text-[#252520] mt-1.5 truncate">{p.name}</h5>
+                                            <p className="text-[11px] text-[#59594f] font-mono">{p.valueText}</p>
                                           </div>
                                         </div>
 
-                                        <div className="p-2.5 rounded-xl bg-black/50 border border-white/5 text-[11px] space-y-1">
-                                          <p className="text-zinc-200 leading-relaxed"><span className="text-amber-400 font-mono font-bold">⚡ Next:</span> {p.nextAction}</p>
+                                        <div className="p-2.5 rounded-xl bg-[#faf9f3]/50 border border-[#ded7c8] text-[11px] space-y-1">
+                                          <p className="text-[#252520] leading-relaxed"><span className="text-amber-400 font-mono font-bold">⚡ Next:</span> {p.nextAction}</p>
                                         </div>
 
                                         {/* Status Switcher Pills */}
                                         <div className="space-y-1">
-                                          <span className="text-[9px] font-mono text-zinc-500 block uppercase tracking-wider">Status Kolom:</span>
+                                          <span className="text-[9px] font-mono text-[#928876] block uppercase tracking-wider">Status Kolom:</span>
                                           <div className="grid grid-cols-4 gap-1">
                                             {['DOING', 'QUEUE', 'WAITING', 'PARKED'].map((col) => (
                                               <button
@@ -1892,7 +1946,7 @@
                                                 className={`py-1 rounded-lg text-[9px] font-mono font-bold transition-all text-center ${
                                                   p.boardColumn === col
                                                     ? col === 'DOING' ? 'bg-emerald-500 text-black shadow-sm' : col === 'WAITING' ? 'bg-amber-400 text-black shadow-sm' : col === 'PARKED' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-white text-black shadow-sm'
-                                                    : 'bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/[0.08]'
+                                                    : 'bg-white/[0.04] text-[#59594f] hover:text-[#252520] hover:bg-white/[0.08]'
                                                 }`}
                                               >
                                                 {col}
@@ -1901,8 +1955,8 @@
                                           </div>
                                         </div>
 
-                                        <div className="pt-2.5 border-t border-white/5 flex items-center justify-between gap-1 text-[11px] font-mono">
-                                          <button onClick={() => startFocus({ projectName: p.name, action: p.nextAction, timeboxMinutes: 50, rule: p.rule || '' })} className="text-zinc-300 hover:text-white bg-white/5 px-2.5 py-1.5 rounded-xl border border-white/10">Focus →</button>
+                                        <div className="pt-2.5 border-t border-[#ded7c8] flex items-center justify-between gap-1 text-[11px] font-mono">
+                                          <button onClick={() => startFocus({ projectName: p.name, action: p.nextAction, timeboxMinutes: 50, rule: p.rule || '' })} className="text-[#59594f] hover:text-[#252520] bg-white/5 px-2.5 py-1.5 rounded-xl border border-[#ded7c8]">Focus →</button>
                                           <button onClick={() => openFollowUpModal(p.name)} className="text-amber-300 hover:text-amber-200 bg-amber-500/10 px-2.5 py-1.5 rounded-xl border border-amber-500/20">Copas WA 💬</button>
                                         </div>
                                       </div>
@@ -1957,9 +2011,9 @@
                           }}
                         >
                           <div className="figma-core p-3.5 space-y-3 min-h-[500px] flex flex-col justify-start">
-                            <div className={`p-3 rounded-xl bg-[#060609] border ${col.id === 'DOING' ? 'border-white/30 text-white' : col.id === 'QUEUE' ? 'border-zinc-500 text-zinc-300' : col.id === 'WAITING' ? 'border-amber-400/40 text-amber-300' : 'border-zinc-700 text-zinc-500'} flex justify-between items-center`}>
+                            <div className={`p-3 rounded-xl bg-[#faf9f3] border ${col.id === 'DOING' ? 'border-white/30 text-[#252520]' : col.id === 'QUEUE' ? 'border-zinc-500 text-[#59594f]' : col.id === 'WAITING' ? 'border-amber-400/40 text-amber-300' : 'border-zinc-700 text-[#928876]'} flex justify-between items-center`}>
                               <span className="text-xs font-mono font-bold">{col.label}</span>
-                              <span className="text-xs font-mono font-bold text-white bg-white/5 border border-white/10 px-2 py-0.5 rounded-lg">{colProjects.length}</span>
+                              <span className="text-xs font-mono font-bold text-[#252520] bg-white/5 border border-[#ded7c8] px-2 py-0.5 rounded-lg">{colProjects.length}</span>
                             </div>
 
                             {isHovered && draggedProjectId && (
@@ -1987,27 +2041,27 @@
                                     }}
                                     className={`p-4 rounded-2xl border text-left transition-all duration-200 space-y-2.5 cursor-grab active:cursor-grabbing ${
                                       isDragging
-                                        ? 'opacity-30 scale-95 border-dashed border-white/50 bg-[#161624]'
-                                        : 'bg-[#060609] border-white/[0.06] hover:border-white/20 hover:bg-[#0c0c14] hover:-translate-y-0.5 shadow-md'
+                                        ? 'opacity-30 scale-95 border-dashed border-[#ded7c8]0 bg-[#161624]'
+                                        : 'bg-[#faf9f3] border-[#ded7c8] hover:border-[#ded7c8] hover:bg-[#0c0c14] hover:-translate-y-0.5 shadow-md'
                                     }`}
                                   >
                                     <div className="flex justify-between items-start">
                                       <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-1.5">
                                           <span className="dev-tag text-[9px] py-0">{p.priority}</span>
-                                          <span className="text-[10px] font-mono text-zinc-400">{p.paymentStatus}</span>
+                                          <span className="text-[10px] font-mono text-[#59594f]">{p.paymentStatus}</span>
                                         </div>
-                                        <h5 className="text-sm font-bold text-white mt-1 truncate">{p.name}</h5>
-                                        <p className="text-[11px] text-zinc-400 font-mono">{p.valueText}</p>
+                                        <h5 className="text-sm font-bold text-[#252520] mt-1 truncate">{p.name}</h5>
+                                        <p className="text-[11px] text-[#59594f] font-mono">{p.valueText}</p>
                                       </div>
-                                      <span className="text-[9px] font-mono px-2 py-0.5 rounded-md bg-black/60 text-zinc-400 border border-white/5">{p.status}</span>
+                                      <span className="text-[9px] font-mono px-2 py-0.5 rounded-md bg-[#eae5d8] text-[#59594f] border border-[#ded7c8]">{p.status}</span>
                                     </div>
-                                    <div className="p-2.5 rounded-xl bg-black/50 border border-white/5 text-[11px]">
-                                      <p className="text-zinc-200"><span className="text-amber-400 font-mono font-bold">⚡ Next:</span> {p.nextAction}</p>
+                                    <div className="p-2.5 rounded-xl bg-[#faf9f3]/50 border border-[#ded7c8] text-[11px]">
+                                      <p className="text-[#252520]"><span className="text-amber-400 font-mono font-bold">⚡ Next:</span> {p.nextAction}</p>
                                     </div>
                                     {p.boardColumn !== 'PARKED' && (
-                                      <div className="pt-2 border-t border-white/5 flex justify-between items-center text-xs font-mono">
-                                        <button onClick={() => startFocus({ projectName: p.name, action: p.nextAction, timeboxMinutes: 50, rule: p.rule || '' })} className="text-zinc-300 hover:text-white bg-white/5 px-2.5 py-1 rounded-lg border border-white/10">Focus →</button>
+                                      <div className="pt-2 border-t border-[#ded7c8] flex justify-between items-center text-xs font-mono">
+                                        <button onClick={() => startFocus({ projectName: p.name, action: p.nextAction, timeboxMinutes: 50, rule: p.rule || '' })} className="text-[#59594f] hover:text-[#252520] bg-white/5 px-2.5 py-1 rounded-lg border border-[#ded7c8]">Focus →</button>
                                         <button onClick={() => openFollowUpModal(p.name)} className="text-amber-300 hover:text-amber-200 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">Copas WA 💬</button>
                                       </div>
                                     )}
@@ -2028,23 +2082,23 @@
             {activeTab === 'waiting' && (
               <div className="space-y-6">
                 <div className="p-4 rounded-xl dev-glass">
-                  <h3 className="text-base font-semibold text-white">Radar Pipeline (Pending Decisions & Payments)</h3>
-                  <p className="text-xs text-zinc-400 font-mono">// Umi Elly (Rp7M), Bedug (Rp2.2M), Teh Umi, El Massa, Ar-Ruwad, Watra</p>
+                  <h3 className="text-base font-semibold text-[#252520]">Radar Pipeline (Pending Decisions & Payments)</h3>
+                  <p className="text-xs text-[#59594f] font-mono">// Umi Elly (Rp7M), Bedug (Rp2.2M), Teh Umi, El Massa, Ar-Ruwad, Watra</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {state.waitingItems.map(w => (
                     <div key={w.id} className="dev-card p-5 space-y-3">
                       <div className="flex justify-between items-start">
-                        <h4 className="text-base font-semibold text-white">{w.name}</h4>
-                        <span className="text-xs text-zinc-200 font-mono bg-black/60 px-2.5 py-1 rounded-lg border border-white/5">{w.value}</span>
+                        <h4 className="text-base font-semibold text-[#252520]">{w.name}</h4>
+                        <span className="text-xs text-[#252520] font-mono bg-[#eae5d8] px-2.5 py-1 rounded-lg border border-[#ded7c8]">{w.value}</span>
                       </div>
-                      <div className="p-3 rounded-xl bg-[#07070b] border border-white/[0.06] text-xs space-y-1">
-                        <p className="text-zinc-300"><span className="text-zinc-400 font-mono">Blocked on:</span> {w.reason}</p>
-                        <p className="text-zinc-400 text-[11px] font-mono">Trigger: <span className="text-zinc-200">{w.nextTrigger}</span></p>
+                      <div className="p-3 rounded-xl bg-[#07070b] border border-[#ded7c8] text-xs space-y-1">
+                        <p className="text-[#59594f]"><span className="text-[#59594f] font-mono">Blocked on:</span> {w.reason}</p>
+                        <p className="text-[#59594f] text-[11px] font-mono">Trigger: <span className="text-[#252520]">{w.nextTrigger}</span></p>
                       </div>
-                      <div className="pt-2 border-t border-white/[0.06] flex justify-between items-center">
-                        <button onClick={() => openFollowUpModal(w.name)} className="px-3.5 py-1.5 rounded-lg bg-[#14141c] hover:bg-[#1c1c26] text-zinc-200 text-xs font-mono border border-white/10">
+                      <div className="pt-2 border-t border-[#ded7c8] flex justify-between items-center">
+                        <button onClick={() => openFollowUpModal(w.name)} className="px-3.5 py-1.5 rounded-lg bg-[#fffdf5] hover:bg-[#1c1c26] text-[#252520] text-xs font-mono border border-[#ded7c8]">
                           COPAS PESAN WA 💬
                         </button>
                       </div>
@@ -2060,7 +2114,7 @@
                 
                 {/* 1. Executive Summary Hero Card */}
                 <div className={`dev-card p-5 sm:p-6 border-l-4 ${isRed ? 'border-l-rose-500' : isGreen ? 'border-l-emerald-500' : 'border-l-amber-500'} space-y-4`}>
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                     <div className="flex items-center gap-2">
                       <span className={`w-2.5 h-2.5 rounded-full ${isRed ? 'bg-rose-500' : isGreen ? 'bg-emerald-400' : 'bg-amber-400'} animate-pulse`} />
                       <span className={`text-xs font-mono font-bold uppercase ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'}`}>
@@ -2070,7 +2124,7 @@
                             ? '🟢 GREEN MODE — GROWTH & EXPANSION' 
                             : '🟡 YELLOW MODE — RECOVERY STAGE 2 (SAFE BUFFER)'}
                       </span>
-                      <span className="text-xs text-zinc-500 font-mono">// as of {report.asOfDate}</span>
+                      <span className="text-xs text-[#928876] font-mono">// as of {report.asOfDate}</span>
                     </div>
 
                     <button
@@ -2082,9 +2136,9 @@
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="p-3.5 rounded-xl bg-[#09090d] border border-white/[0.06] space-y-1">
-                      <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider block">01 // SALDO LIKUID TOTAL</span>
-                      <span className="text-2xl sm:text-3xl font-extrabold text-white font-mono block">{formatRupiah(report.totalLiquidBalance)}</span>
+                    <div className="p-3.5 rounded-xl bg-[#09090d] border border-[#ded7c8] space-y-1">
+                      <span className="text-[11px] font-mono text-[#59594f] uppercase tracking-wider block">01 // SALDO LIKUID TOTAL</span>
+                      <span className="text-2xl sm:text-3xl font-extrabold text-[#252520] font-mono block">{formatRupiah(report.totalLiquidBalance)}</span>
                       <span className={`text-[11px] font-mono block ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-300'}`}>
                         {isRed 
                           ? '< Rp4,00M Hard Floor (Mandiri Live)' 
@@ -2094,20 +2148,20 @@
                       </span>
                     </div>
 
-                    <div className="p-3.5 rounded-xl bg-[#09090d] border border-white/[0.06] space-y-1">
+                    <div className="p-3.5 rounded-xl bg-[#09090d] border border-[#ded7c8] space-y-1">
                       <span className="text-[11px] font-mono text-amber-400 uppercase tracking-wider block">02 // BEBAN KELUAR BULANAN</span>
-                      <span className="text-2xl sm:text-3xl font-extrabold text-amber-300 font-mono block">Rp2,67M <span className="text-xs text-zinc-400 font-normal">fixed</span></span>
-                      <span className="text-[11px] text-zinc-400 font-mono block">Real burn: ~Rp4M – Rp5M / bulan</span>
+                      <span className="text-2xl sm:text-3xl font-extrabold text-amber-300 font-mono block">Rp2,67M <span className="text-xs text-[#59594f] font-normal">fixed</span></span>
+                      <span className="text-[11px] text-[#59594f] font-mono block">Real burn: ~Rp4M – Rp5M / bulan</span>
                     </div>
 
-                    <div className="p-3.5 rounded-xl bg-[#09090d] border border-white/[0.06] space-y-1">
+                    <div className="p-3.5 rounded-xl bg-[#09090d] border border-[#ded7c8] space-y-1">
                       <span className={`text-[11px] font-mono uppercase tracking-wider block ${isRed ? 'text-rose-300' : 'text-emerald-300'}`}>03 // SISA RUNWAY KAS</span>
                       <span className={`text-2xl sm:text-3xl font-extrabold font-mono block ${isRed ? 'text-rose-400' : 'text-emerald-400'}`}>±{dynamicRunwayDays} Hari</span>
-                      <span className="text-[11px] text-zinc-400 font-mono block">~{dynamicRunwayMonths} Bulan jika tanpa income baru</span>
+                      <span className="text-[11px] text-[#59594f] font-mono block">~{dynamicRunwayMonths} Bulan jika tanpa income baru</span>
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-[#07070b] border border-white/[0.08] text-xs font-mono text-zinc-300">
+                  <div className="p-3 rounded-lg bg-[#07070b] border border-[#ded7c8] text-xs font-mono text-[#59594f]">
                     <span className={`${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'} font-semibold`}>// STRATEGI:</span> "Belum masuk rekening = belum jadi uang. Target mutlak: <strong>Minimal +Rp10 Juta Masuk Tiap Bulan</strong>."
                   </div>
                 </div>
@@ -2223,19 +2277,19 @@
                         <div className="figma-core p-5 sm:p-6 bg-gradient-to-br from-[#101915] via-[#090d0b] to-[#060609] space-y-5">
                           
                           {/* Month Selector Pills Bar */}
-                          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
+                          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-mono text-zinc-400 font-semibold uppercase tracking-wider">
+                              <span className="text-xs font-mono text-[#59594f] font-semibold uppercase tracking-wider">
                                 Periode:
                               </span>
-                              <div className="flex items-center gap-1.5 bg-black/70 p-1 rounded-2xl border border-white/10 text-xs font-mono">
+                              <div className="flex items-center gap-1.5 bg-[#faf9f3]/70 p-1 rounded-2xl border border-[#ded7c8] text-xs font-mono">
                                 <button
                                   onClick={() => { sound.playClick(); setFinMonthArchive('current'); }}
                                   className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1.5 ${
-                                    finMonthArchive === 'current' ? 'bg-emerald-500 text-black font-bold shadow-md' : 'text-zinc-400 hover:text-white'
+                                    finMonthArchive === 'current' ? 'bg-emerald-500 text-black font-bold shadow-md' : 'text-[#59594f] hover:text-[#252520]'
                                   }`}
                                 >
-                                  <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#faf9f3] animate-pulse" />
                                   <span>{curMonth} {currentYearNum} (Live)</span>
                                 </button>
                                 {monthlyArchives.map(arch => (
@@ -2243,7 +2297,7 @@
                                     key={arch.id}
                                     onClick={() => { sound.playClick(); setFinMonthArchive(arch.id); }}
                                     className={`px-3 py-1 rounded-xl transition-all ${
-                                      finMonthArchive === arch.id ? 'bg-amber-500 text-black font-bold shadow-md' : 'text-zinc-400 hover:text-white'
+                                      finMonthArchive === arch.id ? 'bg-amber-500 text-black font-bold shadow-md' : 'text-[#59594f] hover:text-[#252520]'
                                     }`}
                                   >
                                     <span>🏛️ {arch.monthName}</span>
@@ -2251,7 +2305,7 @@
                                 ))}
                                 <button
                                   onClick={() => { sound.playClick(); setFinSubTab('archive'); }}
-                                  className="px-2.5 py-1 rounded-xl text-zinc-400 hover:text-white hover:bg-white/10 transition-all text-[11px]"
+                                  className="px-2.5 py-1 rounded-xl text-[#59594f] hover:text-[#252520] hover:bg-white/10 transition-all text-[11px]"
                                 >
                                   <span>📜 Semua Rekap →</span>
                                 </button>
@@ -2259,7 +2313,7 @@
                             </div>
 
                             {finMonthArchive === 'current' && (
-                              <div className="flex items-center gap-1.5 bg-black/60 p-1 rounded-2xl border border-white/10 font-mono text-xs">
+                              <div className="flex items-center gap-1.5 bg-[#eae5d8] p-1 rounded-2xl border border-[#ded7c8] font-mono text-xs">
                                 {[
                                   { val: 10000000, label: 'Rp10 Jt (Wajib)' },
                                   { val: 15000000, label: 'Rp15 Jt (Growth)' },
@@ -2268,7 +2322,7 @@
                                   <button
                                     key={opt.val}
                                     onClick={() => { sound.playClick(); setMonthlyTarget(opt.val); }}
-                                    className={`px-2.5 py-1 rounded-xl transition-all text-xs ${monthlyTarget === opt.val ? 'bg-emerald-500 text-black font-bold shadow-md' : 'text-zinc-400 hover:text-white'}`}
+                                    className={`px-2.5 py-1 rounded-xl transition-all text-xs ${monthlyTarget === opt.val ? 'bg-emerald-500 text-black font-bold shadow-md' : 'text-[#59594f] hover:text-[#252520]'}`}
                                   >
                                     {opt.label}
                                   </button>
@@ -2284,73 +2338,73 @@
                                 <div>
                                   <div className="flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                    <h3 className="text-base font-extrabold text-white tracking-tight">
+                                    <h3 className="text-base font-extrabold text-[#252520] tracking-tight">
                                       Target Pemasukan {curMonth} {currentYearNum}: <span className="text-emerald-400 font-mono">+{formatRupiah(monthlyTarget)} / Bulan</span>
                                     </h3>
                                     <span className="dev-tag-emerald text-[9px]">TARGET_{curMonth.toUpperCase()}</span>
                                   </div>
-                                  <p className="text-xs text-zinc-300 mt-1">Pokoknya bulan <strong>{curMonth} {currentYearNum}</strong> minimal harus nambah <strong>{formatRupiah(monthlyTarget)}</strong> agar kas langsung surplus dan keluar dari zona bahaya!</p>
+                                  <p className="text-xs text-[#59594f] mt-1">Pokoknya bulan <strong>{curMonth} {currentYearNum}</strong> minimal harus nambah <strong>{formatRupiah(monthlyTarget)}</strong> agar kas langsung surplus dan keluar dari zona bahaya!</p>
                                 </div>
                               </div>
 
                               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
-                                <div className="lg:col-span-2 p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
+                                <div className="lg:col-span-2 p-4 rounded-2xl bg-[#faf9f3]/50 border border-[#ded7c8] space-y-3">
                                   <div className="flex justify-between items-center text-xs font-mono">
-                                    <span className="text-zinc-300 font-semibold">Progress Pemasukan Bulan {curMonth}:</span>
+                                    <span className="text-[#59594f] font-semibold">Progress Pemasukan Bulan {curMonth}:</span>
                                     <span className="text-emerald-400 font-bold text-sm">{formatRupiah(totalPaidMonth)} / {formatRupiah(monthlyTarget)} ({prog}%)</span>
                                   </div>
-                                  <div className="w-full h-3.5 rounded-full bg-[#12121a] border border-white/10 overflow-hidden relative">
+                                  <div className="w-full h-3.5 rounded-full bg-[#faf9f3] border border-[#ded7c8] overflow-hidden relative">
                                     <div className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-300 transition-all duration-700" style={{ width: `${prog}%` }} />
                                   </div>
-                                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-zinc-400 pt-1 gap-2">
+                                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-[#59594f] pt-1 gap-2">
                                     <span>Sisa target {curMonth}: <strong className="text-amber-300 font-bold">{formatRupiah(remaining)}</strong></span>
-                                    <span className="text-zinc-400">Hari ke-{dNum}/{totalDays} ({dRemain} hari tersisa)</span>
+                                    <span className="text-[#59594f]">Hari ke-{dNum}/{totalDays} ({dRemain} hari tersisa)</span>
                                     <span className="text-emerald-300">Pacing Harian: <strong>{formatRupiah(dailyPace)}/hari</strong></span>
                                   </div>
                                 </div>
 
-                                <div className="p-4 rounded-2xl bg-black/50 border border-emerald-500/30 space-y-1.5">
+                                <div className="p-4 rounded-2xl bg-[#faf9f3]/50 border border-emerald-500/30 space-y-1.5">
                                   <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">PROYEKSI SURPLUS BERSIH / BULAN</span>
                                   <span className="text-2xl font-extrabold text-emerald-300 font-mono block">+{formatRupiah(surplus)}</span>
-                                  <p className="text-[11px] text-zinc-400 font-mono leading-tight">Pemasukan {formatRupiah(monthlyTarget)} - Real Burn Rp4,5M = <strong>+{formatRupiah(surplus)}</strong> tabungan baru tiap bulan!</p>
+                                  <p className="text-[11px] text-[#59594f] font-mono leading-tight">Pemasukan {formatRupiah(monthlyTarget)} - Real Burn Rp4,5M = <strong>+{formatRupiah(surplus)}</strong> tabungan baru tiap bulan!</p>
                                 </div>
                               </div>
 
                               <div className="space-y-2.5">
                                 <div className="flex items-center justify-between">
                                   <span className="text-xs font-mono text-emerald-300 uppercase tracking-wider block font-bold">🗺️ Peta Realisasi Target Bulan {curMonth} ({formatRupiah(monthlyTarget)} / Bulan):</span>
-                                  <span className="text-[10px] font-mono text-zinc-400">Total Pipeline: <strong className="text-emerald-300">Rp10.200.000</strong></span>
+                                  <span className="text-[10px] font-mono text-[#59594f]">Total Pipeline: <strong className="text-emerald-300">Rp10.200.000</strong></span>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
+                                  <div className="p-3.5 rounded-2xl bg-[#eae5d8] border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
                                     <div className="flex justify-between items-center"><span className="dev-tag-emerald text-[9px]">100% LUNAS FULL ✓</span><span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span></div>
-                                    <h5 className="text-xs font-bold text-white">Barber Underrated (Lunas)</h5>
-                                    <p className="text-[11px] text-zinc-400">Pelunasan Rp3.000.000 masuk kas Mandiri! Total deal Rp6.000.000 lunas penuh ✓</p>
+                                    <h5 className="text-xs font-bold text-[#252520]">Barber Underrated (Lunas)</h5>
+                                    <p className="text-[11px] text-[#59594f]">Pelunasan Rp3.000.000 masuk kas Mandiri! Total deal Rp6.000.000 lunas penuh ✓</p>
                                   </div>
-                                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
+                                  <div className="p-3.5 rounded-2xl bg-[#eae5d8] border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
                                     <div className="flex justify-between items-center"><span className="dev-tag-emerald text-[9px]">DP MASUK // KICKOFF</span><span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span></div>
-                                    <h5 className="text-xs font-bold text-white">DP Umi Elly LMS (Kickoff)</h5>
-                                    <p className="text-[11px] text-zinc-400">Termin 1 DP Rp3.000.000 masuk kas! Gaspol sprint pengerjaan modul LMS Azhariyah.</p>
+                                    <h5 className="text-xs font-bold text-[#252520]">DP Umi Elly LMS (Kickoff)</h5>
+                                    <p className="text-[11px] text-[#59594f]">Termin 1 DP Rp3.000.000 masuk kas! Gaspol sprint pengerjaan modul LMS Azhariyah.</p>
                                   </div>
-                                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
-                                    <div className="flex justify-between items-center"><span className="dev-tag-emerald text-[9px]">DELIVERY // LUNAS ✓</span><span className="text-xs font-mono font-bold text-white">Rp1.200.000</span></div>
-                                    <h5 className="text-xs font-bold text-white">DreamMecca + 2 Logo</h5>
-                                    <p className="text-[11px] text-zinc-400">Logo Zalvice & Laptopbisnis 100% kelar! DreamMecca lunas dari lama.</p>
+                                  <div className="p-3.5 rounded-2xl bg-[#eae5d8] border border-[#ded7c8] space-y-1.5">
+                                    <div className="flex justify-between items-center"><span className="dev-tag-emerald text-[9px]">DELIVERY // LUNAS ✓</span><span className="text-xs font-mono font-bold text-[#252520]">Rp1.200.000</span></div>
+                                    <h5 className="text-xs font-bold text-[#252520]">DreamMecca + 2 Logo</h5>
+                                    <p className="text-[11px] text-[#59594f]">Logo Zalvice & Laptopbisnis 100% kelar! DreamMecca lunas dari lama.</p>
                                   </div>
-                                  <div className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
+                                  <div className="p-3.5 rounded-2xl bg-[#eae5d8] border border-[#ded7c8] space-y-1.5">
                                     <div className="flex justify-between items-center"><span className="dev-tag text-[9px]">NEXT SPRINT // SCALE</span><span className="text-xs font-mono font-bold text-amber-300">Rp4.000.000+</span></div>
-                                    <h5 className="text-xs font-bold text-white">Termin 2 & 3 + KAEL SaaS</h5>
-                                    <p className="text-[11px] text-zinc-400">Sisa termin LMS Umi Elly (Rp4M) + pilot KAEL SaaS untuk amankan target scale Rp15M+.</p>
+                                    <h5 className="text-xs font-bold text-[#252520]">Termin 2 & 3 + KAEL SaaS</h5>
+                                    <p className="text-[11px] text-[#59594f]">Sisa termin LMS Umi Elly (Rp4M) + pilot KAEL SaaS untuk amankan target scale Rp15M+.</p>
                                   </div>
                                 </div>
                               </div>
 
-                              <div className="p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-2">
-                                <span className="text-xs font-mono text-zinc-300 font-bold block">📈 Efek Pertumbuhan Saldo Kas Mengikuti Tanggal Real (+{formatRupiah(monthlyTarget)}/bln):</span>
+                              <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-2">
+                                <span className="text-xs font-mono text-[#59594f] font-bold block">📈 Efek Pertumbuhan Saldo Kas Mengikuti Tanggal Real (+{formatRupiah(monthlyTarget)}/bln):</span>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-                                  <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
-                                    <span className="text-zinc-400 block text-[10px] font-bold uppercase">BULAN 1: {m1Name} (+{formatRupiah(surplus)})</span>
-                                    <span className="text-base font-bold text-white block mt-0.5">{formatRupiah(b1)}</span>
+                                  <div className="p-3 rounded-xl bg-white/[0.04] border border-[#ded7c8]">
+                                    <span className="text-[#59594f] block text-[10px] font-bold uppercase">BULAN 1: {m1Name} (+{formatRupiah(surplus)})</span>
+                                    <span className="text-base font-bold text-[#252520] block mt-0.5">{formatRupiah(b1)}</span>
                                     <span className="text-[11px] text-amber-300">Runway: ±{rw1} Bulan (Keluar dari Red Mode)</span>
                                   </div>
                                   <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
@@ -2371,16 +2425,16 @@
                           {/* HISTORICAL ARCHIVED MONTH VIEW */}
                           {finMonthArchive !== 'current' && activeArch && (
                             <div className="space-y-4">
-                              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
+                              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                                 <div>
                                   <div className="flex items-center gap-2">
                                     <span className="w-2 h-2 rounded-full bg-amber-400" />
-                                    <h3 className="text-base font-extrabold text-white tracking-tight">
+                                    <h3 className="text-base font-extrabold text-[#252520] tracking-tight">
                                       Rekap Pencapaian: <span className="text-amber-400 font-mono">{activeArch.monthName}</span>
                                     </h3>
                                     <span className="dev-tag text-[9px] bg-amber-500/15 text-amber-300 border border-amber-500/20">{activeArch.periodTag}</span>
                                   </div>
-                                  <p className="text-xs text-zinc-300 mt-1">{activeArch.summaryNote}</p>
+                                  <p className="text-xs text-[#59594f] mt-1">{activeArch.summaryNote}</p>
                                 </div>
                                 <button
                                   onClick={() => { sound.playClick(); setFinMonthArchive('current'); }}
@@ -2391,33 +2445,33 @@
                               </div>
 
                               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
-                                <div className="lg:col-span-2 p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
+                                <div className="lg:col-span-2 p-4 rounded-2xl bg-[#faf9f3]/50 border border-[#ded7c8] space-y-3">
                                   <div className="flex justify-between items-center text-xs font-mono">
-                                    <span className="text-zinc-300 font-semibold">Realisasi Pemasukan {activeArch.monthName}:</span>
+                                    <span className="text-[#59594f] font-semibold">Realisasi Pemasukan {activeArch.monthName}:</span>
                                     <span className="text-amber-400 font-bold text-sm">{formatRupiah(activeArch.realizedIncome)} / {formatRupiah(activeArch.target)} ({activeArch.progressPercent}%)</span>
                                   </div>
-                                  <div className="w-full h-3.5 rounded-full bg-[#12121a] border border-white/10 overflow-hidden relative">
+                                  <div className="w-full h-3.5 rounded-full bg-[#faf9f3] border border-[#ded7c8] overflow-hidden relative">
                                     <div className="h-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 transition-all duration-700" style={{ width: `${activeArch.progressPercent}%` }} />
                                   </div>
-                                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-zinc-400 pt-1 gap-2">
+                                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-[#59594f] pt-1 gap-2">
                                     <span>Pemasukan: <strong className="text-emerald-300 font-bold">+{formatRupiah(activeArch.realizedIncome)}</strong></span>
                                     <span>Pengeluaran: <strong className="text-rose-400 font-bold">-{formatRupiah(activeArch.realizedExpense)}</strong></span>
-                                    <span>Saldo Akhir: <strong className="text-white font-bold">{formatRupiah(activeArch.endingBalance)}</strong></span>
+                                    <span>Saldo Akhir: <strong className="text-[#252520] font-bold">{formatRupiah(activeArch.endingBalance)}</strong></span>
                                   </div>
                                 </div>
 
-                                <div className="p-4 rounded-2xl bg-black/50 border border-amber-500/30 space-y-1.5">
+                                <div className="p-4 rounded-2xl bg-[#faf9f3]/50 border border-amber-500/30 space-y-1.5">
                                   <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block font-bold">SURPLUS BERSIH TERCATAT</span>
                                   <span className="text-2xl font-extrabold text-amber-300 font-mono block">+{formatRupiah(activeArch.netSurplus)}</span>
-                                  <p className="text-[11px] text-zinc-400 font-mono leading-tight">Surplus cadangan kas: <strong>+{formatRupiah(activeArch.netSurplus)}</strong> ({activeArch.runwayMonths} runway operasional aman).</p>
+                                  <p className="text-[11px] text-[#59594f] font-mono leading-tight">Surplus cadangan kas: <strong>+{formatRupiah(activeArch.netSurplus)}</strong> ({activeArch.runwayMonths} runway operasional aman).</p>
                                 </div>
                               </div>
 
-                              <div className="p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-2.5">
+                              <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-2.5">
                                 <span className="text-xs font-mono text-amber-300 uppercase tracking-wider block font-bold">🏆 Milestone & Pencapaian Utama di Bulan {activeArch.monthName}:</span>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#59594f]">
                                   {activeArch.milestones.map((m, idx) => (
-                                    <div key={idx} className="p-2.5 rounded-xl bg-white/[0.04] border border-white/5 flex items-start gap-2">
+                                    <div key={idx} className="p-2.5 rounded-xl bg-white/[0.04] border border-[#ded7c8] flex items-start gap-2">
                                       <span className="text-emerald-400 font-bold">✓</span>
                                       <span className="leading-snug">{m}</span>
                                     </div>
@@ -2426,16 +2480,16 @@
                               </div>
 
                               <div className="space-y-2.5">
-                                <span className="text-xs font-mono text-zinc-300 uppercase tracking-wider block font-bold">💼 Rincian Pemasukan & Deliverable {activeArch.monthName}:</span>
+                                <span className="text-xs font-mono text-[#59594f] uppercase tracking-wider block font-bold">💼 Rincian Pemasukan & Deliverable {activeArch.monthName}:</span>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                                   {activeArch.breakdown.map((item, idx) => (
-                                    <div key={idx} className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
+                                    <div key={idx} className="p-3.5 rounded-2xl bg-[#eae5d8] border border-[#ded7c8] space-y-1.5">
                                       <div className="flex justify-between items-center">
                                         <span className="dev-tag text-[9px]">{item.tag}</span>
                                         <span className="text-xs font-mono font-bold text-amber-300">{formatRupiah(item.amount)}</span>
                                       </div>
-                                      <h5 className="text-xs font-bold text-white">{item.label}</h5>
-                                      <p className="text-[11px] text-zinc-400 leading-snug">{item.client} • <span className="text-emerald-400 font-semibold">{item.status}</span></p>
+                                      <h5 className="text-xs font-bold text-[#252520]">{item.label}</h5>
+                                      <p className="text-[11px] text-[#59594f] leading-snug">{item.client} • <span className="text-emerald-400 font-semibold">{item.status}</span></p>
                                     </div>
                                   ))}
                                 </div>
@@ -2447,7 +2501,7 @@
                       </div>
 
                       {/* 2. Sub-tab Filter Navigation */}
-                      <div className="flex items-center gap-1.5 bg-[#0d0d12] p-1.5 rounded-xl border border-white/[0.07] overflow-x-auto no-scrollbar">
+                      <div className="flex items-center gap-1.5 bg-[#faf9f3] p-1.5 rounded-xl border border-white/[0.07] overflow-x-auto no-scrollbar">
                         {[
                           { id: 'overview', label: '📊 Ringkasan & Roadmap' },
                           { id: 'archive', label: '🏛️ Arsip & Rekap Bulanan' },
@@ -2462,7 +2516,7 @@
                             className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
                               finSubTab === tab.id
                                 ? 'bg-white text-zinc-950 font-semibold shadow-sm'
-                                : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]'
+                                : 'text-[#59594f] hover:text-[#252520] hover:bg-white/[0.04]'
                             }`}
                           >
                             {tab.label}
@@ -2479,17 +2533,17 @@
                 {finSubTab === 'overview' && (
                   <div className="space-y-4">
                     <div className="dev-card p-5 sm:p-6 space-y-4">
-                      <h3 className="text-sm font-semibold text-white">Simulasi Perpanjangan Runway & Target Kas</h3>
+                      <h3 className="text-sm font-semibold text-[#252520]">Simulasi Perpanjangan Runway & Target Kas</h3>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div className="p-3.5 rounded-xl bg-[#09090d] border border-white/[0.06] space-y-1">
+                        <div className="p-3.5 rounded-xl bg-[#09090d] border border-[#ded7c8] space-y-1">
                           <span className={`text-[11px] font-mono font-bold block ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-300'}`}>
                             1. POSISI SAAT INI (LIVE)
                           </span>
-                          <p className="text-lg font-bold text-white font-mono">{formatRupiah(report.totalLiquidBalance)}</p>
-                          <p className="text-xs text-zinc-400">
+                          <p className="text-lg font-bold text-[#252520] font-mono">{formatRupiah(report.totalLiquidBalance)}</p>
+                          <p className="text-xs text-[#59594f]">
                             Runway: <strong className={isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-300'}>±{dynamicRunwayDays} Hari (~{dynamicRunwayMonths} Bln)</strong>
                           </p>
-                          <span className="text-[10px] text-zinc-500 font-mono block mt-1">
+                          <span className="text-[10px] text-[#928876] font-mono block mt-1">
                             {isRed ? '🔴 Mode Cash Defense (< Rp4M)' : isGreen ? '🟢 Green Mode (Growth & Expansion)' : '🟡 Yellow Mode (Stage 2 Safe Buffer)'}
                           </span>
                         </div>
@@ -2498,8 +2552,8 @@
                           <span className="text-[11px] font-mono text-emerald-400 font-bold block">
                             2. + TERMIN 1 UMI ELLY (DP Rp3M)
                           </span>
-                          <p className="text-lg font-bold text-white font-mono">{formatRupiah(report.totalLiquidBalance + 3000000)}</p>
-                          <p className="text-xs text-zinc-400">
+                          <p className="text-lg font-bold text-[#252520] font-mono">{formatRupiah(report.totalLiquidBalance + 3000000)}</p>
+                          <p className="text-xs text-[#59594f]">
                             Runway: <strong className="text-emerald-400">±{Math.round(((report.totalLiquidBalance + 3000000) / (report.estimatedRealBurn || 4500000)) * 30)} Hari (~{(((report.totalLiquidBalance + 3000000) / (report.estimatedRealBurn || 4500000))).toFixed(1)} Bln)</strong>
                           </p>
                           <span className="text-[10px] text-emerald-400/80 font-mono block mt-1">
@@ -2511,8 +2565,8 @@
                           <span className="text-[11px] font-mono text-teal-300 font-bold block">
                             3. + PELUNASAN BARBER / TERMIN 2 (Rp3M)
                           </span>
-                          <p className="text-lg font-bold text-white font-mono">{formatRupiah(report.totalLiquidBalance + 6000000)}</p>
-                          <p className="text-xs text-zinc-400">
+                          <p className="text-lg font-bold text-[#252520] font-mono">{formatRupiah(report.totalLiquidBalance + 6000000)}</p>
+                          <p className="text-xs text-[#59594f]">
                             Runway: <strong className="text-teal-300">±{Math.round(((report.totalLiquidBalance + 6000000) / (report.estimatedRealBurn || 4500000)) * 30)} Hari (~{(((report.totalLiquidBalance + 6000000) / (report.estimatedRealBurn || 4500000))).toFixed(1)} Bln)</strong>
                           </p>
                           <span className="text-[10px] text-teal-300 font-mono block mt-1">
@@ -2523,14 +2577,14 @@
                     </div>
 
                     <div className="dev-card p-5 sm:p-6 space-y-3">
-                      <h3 className="text-sm font-semibold text-white">Pergerakan Aset Likuid Terakhir</h3>
+                      <h3 className="text-sm font-semibold text-[#252520]">Pergerakan Aset Likuid Terakhir</h3>
                       <div className="space-y-2">
                         {report.trajectory.map((point, idx) => (
                           <div key={point.date} className="flex items-center justify-between text-xs font-mono p-2.5 rounded-lg bg-[#09090d] border border-white/[0.04]">
-                            <span className="text-zinc-300 font-semibold">{point.date}</span>
+                            <span className="text-[#59594f] font-semibold">{point.date}</span>
                             <div className="flex gap-2">
-                              <span className={`font-bold ${idx === report.trajectory.length - 1 ? 'text-white' : 'text-zinc-400'}`}>{formatRupiah(point.balance)}</span>
-                              <span className="text-[11px] text-zinc-500">({point.note})</span>
+                              <span className={`font-bold ${idx === report.trajectory.length - 1 ? 'text-[#252520]' : 'text-[#59594f]'}`}>{formatRupiah(point.balance)}</span>
+                              <span className="text-[11px] text-[#928876]">({point.note})</span>
                             </div>
                           </div>
                         ))}
@@ -2542,28 +2596,28 @@
                 {/* Sub-tab 2: 7 Saldo Rekening */}
                 {finSubTab === 'accounts' && (
                   <div className="dev-card p-5 sm:p-6 space-y-4">
-                    <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+                    <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
                       <div>
-                        <h3 className="text-sm font-semibold text-white">Rincian Saldo Rekening & E-Wallet</h3>
-                        <p className="text-xs text-zinc-400 font-mono mt-0.5">// Total: {formatRupiah(report.totalLiquidBalance)}</p>
+                        <h3 className="text-sm font-semibold text-[#252520]">Rincian Saldo Rekening & E-Wallet</h3>
+                        <p className="text-xs text-[#59594f] font-mono mt-0.5">// Total: {formatRupiah(report.totalLiquidBalance)}</p>
                       </div>
-                      <button onClick={() => setIsFinanceModalOpen(true)} className="dev-tag hover:text-white">✏️ Update Saldo</button>
+                      <button onClick={() => setIsFinanceModalOpen(true)} className="dev-tag hover:text-[#252520]">✏️ Update Saldo</button>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       {report.accounts.map(acc => (
-                        <div key={acc.name} className={`p-3.5 rounded-xl border flex justify-between items-center ${acc.isLatest ? 'bg-white/[0.04] border-white/20' : 'bg-[#09090d] border-white/[0.06]'}`}>
+                        <div key={acc.name} className={`p-3.5 rounded-xl border flex justify-between items-center ${acc.isLatest ? 'bg-white/[0.04] border-[#ded7c8]' : 'bg-[#09090d] border-[#ded7c8]'}`}>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-semibold text-white">{acc.name}</span>
+                              <span className="text-xs font-semibold text-[#252520]">{acc.name}</span>
                               {acc.isLatest && <span className="text-[9px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1 rounded">LIVE</span>}
                             </div>
-                            <span className="text-[10px] text-zinc-500 font-mono">{acc.lastUpdated}</span>
+                            <span className="text-[10px] text-[#928876] font-mono">{acc.lastUpdated}</span>
                           </div>
-                          <span className="text-sm font-mono font-bold text-white">{formatRupiah(acc.balance)}</span>
+                          <span className="text-sm font-mono font-bold text-[#252520]">{formatRupiah(acc.balance)}</span>
                         </div>
                       ))}
                     </div>
-                    <p className="text-[11px] text-zinc-400 font-mono pt-1">*Mandiri adalah update angka live terbaru. Saldo lain memakai data 26 Agustus.</p>
+                    <p className="text-[11px] text-[#59594f] font-mono pt-1">*Mandiri adalah update angka live terbaru. Saldo lain memakai data 26 Agustus.</p>
                   </div>
                 )}
 
@@ -2571,22 +2625,22 @@
                 {finSubTab === 'expenses' && (
                   <div className="space-y-4">
                     <div className="dev-card p-5 sm:p-6 space-y-4">
-                      <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+                      <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
                         <div>
-                          <h3 className="text-sm font-semibold text-white">A. Pengeluaran Fixed Bulanan</h3>
-                          <p className="text-xs text-zinc-400 font-mono">// Wajib / Rutin: Rp2.665.000/bln</p>
+                          <h3 className="text-sm font-semibold text-[#252520]">A. Pengeluaran Fixed Bulanan</h3>
+                          <p className="text-xs text-[#59594f] font-mono">// Wajib / Rutin: Rp2.665.000/bln</p>
                         </div>
                         <span className="dev-tag">6_ITEMS</span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {(report.monthlyExpenses?.filter(e => e.isFixed) || []).map(item => (
-                          <div key={item.id} className="p-3 rounded-xl bg-[#09090d] border border-white/[0.06] flex justify-between items-center">
+                          <div key={item.id} className="p-3 rounded-xl bg-[#09090d] border border-[#ded7c8] flex justify-between items-center">
                             <div>
-                              <p className="text-xs font-semibold text-white">{item.category}</p>
-                              <p className="text-[10px] text-zinc-500 font-mono mt-0.5">{item.notes}</p>
+                              <p className="text-xs font-semibold text-[#252520]">{item.category}</p>
+                              <p className="text-[10px] text-[#928876] font-mono mt-0.5">{item.notes}</p>
                             </div>
                             <div className="text-right">
-                              <span className="text-xs font-mono font-bold text-white">{item.amountText}</span>
+                              <span className="text-xs font-mono font-bold text-[#252520]">{item.amountText}</span>
                               <span className="text-[9px] font-mono block text-emerald-400/90">{item.status}</span>
                             </div>
                           </div>
@@ -2595,10 +2649,10 @@
                     </div>
 
                     <div className="dev-card p-5 sm:p-6 space-y-4">
-                      <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+                      <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
                         <div>
-                          <h3 className="text-sm font-semibold text-white">B. Kebutuhan Wajib Fleksibel</h3>
-                          <p className="text-xs text-zinc-400 font-mono">// Estimasi Tambahan: ~Rp1,5M – Rp2,5M/bln</p>
+                          <h3 className="text-sm font-semibold text-[#252520]">B. Kebutuhan Wajib Fleksibel</h3>
+                          <p className="text-xs text-[#59594f] font-mono">// Estimasi Tambahan: ~Rp1,5M – Rp2,5M/bln</p>
                         </div>
                         <span className="dev-tag">5_CATEGORIES</span>
                       </div>
@@ -2606,11 +2660,11 @@
                         {(report.monthlyExpenses?.filter(e => !e.isFixed) || []).map(item => (
                           <div key={item.id} className="p-3 rounded-xl bg-[#09090d]/60 border border-white/[0.04] flex justify-between items-center">
                             <div>
-                              <p className="text-xs font-semibold text-zinc-200">{item.category}</p>
-                              <p className="text-[10px] text-zinc-500 font-mono mt-0.5">{item.notes}</p>
+                              <p className="text-xs font-semibold text-[#252520]">{item.category}</p>
+                              <p className="text-[10px] text-[#928876] font-mono mt-0.5">{item.notes}</p>
                             </div>
                             <div className="text-right">
-                              <span className="text-xs font-mono text-zinc-400">{item.amountText}</span>
+                              <span className="text-xs font-mono text-[#59594f]">{item.amountText}</span>
                               <span className="text-[9px] font-mono block text-amber-400/80">Wajib, fleksibel</span>
                             </div>
                           </div>
@@ -2623,10 +2677,10 @@
                 {/* Sub-tab 4: Piutang & DP Project */}
                 {finSubTab === 'projects' && (
                   <div className="dev-card p-5 sm:p-6 space-y-4">
-                    <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+                    <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
                       <div>
-                        <h3 className="text-sm font-semibold text-white">Project Cashflow & Potential Receivables</h3>
-                        <p className="text-xs text-zinc-400 font-mono">// Sudah Masuk: {formatRupiah(state.projects.reduce((acc, p) => acc + (p.paidNumeric || 0), 0))} • Pipeline OTW: {formatRupiah(state.projects.reduce((acc, p) => acc + (p.unpaidNumeric || 0), 0))}</p>
+                        <h3 className="text-sm font-semibold text-[#252520]">Project Cashflow & Potential Receivables</h3>
+                        <p className="text-xs text-[#59594f] font-mono">// Sudah Masuk: {formatRupiah(state.projects.reduce((acc, p) => acc + (p.paidNumeric || 0), 0))} • Pipeline OTW: {formatRupiah(state.projects.reduce((acc, p) => acc + (p.unpaidNumeric || 0), 0))}</p>
                       </div>
                       <span className="dev-tag">RECEIVABLES</span>
                     </div>
@@ -2634,25 +2688,25 @@
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs font-mono">
                         <thead>
-                          <tr className="border-b border-white/10 text-zinc-400 uppercase text-[11px]">
-                            <th className="pb-3 pr-3 font-semibold text-white font-sans">Project</th>
+                          <tr className="border-b border-[#ded7c8] text-[#59594f] uppercase text-[11px]">
+                            <th className="pb-3 pr-3 font-semibold text-[#252520] font-sans">Project</th>
                             <th className="pb-3 px-3 font-semibold">Status</th>
                             <th className="pb-3 px-3 font-semibold">Total Nominal</th>
-                            <th className="pb-3 px-3 font-semibold text-white">Sudah Masuk</th>
+                            <th className="pb-3 px-3 font-semibold text-[#252520]">Sudah Masuk</th>
                             <th className="pb-3 px-3 font-semibold text-amber-300">Pipeline OTW</th>
                             <th className="pb-3 px-3 font-semibold">Action</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5 text-zinc-300">
+                        <tbody className="divide-y divide-white/5 text-[#59594f]">
                           {state.projects.map(p => (
                             <tr key={p.id} className="hover:bg-white/5 transition-colors">
-                              <td className="py-3.5 pr-3 font-sans font-semibold text-white">{p.name}</td>
-                              <td className="py-3.5 px-3 text-[11px] text-zinc-400">{p.status}</td>
-                              <td className="py-3.5 px-3 text-zinc-300">{p.valueText}</td>
-                              <td className="py-3.5 px-3 text-white font-bold">{formatRupiah(p.paidNumeric || 0)}</td>
+                              <td className="py-3.5 pr-3 font-sans font-semibold text-[#252520]">{p.name}</td>
+                              <td className="py-3.5 px-3 text-[11px] text-[#59594f]">{p.status}</td>
+                              <td className="py-3.5 px-3 text-[#59594f]">{p.valueText}</td>
+                              <td className="py-3.5 px-3 text-[#252520] font-bold">{formatRupiah(p.paidNumeric || 0)}</td>
                               <td className="py-3.5 px-3 text-amber-300 font-bold">{formatRupiah(p.unpaidNumeric || 0)}</td>
                               <td className="py-3.5 px-3">
-                                <button onClick={() => openFollowUpModal(p.name)} className="text-zinc-300 hover:text-white font-mono">Copas WA 💬</button>
+                                <button onClick={() => openFollowUpModal(p.name)} className="text-[#59594f] hover:text-[#252520] font-mono">Copas WA 💬</button>
                               </td>
                             </tr>
                           ))}
@@ -2665,10 +2719,10 @@
                 {/* Sub-tab 5: Riwayat Transaksi */}
                 {finSubTab === 'history' && (
                   <div className="dev-card p-5 sm:p-6 space-y-4">
-                    <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+                    <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
                       <div>
-                        <h3 className="text-sm font-semibold text-white">Riwayat Transaksi & Bukti Transfer</h3>
-                        <p className="text-xs text-zinc-400 font-mono">// Log transaksi & foto bukti yang pernah dicatat</p>
+                        <h3 className="text-sm font-semibold text-[#252520]">Riwayat Transaksi & Bukti Transfer</h3>
+                        <p className="text-xs text-[#59594f] font-mono">// Log transaksi & foto bukti yang pernah dicatat</p>
                       </div>
                       <button onClick={() => setIsFinanceModalOpen(true)} className="px-3 py-1.5 dev-btn-primary text-xs font-semibold rounded-lg">+ Input Baru</button>
                     </div>
@@ -2676,17 +2730,17 @@
                     {report.transactions && report.transactions.length > 0 ? (
                       <div className="space-y-2">
                         {report.transactions.map(tx => (
-                          <div key={tx.id} className="p-3 rounded-xl bg-[#09090d] border border-white/[0.06] flex items-center justify-between text-xs">
+                          <div key={tx.id} className="p-3 rounded-xl bg-[#09090d] border border-[#ded7c8] flex items-center justify-between text-xs">
                             <div>
-                              <span className="font-semibold text-white block">{tx.description}</span>
-                              <span className="text-[11px] text-zinc-500 font-mono">{tx.date} • {tx.accountName} • {tx.category}</span>
+                              <span className="font-semibold text-[#252520] block">{tx.description}</span>
+                              <span className="text-[11px] text-[#928876] font-mono">{tx.date} • {tx.accountName} • {tx.category}</span>
                             </div>
                             <div className="flex items-center gap-3">
                               <span className={`font-mono font-bold ${tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}`}>
                                 {tx.type === 'income' ? '+' : '-'}{formatRupiah(tx.amount)}
                               </span>
                               {tx.photoUrl && (
-                                <button onClick={() => setZoomedPhoto(tx.photoUrl)} className="text-[11px] text-zinc-300 bg-[#14141c] hover:bg-[#1c1c28] px-2.5 py-1 rounded-lg border border-white/10 font-mono">
+                                <button onClick={() => setZoomedPhoto(tx.photoUrl)} className="text-[11px] text-[#59594f] bg-[#fffdf5] hover:bg-[#1c1c28] px-2.5 py-1 rounded-lg border border-[#ded7c8] font-mono">
                                   📷 Bukti Foto
                                 </button>
                               )}
@@ -2695,7 +2749,7 @@
                         ))}
                       </div>
                     ) : (
-                      <p className="text-xs text-zinc-500 font-mono text-center py-6">Belum ada transaksi tambahan yang dicatat.</p>
+                      <p className="text-xs text-[#928876] font-mono text-center py-6">Belum ada transaksi tambahan yang dicatat.</p>
                     )}
                   </div>
                 )}
@@ -2772,31 +2826,31 @@
                   return (
                     <div className="space-y-4 animate-fade-in">
                       <div className="dev-card p-5 space-y-4">
-                        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+                        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                           <div>
-                            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                            <h3 className="text-sm font-bold text-[#252520] flex items-center gap-2">
                               <span>🏛️ Rekap & Arsip Pencapaian Bulanan</span>
                               <span className="dev-tag-emerald text-[9px]">HISTORICAL_TRACKER</span>
                             </h3>
-                            <p className="text-xs text-zinc-400 font-mono">// Perbandingan performa target, pemasukan real, pengeluaran & milestone per bulan</p>
+                            <p className="text-xs text-[#59594f] font-mono">// Perbandingan performa target, pemasukan real, pengeluaran & milestone per bulan</p>
                           </div>
-                          <span className="text-xs font-mono text-zinc-400">Total Periode Terekam: <strong>3 Bulan (Jul, Agu, Sep 2026)</strong></span>
+                          <span className="text-xs font-mono text-[#59594f]">Total Periode Terekam: <strong>3 Bulan (Jul, Agu, Sep 2026)</strong></span>
                         </div>
 
                         <div className="overflow-x-auto">
                           <table className="w-full text-left text-xs font-mono">
                             <thead>
-                              <tr className="border-b border-white/10 text-zinc-400 uppercase text-[11px]">
-                                <th className="pb-3 pr-3 font-semibold text-white font-sans">Bulan / Periode</th>
+                              <tr className="border-b border-[#ded7c8] text-[#59594f] uppercase text-[11px]">
+                                <th className="pb-3 pr-3 font-semibold text-[#252520] font-sans">Bulan / Periode</th>
                                 <th className="pb-3 px-3 font-semibold">Status</th>
                                 <th className="pb-3 px-3 font-semibold text-emerald-400">Pemasukan Real</th>
                                 <th className="pb-3 px-3 font-semibold text-rose-400">Beban Keluar</th>
                                 <th className="pb-3 px-3 font-semibold text-amber-300">Net Surplus</th>
-                                <th className="pb-3 px-3 font-semibold text-white">Saldo Kas Akhir</th>
+                                <th className="pb-3 px-3 font-semibold text-[#252520]">Saldo Kas Akhir</th>
                                 <th className="pb-3 px-3 font-semibold">Action</th>
                               </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/5 text-zinc-300">
+                            <tbody className="divide-y divide-white/5 text-[#59594f]">
                               <tr className="hover:bg-white/5 transition-colors bg-emerald-500/[0.04]">
                                 <td className="py-3.5 pr-3 font-sans font-bold text-emerald-300 flex items-center gap-1.5">
                                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -2806,7 +2860,7 @@
                                 <td className="py-3.5 px-3 text-emerald-300 font-bold">{formatRupiah(totalPaidMonth)}</td>
                                 <td className="py-3.5 px-3 text-rose-300 font-bold">~Rp4.500.000 (Burn)</td>
                                 <td className="py-3.5 px-3 text-emerald-300 font-bold">+{formatRupiah(surplus)} (Proyeksi)</td>
-                                <td className="py-3.5 px-3 text-white font-bold">{formatRupiah(report.totalLiquidBalance)}</td>
+                                <td className="py-3.5 px-3 text-[#252520] font-bold">{formatRupiah(report.totalLiquidBalance)}</td>
                                 <td className="py-3.5 px-3">
                                   <button
                                     onClick={() => {
@@ -2814,7 +2868,7 @@
                                       setFinMonthArchive('current');
                                       window.scrollTo({ top: 300, behavior: 'smooth' });
                                     }}
-                                    className="text-emerald-300 hover:text-white font-mono bg-emerald-500/15 hover:bg-emerald-500/30 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition-all"
+                                    className="text-emerald-300 hover:text-[#252520] font-mono bg-emerald-500/15 hover:bg-emerald-500/30 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition-all"
                                   >
                                     Lihat Live ⚡
                                   </button>
@@ -2823,14 +2877,14 @@
 
                               {monthlyArchives.map(arch => (
                                 <tr key={arch.id} className="hover:bg-white/5 transition-colors">
-                                  <td className="py-3.5 pr-3 font-sans font-bold text-white flex items-center gap-1.5">
+                                  <td className="py-3.5 pr-3 font-sans font-bold text-[#252520] flex items-center gap-1.5">
                                     <span>🏛️ {arch.monthName}</span>
                                   </td>
                                   <td className="py-3.5 px-3 text-[11px] text-amber-400">{arch.periodTag}</td>
                                   <td className="py-3.5 px-3 text-emerald-300 font-bold">{formatRupiah(arch.realizedIncome)}</td>
                                   <td className="py-3.5 px-3 text-rose-400 font-bold">-{formatRupiah(arch.realizedExpense)}</td>
                                   <td className="py-3.5 px-3 text-amber-300 font-bold">+{formatRupiah(arch.netSurplus)}</td>
-                                  <td className="py-3.5 px-3 text-white font-bold">{formatRupiah(arch.endingBalance)}</td>
+                                  <td className="py-3.5 px-3 text-[#252520] font-bold">{formatRupiah(arch.endingBalance)}</td>
                                   <td className="py-3.5 px-3">
                                     <button
                                       onClick={() => {
@@ -2838,7 +2892,7 @@
                                         setFinMonthArchive(arch.id);
                                         window.scrollTo({ top: 300, behavior: 'smooth' });
                                       }}
-                                      className="text-zinc-300 hover:text-white font-mono bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 transition-all"
+                                      className="text-[#59594f] hover:text-[#252520] font-mono bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-[#ded7c8] transition-all"
                                     >
                                       Detail Rekap 🔍
                                     </button>
@@ -2853,35 +2907,35 @@
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {monthlyArchives.map(arch => (
                           <div key={arch.id} className="dev-card p-5 space-y-3.5">
-                            <div className="flex justify-between items-center border-b border-white/[0.06] pb-2.5">
+                            <div className="flex justify-between items-center border-b border-[#ded7c8] pb-2.5">
                               <div className="flex items-center gap-2">
                                 <span className="w-2 h-2 rounded-full bg-amber-400" />
-                                <h4 className="text-sm font-bold text-white">{arch.monthName}</h4>
+                                <h4 className="text-sm font-bold text-[#252520]">{arch.monthName}</h4>
                                 <span className="dev-tag text-[9px] bg-amber-500/10 text-amber-300 border-amber-500/20">{arch.periodTag}</span>
                               </div>
                               <span className="text-xs font-mono text-emerald-400 font-bold">{arch.progressPercent}% Target</span>
                             </div>
 
-                            <p className="text-xs text-zinc-300 leading-relaxed">{arch.summaryNote}</p>
+                            <p className="text-xs text-[#59594f] leading-relaxed">{arch.summaryNote}</p>
 
-                            <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-[#060609] border border-white/5 text-center text-xs font-mono">
+                            <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-center text-xs font-mono">
                               <div>
-                                <span className="text-[10px] text-zinc-500 block uppercase">Pemasukan</span>
+                                <span className="text-[10px] text-[#928876] block uppercase">Pemasukan</span>
                                 <span className="text-emerald-400 font-bold">{formatRupiah(arch.realizedIncome)}</span>
                               </div>
                               <div>
-                                <span className="text-[10px] text-zinc-500 block uppercase">Pengeluaran</span>
+                                <span className="text-[10px] text-[#928876] block uppercase">Pengeluaran</span>
                                 <span className="text-rose-400 font-bold">{formatRupiah(arch.realizedExpense)}</span>
                               </div>
                               <div>
-                                <span className="text-[10px] text-zinc-500 block uppercase">Surplus</span>
+                                <span className="text-[10px] text-[#928876] block uppercase">Surplus</span>
                                 <span className="text-amber-300 font-bold">+{formatRupiah(arch.netSurplus)}</span>
                               </div>
                             </div>
 
                             <div className="space-y-1.5 pt-1">
-                              <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold block">🏆 Pencapaian Utama:</span>
-                              <ul className="space-y-1 text-xs text-zinc-300">
+                              <span className="text-[11px] font-mono text-[#59594f] uppercase font-semibold block">🏆 Pencapaian Utama:</span>
+                              <ul className="space-y-1 text-xs text-[#59594f]">
                                 {arch.milestones.slice(0, 3).map((m, idx) => (
                                   <li key={idx} className="flex items-start gap-1.5">
                                     <span className="text-emerald-400 font-bold text-[10px]">✓</span>
@@ -2897,7 +2951,7 @@
                                 setFinMonthArchive(arch.id);
                                 window.scrollTo({ top: 300, behavior: 'smooth' });
                               }}
-                              className="w-full py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-2"
+                              className="w-full py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-[#ded7c8] text-xs font-mono font-bold text-[#252520] transition-all flex items-center justify-center gap-2"
                             >
                               <span>Buka Peta Realisasi {arch.monthName}</span>
                               <span>→</span>
@@ -2919,13 +2973,13 @@
                 {/* 1. TASK SELECTION STAGE */}
                 <div className="figma-shell">
                   <div className="figma-core p-5 sm:p-6 space-y-4">
-                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                          <h3 className="text-sm font-bold text-white tracking-tight">Pilih Task yang Mau Lo Kunci untuk Deep Work Ini:</h3>
+                          <h3 className="text-sm font-bold text-[#252520] tracking-tight">Pilih Task yang Mau Lo Kunci untuk Deep Work Ini:</h3>
                         </div>
-                        <p className="text-xs text-zinc-400 mt-0.5">Pilih salah satu tugas dari Triad hari ini untuk mengunci timebox dan instruksi langkah demi langkah.</p>
+                        <p className="text-xs text-[#59594f] mt-0.5">Pilih salah satu tugas dari Triad hari ini untuk mengunci timebox dan instruksi langkah demi langkah.</p>
                       </div>
 
                       {activeBlock && (
@@ -2949,20 +3003,20 @@
                               isSelected
                                 ? 'bg-gradient-to-br from-white/10 to-white/5 border-emerald-400/80 ring-2 ring-emerald-400/30 scale-[1.02] shadow-xl'
                                 : block.isDone
-                                ? 'bg-[#060609]/60 border-white/[0.04] opacity-40'
-                                : 'bg-[#060609] border-white/[0.06] hover:border-white/20 hover:bg-[#0c0c14]'
+                                ? 'bg-[#faf9f3]/60 border-white/[0.04] opacity-40'
+                                : 'bg-[#faf9f3] border-[#ded7c8] hover:border-[#ded7c8] hover:bg-[#0c0c14]'
                             }`}
                           >
                             <div className="flex justify-between items-center">
                               <span className="dev-tag text-[9px] py-0">{block.blockType}</span>
-                              <span className="text-[10px] font-mono text-zinc-400">{block.timeboxMinutes}m</span>
+                              <span className="text-[10px] font-mono text-[#59594f]">{block.timeboxMinutes}m</span>
                             </div>
                             <div>
-                              <h4 className={`text-xs font-bold truncate ${isSelected ? 'text-white' : 'text-zinc-200'}`}>{block.projectName}</h4>
-                              <p className="text-[11px] text-zinc-400 line-clamp-2 mt-0.5">{block.action}</p>
+                              <h4 className={`text-xs font-bold truncate ${isSelected ? 'text-[#252520]' : 'text-[#252520]'}`}>{block.projectName}</h4>
+                              <p className="text-[11px] text-[#59594f] line-clamp-2 mt-0.5">{block.action}</p>
                             </div>
-                            <div className="pt-2 border-t border-white/[0.05] flex items-center justify-between text-[10px] font-mono">
-                              <span className={isSelected ? 'text-emerald-400 font-bold' : 'text-zinc-500'}>
+                            <div className="pt-2 border-t border-[#ded7c8] flex items-center justify-between text-[10px] font-mono">
+                              <span className={isSelected ? 'text-emerald-400 font-bold' : 'text-[#928876]'}>
                                 {isSelected ? '✓ Terkunci di Timer' : 'Pilih Task Ini →'}
                               </span>
                             </div>
@@ -2978,14 +3032,14 @@
                   <div className="figma-core p-6 sm:p-8 space-y-6 text-center">
                     
                     {activeBlock ? (
-                      <div className="w-full max-w-xl mx-auto p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-1.5 text-left">
+                      <div className="w-full max-w-xl mx-auto p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-1.5 text-left">
                         <div className="flex items-center justify-between">
                           <span className="dev-tag-emerald text-[9px]">SESI AKTIF: {activeBlock.projectName}</span>
-                          <span className="text-xs font-mono text-zinc-400">{activeBlock.timeboxMinutes}m Timebox</span>
+                          <span className="text-xs font-mono text-[#59594f]">{activeBlock.timeboxMinutes}m Timebox</span>
                         </div>
-                        <p className="text-sm font-bold text-white">{activeBlock.action}</p>
+                        <p className="text-sm font-bold text-[#252520]">{activeBlock.action}</p>
                         {activeBlock.rule && (
-                          <p className="text-xs text-zinc-400 font-mono">// Aturan: {activeBlock.rule}</p>
+                          <p className="text-xs text-[#59594f] font-mono">// Aturan: {activeBlock.rule}</p>
                         )}
                       </div>
                     ) : (
@@ -2994,10 +3048,10 @@
                       </div>
                     )}
 
-                    <div className="text-6xl sm:text-7xl font-extrabold font-mono text-white tracking-tighter">
+                    <div className="text-6xl sm:text-7xl font-extrabold font-mono text-[#252520] tracking-tighter">
                       {formatTime(timeLeft)}
                     </div>
-                    <div className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono font-bold">
+                    <div className="text-[10px] text-[#59594f] uppercase tracking-widest font-mono font-bold">
                       {isTimerRunning ? '🟢 FLOW_STATE_ACTIVE' : '⚪ READY_TO_LOCK'}
                     </div>
 
@@ -3010,7 +3064,7 @@
                             setIsTimerRunning(false);
                             setTimeLeft(mins * 60);
                           }}
-                          className="px-3.5 py-1.5 rounded-xl bg-[#060609] hover:bg-white/10 border border-white/10 text-zinc-300"
+                          className="px-3.5 py-1.5 rounded-xl bg-[#faf9f3] hover:bg-white/10 border border-[#ded7c8] text-[#59594f]"
                         >
                           {mins}m
                         </button>
@@ -3024,7 +3078,7 @@
                           setIsTimerRunning(false);
                           setTimeLeft((activeBlock?.timeboxMinutes || 50) * 60);
                         }}
-                        className="px-4 py-3 rounded-2xl bg-white/5 hover:bg-white/10 text-zinc-400 border border-white/10 text-xs font-mono"
+                        className="px-4 py-3 rounded-2xl bg-white/5 hover:bg-white/10 text-[#59594f] border border-[#ded7c8] text-xs font-mono"
                       >
                         Reset
                       </button>
@@ -3071,24 +3125,24 @@
 
           {/* Quick Finance Input Modal */}
           {isFinanceModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-sans">
-              <div className="w-full max-w-lg bg-[#0d0d12] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-                <div className="p-4 border-b border-white/10 flex justify-between items-center bg-[#121217]">
-                  <h3 className="text-sm font-semibold text-white">Input Data Keuangan & Foto Bukti</h3>
-                  <button onClick={() => setIsFinanceModalOpen(false)} className="text-zinc-400 hover:text-white">✕</button>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#292a24]/40 backdrop-blur-md font-sans">
+              <div className="w-full max-w-lg bg-[#faf9f3] border border-[#ded7c8] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+                <div className="p-4 border-b border-[#ded7c8] flex justify-between items-center bg-[#121217]">
+                  <h3 className="text-sm font-semibold text-[#252520]">Input Data Keuangan & Foto Bukti</h3>
+                  <button onClick={() => setIsFinanceModalOpen(false)} className="text-[#59594f] hover:text-[#252520]">✕</button>
                 </div>
 
                 <form onSubmit={handleSaveManualFinance} className="p-5 space-y-4 overflow-y-auto text-xs">
                   <div>
-                    <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Jenis:</label>
+                    <label className="block text-[11px] text-[#59594f] font-mono mb-1">// Jenis:</label>
                     <div className="grid grid-cols-2 gap-2">
-                      <button type="button" onClick={() => setFinType('income')} className={`py-2 rounded-xl border ${finType === 'income' ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 font-semibold' : 'bg-[#14141c] border-white/5 text-zinc-400'}`}>+ Pemasukan / DP</button>
-                      <button type="button" onClick={() => setFinType('expense')} className={`py-2 rounded-xl border ${finType === 'expense' ? 'bg-rose-500/15 border-rose-500/40 text-rose-300 font-semibold' : 'bg-[#14141c] border-white/5 text-zinc-400'}`}>- Pengeluaran</button>
+                      <button type="button" onClick={() => setFinType('income')} className={`py-2 rounded-xl border ${finType === 'income' ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 font-semibold' : 'bg-[#fffdf5] border-[#ded7c8] text-[#59594f]'}`}>+ Pemasukan / DP</button>
+                      <button type="button" onClick={() => setFinType('expense')} className={`py-2 rounded-xl border ${finType === 'expense' ? 'bg-rose-500/15 border-rose-500/40 text-rose-300 font-semibold' : 'bg-[#fffdf5] border-[#ded7c8] text-[#59594f]'}`}>- Pengeluaran</button>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Nominal (Rp):</label>
+                    <label className="block text-[11px] text-[#59594f] font-mono mb-1">// Nominal (Rp):</label>
                     <input
                       type="text"
                       placeholder="Contoh: 3.000.000"
@@ -3097,21 +3151,21 @@
                         const num = e.target.value.replace(/[^0-9]/g, '');
                         setFinAmount(num ? parseInt(num, 10).toLocaleString('id-ID') : '');
                       }}
-                      className="w-full bg-[#14141a] border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-sm font-bold focus:outline-none"
+                      className="w-full bg-[#14141a] border border-[#ded7c8] rounded-xl px-3 py-2 text-[#252520] font-mono text-sm font-bold focus:outline-none"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Rekening:</label>
-                      <select value={finAccount} onChange={(e) => setFinAccount(e.target.value)} className="w-full bg-[#14141a] border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none">
+                      <label className="block text-[11px] text-[#59594f] font-mono mb-1">// Rekening:</label>
+                      <select value={finAccount} onChange={(e) => setFinAccount(e.target.value)} className="w-full bg-[#14141a] border border-[#ded7c8] rounded-xl px-3 py-2 text-[#252520] font-mono text-xs focus:outline-none">
                         {report.accounts.map(a => <option key={a.name} value={a.name}>{a.name}</option>)}
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Project (Opsional):</label>
-                      <select value={finProject} onChange={(e) => setFinProject(e.target.value)} className="w-full bg-[#14141a] border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none">
+                      <label className="block text-[11px] text-[#59594f] font-mono mb-1">// Project (Opsional):</label>
+                      <select value={finProject} onChange={(e) => setFinProject(e.target.value)} className="w-full bg-[#14141a] border border-[#ded7c8] rounded-xl px-3 py-2 text-[#252520] font-mono text-xs focus:outline-none">
                         <option value="">-- Bukan Project --</option>
                         {state.projects.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
                       </select>
@@ -3119,27 +3173,27 @@
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Keterangan:</label>
+                    <label className="block text-[11px] text-[#59594f] font-mono mb-1">// Keterangan:</label>
                     <input
                       type="text"
                       placeholder="Contoh: DP 50% Kasir Barber / Uang Makan"
                       value={finDesc}
                       onChange={(e) => setFinDesc(e.target.value)}
-                      className="w-full bg-[#14141a] border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none"
+                      className="w-full bg-[#14141a] border border-[#ded7c8] rounded-xl px-3 py-2 text-[#252520] font-mono text-xs focus:outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Foto Bukti Transfer / Nota:</label>
+                    <label className="block text-[11px] text-[#59594f] font-mono mb-1">// Foto Bukti Transfer / Nota:</label>
                     {finPhoto ? (
-                      <div className="flex items-center gap-3 p-2 rounded-xl bg-black/40 border border-white/10">
-                        <img src={finPhoto} alt="Bukti" className="w-12 h-12 object-cover rounded-lg border border-white/10" />
+                      <div className="flex items-center gap-3 p-2 rounded-xl bg-[#eae5d8] border border-[#ded7c8]">
+                        <img src={finPhoto} alt="Bukti" className="w-12 h-12 object-cover rounded-lg border border-[#ded7c8]" />
                         <span className="text-emerald-400 font-mono text-[11px]">✓ Foto terlampir</span>
                         <button type="button" onClick={() => setFinPhoto(null)} className="ml-auto text-rose-400 text-xs">Hapus</button>
                       </div>
                     ) : (
-                      <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-white/10 rounded-xl p-3 text-center cursor-pointer hover:border-white/20">
-                        <span className="text-zinc-400 font-mono text-[11px]">📷 Klik untuk ambil/upload foto bukti transfer</span>
+                      <div onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-[#ded7c8] rounded-xl p-3 text-center cursor-pointer hover:border-[#ded7c8]">
+                        <span className="text-[#59594f] font-mono text-[11px]">📷 Klik untuk ambil/upload foto bukti transfer</span>
                       </div>
                     )}
                     <input
@@ -3167,13 +3221,13 @@
 
           {/* Photo Zoom Modal */}
           {zoomedPhoto && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" onClick={() => setZoomedPhoto(null)}>
-              <div className="max-w-2xl w-full bg-[#0d0d12] border border-white/10 rounded-2xl p-4 shadow-2xl space-y-3" onClick={e => e.stopPropagation()}>
-                <div className="flex justify-between items-center border-b border-white/10 pb-2">
-                  <h4 className="text-sm font-semibold text-white">Bukti Foto / Transfer</h4>
-                  <button onClick={() => setZoomedPhoto(null)} className="text-zinc-400 hover:text-white">✕</button>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#faf9f3]/90 backdrop-blur-md" onClick={() => setZoomedPhoto(null)}>
+              <div className="max-w-2xl w-full bg-[#faf9f3] border border-[#ded7c8] rounded-2xl p-4 shadow-2xl space-y-3" onClick={e => e.stopPropagation()}>
+                <div className="flex justify-between items-center border-b border-[#ded7c8] pb-2">
+                  <h4 className="text-sm font-semibold text-[#252520]">Bukti Foto / Transfer</h4>
+                  <button onClick={() => setZoomedPhoto(null)} className="text-[#59594f] hover:text-[#252520]">✕</button>
                 </div>
-                <div className="flex justify-center bg-black/60 rounded-xl p-2 max-h-[75vh] overflow-auto">
+                <div className="flex justify-center bg-[#eae5d8] rounded-xl p-2 max-h-[75vh] overflow-auto">
                   <img src={zoomedPhoto} alt="Bukti Foto" className="max-w-full max-h-[70vh] object-contain rounded-lg" />
                 </div>
               </div>
@@ -3182,23 +3236,23 @@
 
           {/* Follow-up Message Generator & Copas Modal */}
           {isFollowUpOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-sans">
-              <div className="w-full max-w-2xl bg-[#0d0d12] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col justify-between">
-                <div className="flex justify-between items-center border-b border-white/10 pb-3">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#292a24]/40 backdrop-blur-md font-sans">
+              <div className="w-full max-w-2xl bg-[#faf9f3] border border-[#ded7c8] rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col justify-between">
+                <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
                   <div>
-                    <h3 className="text-sm font-semibold text-white">Follow-up Message Generator</h3>
-                    <p className="text-[11px] text-zinc-400 font-mono">// 1-Click Copas siap kirim ke WhatsApp</p>
+                    <h3 className="text-sm font-semibold text-[#252520]">Follow-up Message Generator</h3>
+                    <p className="text-[11px] text-[#59594f] font-mono">// 1-Click Copas siap kirim ke WhatsApp</p>
                   </div>
-                  <button onClick={() => setIsFollowUpOpen(false)} className="text-zinc-400 hover:text-white">✕</button>
+                  <button onClick={() => setIsFollowUpOpen(false)} className="text-[#59594f] hover:text-[#252520]">✕</button>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="sm:col-span-2">
-                    <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Pilih Client:</label>
+                    <label className="block text-[11px] text-[#59594f] font-mono mb-1">// Pilih Client:</label>
                     <select
                       value={selectedFollowUpTarget}
                       onChange={(e) => setSelectedFollowUpTarget(e.target.value)}
-                      className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white font-mono"
+                      className="w-full bg-[#eae5d8] border border-[#ded7c8] rounded-xl px-3 py-2 text-xs text-[#252520] font-mono"
                     >
                       {['Kasir Barber Underrated', 'Zalvice Logo', 'Setting KAEL (Core Product)', 'Umi Elly — LMS Peradaban Islam Azhariyah', 'Bedug.net', 'Laptopbisnis Logo', 'El Massa', 'Ar-Ruwad Logo', 'Teh Umi — E-reader Basic'].map(n => (
                         <option key={n} value={n}>{n}</option>
@@ -3207,28 +3261,28 @@
                   </div>
 
                   <div>
-                    <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Nama Klien:</label>
+                    <label className="block text-[11px] text-[#59594f] font-mono mb-1">// Nama Klien:</label>
                     <input
                       type="text"
                       placeholder="Contoh: Bang Edo / Client Barber"
                       value={followUpClientName}
                       onChange={(e) => setFollowUpClientName(e.target.value)}
-                      className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white font-mono"
+                      className="w-full bg-[#eae5d8] border border-[#ded7c8] rounded-xl px-3 py-2 text-xs text-[#252520] font-mono"
                     />
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-black/70 border border-white/10 text-xs text-zinc-200 whitespace-pre-wrap leading-relaxed min-h-[140px] max-h-[220px] overflow-y-auto font-mono">
+                <div className="p-4 rounded-xl bg-[#faf9f3]/70 border border-[#ded7c8] text-xs text-[#252520] whitespace-pre-wrap leading-relaxed min-h-[140px] max-h-[220px] overflow-y-auto font-mono">
                   {currentFollowUpMessage}
                 </div>
 
-                <div className="flex justify-between items-center pt-3 border-t border-white/10">
+                <div className="flex justify-between items-center pt-3 border-t border-[#ded7c8]">
                   <button
                     onClick={() => {
                       const encoded = encodeURIComponent(currentFollowUpMessage);
                       window.open(`https://wa.me/?text=${encoded}`, '_blank');
                     }}
-                    className="px-3.5 py-2 rounded-xl bg-[#14141c] text-zinc-300 hover:text-white border border-white/10 text-xs font-mono"
+                    className="px-3.5 py-2 rounded-xl bg-[#fffdf5] text-[#59594f] hover:text-[#252520] border border-[#ded7c8] text-xs font-mono"
                   >
                     Buka WA Web
                   </button>
@@ -3250,13 +3304,13 @@
 
           {/* Instant Invoice Generator Modal (Exact layout matching user's uploaded image) */}
           {isInvoiceModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md select-none overflow-y-auto animate-fade-in font-sans">
-              <div className="relative w-full max-w-4xl bg-[#121216] border border-white/20 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[96vh]">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-[#faf9f3]/85 backdrop-blur-md select-none overflow-y-auto animate-fade-in font-sans">
+              <div className="relative w-full max-w-4xl bg-[#121216] border border-[#ded7c8] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[96vh]">
                 
                 {/* Top Control Bar */}
-                <div className="p-3 sm:p-4 border-b border-white/10 bg-[#0d0d10] flex flex-wrap items-center justify-between gap-3">
+                <div className="p-3 sm:p-4 border-b border-[#ded7c8] bg-[#0d0d10] flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-                    <span className="text-xs text-zinc-400 font-mono pr-1">Pilih Template:</span>
+                    <span className="text-xs text-[#59594f] font-mono pr-1">Pilih Template:</span>
                     <button
                       onClick={() => {
                         setInvProject('Barber Membership & Loyalty System (Paket Full — Omnichannel PWA)');
@@ -3275,7 +3329,7 @@
                         setInvNumber('INV/AZHARIYAH/2026/001');
                         setInvDate('29th August, 2026');
                       }}
-                      className="px-3 py-1.5 rounded-lg text-xs font-mono bg-white/5 text-zinc-300 hover:text-white"
+                      className="px-3 py-1.5 rounded-lg text-xs font-mono bg-white/5 text-[#59594f] hover:text-[#252520]"
                     >
                       📚 Umi Elly LMS (3M)
                     </button>
@@ -3286,12 +3340,12 @@
                         setInvNumber('INV/AJM/2026/002');
                         setInvDate('7th August, 2026');
                       }}
-                      className="px-3 py-1.5 rounded-lg text-xs font-mono bg-white/5 text-zinc-300 hover:text-white"
+                      className="px-3 py-1.5 rounded-lg text-xs font-mono bg-white/5 text-[#59594f] hover:text-[#252520]"
                     >
                       ✈️ Temantiket VOA (14,55M)
                     </button>
                   </div>
-                  <button onClick={() => setIsInvoiceModalOpen(false)} className="text-zinc-400 hover:text-white p-1 rounded-lg">✕</button>
+                  <button onClick={() => setIsInvoiceModalOpen(false)} className="text-[#59594f] hover:text-[#252520] p-1 rounded-lg">✕</button>
                 </div>
 
                 {/* Scrollable Canvas */}
@@ -3320,7 +3374,7 @@
                     <button
                       type="button"
                       onClick={() => window.print()}
-                      className="flex items-center gap-1.5 bg-[#0f172a] hover:bg-[#1e293b] text-white font-bold px-3.5 py-1.5 rounded shadow-sm transition-all"
+                      className="flex items-center gap-1.5 bg-[#0f172a] hover:bg-[#1e293b] text-[#252520] font-bold px-3.5 py-1.5 rounded shadow-sm transition-all"
                     >
                       <span>📥 Download PDF (1 Hal A4)</span>
                     </button>
@@ -3328,7 +3382,7 @@
                     <button
                       type="button"
                       onClick={() => window.print()}
-                      className="flex items-center gap-1.5 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold px-3.5 py-1.5 rounded shadow-sm transition-all"
+                      className="flex items-center gap-1.5 bg-[#dc2626] hover:bg-[#b91c1c] text-[#252520] font-bold px-3.5 py-1.5 rounded shadow-sm transition-all"
                     >
                       <span>🖨️ Cetak / Print</span>
                     </button>
@@ -3387,7 +3441,7 @@
                         </div>
 
                         <div className="text-right space-y-1.5 flex flex-col items-end">
-                          <div className="inline-flex items-center gap-1 bg-[#0f172a] text-white px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase font-mono shadow-xs">
+                          <div className="inline-flex items-center gap-1 bg-[#0f172a] text-[#252520] px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase font-mono shadow-xs">
                             <span>💈 OMNICHANNEL PWA & POS KASIR</span>
                           </div>
                           <div className="text-[10px] text-[#475569] font-mono">
@@ -3410,7 +3464,7 @@
                             {/* BANNER BAGIAN I */}
                             <tr>
                               <td colSpan={2} className="pt-1.5 pb-1">
-                                <div className="bg-[#0f172a] text-white px-3 py-1.5 text-[11px] font-bold font-mono flex justify-between items-center border-l-4 border-[#dc2626] rounded-xs">
+                                <div className="bg-[#0f172a] text-[#252520] px-3 py-1.5 text-[11px] font-bold font-mono flex justify-between items-center border-l-4 border-[#dc2626] rounded-xs">
                                   <span>BAGIAN I: LINGKUP UTAMA PAKET FULL (TOTAL KONTRAK: RP 6.000.000)</span>
                                   <span>Subtotal: Rp 6.000.000</span>
                                 </div>
@@ -3472,7 +3526,7 @@
                             {/* BANNER BAGIAN II */}
                             <tr>
                               <td colSpan={2} className="pt-2 pb-1">
-                                <div className="bg-[#1e293b] text-white px-3 py-1.5 text-[11px] font-bold font-mono flex justify-between items-center border-l-4 border-[#0284c7] rounded-xs">
+                                <div className="bg-[#1e293b] text-[#252520] px-3 py-1.5 text-[11px] font-bold font-mono flex justify-between items-center border-l-4 border-[#0284c7] rounded-xs">
                                   <span>BAGIAN II: PENYESUAIAN TERMIN 1 (DP 50% KICKOFF SPRINT)</span>
                                   <span>Subtotal: -Rp 3.000.000</span>
                                 </div>
@@ -3635,7 +3689,7 @@
                                 navigator.clipboard.writeText("1550010616962");
                                 alert("No. Rekening Mandiri 1550010616962 tersalin!");
                               }}
-                              className="bg-[#f1f5f9] hover:bg-[#0f172a] hover:text-white text-[#0f172a] border border-[#cbd5e1] text-[9px] font-bold font-mono px-1.5 py-0.2 rounded transition-colors no-print"
+                              className="bg-[#f1f5f9] hover:bg-[#0f172a] hover:text-[#252520] text-[#0f172a] border border-[#cbd5e1] text-[9px] font-bold font-mono px-1.5 py-0.2 rounded transition-colors no-print"
                             >
                               SALIN
                             </button>
@@ -3681,20 +3735,20 @@
 
           {/* AI Partner Sidebar */}
           {isCopilotOpen && (
-            <aside className="fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] bg-[#0b0b0f] border-l border-white/10 shadow-2xl p-5 flex flex-col justify-between font-sans">
+            <aside className="fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] bg-[#0b0b0f] border-l border-[#ded7c8] shadow-2xl p-5 flex flex-col justify-between font-sans">
               <div>
-                <div className="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
-                  <h3 className="text-sm font-semibold text-white">Partner Copilot</h3>
-                  <button onClick={() => setIsCopilotOpen(false)} className="text-zinc-400 hover:text-white">✕</button>
+                <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3 mb-4">
+                  <h3 className="text-sm font-semibold text-[#252520]">Partner Copilot</h3>
+                  <button onClick={() => setIsCopilotOpen(false)} className="text-[#59594f] hover:text-[#252520]">✕</button>
                 </div>
-                <div className="p-3.5 rounded-2xl bg-[#121218] border border-white/10 text-xs text-zinc-200 leading-relaxed space-y-2.5 font-normal">
-                  <p className="text-white font-semibold">// 3 Eksekusi Utama Lo Saat Ini:</p>
+                <div className="p-3.5 rounded-2xl bg-[#121218] border border-[#ded7c8] text-xs text-[#252520] leading-relaxed space-y-2.5 font-normal">
+                  <p className="text-[#252520] font-semibold">// 3 Eksekusi Utama Lo Saat Ini:</p>
                   <p>1. <strong>Zalvice Logo</strong> (Selesaiin 2 konsep awal + mockup Bang Edo — Paid Rp1,2M).</p>
                   <p>2. <strong>Kasir Barber Underrated</strong> (DP Rp3M Masuk Rekening! Fokus Fase 0 Opening 30 Agu: POS Kasir & struk WA).</p>
                   <p>3. <strong>Umi Elly LMS</strong> (Sudah Deal Rp7M — Konfirmasi transfer Termin 1 DP Rp3jt untuk Kickoff).</p>
                   <p>4. <strong>Setting KAEL Core</strong> (Role kasir vs owner, QRIS static flow & tenant demo).</p>
                   
-                  <div className={`pt-2.5 mt-2 border-t border-white/10 text-[11px] font-mono ${isRed ? 'text-rose-300' : isGreen ? 'text-emerald-300' : 'text-amber-300'}`}>
+                  <div className={`pt-2.5 mt-2 border-t border-[#ded7c8] text-[11px] font-mono ${isRed ? 'text-rose-300' : isGreen ? 'text-emerald-300' : 'text-amber-300'}`}>
                     {isRed ? (
                       `🔴 RED MODE: Saldo ${formatRupiah(report.totalLiquidBalance)} (< Rp4M). Belum masuk rekening = belum jadi uang!`
                     ) : isGreen ? (
@@ -3710,11 +3764,11 @@
 
           {/* Export Modal */}
           {isExportOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-sans">
-              <div className="w-full max-w-xl bg-[#0d0d12] border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
-                <div className="flex justify-between items-center border-b border-white/10 pb-3">
-                  <h3 className="text-sm font-semibold text-white">Daru Work OS — Obsidian Sync</h3>
-                  <button onClick={() => setIsExportOpen(false)} className="text-zinc-400 hover:text-white">✕</button>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#292a24]/40 backdrop-blur-md font-sans">
+              <div className="w-full max-w-xl bg-[#faf9f3] border border-[#ded7c8] rounded-2xl p-6 shadow-2xl space-y-4">
+                <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
+                  <h3 className="text-sm font-semibold text-[#252520]">Daru Work OS — Obsidian Sync</h3>
+                  <button onClick={() => setIsExportOpen(false)} className="text-[#59594f] hover:text-[#252520]">✕</button>
                 </div>
                 <div className="flex justify-end pt-2">
                   <button onClick={() => { navigator.clipboard.writeText("Markdown Copied!"); alert("Tersalin!"); }} className="px-4 py-2 rounded-xl dev-btn-primary text-xs font-semibold">Copy Markdown</button>

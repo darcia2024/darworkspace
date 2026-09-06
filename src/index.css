@@ -1,293 +1,267 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --bg-dark: #f1eddf;
+    --card-bg: #fffdf5;
+    --card-strong: #eae5d8;
+    --card-border: #ded7c8;
+    --card-border-hover: #928876;
+    --text-main: #252520;
+    --text-muted: #59594f;
+    --text-dim: #666256;
+    --accent: #292a24;
+    --color-paid: #305d46;
+    --color-paid-bg: #e2ecdc;
+    --color-unpaid: #814637;
+    --color-unpaid-bg: #f9ded1;
+    --color-profit: #4e3a68;
+    --font-sora: 'Sora', sans-serif;
+    --font-mono: 'Space Mono', monospace;
+  }
+
   body {
-    @apply bg-[#000000] text-[#EDEDED] font-sans antialiased selection:bg-[#0070F3]/30 selection:text-white;
-    font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    letter-spacing: -0.02em;
-    background-color: #000000;
-    background-image: 
-      radial-gradient(ellipse 70% 40% at 50% -15%, rgba(0, 112, 243, 0.10), transparent),
-      radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-    background-size: 100% 100%, 24px 24px;
-    background-attachment: fixed;
+    background-color: #f1eddf;
+    color: #252520;
+    font-family: var(--font-sora);
+    letter-spacing: -0.01em;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Custom scrollbar for cream aesthetic */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #f1eddf;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #ded7c8;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #928876;
   }
 }
 
 /* ==========================================================================
-   VERCEL / GEIST DESIGN SYSTEM SPECIFICATION
+   WARM CREAM EDITORIAL AGENCY ARCHITECTURE (INVOICE DESIGN SPEC)
    ========================================================================== */
 
-/* 1. Vercel Geist Card (Laser Hairline Border & Crisp Elevation) */
-.figma-shell, .geist-card {
-  background: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 
-    0 0 0 1px rgba(0, 0, 0, 0.9),
-    0 8px 30px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+/* 1. Main Warm Cards & Containers */
+.figma-shell, .cream-shell {
+  background: #fffdf5;
+  border: 1px solid #ded7c8;
+  border-radius: 18px;
   padding: 0.375rem;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 4px 18px rgba(41, 42, 36, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.figma-shell:hover, .geist-card:hover {
-  border-color: rgba(255, 255, 255, 0.28);
-  box-shadow: 
-    0 0 0 1px rgba(0, 0, 0, 0.9),
-    0 12px 40px rgba(0, 0, 0, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+.figma-shell:hover, .cream-shell:hover {
+  border-color: #928876;
+  box-shadow: 0 8px 24px rgba(41, 42, 36, 0.07);
 }
 
-.figma-core, .geist-surface {
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.03);
+.figma-core, .cream-surface {
+  background: #fffdf5;
+  border: 1px solid transparent;
+  border-radius: 14px;
 }
 
-/* 2. Vercel Glass & Command Surfaces */
-.dev-glass {
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-  border-radius: 12px;
-}
-
-/* 3. Obsidian Vercel Card */
-.dev-card {
-  background: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-  transition: all 0.15s ease;
+/* 2. Quiet Warm Floating Cards */
+.dev-card, .cream-card {
+  background: #fffdf5;
+  border: 1px solid #ded7c8;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(41, 42, 36, 0.03);
+  transition: all 0.2s ease;
   position: relative;
 }
 
-.dev-card:hover {
-  border-color: rgba(255, 255, 255, 0.28);
-  background: #080808;
-  transform: translateY(-1px);
+.dev-card:hover, .cream-card:hover {
+  border-color: #928876;
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(41, 42, 36, 0.06);
 }
 
-/* 4. Vercel Hero Active Card */
 .dev-card-hero {
-  background: radial-gradient(circle at top left, #111111 0%, #000000 100%);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 12px;
-  box-shadow: 
-    0 12px 36px rgba(0, 0, 0, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  transition: all 0.15s ease;
+  background: #fffdf5;
+  border: 1px solid #ded7c8;
+  border-radius: 18px;
+  box-shadow: 0 6px 22px rgba(41, 42, 36, 0.05);
+  transition: all 0.2s ease;
 }
 
 .dev-card-hero:hover {
-  border-color: rgba(255, 255, 255, 0.36);
-  transform: translateY(-1px);
+  border-color: #928876;
 }
 
-/* 5. Vercel Geist Badges & Tags */
-.dev-tag, .geist-badge {
-  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+/* 3. Four Iconic Pastel Stat Cards (Exact from Invoice Design) */
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 18px;
+  border: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(41, 42, 36, 0.08);
+}
+
+.stat-card.profit-stat {
+  background: #d0b4e9;
+  color: #292923;
+}
+
+.stat-card.paid-stat {
+  background: #ffb99f;
+  color: #292923;
+}
+
+.stat-card.unpaid-stat {
+  background: #adc6ed;
+  color: #292923;
+}
+
+.stat-card.total-stat {
+  background: #e3e6c7;
+  color: #292923;
+}
+
+.stat-icon-circle {
+  height: 30px;
+  width: 30px;
+  background: #272722;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 4. Elegant Badges & Tags */
+.dev-tag, .cream-badge {
+  font-family: 'Space Mono', monospace;
   font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 9999px;
-  background: #111111;
-  border: 1px solid #333333;
-  color: #888888;
+  background: #eae5d8;
+  border: 1px solid #ded7c8;
+  color: #59594f;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
-.dev-tag-emerald, .geist-badge-success {
-  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+.dev-tag-emerald, .cream-badge-paid {
+  font-family: 'Space Mono', monospace;
   font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #34d399;
-}
-
-.dev-tag-blue, .geist-badge-blue {
-  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  background: rgba(0, 112, 243, 0.12);
-  border: 1px solid rgba(0, 112, 243, 0.35);
-  color: #3291ff;
-}
-
-.dev-tag-amber, .geist-badge-warning {
-  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  background: rgba(245, 166, 35, 0.12);
-  border: 1px solid rgba(245, 166, 35, 0.35);
-  color: #f5a623;
-}
-
-.dev-tag-rose, .geist-badge-error {
-  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  background: rgba(238, 0, 0, 0.12);
-  border: 1px solid rgba(238, 0, 0, 0.35);
-  color: #ff4444;
-}
-
-/* 6. Vercel Geist Buttons */
-.dev-btn-primary, .geist-btn-primary {
-  background: #ffffff;
-  color: #000000;
   font-weight: 600;
-  border-radius: 8px;
-  border: 1px solid #ffffff;
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.14),
-    0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: all 0.15s ease;
-}
-
-.dev-btn-primary:hover, .geist-btn-primary:hover {
-  background: #eaeaea;
-  border-color: #eaeaea;
-  transform: translateY(-1px);
-}
-
-.dev-btn-primary:active, .geist-btn-primary:active {
-  transform: scale(0.98);
-}
-
-.dev-btn-secondary, .geist-btn-secondary {
-  background: #000000;
-  color: #888888;
-  font-weight: 500;
-  border-radius: 8px;
-  border: 1px solid #333333;
-  transition: all 0.15s ease;
-}
-
-.dev-btn-secondary:hover, .geist-btn-secondary:hover {
-  background: #0a0a0a;
-  border-color: #666666;
-  color: #ffffff;
-  transform: translateY(-1px);
-}
-
-.dev-btn-secondary:active, .geist-btn-secondary:active {
-  transform: scale(0.98);
-}
-
-.dev-btn-blue, .geist-btn-blue {
-  background: #0070F3;
-  color: #ffffff;
-  font-weight: 600;
-  border-radius: 8px;
-  border: 1px solid #0070F3;
-  box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.35);
-  transition: all 0.15s ease;
-}
-
-.dev-btn-blue:hover, .geist-btn-blue:hover {
-  background: #0060df;
-  transform: translateY(-1px);
-}
-
-.dev-btn-blue:active, .geist-btn-blue:active {
-  transform: scale(0.98);
-}
-
-/* Vercel Custom Minimal Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #000000;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
+  padding: 3px 10px;
   border-radius: 9999px;
+  background: #e2ecdc;
+  border: 1px solid #305d46;
+  color: #305d46;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.28);
+.dev-tag-amber, .cream-badge-dp {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: #fdf3d8;
+  border: 1px solid #b87e2b;
+  color: #925f18;
 }
 
-/* ==========================================================================
-   A4 PRINT SPECIFICATION FOR INVOICES (STRICT 1-PAGE A4)
-   ========================================================================== */
-@page {
-  size: A4 portrait;
-  margin: 5mm 6mm;
+.dev-tag-blue, .cream-badge-pipeline {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: #e2edf9;
+  border: 1px solid #3c6b8c;
+  color: #2b5675;
 }
 
-@media print {
-  html, body {
-    background: #ffffff !important;
-    color: #000000 !important;
-    background-image: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    height: 100% !important;
-    overflow: hidden !important;
-  }
-  
-  aside, header, nav, footer, .no-print, button, .modal-backdrop {
-    display: none !important;
-  }
-
-  .fixed {
-    position: static !important;
-    background: none !important;
-    padding: 0 !important;
-    display: block !important;
-  }
-
-  .max-h-\[98vh\], .max-h-\[96vh\], .max-h-\[94vh\], .overflow-y-auto {
-    max-height: none !important;
-    overflow: visible !important;
-  }
-  
-  #printable-a4-sheet {
-    box-shadow: none !important;
-    border: 1.5px solid #0f172a !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    page-break-inside: avoid !important;
-    page-break-before: avoid !important;
-    page-break-after: avoid !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
+.dev-tag-rose, .cream-badge-unpaid {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: #f9ded1;
+  border: 1px solid #814637;
+  color: #814637;
 }
 
+/* 5. Primary Actions & Dark Charcoal Pills */
+.btn-primary, .action-btn, .dev-btn-primary, .mono-btn-primary {
+  background: #292a24;
+  color: #fffdf5;
+  border: 1px solid #292a24;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: -0.01em;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover, .action-btn:hover, .dev-btn-primary:hover, .mono-btn-primary:hover {
+  background: #3c3e34;
+  border-color: #3c3e34;
+  transform: translateY(-1px);
+}
+
+.btn-secondary, .dev-btn-secondary {
+  background: #faf9f3;
+  color: #252520;
+  border: 1px solid #ded7c8;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.18s ease;
+}
+
+.btn-secondary:hover, .dev-btn-secondary:hover {
+  background: #eae5d8;
+  border-color: #928876;
+}
+
+/* Glass effect in cream */
+.dev-glass {
+  background: rgba(255, 253, 245, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid #ded7c8;
+  box-shadow: 0 10px 30px rgba(41, 42, 36, 0.06);
+}
+
+/* Tabular Financial Metrics */
+.font-money {
+  font-family: 'Space Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}

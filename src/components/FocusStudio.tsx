@@ -5,15 +5,9 @@ import {
   RotateCcw, 
   Headphones,
   Check,
-  ChevronLeft,
-  ChevronRight,
   Flame,
-  Zap,
-  Sparkles,
-  ArrowRight,
   Target,
   Clock,
-  Layers,
   ArrowUpRight
 } from 'lucide-react';
 import { TodayBlock } from '../types';
@@ -80,8 +74,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
             confetti({
               particleCount: 80,
               spread: 70,
-              origin: { y: 0.6 },
-              colors: ['#ffffff', '#a1a1aa', '#52525b']
+              origin: { y: 0.6 }
             });
 
             if (activeBlock) {
@@ -142,19 +135,19 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
   return (
     <div className="max-w-4xl mx-auto space-y-6 font-sans select-none animate-fade-in pb-12">
       
-      {/* 1. STEP 1: TASK SELECTION STAGE (Always prominent when opening Focus Studio) */}
+      {/* 1. STEP 1: TASK SELECTION STAGE */}
       <div className="figma-shell">
-        <div className="figma-core p-5 sm:p-6 space-y-4">
+        <div className="figma-core p-5 sm:p-6 space-y-4 bg-[#fffdf5]">
           
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
             <div className="space-y-0.5">
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-sm font-bold text-white tracking-tight">
+                <Target className="w-4 h-4 text-[#305d46]" />
+                <h3 className="text-sm font-bold text-[#252520] tracking-tight">
                   Pilih Task yang Mau Lo Kunci untuk Deep Work Ini:
                 </h3>
               </div>
-              <p className="text-xs text-zinc-400 font-normal">
+              <p className="text-xs text-[#59594f] font-normal">
                 Pilih salah satu tugas dari Triad hari ini untuk mengunci timebox dan instruksi langkah demi langkah.
               </p>
             </div>
@@ -178,29 +171,29 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
                   onClick={() => handleSelectBlock(block)}
                   className={`p-4 rounded-2xl border text-left transition-all duration-200 space-y-2 relative group ${
                     isSelected
-                      ? 'bg-gradient-to-br from-white/10 to-white/5 border-emerald-400/80 ring-2 ring-emerald-400/30 scale-[1.02] shadow-xl'
+                      ? 'bg-[#fffdf5] border-[#292a24] ring-2 ring-[#292a24]/40 shadow-md scale-[1.02]'
                       : block.isDone
-                      ? 'bg-[#060609]/60 border-white/[0.04] opacity-40'
-                      : 'bg-[#060609] border-white/[0.06] hover:border-white/20 hover:bg-[#0c0c14] hover:-translate-y-0.5'
+                      ? 'bg-[#eae5d8]/40 border-[#ded7c8] opacity-50'
+                      : 'bg-[#faf9f3] border-[#ded7c8] hover:border-[#928876] hover:bg-[#fffdf5] hover:-translate-y-0.5 shadow-sm'
                   }`}
                 >
                   <div className="flex justify-between items-center">
                     <span className="dev-tag text-[9px] py-0">{block.blockType}</span>
-                    <span className="text-[10px] font-mono text-zinc-400">{block.timeboxMinutes}m</span>
+                    <span className="text-[10px] font-mono text-[#59594f]">{block.timeboxMinutes}m</span>
                   </div>
 
                   <div>
-                    <h4 className={`text-xs font-bold truncate ${isSelected ? 'text-white' : 'text-zinc-200'}`}>
+                    <h4 className="text-xs font-bold truncate text-[#252520]">
                       {block.projectName}
                     </h4>
-                    <p className="text-[11px] text-zinc-400 line-clamp-2 mt-0.5 leading-relaxed">
+                    <p className="text-[11px] text-[#59594f] line-clamp-2 mt-0.5 leading-relaxed">
                       {block.action}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-white/[0.05] flex items-center justify-between text-[10px] font-mono">
-                    <span className={isSelected ? 'text-emerald-400 font-bold' : 'text-zinc-500 group-hover:text-zinc-300'}>
-                      {isSelected ? '✓ Terkunci di Timer' : 'Pilih Task Ini →'}
+                  <div className="pt-2 border-t border-[#ded7c8] flex items-center justify-between text-[10px] font-mono">
+                    <span className={isSelected ? 'text-[#305d46] font-bold' : 'text-[#59594f]'}>
+                      {isSelected ? '✓ Terkunci di Timer' : 'Pilih Task Ini'}
                     </span>
                   </div>
                 </button>
@@ -213,75 +206,58 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
 
       {/* 2. STEP 2: ACTIVE FOCUS FLOW COCKPIT */}
       <div className="figma-shell">
-        <div className="figma-core p-6 sm:p-8 space-y-6">
+        <div className="figma-core p-6 sm:p-8 space-y-6 bg-[#fffdf5]">
           
           <div className="flex flex-col items-center text-center space-y-6">
             
             {/* Active Lock Info Card */}
             {activeBlock ? (
-              <div className="w-full max-w-xl p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-1.5 text-left">
-                <div className="flex items-center justify-between">
-                  <span className="dev-tag-emerald text-[9px] flex items-center gap-1">
-                    <Flame className="w-3 h-3 text-emerald-400" />
-                    <span>SESI AKTIF: {activeBlock.projectName}</span>
-                  </span>
-                  <span className="text-xs font-mono text-zinc-400">{activeBlock.timeboxMinutes}m Timebox</span>
+              <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] max-w-xl w-full text-left space-y-2 shadow-sm">
+                <div className="flex justify-between items-center">
+                  <span className="dev-tag text-[9px]">{activeBlock.blockType}</span>
+                  <span className="text-xs font-mono text-[#59594f]">{activeBlock.timeboxMinutes} Menit Timebox</span>
                 </div>
-                <p className="text-sm font-bold text-white">{activeBlock.action}</p>
+                <h3 className="text-base font-bold text-[#252520] font-sans">{activeBlock.projectName}</h3>
+                <p className="text-xs text-[#59594f] leading-relaxed">
+                  <span className="text-[#925f18] font-bold font-mono">Action:</span> {activeBlock.action}
+                </p>
                 {activeBlock.rule && (
-                  <p className="text-xs text-zinc-400 font-mono">// Aturan: {activeBlock.rule}</p>
+                  <div className="p-2 rounded-xl bg-[#fffdf5] border border-[#ded7c8] text-[11px] font-mono text-[#59594f]">
+                    <span className="text-[#305d46] font-bold">// ATURAN:</span> {activeBlock.rule}
+                  </div>
                 )}
               </div>
             ) : (
-              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-mono">
-                ⚡ Belum ada task yang dikunci. Silakan klik salah satu task di atas untuk memulai deep work terarah.
+              <div className="p-4 rounded-2xl bg-[#faf9f3] border border-dashed border-[#ded7c8] max-w-xl w-full text-center text-xs font-mono text-[#59594f]">
+                Belum ada task yang dikunci. Pilih task di atas atau langsung mulai timer bebas.
               </div>
             )}
 
-            {/* Circular Timer Ring */}
-            <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 240 240">
-                <circle
-                  cx="120"
-                  cy="120"
-                  r="96"
-                  className="stroke-zinc-800"
-                  strokeWidth="6"
-                  fill="transparent"
+            {/* Huge Clean Timer Clock */}
+            <div className="space-y-3">
+              <div className="font-mono text-6xl sm:text-8xl font-black tracking-tight text-[#252520] tabular-nums select-all">
+                {formatTime(timeLeftSeconds)}
+              </div>
+              
+              {/* Minimal Progress Bar */}
+              <div className="w-64 sm:w-80 h-2 bg-[#ded7c8] rounded-full mx-auto overflow-hidden">
+                <div 
+                  className="h-full bg-[#292a24] rounded-full transition-all duration-1000 ease-linear"
+                  style={{ width: `${progressPercent}%` }}
                 />
-                <circle
-                  cx="120"
-                  cy="120"
-                  r="96"
-                  className="stroke-white transition-all duration-1000 ease-linear shadow-glow-white"
-                  strokeWidth="6"
-                  strokeDasharray={603.2}
-                  strokeDashoffset={603.2 - (603.2 * progressPercent) / 100}
-                  strokeLinecap="round"
-                  fill="transparent"
-                />
-              </svg>
-
-              <div className="absolute flex flex-col items-center">
-                <span className="text-6xl sm:text-7xl font-extrabold font-mono text-white tracking-tighter">
-                  {formatTime(timeLeftSeconds)}
-                </span>
-                <span className="text-[10px] text-zinc-400 mt-2 uppercase tracking-widest font-mono font-bold">
-                  {isRunning ? '🟢 FLOW_STATE_ACTIVE' : '⚪ READY_TO_LOCK'}
-                </span>
               </div>
             </div>
 
-            {/* Duration Presets */}
-            <div className="flex items-center gap-1.5 bg-[#060609] p-1.5 rounded-2xl border border-white/10 font-mono text-xs">
-              {[25, 45, 50, 60, 90].map((mins) => (
+            {/* Timebox Duration Selectors */}
+            <div className="flex items-center gap-2 bg-[#eae5d8] p-1.5 rounded-2xl border border-[#ded7c8] font-mono text-xs">
+              {[25, 50, 90].map((mins) => (
                 <button
                   key={mins}
                   onClick={() => selectDuration(mins)}
-                  className={`px-3.5 py-1.5 rounded-xl transition-all ${
-                    sessionDurationMinutes === mins && !isRunning
-                      ? 'bg-white text-black font-bold shadow-sm'
-                      : 'text-zinc-400 hover:text-white'
+                  className={`px-4 py-1.5 rounded-xl transition-all ${
+                    sessionDurationMinutes === mins
+                      ? 'bg-[#292a24] text-[#fffdf5] font-bold shadow-sm'
+                      : 'text-[#59594f] hover:text-[#252520]'
                   }`}
                 >
                   {mins}m
@@ -289,38 +265,33 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
               ))}
             </div>
 
-            {/* Controls */}
-            <div className="flex items-center gap-3">
+            {/* Big Primary Control Button */}
+            <div className="flex items-center gap-4">
               <button
                 onClick={resetTimer}
-                className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white border border-white/10 transition-all"
                 title="Reset Timer"
+                className="p-3.5 rounded-2xl bg-[#faf9f3] hover:bg-[#eae5d8] text-[#59594f] hover:text-[#252520] border border-[#ded7c8] transition-all shadow-sm"
               >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw className="w-5 h-5" />
               </button>
 
               <button
-                onClick={() => {
-                  if (!activeBlock && todayBlocks[0]) {
-                    handleSelectBlock(todayBlocks[0]);
-                  }
-                  toggleRunning();
-                }}
-                className={`px-10 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2.5 transition-all shadow-xl ${
+                onClick={toggleRunning}
+                className={`px-8 py-4 rounded-2xl font-bold font-mono text-sm flex items-center gap-3 transition-all shadow-md active:scale-95 ${
                   isRunning
-                    ? 'bg-amber-400 hover:bg-amber-300 text-black'
-                    : 'dev-btn-primary'
+                    ? 'bg-[#faf9f3] hover:bg-[#eae5d8] text-[#252520] border border-[#ded7c8]'
+                    : 'bg-[#292a24] hover:bg-[#1a1b16] text-[#fffdf5] border border-[#292a24]'
                 }`}
               >
                 {isRunning ? (
                   <>
-                    <Pause className="w-4 h-4" />
-                    <span>Pause Flow</span>
+                    <Pause className="w-5 h-5" />
+                    <span>Pause Sesi</span>
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4 fill-current" />
-                    <span>Mulai Deep Work ({sessionDurationMinutes}m)</span>
+                    <Play className="w-5 h-5 fill-current" />
+                    <span>Mulai Fokus</span>
                   </>
                 )}
               </button>
@@ -329,49 +300,42 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
                 <button
                   onClick={() => {
                     soundManager.playCompletionChime();
-                    confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
                     onCompleteBlock(activeBlock.id);
+                    confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
                   }}
-                  className="p-3.5 rounded-2xl bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/25 transition-all"
-                  title="Tandai Task Ini Beres"
+                  title="Tandai Selesai Sekarang"
+                  className="p-3.5 rounded-2xl bg-[#e2ecdc] hover:bg-[#d5e4cf] text-[#305d46] border border-[#305d46]/30 transition-all shadow-sm"
                 >
-                  <Check className="w-4 h-4 stroke-[3]" />
+                  <Check className="w-5 h-5" />
                 </button>
               )}
             </div>
 
-            {/* Audio Focus Waves */}
-            <div className="pt-4 border-t border-white/5 w-full max-w-sm flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-                <Headphones className="w-4 h-4 text-zinc-400" />
-                <span>Audio Wave:</span>
+            {/* Ambient Soundscape Selection */}
+            <div className="pt-4 border-t border-[#ded7c8] w-full flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+              <div className="flex items-center gap-2 text-[#59594f]">
+                <Headphones className="w-4 h-4 text-[#252520]" />
+                <span>Binaural Soundscape:</span>
               </div>
 
-              <div className="flex items-center gap-1.5 font-mono text-xs">
-                <button
-                  onClick={() => handleSoundChange('none')}
-                  className={`px-3 py-1 rounded-xl text-[11px] transition-all ${
-                    soundMode === 'none' ? 'bg-white text-black font-bold' : 'text-zinc-500 hover:text-white'
-                  }`}
-                >
-                  Off
-                </button>
-                <button
-                  onClick={() => handleSoundChange('gamma40')}
-                  className={`px-3 py-1 rounded-xl text-[11px] transition-all ${
-                    soundMode === 'gamma40' ? 'bg-emerald-500 text-black font-bold' : 'text-zinc-500 hover:text-white'
-                  }`}
-                >
-                  Gamma 40Hz
-                </button>
-                <button
-                  onClick={() => handleSoundChange('brown')}
-                  className={`px-3 py-1 rounded-xl text-[11px] transition-all ${
-                    soundMode === 'brown' ? 'bg-amber-400 text-black font-bold' : 'text-zinc-500 hover:text-white'
-                  }`}
-                >
-                  Brown Noise
-                </button>
+              <div className="flex items-center gap-1.5">
+                {[
+                  { id: 'none', label: 'Mute' },
+                  { id: 'gamma40', label: 'Gamma 40Hz (Flow)' },
+                  { id: 'brown', label: 'Brown Noise (Deep)' },
+                ].map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => handleSoundChange(s.id as any)}
+                    className={`px-3 py-1.5 rounded-xl border transition-all ${
+                      soundMode === s.id
+                        ? 'bg-[#292a24] text-[#fffdf5] border-[#292a24] font-bold shadow-sm'
+                        : 'bg-[#faf9f3] text-[#59594f] border-[#ded7c8] hover:text-[#252520] hover:bg-[#eae5d8]'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
               </div>
             </div>
 

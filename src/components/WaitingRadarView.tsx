@@ -57,75 +57,78 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 font-sans animate-fade-in">
+    <div className="space-y-6 font-sans animate-fade-in select-none">
       
       {/* Header */}
-      <div className="p-4 rounded-xl bg-[#0e0e12] border border-white/10 shadow-lg flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-amber-400" />
-            <h3 className="text-base font-semibold text-white tracking-tight">Waiting View & Pipeline Radar</h3>
+      <div className="figma-shell">
+        <div className="figma-core p-4 sm:p-5 bg-[#fffdf5] flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#925f18]" />
+              <h3 className="text-base font-bold text-[#252520] tracking-tight">Waiting View & Pipeline Radar</h3>
+              <span className="dev-tag text-[9px]">{waitingItems.length} ITEMS ACTIVE</span>
+            </div>
+            <p className="text-xs text-[#59594f] font-mono mt-0.5">
+              // External dependencies: Umi Elly (Termin 2 Rp2M), Bedug (Rp2.2M), Teh Umi, El Massa, Ar-Ruwad, Watra
+            </p>
           </div>
-          <p className="text-xs text-zinc-400 font-mono mt-0.5">
-            // External dependencies: Barber POS (Rp6M), Umi Elly (Rp7M), Bedug (Rp2.2M), Teh Umi, El Massa, Ar-Ruwad, Watra
-          </p>
-        </div>
 
-        <button
-          onClick={() => setIsAdding(!isAdding)}
-          className="flex items-center gap-1.5 px-4 py-2 mono-btn-primary text-xs font-semibold shadow-sm"
-        >
-          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span>Add Waiting Item</span>
-        </button>
+          <button
+            onClick={() => setIsAdding(!isAdding)}
+            className="flex items-center gap-1.5 px-4 py-2 dev-btn-primary text-xs font-semibold shadow-sm"
+          >
+            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>Add Waiting Item</span>
+          </button>
+        </div>
       </div>
 
       {/* Add Inline Form */}
       {isAdding && (
-        <div className="p-5 rounded-xl bg-[#141418] border border-white/20 shadow-2xl space-y-3 animate-slide-up">
-          <h4 className="text-sm font-semibold text-white">Add New Waiting Item</h4>
+        <div className="p-5 rounded-2xl bg-[#fffdf5] border border-[#ded7c8] shadow-md space-y-3 animate-slide-up font-mono text-xs">
+          <h4 className="text-sm font-bold text-[#252520] font-sans">Tambah Item Antrian Eksternal</h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-[11px] text-zinc-400 font-mono mb-1">Client / Project</label>
+              <label className="block text-[11px] text-[#59594f] mb-1">Client / Project</label>
               <input
                 type="text"
                 placeholder="Contoh: Barber POS"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white font-mono"
+                className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl px-3 py-2 text-xs text-[#252520] focus:outline-none focus:border-[#292a24]"
               />
             </div>
             <div>
-              <label className="block text-[11px] text-zinc-400 font-mono mb-1">Reason</label>
+              <label className="block text-[11px] text-[#59594f] mb-1">Reason / Menunggu Apa</label>
               <input
                 type="text"
-                placeholder="Contoh: Menunggu DP 50%"
+                placeholder="Contoh: Menunggu approval modul"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white font-mono"
+                className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl px-3 py-2 text-xs text-[#252520] focus:outline-none focus:border-[#292a24]"
               />
             </div>
             <div>
-              <label className="block text-[11px] text-zinc-400 font-mono mb-1">Value</label>
+              <label className="block text-[11px] text-[#59594f] mb-1">Value / Potensi Kas</label>
               <input
                 type="text"
-                placeholder="Contoh: Rp6.000.000"
+                placeholder="Contoh: Rp2.000.000"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white font-mono"
+                className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl px-3 py-2 text-xs text-[#252520] focus:outline-none focus:border-[#292a24]"
               />
             </div>
           </div>
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-2 pt-2 border-t border-[#ded7c8]">
             <button
               onClick={() => setIsAdding(false)}
-              className="px-3.5 py-1.5 rounded-xl bg-zinc-800 text-zinc-300 text-xs hover:bg-zinc-700 font-medium"
+              className="px-3.5 py-1.5 rounded-xl bg-[#faf9f3] text-[#59594f] text-xs hover:bg-[#eae5d8] border border-[#ded7c8] font-medium"
             >
               Cancel
             </button>
             <button
               onClick={handleCreate}
-              className="px-4 py-1.5 rounded-xl mono-btn-primary text-xs font-semibold"
+              className="px-4 py-1.5 rounded-xl dev-btn-primary text-xs font-semibold shadow-sm"
             >
               Save Item
             </button>
@@ -138,66 +141,76 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
         {waitingItems.map((item) => (
           <div
             key={item.id}
-            className="mono-card p-5 bg-[#111115] border border-white/10 hover:border-white/25 transition-all flex flex-col justify-between space-y-3"
+            className="figma-shell hover:border-[#928876] transition-all"
           >
-            <div className="space-y-2.5">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <span className="mono-tag">
-                    {item.status.toUpperCase()}
+            <div className="figma-core p-5 bg-[#fffdf5] h-full flex flex-col justify-between space-y-4">
+              <div className="space-y-2.5">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="dev-tag text-[9px]">
+                      {item.status.toUpperCase()}
+                    </span>
+                    <h4 className="text-base font-bold text-[#252520] mt-1.5 tracking-tight">{item.name}</h4>
+                  </div>
+                  <span className="text-xs font-bold text-[#305d46] bg-[#e2ecdc] border border-[#305d46]/30 px-2.5 py-1 rounded-lg font-mono">
+                    {item.value}
                   </span>
-                  <h4 className="text-base font-semibold text-white mt-1.5 tracking-tight">{item.name}</h4>
                 </div>
-                <span className="text-xs text-amber-300 font-mono bg-black/60 px-2.5 py-1 rounded-lg border border-white/5 whitespace-nowrap">
-                  {item.value}
-                </span>
+
+                <div className="p-2.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-xs space-y-1 font-mono">
+                  <div className="text-[#59594f]">
+                    <span className="font-bold text-[#252520]">Alasan:</span> {item.reason}
+                  </div>
+                  {item.actionToUnblock && (
+                    <div className="text-[#925f18]">
+                      <span className="font-bold">Next Action:</span> {item.actionToUnblock}
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-black/60 border border-white/5 text-xs space-y-1">
-                <p className="text-zinc-300">
-                  <span className="text-zinc-400 font-mono">Blocked on:</span> {item.reason}
-                </p>
-                <p className="text-zinc-400 text-[11px] font-mono">
-                  Trigger: <span className="text-zinc-200">{item.nextTrigger}</span>
-                </p>
-              </div>
+              {/* Action Buttons */}
+              <div className="pt-2 border-t border-[#ded7c8] flex items-center justify-between gap-2 text-xs font-mono">
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => handleQuickCopy(item)}
+                    className="p-1.5 rounded-lg bg-[#faf9f3] hover:bg-[#eae5d8] text-[#59594f] hover:text-[#252520] border border-[#ded7c8] transition-colors"
+                    title="Copas quick message"
+                  >
+                    {copiedId === item.id ? (
+                      <Check className="w-3.5 h-3.5 text-[#305d46]" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                  </button>
 
-              <div className="p-2.5 rounded-xl bg-[#16161c] border border-white/10 text-xs space-y-0.5">
-                <p className="text-white font-mono uppercase font-semibold text-[11px]">Unblock Action:</p>
-                <p className="text-zinc-300 text-xs font-normal">{item.actionToUnblock}</p>
-              </div>
-            </div>
+                  {onOpenFollowUpModal && (
+                    <button
+                      onClick={() => {
+                        soundManager.playClick();
+                        onOpenFollowUpModal(item);
+                      }}
+                      className="px-2.5 py-1.5 rounded-lg bg-[#ffb99f]/30 hover:bg-[#ffb99f]/60 text-[#814637] border border-[#ffb99f] transition-colors flex items-center gap-1 font-medium"
+                      title="Buka generator pesan follow-up"
+                    >
+                      <MessageSquare className="w-3 h-3" />
+                      <span>WA Draft</span>
+                    </button>
+                  )}
+                </div>
 
-            <div className="pt-3 border-t border-white/5 flex items-center justify-between gap-2">
-              {onOpenFollowUpModal ? (
                 <button
-                  onClick={() => onOpenFollowUpModal(item)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-amber-400 hover:text-amber-300 text-xs border border-white/10 transition-all font-mono"
+                  onClick={() => {
+                    soundManager.playClick();
+                    onResolveItem(item.id);
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-[#e2ecdc] hover:bg-[#d5e4cf] text-[#305d46] border border-[#305d46]/30 font-bold transition-colors"
                 >
-                  <MessageSquare className="w-3 h-3" />
-                  <span>COPAS PESAN WA</span>
+                  ✓ Beres
                 </button>
-              ) : (
-                <button
-                  onClick={() => handleQuickCopy(item)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs border border-white/10 transition-all font-mono"
-                >
-                  {copiedId === item.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                  <span>{copiedId === item.id ? 'COPIED' : 'COPY_FOLLOWUP'}</span>
-                </button>
-              )}
+              </div>
 
-              <button
-                onClick={() => {
-                  soundManager.playClick();
-                  onResolveItem(item.id);
-                }}
-                className="text-xs font-mono text-zinc-400 hover:text-white transition-colors"
-              >
-                [RESOLVE]
-              </button>
             </div>
-
           </div>
         ))}
       </div>

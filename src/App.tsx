@@ -290,7 +290,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#000000] text-[#EDEDED] flex flex-col lg:flex-row font-sans selection:bg-[#0070F3]/30 selection:text-white">
+    <div className="min-h-screen bg-[#f1eddf] text-[#252520] flex flex-col lg:flex-row font-sans selection:bg-[#292a24]/20 selection:text-[#252520]">
       
       {/* 1. Sleek Left Dashboard Sidebar */}
       <Sidebar
@@ -313,16 +313,16 @@ export function App() {
       />
 
       {/* 2. Main Dashboard Content View */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-[#000000]">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-[#f1eddf]">
         
-        {/* Top Vercel Breadcrumb Bar */}
-        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-white/[0.12] bg-[#000000]/80 backdrop-blur-md sticky top-0 z-20">
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <span className="text-white font-medium">Workspace</span>
-            <span className="text-zinc-600">/</span>
-            <span className="text-zinc-200">{tabLabels[activeTab]}</span>
-            <span className="text-zinc-600">/</span>
-            <span className="dev-tag text-[9px] py-0">PROD</span>
+        {/* Top Agency Editorial Breadcrumb Bar */}
+        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-[#ded7c8] bg-[#f1eddf]/90 backdrop-blur-md sticky top-0 z-20">
+          <div className="flex items-center gap-2 text-xs font-mono text-[#59594f]">
+            <span className="text-[#252520] font-semibold">Workspace</span>
+            <span className="text-[#ded7c8]">/</span>
+            <span className="text-[#252520]">{tabLabels[activeTab]}</span>
+            <span className="text-[#ded7c8]">/</span>
+            <span className="px-2 py-0.5 rounded-full bg-[#e3e6c7] text-[#252520] text-[10px] font-mono font-bold tracking-wide">PROD</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -332,9 +332,9 @@ export function App() {
                 setTargetInvoiceProject(null);
                 setIsInvoiceOpen(true);
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#0070F3]/10 hover:bg-[#0070F3]/20 text-[#3291ff] border border-[#0070F3]/30 text-xs font-mono transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg bg-[#fffdf5] hover:bg-[#eae5d8] text-[#252520] border border-[#ded7c8] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
             >
-              <Receipt className="w-3.5 h-3.5 text-[#0070F3]" />
+              <Receipt className="w-3.5 h-3.5 text-[#252520]" />
               <span>+ Buat Invoice ⌘I</span>
             </button>
 
@@ -343,7 +343,7 @@ export function App() {
                 soundManager.playClick();
                 setIsFinanceInputOpen(true);
               }}
-              className="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/25 text-xs font-mono transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg bg-[#292a24] hover:bg-[#1a1b16] text-[#fffdf5] border border-[#292a24] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>+ Catat Kas</span>
@@ -355,9 +355,9 @@ export function App() {
                 setTargetFollowUpProject(null);
                 setIsFollowUpOpen(true);
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#000000] hover:bg-[#111111] text-zinc-300 hover:text-white border border-white/[0.12] hover:border-white/30 text-xs font-mono transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg bg-[#fffdf5] hover:bg-[#eae5d8] text-[#252520] border border-[#ded7c8] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-zinc-400" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#59594f]" />
               <span>Copas WA</span>
             </button>
 
@@ -366,9 +366,9 @@ export function App() {
                 soundManager.playClick();
                 setIsCopilotOpen((prev) => !prev);
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#000000] hover:bg-[#111111] text-purple-300 border border-purple-500/30 text-xs font-mono transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg bg-[#d0b4e9]/30 hover:bg-[#d0b4e9]/50 text-[#252520] border border-[#d0b4e9] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
             >
-              <Bot className="w-3.5 h-3.5 text-purple-400" />
+              <Bot className="w-3.5 h-3.5 text-[#59594f]" />
               <span>Partner ⌘K</span>
             </button>
 
@@ -379,7 +379,7 @@ export function App() {
                 setIsAuthenticated(false);
               }}
               title="Kunci Layar (Lock Device)"
-              className="p-2 rounded-lg bg-[#000000] hover:bg-red-500/10 text-zinc-400 hover:text-red-400 border border-white/[0.12] hover:border-red-500/30 text-xs font-mono transition-all flex items-center gap-1.5"
+              className="p-2 rounded-lg bg-[#fffdf5] hover:bg-rose-100 text-[#59594f] hover:text-rose-600 border border-[#ded7c8] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
             >
               <Lock className="w-3.5 h-3.5" />
             </button>

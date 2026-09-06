@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { 
   Rocket, 
   CheckCircle2, 
@@ -15,15 +15,12 @@ import {
   Flame, 
   Play, 
   Compass, 
-  BookOpen, 
-  Coffee, 
   ChevronRight,
-  Award,
-  AlertCircle
+  Award
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundManager } from '../utils/audio';
-import { DaruWorkOSState, TodayBlock, ProjectCard } from '../types';
+import { DaruWorkOSState, TodayBlock } from '../types';
 
 interface NextShouldBeGoViewProps {
   state: DaruWorkOSState;
@@ -70,9 +67,9 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       id: 'move-1',
       rank: 1,
       badge: 'PRIORITAS MUTLAK #1 // CASH ACCELERATOR',
-      badgeColor: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30',
+      badgeColor: 'bg-[#e2ecdc] text-[#305d46] border border-[#305d46]/30',
       title: 'LMS Umi Elly Azhariyah — Sprint Modul 1 & Portal Santri',
-      subtitle: 'DP Rp3.000.000 Sudah Masuk Kas ➔ Kunci Pencairan Termin 2 (+Rp2.000.000)',
+      subtitle: 'DP Rp3.000.000 Sudah Masuk Kas → Kunci Pencairan Termin 2 (+Rp2.000.000)',
       projectTarget: 'Umi Elly — LMS Peradaban Islam Azhariyah',
       roiType: 'CASH_ACCELERATOR',
       cashImpactText: '+Rp2.000.000 (Termin 2) + Rp2.000.000 (Termin 3)',
@@ -94,9 +91,9 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       id: 'move-2',
       rank: 2,
       badge: 'PRIORITAS #2 // CLEAN DESK & MIND CLARITY',
-      badgeColor: 'bg-blue-500/15 text-blue-300 border border-blue-500/30',
+      badgeColor: 'bg-[#e2edf9] text-[#2b5675] border border-[#3c6b8c]/30',
       title: 'DreamMecca Platform — Final Polish & Official Handover',
-      subtitle: 'Sudah Lunas dari Lama ➔ Tuntaskan 100% Biar Bebas Utang Deliverable',
+      subtitle: 'Sudah Lunas dari Lama → Tuntaskan 100% Biar Bebas Utang Deliverable',
       projectTarget: 'DreamMecca Platform',
       roiType: 'CLEAN_DESK',
       cashImpactText: 'Nol Utang Mental (100% Zero Historical Debt)',
@@ -106,10 +103,10 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       description: 'Uang platform DreamMecca sudah lunas dibayar klien dari lama. Menuntaskan dan menyerahkan deliverable terakhir platform ini akan membersihkan sisa beban pikiran masa lalu.',
       keyWhy: 'Membuat kapasitas otak 100% plong dan bebas dari risiko revisi menumpuk.',
       actionChecklist: [
-        { id: 'act-2-1', text: 'Review kelengkapan UI paket umrah & alur kontak inquiry WhatsApp', done: false },
+        { id: 'act-2-1', text: 'Review kelengkapan UI paket umrah & alur kontak WhatsApp', done: false },
         { id: 'act-2-2', text: 'Testing respon form & checklist deploy production', done: false },
         { id: 'act-2-3', text: 'Kirim link akses final & pesan serah terima resmi ke owner DreamMecca', done: false },
-        { id: 'act-2-4', text: 'Tandai status Done & arsipkan ke portfolio selesai ✓', done: false },
+        { id: 'act-2-4', text: 'Tandai status Done & arsipkan ke portfolio selesai', done: false },
       ],
       financialUnlockNote: 'Memberikan reputasi tier-1 dan membebaskan 100% fokus untuk scaling SaaS.',
       projectRefId: 'p-dreammecca'
@@ -118,9 +115,9 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       id: 'move-3',
       rank: 3,
       badge: 'PRIORITAS #3 // HIGH-LEVERAGE ASSET (MRR)',
-      badgeColor: 'bg-purple-500/15 text-purple-300 border border-purple-500/30',
+      badgeColor: 'bg-[#f0e6f9] text-[#4e3a68] border border-[#4e3a68]/30',
       title: 'KAEL POS SaaS — Repackage Core Engine & Demo Multi-Tenant',
-      subtitle: 'Validasi Sukses di Barber Rp6M ➔ Jadikan Mesin Recurring Revenue (MRR)',
+      subtitle: 'Validasi Sukses di Barber Rp6M → Jadikan Mesin Recurring Revenue (MRR)',
       projectTarget: 'Setting KAEL (Core Product)',
       roiType: 'WEALTH_SCALE',
       cashImpactText: 'Langganan Bulanan (MRR) dari Jaringan Outlet',
@@ -132,9 +129,9 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       actionChecklist: [
         { id: 'act-3-1', text: 'Kunci konfigurasi permission role Kasir vs Owner vs Admin', done: false },
         { id: 'act-3-2', text: 'Rapikan demo tenant kafe/barber siap live pitch ke calon klien', done: false },
-        { id: 'act-3-3', text: 'Siapkan list 3–5 calon outlet prospek pilot pertama', done: false },
+        { id: 'act-3-3', text: 'Siapkan list 3-5 calon outlet prospek pilot pertama', done: false },
       ],
-      financialUnlockNote: 'Potensi penambahan kas stabil Rp1.500.000 – Rp5.000.000/bulan per cluster tenant.',
+      financialUnlockNote: 'Potensi penambahan kas stabil Rp1.500.000 - Rp5.000.000/bulan per cluster tenant.',
       projectRefId: 'p-kael-product'
     }
   ];
@@ -178,70 +175,72 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
     <div className="space-y-6 max-w-5xl mx-auto pb-12 animate-fade-in select-none">
       
       {/* 1. EXECUTIVE DIRECTIVE HERO */}
-      <div className="dev-card p-6 sm:p-7 border-l-4 border-l-emerald-500 space-y-4 bg-gradient-to-br from-[#0c1410] via-[#080b09] to-[#050508]">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3.5">
-          <div className="flex items-center gap-2.5">
-            <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse shadow-glow-white" />
-            <h2 className="text-base sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2 font-sans">
-              <span>🎯 NEXT SHOULD BE GO — ENGINE KEPUTUSAN STRATEGIS</span>
-              <span className="dev-tag-emerald text-[9px]">ZERO_DECISION_FATIGUE</span>
-            </h2>
-          </div>
-          <span className="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-            // SALDO KAS REAL: {formatRupiah(totalLiquid)}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-1">
-            <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest block">01 // POSISI MOMENTUM</span>
-            <span className="text-sm font-bold text-emerald-300 block">60% Target September Tembus!</span>
-            <p className="text-[11px] text-zinc-400 leading-snug">Kas aman di Rp9,89M (Surplus +Rp5,89M di atas Floor). Bebas utang deliverable.</p>
+      <div className="figma-shell border-l-4 border-l-[#305d46]">
+        <div className="figma-core p-6 sm:p-7 space-y-4 bg-[#fffdf5]">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3.5">
+            <div className="flex items-center gap-2.5">
+              <span className="w-3 h-3 rounded-full bg-[#305d46] animate-pulse" />
+              <h2 className="text-base sm:text-lg font-extrabold text-[#252520] tracking-tight flex items-center gap-2 font-sans">
+                <span>NEXT SHOULD BE GO — ENGINE KEPUTUSAN STRATEGIS</span>
+                <span className="dev-tag-emerald text-[9px]">ZERO_DECISION_FATIGUE</span>
+              </h2>
+            </div>
+            <span className="text-xs font-mono text-[#305d46] bg-[#e2ecdc] px-3 py-1 rounded-full border border-[#305d46]/30 font-bold">
+              SALDO KAS REAL: {formatRupiah(totalLiquid)}
+            </span>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-1">
-            <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block">02 // SISA TARGET SEPTEMBER</span>
-            <span className="text-sm font-bold text-amber-300 block">Sisa Rp4.000.000 OTW</span>
-            <p className="text-[11px] text-zinc-400 leading-snug">Terkunci di Termin 2 (Rp2M) & Termin 3 (Rp2M) project LMS Umi Elly.</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="p-3.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
+              <span className="text-[10px] font-mono text-[#59594f] uppercase tracking-widest block font-bold">01 // POSISI MOMENTUM</span>
+              <span className="text-sm font-bold text-[#305d46] block">65% Target September Tembus!</span>
+              <p className="text-[11px] text-[#59594f] leading-snug">Kas aman di Rp9,89M (Surplus +Rp5,89M di atas Floor). Bebas utang deliverable.</p>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
+              <span className="text-[10px] font-mono text-[#925f18] uppercase tracking-widest block font-bold">02 // SISA TARGET SEPTEMBER</span>
+              <span className="text-sm font-bold text-[#925f18] block">Sisa Rp3.500.000 OTW</span>
+              <p className="text-[11px] text-[#59594f] leading-snug">Terkunci di Termin 2 (Rp2M) & Termin 3 (Rp2M) project LMS Umi Elly.</p>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
+              <span className="text-[10px] font-mono text-[#2b5675] uppercase tracking-widest block font-bold">03 // STRATEGI GOLDEN MOVE</span>
+              <span className="text-sm font-bold text-[#252520] block">Sprint Cepat → Cairkan Sisa</span>
+              <p className="text-[11px] text-[#59594f] leading-snug">Kerjakan hal dengan dampak cash & mental clarity tertinggi sekarang.</p>
+            </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-black/60 border border-white/[0.06] space-y-1">
-            <span className="text-[10px] font-mono text-blue-400 uppercase tracking-widest block">03 // STRATEGI GOLDEN MOVE</span>
-            <span className="text-sm font-bold text-white block">Sprint Cepat ➔ Cairkan Sisa</span>
-            <p className="text-[11px] text-zinc-400 leading-snug">Kerjakan hal dengan dampak cash & mental clarity tertinggi sekarang.</p>
-          </div>
-        </div>
-
-        {/* The Golden Directive Rule */}
-        <div className="p-3.5 rounded-xl bg-[#090d0b] border border-emerald-500/30 text-xs font-mono text-zinc-200 flex items-start gap-2.5">
-          <Compass className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-          <div>
-            <span className="text-emerald-400 font-bold">ATURAN UTAMA SAAT INI:</span> "Jangan buka kerjaan baru yang gak jelas! Fokus tuntaskan <strong>Modul 1 Umi Elly</strong> (buka kunci Rp2M) & serahkan <strong>DreamMecca</strong> (otak 100% plong)."
+          {/* The Golden Directive Rule */}
+          <div className="p-3.5 rounded-xl bg-[#e3e6c7]/40 border border-[#ded7c8] text-xs font-mono text-[#252520] flex items-start gap-2.5">
+            <Compass className="w-4 h-4 text-[#305d46] shrink-0 mt-0.5" />
+            <div>
+              <span className="text-[#305d46] font-bold">ATURAN UTAMA SAAT INI:</span> "Jangan buka kerjaan baru yang belum jelas! Fokus tuntaskan <strong>Modul 1 Umi Elly</strong> (buka kunci Termin 2 +Rp2M) & serahkan <strong>DreamMecca</strong> (otak 100% plong)."
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 2. ENERGY & CONTEXT SELECTOR (Filter Apa yang Mau Dikerjakan) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0a0a0f] p-3 rounded-2xl border border-white/[0.08]">
+      {/* 2. ENERGY & CONTEXT SELECTOR */}
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#fffdf5] p-3.5 rounded-2xl border border-[#ded7c8] shadow-sm">
         <div className="flex items-center gap-2">
-          <Flame className="w-4 h-4 text-amber-400" />
-          <span className="text-xs font-bold text-white font-mono">Pilih Kondisi Energi Lo Sekarang:</span>
+          <Flame className="w-4 h-4 text-[#925f18]" />
+          <span className="text-xs font-bold text-[#252520] font-mono">Pilih Kondisi Energi Lo Sekarang:</span>
         </div>
 
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar font-mono text-xs">
           {[
-            { id: 'all', label: '🌟 Semua Prioritas' },
-            { id: 'high', label: '⚡ High Energy (Coding Berat)' },
-            { id: 'medium', label: '☕ Medium Flow (Polish & Handover)' },
-            { id: 'creative', label: '💡 Strategic / BizDev (Scale SaaS)' },
+            { id: 'all', label: 'Semua Prioritas' },
+            { id: 'high', label: 'High Energy (Coding Berat)' },
+            { id: 'medium', label: 'Medium Flow (Polish & Handover)' },
+            { id: 'creative', label: 'Strategic / BizDev (Scale SaaS)' },
           ].map(btn => (
             <button
               key={btn.id}
               onClick={() => { soundManager.playClick(); setEnergyFilter(btn.id as any); }}
-              className={`px-3 py-1.5 rounded-xl transition-all whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-xl transition-all whitespace-nowrap ${
                 energyFilter === btn.id
-                  ? 'bg-white text-zinc-950 font-bold shadow-md'
-                  : 'text-zinc-400 hover:text-white hover:bg-white/[0.05]'
+                  ? 'bg-[#292a24] text-[#fffdf5] font-bold shadow-sm'
+                  : 'text-[#59594f] hover:text-[#252520] hover:bg-[#eae5d8]'
               }`}
             >
               {btn.label}
@@ -253,10 +252,10 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       {/* 3. THE 3 GOLDEN STRATEGIC MOVES MATRIX */}
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
-          <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider font-semibold">
+          <span className="text-xs font-mono text-[#59594f] uppercase tracking-wider font-semibold">
             // DAFTAR LANGKAH PALING BERDAMPAK (URUTAN PRIORITAS):
           </span>
-          <span className="text-[11px] font-mono text-emerald-400">
+          <span className="text-[11px] font-mono text-[#305d46] font-bold">
             {filteredMoves.length} Rekomendasi Terpilih
           </span>
         </div>
@@ -270,57 +269,53 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
             return (
               <div 
                 key={move.id}
-                className={`dev-card overflow-hidden transition-all duration-300 border ${
-                  move.rank === 1 
-                    ? 'border-emerald-500/40 ring-1 ring-emerald-500/20 bg-gradient-to-b from-[#0e1612] to-[#07070b]' 
-                    : move.rank === 2
-                    ? 'border-blue-500/30 bg-gradient-to-b from-[#0c1218] to-[#07070b]'
-                    : 'border-white/[0.1] bg-[#07070b]'
+                className={`figma-shell transition-all duration-300 ${
+                  move.rank === 1 ? 'border-[#305d46]/40 shadow-md' : 'shadow-sm'
                 }`}
               >
-                {/* Card Header & Summary */}
-                <div className="p-5 sm:p-6 space-y-3">
+                <div className="figma-core p-5 sm:p-6 space-y-3 bg-[#fffdf5]">
+                  {/* Card Header & Summary */}
                   <div className="flex flex-wrap items-center justify-between gap-2.5">
                     <div className="flex items-center gap-2">
                       <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider ${move.badgeColor}`}>
                         {move.badge}
                       </span>
-                      <span className="text-xs font-mono text-zinc-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-zinc-400" />
+                      <span className="text-xs font-mono text-[#59594f] flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-[#59594f]" />
                         {move.timeboxMinutes} Menit Timebox
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                      <span className="text-xs font-mono font-bold text-[#305d46] bg-[#e2ecdc] px-2.5 py-1 rounded-lg border border-[#305d46]/30">
                         {move.cashImpactText}
                       </span>
                       <button
                         onClick={() => handleLaunchMoveFocus(move)}
-                        className="px-4 py-1.5 dev-btn-primary text-xs font-bold font-mono flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+                        className="px-4 py-1.5 dev-btn-primary text-xs font-bold font-mono flex items-center gap-1.5 shadow-sm active:scale-95 transition-all"
                       >
                         <Play className="w-3 h-3 fill-current" />
-                        <span>Kunci Focus Lock →</span>
+                        <span>Kunci Focus Lock</span>
                       </button>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-base sm:text-lg font-extrabold text-white tracking-tight font-sans">
+                    <h3 className="text-base sm:text-lg font-extrabold text-[#252520] tracking-tight font-sans">
                       #{move.rank} — {move.title}
                     </h3>
-                    <p className="text-xs text-zinc-300 mt-1 font-medium leading-relaxed">
+                    <p className="text-xs text-[#59594f] mt-1 font-medium leading-relaxed">
                       {move.subtitle}
                     </p>
                   </div>
 
-                  <p className="text-xs text-zinc-400 leading-relaxed">
+                  <p className="text-xs text-[#59594f] leading-relaxed">
                     {move.description}
                   </p>
 
-                  <div className="pt-2 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-                    <div className="text-zinc-400">
-                      Progress Tindakan: <strong className={completedCount > 0 ? "text-emerald-400 font-bold" : "text-zinc-300"}>{completedCount}/{totalActionCount} Selesai</strong>
+                  <div className="pt-2 border-t border-[#ded7c8] flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+                    <div className="text-[#59594f]">
+                      Progress Tindakan: <strong className={completedCount > 0 ? "text-[#305d46] font-bold" : "text-[#252520]"}>{completedCount}/{totalActionCount} Selesai</strong>
                     </div>
 
                     <button
@@ -328,74 +323,75 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
                         soundManager.playClick();
                         setExpandedMoveId(isExpanded ? '' : move.id);
                       }}
-                      className="text-xs text-zinc-400 hover:text-white flex items-center gap-1 underline underline-offset-4"
+                      className="text-xs text-[#59594f] hover:text-[#252520] flex items-center gap-1 underline underline-offset-4"
                     >
                       <span>{isExpanded ? 'Tutup Detail Rencana' : 'Buka Checklist & Roadmap Eksekusi'}</span>
                       <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                     </button>
                   </div>
-                </div>
 
-                {/* Expanded Action Checklist & Details */}
-                {isExpanded && (
-                  <div className="px-5 sm:px-6 pb-6 pt-2 border-t border-white/[0.06] bg-black/40 space-y-4 animate-fade-in">
-                    <div className="space-y-2">
-                      <span className="text-[11px] font-mono text-zinc-400 uppercase font-bold tracking-wider block">
-                        📋 Checklist Eksekusi Micro-Step (Tandai Saat Selesai):
-                      </span>
+                  {/* Expanded Action Checklist & Details */}
+                  {isExpanded && (
+                    <div className="pt-3 border-t border-[#ded7c8] space-y-4 animate-fade-in">
                       <div className="space-y-2">
-                        {move.actionChecklist.map((act) => {
-                          const isDone = !!completedActions[`${move.id}_${act.id}`];
-                          return (
-                            <button
-                              key={act.id}
-                              onClick={() => toggleAction(move.id, act.id)}
-                              className={`w-full p-3 rounded-xl border text-left transition-all flex items-start gap-3 ${
-                                isDone 
-                                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-200' 
-                                  : 'bg-[#060609] border-white/[0.06] hover:border-white/20 text-zinc-300'
-                              }`}
-                            >
-                              <div className="mt-0.5 shrink-0">
-                                {isDone ? (
-                                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                                ) : (
-                                  <Circle className="w-4 h-4 text-zinc-500" />
-                                )}
-                              </div>
-                              <span className={`text-xs leading-relaxed ${isDone ? 'line-through text-zinc-400' : ''}`}>
-                                {act.text}
-                              </span>
-                            </button>
-                          );
-                        })}
+                        <span className="text-[11px] font-mono text-[#59594f] uppercase font-bold tracking-wider block">
+                          Checklist Eksekusi Micro-Step (Tandai Saat Selesai):
+                        </span>
+                        <div className="space-y-2">
+                          {move.actionChecklist.map((act) => {
+                            const isDone = !!completedActions[`${move.id}_${act.id}`];
+                            return (
+                              <button
+                                key={act.id}
+                                onClick={() => toggleAction(move.id, act.id)}
+                                className={`w-full p-3 rounded-xl border text-left transition-all flex items-start gap-3 ${
+                                  isDone 
+                                    ? 'bg-[#e2ecdc] border-[#305d46]/30 text-[#305d46]' 
+                                    : 'bg-[#faf9f3] border-[#ded7c8] hover:border-[#928876] text-[#252520]'
+                                }`}
+                              >
+                                <div className="mt-0.5 shrink-0">
+                                  {isDone ? (
+                                    <CheckCircle2 className="w-4 h-4 text-[#305d46]" />
+                                  ) : (
+                                    <Circle className="w-4 h-4 text-[#928876]" />
+                                  )}
+                                </div>
+                                <span className={`text-xs leading-relaxed ${isDone ? 'line-through text-[#59594f]' : ''}`}>
+                                  {act.text}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Financial Unlock Impact Simulation Box */}
+                      <div className="p-3.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-xs font-mono space-y-1">
+                        <span className="text-[#305d46] font-bold block">// EFEK KE SALDO REKENING:</span>
+                        <p className="text-[#59594f]">{move.financialUnlockNote}</p>
+                      </div>
+
+                      <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                        <button
+                          onClick={() => onSelectTab('lanes')}
+                          className="text-xs text-[#59594f] hover:text-[#252520] font-mono flex items-center gap-1"
+                        >
+                          <span>Lihat detail di Board Kanban</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </button>
+
+                        <button
+                          onClick={() => handleLaunchMoveFocus(move)}
+                          className="px-4 py-2 dev-btn-primary text-xs font-bold font-mono flex items-center gap-1.5 shadow-sm"
+                        >
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>Mulai Eksekusi {move.timeboxMinutes}m Sekarang</span>
+                        </button>
                       </div>
                     </div>
-
-                    {/* Financial Unlock Impact Simulation Box */}
-                    <div className="p-3.5 rounded-xl bg-[#090d0b] border border-emerald-500/30 text-xs font-mono space-y-1">
-                      <span className="text-emerald-400 font-bold block">// EFEK KE SALDO REKENING:</span>
-                      <p className="text-zinc-300">{move.financialUnlockNote}</p>
-                    </div>
-
-                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                      <button
-                        onClick={() => onSelectTab('lanes')}
-                        className="text-xs text-zinc-400 hover:text-white font-mono flex items-center gap-1"
-                      >
-                        <span>Lihat detail di Board Kanban →</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleLaunchMoveFocus(move)}
-                        className="px-4 py-2 dev-btn-primary text-xs font-bold font-mono flex items-center gap-1.5 shadow-lg"
-                      >
-                        <Play className="w-3 h-3 fill-current" />
-                        <span>Mulai Eksekusi {move.timeboxMinutes}m Sekarang</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             );
           })}
@@ -403,87 +399,89 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       </div>
 
       {/* 4. SEPTEMBER 2026 4-PHASE BLUEPRINT TIMELINE */}
-      <div className="dev-card p-5 sm:p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-          <div>
-            <h3 className="text-sm font-bold text-white flex items-center gap-2 font-sans">
-              <span>🗺️ Peta Roadmap Eksekusi Bulan September 2026</span>
-              <span className="dev-tag text-[9px]">TIMELINE_EXECUTION</span>
-            </h3>
-            <p className="text-xs text-zinc-400 font-mono">// 4 Fase strategis untuk mengunci target +Rp10 Juta dan scaling SaaS</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
-          
-          {/* Phase 1 */}
-          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="dev-tag-emerald text-[9px]">FASE 1 // 1–3 SEP</span>
-              <span className="text-emerald-400 font-bold">100% TUNTAS ✓</span>
+      <div className="figma-shell">
+        <div className="figma-core p-5 sm:p-6 space-y-4 bg-[#fffdf5]">
+          <div className="flex items-center justify-between border-b border-[#ded7c8] pb-3">
+            <div>
+              <h3 className="text-sm font-bold text-[#252520] flex items-center gap-2 font-sans">
+                <span>Peta Roadmap Eksekusi Bulan September 2026</span>
+                <span className="dev-tag text-[9px]">TIMELINE_EXECUTION</span>
+              </h3>
+              <p className="text-xs text-[#59594f] font-mono">// 4 Fase strategis untuk mengunci target +Rp10 Juta dan scaling SaaS</p>
             </div>
-            <h5 className="font-bold text-white font-sans text-xs">Cash Defense & Kickoff</h5>
-            <p className="text-[11px] text-zinc-300 font-sans leading-snug">
-              • Barber lunas Rp6M ✓<br />
-              • DP Umi Elly Rp3M masuk ✓<br />
-              • Saldo aman Rp9,89M ✓
-            </p>
           </div>
 
-          {/* Phase 2 */}
-          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/40 space-y-2 ring-1 ring-amber-500/20">
-            <div className="flex justify-between items-center">
-              <span className="dev-tag text-[9px] bg-amber-500/20 text-amber-300 border-amber-500/30">FASE 2 // 4–10 SEP</span>
-              <span className="text-amber-400 font-bold animate-pulse">SEDANG AKTIF ⚡</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+            
+            {/* Phase 1 */}
+            <div className="p-4 rounded-xl bg-[#e2ecdc] border border-[#305d46]/30 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="dev-tag-emerald text-[9px]">FASE 1 // 1-3 SEP</span>
+                <span className="text-[#305d46] font-bold">100% TUNTAS</span>
+              </div>
+              <h5 className="font-bold text-[#252520] font-sans text-xs">Cash Defense & Kickoff</h5>
+              <p className="text-[11px] text-[#59594f] font-sans leading-snug">
+                • Barber lunas Rp6M<br />
+                • DP Umi Elly Rp3M masuk<br />
+                • Saldo aman Rp9,89M
+              </p>
             </div>
-            <h5 className="font-bold text-white font-sans text-xs">Sprint Modul 1 & Handover</h5>
-            <p className="text-[11px] text-zinc-300 font-sans leading-snug">
-              • Modul 1 LMS Umi Elly<br />
-              • Handover DreamMecca<br />
-              • Siap tagih Termin 2 (+Rp2M)
-            </p>
-          </div>
 
-          {/* Phase 3 */}
-          <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="dev-tag text-[9px]">FASE 3 // 11–20 SEP</span>
-              <span className="text-zinc-400 font-bold">NEXT HARVEST</span>
+            {/* Phase 2 */}
+            <div className="p-4 rounded-xl bg-[#fdf3d8] border border-[#b87e2b]/40 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="dev-tag-amber text-[9px]">FASE 2 // 4-10 SEP</span>
+                <span className="text-[#925f18] font-bold animate-pulse">SEDANG AKTIF</span>
+              </div>
+              <h5 className="font-bold text-[#252520] font-sans text-xs">Sprint Modul 1 & Handover</h5>
+              <p className="text-[11px] text-[#59594f] font-sans leading-snug">
+                • Modul 1 LMS Umi Elly<br />
+                • Handover DreamMecca<br />
+                • Siap tagih Termin 2 (+Rp2M)
+              </p>
             </div>
-            <h5 className="font-bold text-white font-sans text-xs">Cairkan Termin 2 & KAEL</h5>
-            <p className="text-[11px] text-zinc-400 font-sans leading-snug">
-              • Masuk Termin 2 (+Rp2M)<br />
-              • Demo KAEL ke 3 outlet<br />
-              • Kas tembus Rp11M+
-            </p>
-          </div>
 
-          {/* Phase 4 */}
-          <div className="p-4 rounded-xl bg-white/[0.04] border border-white/10 space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="dev-tag text-[9px]">FASE 4 // 21–30 SEP</span>
-              <span className="text-zinc-400 font-bold">SCALE & MRR</span>
+            {/* Phase 3 */}
+            <div className="p-4 rounded-xl bg-[#e2edf9] border border-[#3c6b8c]/30 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="dev-tag-blue text-[9px]">FASE 3 // 11-20 SEP</span>
+                <span className="text-[#2b5675] font-bold">NEXT HARVEST</span>
+              </div>
+              <h5 className="font-bold text-[#252520] font-sans text-xs">Cairkan Termin 2 & KAEL</h5>
+              <p className="text-[11px] text-[#59594f] font-sans leading-snug">
+                • Masuk Termin 2 (+Rp2M)<br />
+                • Demo KAEL ke 3 outlet<br />
+                • Kas tembus Rp11M+
+              </p>
             </div>
-            <h5 className="font-bold text-white font-sans text-xs">Termin 3 & Growth Mode</h5>
-            <p className="text-[11px] text-zinc-400 font-sans leading-snug">
-              • Masuk Termin 3 (+Rp2M)<br />
-              • Pilot pertama KAEL jalan<br />
-              • Kas surplus +Rp5,5M bersih
-            </p>
-          </div>
 
+            {/* Phase 4 */}
+            <div className="p-4 rounded-xl bg-[#f0e6f9] border border-[#4e3a68]/30 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="dev-tag text-[9px] bg-[#f0e6f9] text-[#4e3a68] border-[#4e3a68]/30">FASE 4 // 21-30 SEP</span>
+                <span className="text-[#4e3a68] font-bold">SCALE & MRR</span>
+              </div>
+              <h5 className="font-bold text-[#252520] font-sans text-xs">Termin 3 & Growth Mode</h5>
+              <p className="text-[11px] text-[#59594f] font-sans leading-snug">
+                • Masuk Termin 3 (+Rp2M)<br />
+                • Pilot pertama KAEL jalan<br />
+                • Kas surplus +Rp5,5M bersih
+              </p>
+            </div>
+
+          </div>
         </div>
       </div>
 
       {/* 5. INSTANT LAUNCH TO FOCUS STUDIO */}
-      <div className="p-5 rounded-2xl bg-[#09090d] border border-white/10 flex flex-wrap items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl bg-[#fffdf5] border border-[#ded7c8] shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#292a24] text-[#fffdf5] flex items-center justify-center">
             <Rocket className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-white">Siap Mulai Eksekusi Sekarang?</h4>
-            <p className="text-xs text-zinc-400">Pilih salah satu move di atas, lalu kunci layar dan fokus coding tanpa distraksi.</p>
+            <h4 className="text-sm font-bold text-[#252520]">Siap Mulai Eksekusi Sekarang?</h4>
+            <p className="text-xs text-[#59594f]">Pilih salah satu move di atas, lalu kunci layar dan fokus coding tanpa distraksi.</p>
           </div>
         </div>
 
@@ -492,7 +490,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
             soundManager.playClick();
             handleLaunchMoveFocus(strategicMoves[0]);
           }}
-          className="px-5 py-2.5 dev-btn-primary text-xs font-bold font-mono flex items-center gap-2 shadow-lg"
+          className="px-5 py-2.5 dev-btn-primary text-xs font-bold font-mono flex items-center gap-2 shadow-sm"
         >
           <span>Mulai Move #1: LMS Umi Elly (90m)</span>
           <ArrowRight className="w-4 h-4" />

@@ -162,55 +162,53 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const sidebarContent = (
-    <div className="h-full flex flex-col justify-between bg-[#000000] border-r border-white/[0.12] p-4 text-zinc-300 select-none">
+    <div className="h-full flex flex-col justify-between bg-[#faf9f3] border-r border-[#dedbd0] p-4 text-[#252520] select-none font-sans">
       
       {/* Top Brand Header */}
       <div className="space-y-4">
         
-        {/* Vercel Workspace Brand */}
+        {/* Workspace Brand */}
         <div className="flex items-center justify-between px-1">
           <div className="flex items-center gap-3">
-            {/* Vercel Iconic Delta Triangle */}
-            <div className="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center font-bold shadow-md">
-              <svg width="15" height="15" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="currentColor"/>
-              </svg>
+            {/* Minimalist Typographic Avatar */}
+            <div className="w-8 h-8 rounded-xl bg-[#292a24] text-[#fffdf5] flex items-center justify-center font-bold text-sm shadow-sm font-mono">
+              D
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-white tracking-tight text-sm">DARU WORK OS</span>
-                <span className="text-[10px] font-mono bg-white/[0.08] px-1.5 py-0.2 rounded text-zinc-400 border border-white/10">v2.7</span>
+                <span className="font-bold text-[#24241f] tracking-tight text-sm">DARU WORK OS</span>
+                <span className="text-[10px] font-mono bg-[#eae5d8] px-1.5 py-0.2 rounded text-[#59594f] border border-[#ded7c8]">v2.7</span>
               </div>
-              <p className="text-[11px] text-zinc-400 font-mono">Geist Workstation</p>
+              <p className="text-[11px] text-[#666256] font-mono">Agency Workstation</p>
             </div>
           </div>
 
           {/* Close button on mobile */}
           <button
             onClick={() => setIsMobileOpen(false)}
-            className="lg:hidden p-1.5 rounded-lg text-zinc-400 hover:text-white bg-white/5"
+            className="lg:hidden p-1.5 rounded-lg text-[#59594f] hover:text-[#24241f] bg-[#eae5d8]"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Live Active Triad Status Badge */}
-        <div className="p-2.5 rounded-lg bg-[#0a0a0a] border border-white/[0.08] space-y-1">
-          <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
-            <span className="flex items-center gap-1.5 text-[#0070F3]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#0070F3] animate-pulse" />
+        {/* Live Active Status Badge */}
+        <div className="p-2.5 rounded-xl bg-[#fffdf5] border border-[#ded7c8] space-y-1 shadow-sm">
+          <div className="flex items-center justify-between text-[10px] font-mono text-[#666256]">
+            <span className="flex items-center gap-1.5 text-[#305d46] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#305d46] animate-pulse" />
               ACTIVE SPRINT
             </span>
             <span>{time}</span>
           </div>
-          <p className="text-[11px] text-zinc-200 font-medium truncate">
-            Zalvice • Barber POS • KAEL Core
+          <p className="text-[11px] text-[#24241f] font-medium truncate">
+            Umi Elly LMS • DreamMecca • KAEL
           </p>
         </div>
 
         {/* Navigation Menu */}
         <div className="space-y-1 pt-1">
-          <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider px-2 block mb-1.5">
+          <span className="text-[10px] font-mono text-[#666256] uppercase tracking-wider px-2 block mb-1.5 font-semibold">
             NAVIGATION
           </span>
 
@@ -226,14 +224,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   setActiveTab(item.id);
                   setIsMobileOpen(false);
                 }}
-                className={`w-full flex items-center justify-between p-2.5 rounded-lg text-xs transition-all ${
+                className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs transition-all ${
                   isActive
-                    ? 'bg-white text-black font-semibold shadow-[0_0_0_1px_rgba(255,255,255,0.2)]'
-                    : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+                    ? 'bg-[#292a24] text-[#fffdf5] font-semibold shadow-sm'
+                    : 'text-[#514f45] hover:text-[#24241f] hover:bg-[#eae5d8]'
                 }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <Icon className={`w-4 h-4 stroke-[1.8] ${isActive ? 'text-black' : 'text-zinc-400'}`} />
+                  <Icon className={`w-4 h-4 stroke-[1.8] ${isActive ? 'text-[#fffdf5]' : 'text-[#666256]'}`} />
                   <div className="text-left truncate">
                     <span className="block truncate">{item.label}</span>
                   </div>
@@ -241,7 +239,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {item.badge && (
                   <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full shrink-0 ${
-                    isActive ? 'bg-zinc-200 text-black font-bold' : item.badgeColor
+                    isActive ? 'bg-[#fffdf5] text-[#292a24] font-bold' : item.badgeColor
                   }`}>
                     {item.badge}
                   </span>
@@ -252,8 +250,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Quick Action Buttons */}
-        <div className="space-y-1.5 pt-2 border-t border-white/[0.08]">
-          <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider px-2 block mb-1">
+        <div className="space-y-1.5 pt-2 border-t border-[#ded7c8]">
+          <span className="text-[10px] font-mono text-[#666256] uppercase tracking-wider px-2 block mb-1 font-semibold">
             QUICK ACTIONS
           </span>
 
@@ -263,13 +261,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               if (onOpenInvoice) onOpenInvoice();
               setIsMobileOpen(false);
             }}
-            className="w-full flex items-center justify-between p-2 rounded-lg text-xs text-blue-300 bg-[#0070F3]/10 hover:bg-[#0070F3]/20 border border-[#0070F3]/25 transition-all font-mono"
+            className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-[#252520] bg-[#fffdf5] hover:bg-[#eae5d8] border border-[#ded7c8] transition-all font-mono shadow-sm"
           >
             <div className="flex items-center gap-2">
-              <Receipt className="w-3.5 h-3.5 text-[#0070F3]" />
+              <Receipt className="w-3.5 h-3.5 text-[#305d46]" />
               <span>+ Buat Invoice</span>
             </div>
-            <span className="text-[10px] text-[#0070F3]/80">⌘I</span>
+            <span className="text-[10px] text-[#666256]">⌘I</span>
           </button>
 
           <button
@@ -278,7 +276,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onOpenFinanceInput();
               setIsMobileOpen(false);
             }}
-            className="w-full flex items-center gap-2 p-2 rounded-lg text-xs text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 transition-all font-mono"
+            className="w-full flex items-center gap-2 p-2 rounded-xl text-xs text-[#fffdf5] bg-[#292a24] hover:bg-[#3c3e34] transition-all font-mono shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>+ Catat Kas / Bukti</span>
@@ -290,13 +288,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onOpenFollowUp();
               setIsMobileOpen(false);
             }}
-            className="w-full flex items-center justify-between p-2 rounded-lg text-xs text-zinc-300 bg-[#0a0a0a] hover:bg-[#111111] border border-white/[0.08] hover:border-white/20 transition-all font-mono"
+            className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-[#252520] bg-[#fffdf5] hover:bg-[#eae5d8] border border-[#ded7c8] transition-all font-mono shadow-sm"
           >
             <div className="flex items-center gap-2">
-              <MessageSquare className="w-3.5 h-3.5 text-zinc-400" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#666256]" />
               <span>Copas Pesan WA</span>
             </div>
-            <span className="text-[10px] text-zinc-400">⌘F</span>
+            <span className="text-[10px] text-[#666256]">⌘F</span>
           </button>
 
           <button
@@ -305,20 +303,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onOpenCopilot();
               setIsMobileOpen(false);
             }}
-            className="w-full flex items-center justify-between p-2 rounded-lg text-xs text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/20 transition-all font-mono"
+            className="w-full flex items-center justify-between p-2 rounded-xl text-xs text-[#252520] bg-[#fffdf5] hover:bg-[#eae5d8] border border-[#ded7c8] transition-all font-mono shadow-sm"
           >
             <div className="flex items-center gap-2">
-              <Bot className="w-3.5 h-3.5 text-purple-400" />
+              <Bot className="w-3.5 h-3.5 text-[#584272]" />
               <span>Partner Copilot</span>
             </div>
-            <span className="text-[10px] text-purple-400/80">⌘K</span>
+            <span className="text-[10px] text-[#666256]">⌘K</span>
           </button>
         </div>
 
       </div>
 
       {/* Bottom Financial Health Widget & Sync Status */}
-      <div className="space-y-3 pt-3 border-t border-white/[0.08]">
+      <div className="space-y-3 pt-3 border-t border-[#ded7c8]">
         
         {/* Cash Health Miniature Card */}
         <div 
@@ -327,35 +325,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
             setActiveTab('money');
             setIsMobileOpen(false);
           }}
-          className={`p-3 rounded-lg bg-[#0a0a0a] border ${isRed ? 'border-rose-500/30 hover:border-rose-500/60' : isGreen ? 'border-emerald-500/30 hover:border-emerald-500/60' : 'border-amber-500/30 hover:border-amber-500/60'} cursor-pointer transition-all space-y-1`}
+          className={`p-3 rounded-xl bg-[#fffdf5] border ${isRed ? 'border-[#814637]' : isGreen ? 'border-[#305d46]' : 'border-[#b87e2b]'} cursor-pointer hover:bg-[#ffffff] shadow-sm transition-all space-y-1`}
         >
           <div className="flex items-center justify-between text-[10px] font-mono">
-            <span className={`flex items-center gap-1.5 font-bold ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${isRed ? 'bg-rose-500' : isGreen ? 'bg-emerald-400' : 'bg-amber-400'} animate-pulse`} />
+            <span className={`flex items-center gap-1.5 font-bold ${isRed ? 'text-[#814637]' : isGreen ? 'text-[#305d46]' : 'text-[#b87e2b]'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${isRed ? 'bg-[#814637]' : isGreen ? 'bg-[#305d46]' : 'bg-[#b87e2b]'} animate-pulse`} />
               {isRed ? 'CASH DEFENSE' : isGreen ? 'GROWTH ZONE' : 'STAGE 2 BUFFER'}
             </span>
-            <span className="text-zinc-400">±{report.runwayDays} Hari</span>
+            <span className="text-[#666256]">±{report.runwayDays} Hari</span>
           </div>
 
           <div className="flex items-baseline justify-between">
-            <span className="text-base font-extrabold text-white font-mono">
+            <span className="text-base font-extrabold text-[#24241f] font-mono">
               {formatRupiah(report.totalLiquidBalance)}
             </span>
-            <span className="text-[10px] text-zinc-400 font-mono">
+            <span className="text-[10px] text-[#666256] font-mono">
               Burn: ~Rp4,5M
             </span>
           </div>
         </div>
 
         {/* 2-Way Obsidian Live Sync Indicator */}
-        <div className="p-2 rounded-lg bg-[#0a0a0a] border border-white/[0.06] flex items-center justify-between text-[10px] font-mono">
+        <div className="p-2 rounded-xl bg-[#fffdf5] border border-[#ded7c8] flex items-center justify-between text-[10px] font-mono">
           <div className="flex items-center gap-1.5">
             <span className={`w-2 h-2 rounded-full ${
               syncStatus.isOnline 
-                ? (syncStatus.vaultConnected ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : 'bg-amber-400') 
-                : 'bg-zinc-600'
+                ? (syncStatus.vaultConnected ? 'bg-[#305d46]' : 'bg-[#b87e2b]') 
+                : 'bg-[#666256]'
             }`} />
-            <span className="text-zinc-300">
+            <span className="text-[#59594f]">
               {syncStatus.isOnline 
                 ? (syncStatus.vaultConnected ? 'Obsidian Sync: OK' : 'API OK (Vault OTW)') 
                 : 'Local Offline'}
@@ -365,29 +363,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => apiService.checkHealth()}
             title="Manual Obsidian Sync"
-            className="text-zinc-500 hover:text-zinc-200 transition-colors"
+            className="text-[#666256] hover:text-[#24241f] transition-colors"
           >
             <RefreshCw className="w-3 h-3" />
           </button>
         </div>
 
         {/* Bottom Utility Bar (Audio Toggle & Export) */}
-        <div className="flex items-center justify-between px-1 text-xs text-zinc-400 font-mono">
+        <div className="flex items-center justify-between px-1 text-xs text-[#666256] font-mono">
           <button
             onClick={() => {
               const muted = soundManager.toggleMute();
               setIsSoundMuted(muted);
             }}
-            className="flex items-center gap-1.5 hover:text-zinc-200 transition-colors p-1"
+            className="flex items-center gap-1.5 hover:text-[#24241f] transition-colors p-1"
           >
             {isSoundMuted ? (
               <>
-                <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+                <VolumeX className="w-3.5 h-3.5 text-[#814637]" />
                 <span className="text-[10px]">Muted</span>
               </>
             ) : (
               <>
-                <Volume2 className="w-3.5 h-3.5 text-zinc-400" />
+                <Volume2 className="w-3.5 h-3.5 text-[#666256]" />
                 <span className="text-[10px]">Sound</span>
               </>
             )}
@@ -399,7 +397,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onOpenExport();
               setIsMobileOpen(false);
             }}
-            className="flex items-center gap-1 hover:text-white transition-colors p-1 text-[10px]"
+            className="flex items-center gap-1 hover:text-[#24241f] transition-colors p-1 text-[10px]"
           >
             <Download className="w-3 h-3" />
             <span>Export</span>
@@ -414,24 +412,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       {/* Mobile Top App Bar */}
-      <div className="lg:hidden sticky top-0 z-40 bg-[#000000]/90 backdrop-blur-md border-b border-white/[0.12] p-3 flex items-center justify-between">
+      <div className="lg:hidden sticky top-0 z-40 bg-[#f1eddf]/95 backdrop-blur-md border-b border-[#ded7c8] p-3 flex items-center justify-between text-[#252520]">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsMobileOpen(true)}
-            className="p-2 rounded-lg bg-white/5 border border-white/10 text-zinc-300 hover:text-white"
+            className="p-2 rounded-xl bg-[#fffdf5] border border-[#ded7c8] text-[#252520]"
           >
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 76 65" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M37.5274 0L75.0548 65H0L37.5274 0Z" fill="white"/>
-            </svg>
-            <span className="font-bold text-white text-sm">DARU WORK OS</span>
+            <div className="w-6 h-6 rounded-lg bg-[#292a24] text-[#fffdf5] flex items-center justify-center font-bold text-xs font-mono">
+              D
+            </div>
+            <span className="font-bold text-[#24241f] text-sm">DARU WORK OS</span>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono font-bold text-white bg-white/10 px-2.5 py-1 rounded-full border border-white/10">
+          <span className="text-xs font-mono font-bold text-[#24241f] bg-[#fffdf5] px-2.5 py-1 rounded-full border border-[#ded7c8] shadow-sm">
             {formatRupiah(report.totalLiquidBalance)}
           </span>
         </div>
@@ -446,10 +444,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {isMobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 bg-[#292923]/60 backdrop-blur-sm"
             onClick={() => setIsMobileOpen(false)}
           />
-          <div className="relative w-72 h-full z-10 animate-slide-right">
+          <div className="relative w-72 max-w-[85vw] h-full z-10 shadow-2xl">
             {sidebarContent}
           </div>
         </div>

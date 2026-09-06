@@ -239,7 +239,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
         <div className="figma-core p-5 sm:p-6 space-y-4">
           
           {/* Top Header */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
             <div className="flex items-center gap-2">
               <span className={`w-2.5 h-2.5 rounded-full ${isRed ? 'bg-rose-500' : isGreen ? 'bg-emerald-400' : 'bg-amber-400'} animate-pulse`} />
               <span className={`text-xs font-mono font-bold uppercase ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'}`}>
@@ -249,7 +249,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     ? '🟢 GREEN MODE — GROWTH & EXPANSION' 
                     : '🟡 YELLOW MODE — RECOVERY STAGE 2 (SAFE BUFFER)'}
               </span>
-              <span className="text-xs text-zinc-400 font-mono">// as of {currentFullDateStr} (Live)</span>
+              <span className="text-xs text-[#59594f] font-mono">// as of {currentFullDateStr} (Live)</span>
             </div>
 
             <div className="flex items-center gap-2">
@@ -259,7 +259,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     soundManager.playClick();
                     onOpenFinanceInput();
                   }}
-                  className="px-3.5 py-1.5 dev-btn-primary text-xs font-bold flex items-center gap-1.5"
+                  className="px-3.5 py-1.5 dev-btn-primary text-xs font-bold flex items-center gap-1.5 shadow-sm"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>+ Catat Kas / Foto Bukti</span>
@@ -272,11 +272,11 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             
             {/* Metric 1: Total Saldo Likuid */}
-            <div className="p-4 rounded-2xl bg-[#060609] border border-white/[0.05] space-y-1">
-              <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest block">
+            <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
+              <span className="text-[10px] font-mono text-[#59594f] uppercase tracking-widest block">
                 01 // SALDO LIKUID TOTAL
               </span>
-              <span className="text-2xl sm:text-3xl font-extrabold text-white font-mono block">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[#252520] font-mono block">
                 {formatRupiah(report.totalLiquidBalance)}
               </span>
               <span className={`text-[11px] font-mono block ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-300'}`}>
@@ -289,27 +289,27 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
             </div>
 
             {/* Metric 2: Monthly Burn */}
-            <div className="p-4 rounded-2xl bg-[#060609] border border-white/[0.05] space-y-1">
+            <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
               <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block">
                 02 // REAL BURN RATE
               </span>
-              <span className="text-2xl sm:text-3xl font-extrabold text-white font-mono block">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[#252520] font-mono block">
                 ~{formatRupiah(report.estimatedRealBurn || 4500000)}
               </span>
-              <span className="text-[11px] font-mono text-zinc-400 block">
+              <span className="text-[11px] font-mono text-[#59594f] block">
                 Rp2,66M Wajib Tetap + ~Rp1,8M Fleksibel
               </span>
             </div>
 
             {/* Metric 3: Dynamic Runway */}
-            <div className="p-4 rounded-2xl bg-[#060609] border border-white/[0.05] space-y-1">
+            <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
               <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block">
                 03 // DEFENSE RUNWAY
               </span>
               <span className="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono block">
                 ±{calculatedRunwayDays} Hari
               </span>
-              <span className="text-[11px] font-mono text-zinc-400 block">
+              <span className="text-[11px] font-mono text-[#59594f] block">
                 ~{calculatedRunwayMonths} Bulan operasional aman
               </span>
             </div>
@@ -317,7 +317,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
           </div>
 
           {/* Golden Rule Callout */}
-          <div className="p-3 rounded-xl bg-[#060609] border border-white/[0.06] text-xs font-mono text-zinc-300">
+          <div className="p-3 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-xs font-mono text-[#59594f]">
             <span className={`${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'} font-bold`}>// STRATEGI BULAN {currentMonthName.toUpperCase()} {currentYear}:</span> "Belum masuk rekening = belum jadi uang. Target mutlak: <strong>Minimal +Rp10 Juta Masuk di Bulan {currentMonthName}</strong>."
           </div>
 
@@ -331,12 +331,12 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
         <div className="figma-core p-5 sm:p-6 bg-gradient-to-br from-[#101915] via-[#090d0b] to-[#060609] space-y-5">
           
           {/* Top Month Switcher Pills Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-zinc-400 font-semibold uppercase tracking-wider">
+              <span className="text-xs font-mono text-[#59594f] font-semibold uppercase tracking-wider">
                 Pilih Periode Bulan:
               </span>
-              <div className="flex items-center gap-1.5 bg-black/70 p-1 rounded-2xl border border-white/10 text-xs font-mono">
+              <div className="flex items-center gap-1.5 bg-black/70 p-1 rounded-2xl border border-[#ded7c8] text-xs font-mono">
                 <button
                   onClick={() => {
                     soundManager.playClick();
@@ -345,7 +345,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                   className={`px-3 py-1 rounded-xl transition-all flex items-center gap-1.5 ${
                     selectedMonthArchive === 'current'
                       ? 'bg-emerald-500 text-black font-bold shadow-md'
-                      : 'text-zinc-400 hover:text-white'
+                      : 'text-[#59594f] hover:text-[#252520]'
                   }`}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
@@ -362,7 +362,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     className={`px-3 py-1 rounded-xl transition-all ${
                       selectedMonthArchive === arch.id
                         ? 'bg-amber-500 text-black font-bold shadow-md'
-                        : 'text-zinc-400 hover:text-white'
+                        : 'text-[#59594f] hover:text-[#252520]'
                     }`}
                   >
                     <span>🏛️ {arch.monthName}</span>
@@ -374,7 +374,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     soundManager.playClick();
                     setActiveTab('archive');
                   }}
-                  className="px-2.5 py-1 rounded-xl text-zinc-400 hover:text-white hover:bg-white/10 transition-all text-[11px]"
+                  className="px-2.5 py-1 rounded-xl text-[#59594f] hover:text-[#252520] hover:bg-white/10 transition-all text-[11px]"
                 >
                   <span>📜 Semua Rekap →</span>
                 </button>
@@ -382,7 +382,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
             </div>
 
             {selectedMonthArchive === 'current' && (
-              <div className="flex items-center gap-1.5 bg-black/60 p-1 rounded-2xl border border-white/10 font-mono text-xs">
+              <div className="flex items-center gap-1.5 bg-[#eae5d8] p-1 rounded-2xl border border-[#ded7c8] font-mono text-xs">
                 {[
                   { val: 10000000, label: 'Rp10 Jt (Wajib)' },
                   { val: 15000000, label: 'Rp15 Jt (Growth)' },
@@ -397,7 +397,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     className={`px-2.5 py-1 rounded-xl transition-all text-xs ${
                       monthlyTarget === opt.val
                         ? 'bg-emerald-500 text-black font-bold shadow-md'
-                        : 'text-zinc-400 hover:text-white'
+                        : 'text-[#59594f] hover:text-[#252520]'
                     }`}
                   >
                     {opt.label}
@@ -415,12 +415,12 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <Target className="w-4 h-4 text-emerald-400 animate-pulse" />
-                    <h3 className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+                    <h3 className="text-base font-extrabold text-[#252520] tracking-tight flex items-center gap-2">
                       Target Pemasukan {currentMonthName} {currentYear}: <span className="text-emerald-400 font-mono">+{formatRupiah(monthlyTarget)} / Bulan</span>
                     </h3>
                     <span className="dev-tag-emerald text-[9px]">TARGET_{currentMonthName.toUpperCase()}</span>
                   </div>
-                  <p className="text-xs text-zinc-300">
+                  <p className="text-xs text-[#59594f]">
                     Pokoknya bulan <strong>{currentMonthName} {currentYear}</strong> minimal harus nambah <strong>{formatRupiah(monthlyTarget)}</strong> agar kas langsung surplus dan keluar dari zona bahaya!
                   </p>
                 </div>
@@ -430,9 +430,9 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
                 
                 {/* Progress Gauge */}
-                <div className="lg:col-span-2 p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
+                <div className="lg:col-span-2 p-4 rounded-2xl bg-[#eae5d8] border border-[#ded7c8] space-y-3">
                   <div className="flex justify-between items-center text-xs font-mono">
-                    <span className="text-zinc-300 font-semibold flex items-center gap-1.5">
+                    <span className="text-[#59594f] font-semibold flex items-center gap-1.5">
                       <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
                       Progress Pemasukan Bulan {currentMonthName}:
                     </span>
@@ -442,18 +442,18 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full h-3.5 rounded-full bg-[#12121a] border border-white/10 overflow-hidden relative">
+                  <div className="w-full h-3.5 rounded-full bg-[#faf9f3] border border-[#ded7c8] overflow-hidden relative">
                     <div 
                       className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-300 transition-all duration-700 shadow-glow-white"
                       style={{ width: `${targetProgressPercent}%` }}
                     />
                   </div>
 
-                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-zinc-400 pt-1 gap-2">
+                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-[#59594f] pt-1 gap-2">
                     <span>
                       Sisa target {currentMonthName}: <strong className="text-amber-300 font-bold">{formatRupiah(remainingTarget)}</strong>
                     </span>
-                    <span className="text-zinc-400">
+                    <span className="text-[#59594f]">
                       Hari ke-{dayOfMonth}/{totalDaysInMonth} ({daysRemaining} hari tersisa)
                     </span>
                     <span className="text-emerald-300">
@@ -463,14 +463,14 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                 </div>
 
                 {/* Net Surplus Card */}
-                <div className="p-4 rounded-2xl bg-black/50 border border-emerald-500/30 space-y-1.5">
+                <div className="p-4 rounded-2xl bg-[#eae5d8] border border-emerald-500/30 space-y-1.5">
                   <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
                     PROYEKSI SURPLUS BERSIH / BULAN
                   </span>
                   <span className="text-2xl font-extrabold text-emerald-300 font-mono block">
                     +{formatRupiah(netMonthlySurplus)}
                   </span>
-                  <p className="text-[11px] text-zinc-400 font-mono leading-tight">
+                  <p className="text-[11px] text-[#59594f] font-mono leading-tight">
                     Pemasukan {formatRupiah(monthlyTarget)} - Real Burn Rp4,5M = <strong>+{formatRupiah(netMonthlySurplus)}</strong> masuk cadangan kas tiap bulan!
                   </p>
                 </div>
@@ -483,7 +483,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                   <span className="text-xs font-mono text-emerald-300 uppercase tracking-wider block font-bold">
                     🗺️ Peta Realisasi Target Bulan {currentMonthName} ({formatRupiah(monthlyTarget)} / Bulan):
                   </span>
-                  <span className="text-[10px] font-mono text-zinc-400">
+                  <span className="text-[10px] font-mono text-[#59594f]">
                     Total Realisasi + Pipeline: <strong className="text-emerald-300">Rp15.100.000</strong>
                   </span>
                 </div>
@@ -491,58 +491,58 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   
                   {/* Source 1: Barber POS */}
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
+                  <div className="p-3.5 rounded-2xl bg-[#eae5d8] border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
                     <div className="flex justify-between items-center">
                       <span className="dev-tag-emerald text-[9px]">100% LUNAS FULL ✓</span>
                       <span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span>
                     </div>
-                    <h5 className="text-xs font-bold text-white">Barber Underrated (Lunas)</h5>
-                    <p className="text-[11px] text-zinc-400 leading-snug">Pelunasan Rp3.000.000 masuk kas Mandiri! Total deal Rp6.000.000 lunas penuh ✓</p>
+                    <h5 className="text-xs font-bold text-[#252520]">Barber Underrated (Lunas)</h5>
+                    <p className="text-[11px] text-[#59594f] leading-snug">Pelunasan Rp3.000.000 masuk kas Mandiri! Total deal Rp6.000.000 lunas penuh ✓</p>
                   </div>
 
                   {/* Source 2: Umi Elly LMS */}
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
+                  <div className="p-3.5 rounded-2xl bg-[#eae5d8] border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
                     <div className="flex justify-between items-center">
                       <span className="dev-tag-emerald text-[9px]">DP MASUK // KICKOFF</span>
                       <span className="text-xs font-mono font-bold text-emerald-300">Rp3.000.000</span>
                     </div>
-                    <h5 className="text-xs font-bold text-white">DP Umi Elly LMS (Kickoff)</h5>
-                    <p className="text-[11px] text-zinc-400 leading-snug">Termin 1 DP Rp3.000.000 masuk kas! Gaspol sprint pengerjaan modul LMS Azhariyah.</p>
+                    <h5 className="text-xs font-bold text-[#252520]">DP Umi Elly LMS (Kickoff)</h5>
+                    <p className="text-[11px] text-[#59594f] leading-snug">Termin 1 DP Rp3.000.000 masuk kas! Gaspol sprint pengerjaan modul LMS Azhariyah.</p>
                   </div>
 
                   {/* Source 3: Ustadz Ifdony Logo Azharuna */}
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
+                  <div className="p-3.5 rounded-2xl bg-[#eae5d8] border border-emerald-500/40 space-y-1.5 ring-1 ring-emerald-500/20">
                     <div className="flex justify-between items-center">
                       <span className="dev-tag-emerald text-[9px]">100% LUNAS ✓</span>
                       <span className="text-xs font-mono font-bold text-emerald-300">Rp500.000</span>
                     </div>
-                    <h5 className="text-xs font-bold text-white">Logo Azharuna (Ifdony)</h5>
-                    <p className="text-[11px] text-zinc-400 leading-snug">Pembayaran Rp500.000 lunas di portal invoice! Desain branding tuntas diserahkan.</p>
+                    <h5 className="text-xs font-bold text-[#252520]">Logo Azharuna (Ifdony)</h5>
+                    <p className="text-[11px] text-[#59594f] leading-snug">Pembayaran Rp500.000 lunas di portal invoice! Desain branding tuntas diserahkan.</p>
                   </div>
 
                   {/* Source 4: Sisa Pipeline September */}
-                  <div className="p-3.5 rounded-2xl bg-black/60 border border-amber-500/40 space-y-1.5 ring-1 ring-amber-500/20">
+                  <div className="p-3.5 rounded-2xl bg-[#eae5d8] border border-amber-500/40 space-y-1.5 ring-1 ring-amber-500/20">
                     <div className="flex justify-between items-center">
                       <span className="dev-tag text-[9px] bg-amber-500/10 text-amber-300 border-amber-500/20">PIPELINE AKTIF</span>
                       <span className="text-xs font-mono font-bold text-amber-300">Rp8.600.000</span>
                     </div>
-                    <h5 className="text-xs font-bold text-white">Sisa Piutang September</h5>
-                    <p className="text-[11px] text-zinc-400 leading-snug">Al Madroj (Rp3,5M) + Sisa Termin Umi Elly (Rp4M) + Ibrahim Visa (Rp1,1M).</p>
+                    <h5 className="text-xs font-bold text-[#252520]">Sisa Piutang September</h5>
+                    <p className="text-[11px] text-[#59594f] leading-snug">Al Madroj (Rp3,5M) + Sisa Termin Umi Elly (Rp4M) + Ibrahim Visa (Rp1,1M).</p>
                   </div>
 
                 </div>
               </div>
 
               {/* Kas Growth Projection (Efek Nambah 10 Juta Sebulan) */}
-              <div className="p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-2">
-                <span className="text-xs font-mono text-zinc-300 font-bold block">
+              <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-2">
+                <span className="text-xs font-mono text-[#59594f] font-bold block">
                   📈 Efek Pertumbuhan Saldo Kas Mengikuti Tanggal Real (+{formatRupiah(monthlyTarget)}/bln):
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-                  <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
-                    <span className="text-zinc-400 block text-[10px] font-bold uppercase">BULAN 1: {month1Name} (+{formatRupiah(netMonthlySurplus)})</span>
-                    <span className="text-base font-bold text-white block mt-0.5">{formatRupiah(projectedBalanceMonth1)}</span>
+                  <div className="p-3 rounded-xl bg-white/[0.04] border border-[#ded7c8]">
+                    <span className="text-[#59594f] block text-[10px] font-bold uppercase">BULAN 1: {month1Name} (+{formatRupiah(netMonthlySurplus)})</span>
+                    <span className="text-base font-bold text-[#252520] block mt-0.5">{formatRupiah(projectedBalanceMonth1)}</span>
                     <span className="text-[11px] text-amber-300">Runway: ±{runwayMonth1} Bulan (Keluar dari Red Mode)</span>
                   </div>
 
@@ -566,16 +566,16 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
           {selectedMonthArchive !== 'current' && activeArchive && (
             <div className="space-y-5 animate-fade-in">
               {/* Header Archive */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-amber-400" />
-                    <h3 className="text-base font-extrabold text-white tracking-tight flex items-center gap-2">
+                    <h3 className="text-base font-extrabold text-[#252520] tracking-tight flex items-center gap-2">
                       Rekap Pencapaian: <span className="text-amber-400 font-mono">{activeArchive.monthName}</span>
                     </h3>
                     <span className="dev-tag text-[9px] bg-amber-500/15 text-amber-300 border border-amber-500/20">{activeArchive.periodTag}</span>
                   </div>
-                  <p className="text-xs text-zinc-300">
+                  <p className="text-xs text-[#59594f]">
                     {activeArchive.summaryNote}
                   </p>
                 </div>
@@ -593,9 +593,9 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
 
               {/* Realization Metrics & Progress */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
-                <div className="lg:col-span-2 p-4 rounded-2xl bg-black/50 border border-white/10 space-y-3">
+                <div className="lg:col-span-2 p-4 rounded-2xl bg-[#eae5d8] border border-[#ded7c8] space-y-3">
                   <div className="flex justify-between items-center text-xs font-mono">
-                    <span className="text-zinc-300 font-semibold">
+                    <span className="text-[#59594f] font-semibold">
                       Realisasi Pemasukan {activeArchive.monthName}:
                     </span>
                     <span className="text-amber-400 font-bold text-sm">
@@ -603,41 +603,41 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     </span>
                   </div>
 
-                  <div className="w-full h-3.5 rounded-full bg-[#12121a] border border-white/10 overflow-hidden relative">
+                  <div className="w-full h-3.5 rounded-full bg-[#faf9f3] border border-[#ded7c8] overflow-hidden relative">
                     <div 
                       className="h-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 transition-all duration-700 shadow-glow-white"
                       style={{ width: `${activeArchive.progressPercent}%` }}
                     />
                   </div>
 
-                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-zinc-400 pt-1 gap-2">
+                  <div className="flex flex-wrap justify-between items-center text-[11px] font-mono text-[#59594f] pt-1 gap-2">
                     <span>Pemasukan: <strong className="text-emerald-300 font-bold">+{formatRupiah(activeArchive.realizedIncome)}</strong></span>
                     <span>Pengeluaran: <strong className="text-rose-400 font-bold">-{formatRupiah(activeArchive.realizedExpense)}</strong></span>
-                    <span>Saldo Akhir: <strong className="text-white font-bold">{formatRupiah(activeArchive.endingBalance)}</strong></span>
+                    <span>Saldo Akhir: <strong className="text-[#252520] font-bold">{formatRupiah(activeArchive.endingBalance)}</strong></span>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-black/50 border border-amber-500/30 space-y-1.5">
+                <div className="p-4 rounded-2xl bg-[#eae5d8] border border-amber-500/30 space-y-1.5">
                   <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block font-bold">
                     SURPLUS BERSIH YANG TERCATAT
                   </span>
                   <span className="text-2xl font-extrabold text-amber-300 font-mono block">
                     +{formatRupiah(activeArchive.netSurplus)}
                   </span>
-                  <p className="text-[11px] text-zinc-400 font-mono leading-tight">
+                  <p className="text-[11px] text-[#59594f] font-mono leading-tight">
                     Surplus cadangan kas masuk: <strong>+{formatRupiah(activeArchive.netSurplus)}</strong> ({activeArchive.runwayMonths} runway operasional aman).
                   </p>
                 </div>
               </div>
 
               {/* Pencapaian & Key Milestones List */}
-              <div className="p-4 rounded-2xl bg-[#060609] border border-white/10 space-y-2.5">
+              <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-2.5">
                 <span className="text-xs font-mono text-amber-300 uppercase tracking-wider block font-bold">
                   🏆 Milestone & Pencapaian Utama di Bulan {activeArchive.monthName}:
                 </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#59594f]">
                   {activeArchive.milestones.map((m, idx) => (
-                    <div key={idx} className="p-2.5 rounded-xl bg-white/[0.04] border border-white/5 flex items-start gap-2">
+                    <div key={idx} className="p-2.5 rounded-xl bg-white/[0.04] border border-[#ded7c8] flex items-start gap-2">
                       <span className="text-emerald-400 font-bold">✓</span>
                       <span className="leading-snug">{m}</span>
                     </div>
@@ -647,18 +647,18 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
 
               {/* Breakdown Pemasukan & Deliverables */}
               <div className="space-y-2.5">
-                <span className="text-xs font-mono text-zinc-300 uppercase tracking-wider block font-bold">
+                <span className="text-xs font-mono text-[#59594f] uppercase tracking-wider block font-bold">
                   💼 Rincian Pemasukan & Deliverable {activeArchive.monthName}:
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                   {activeArchive.breakdown.map((item, idx) => (
-                    <div key={idx} className="p-3.5 rounded-2xl bg-black/60 border border-white/10 space-y-1.5">
+                    <div key={idx} className="p-3.5 rounded-2xl bg-[#eae5d8] border border-[#ded7c8] space-y-1.5">
                       <div className="flex justify-between items-center">
                         <span className="dev-tag text-[9px]">{item.tag}</span>
                         <span className="text-xs font-mono font-bold text-amber-300">{formatRupiah(item.amount)}</span>
                       </div>
-                      <h5 className="text-xs font-bold text-white">{item.label}</h5>
-                      <p className="text-[11px] text-zinc-400 leading-snug">{item.client} • <span className="text-emerald-400 font-semibold">{item.status}</span></p>
+                      <h5 className="text-xs font-bold text-[#252520]">{item.label}</h5>
+                      <p className="text-[11px] text-[#59594f] leading-snug">{item.client} • <span className="text-emerald-400 font-semibold">{item.status}</span></p>
                     </div>
                   ))}
                 </div>
@@ -670,7 +670,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
       </div>
 
       {/* 3. SIMPLE NAVIGATION SUB-TABS (Pill Tabs) */}
-      <div className="flex items-center gap-1.5 bg-[#09090d] p-1.5 rounded-2xl border border-white/[0.06] overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-1.5 bg-[#fffdf5] p-1.5 rounded-2xl border border-[#ded7c8] overflow-x-auto no-scrollbar">
         {[
           { id: 'overview', label: '📊 Ringkasan & Roadmap' },
           { id: 'archive', label: '🏛️ Arsip & Rekap Bulanan' },
@@ -688,7 +688,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
             className={`px-4 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap ${
               activeTab === tab.id
                 ? 'bg-white text-zinc-950 font-bold shadow-md'
-                : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
+                : 'text-[#59594f] hover:text-[#252520] hover:bg-white/[0.04]'
             }`}
           >
             {tab.label}
@@ -704,28 +704,28 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
           
           <div className="figma-shell">
             <div className="figma-core p-5 sm:p-6 space-y-4">
-              <h3 className="text-sm font-bold text-white">Simulasi Perpanjangan Runway & Target Kas</h3>
+              <h3 className="text-sm font-bold text-[#252520]">Simulasi Perpanjangan Runway & Target Kas</h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-4 rounded-2xl bg-[#060609] border border-white/[0.05] space-y-1">
+                <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
                   <span className={`text-[11px] font-mono font-bold block ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-300'}`}>
                     1. POSISI SAAT INI (LIVE)
                   </span>
-                  <p className="text-lg font-bold text-white font-mono">{formatRupiah(report.totalLiquidBalance)}</p>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-lg font-bold text-[#252520] font-mono">{formatRupiah(report.totalLiquidBalance)}</p>
+                  <p className="text-xs text-[#59594f]">
                     Runway: <strong className={isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-300'}>±{calculatedRunwayDays} Hari (~{calculatedRunwayMonths} Bln)</strong>
                   </p>
-                  <span className="text-[10px] text-zinc-500 font-mono block mt-1">
+                  <span className="text-[10px] text-[#928876] font-mono block mt-1">
                     {isRed ? '🔴 Mode Cash Defense (< Rp4M)' : isGreen ? '🟢 Green Mode (Growth & Expansion)' : '🟡 Yellow Mode (Stage 2 Safe Buffer)'}
                   </span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#060609] border border-emerald-500/20 space-y-1">
+                <div className="p-4 rounded-2xl bg-[#faf9f3] border border-emerald-500/20 space-y-1">
                   <span className="text-[11px] font-mono text-emerald-400 font-bold block">
                     2. + TERMIN 1 UMI ELLY (DP Rp3M)
                   </span>
-                  <p className="text-lg font-bold text-white font-mono">{formatRupiah(report.totalLiquidBalance + 3000000)}</p>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-lg font-bold text-[#252520] font-mono">{formatRupiah(report.totalLiquidBalance + 3000000)}</p>
+                  <p className="text-xs text-[#59594f]">
                     Runway: <strong className="text-emerald-400">±{Math.round(((report.totalLiquidBalance + 3000000) / (report.estimatedRealBurn || 4500000)) * 30)} Hari (~{(((report.totalLiquidBalance + 3000000) / (report.estimatedRealBurn || 4500000))).toFixed(1)} Bln)</strong>
                   </p>
                   <span className="text-[10px] text-emerald-400/80 font-mono block mt-1">
@@ -733,12 +733,12 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                   </span>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#060609] border border-teal-500/30 space-y-1">
+                <div className="p-4 rounded-2xl bg-[#faf9f3] border border-teal-500/30 space-y-1">
                   <span className="text-[11px] font-mono text-teal-300 font-bold block">
                     3. + PELUNASAN BARBER / TERMIN 2 (Rp3M)
                   </span>
-                  <p className="text-lg font-bold text-white font-mono">{formatRupiah(report.totalLiquidBalance + 6000000)}</p>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-lg font-bold text-[#252520] font-mono">{formatRupiah(report.totalLiquidBalance + 6000000)}</p>
+                  <p className="text-xs text-[#59594f]">
                     Runway: <strong className="text-teal-300">±{Math.round(((report.totalLiquidBalance + 6000000) / (report.estimatedRealBurn || 4500000)) * 30)} Hari (~{(((report.totalLiquidBalance + 6000000) / (report.estimatedRealBurn || 4500000))).toFixed(1)} Bln)</strong>
                   </p>
                   <span className="text-[10px] text-teal-300 font-mono block mt-1">
@@ -751,14 +751,14 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
 
           <div className="figma-shell">
             <div className="figma-core p-5 sm:p-6 space-y-3">
-              <h3 className="text-sm font-bold text-white">Pergerakan Aset Likuid Terakhir</h3>
+              <h3 className="text-sm font-bold text-[#252520]">Pergerakan Aset Likuid Terakhir</h3>
               <div className="space-y-2">
                 {report.trajectory.map((point, idx) => (
-                  <div key={point.date} className="flex items-center justify-between text-xs font-mono p-3 rounded-xl bg-[#060609] border border-white/[0.04]">
-                    <span className="text-zinc-300 font-semibold">{point.date}</span>
+                  <div key={point.date} className="flex items-center justify-between text-xs font-mono p-3 rounded-xl bg-[#faf9f3] border border-[#ded7c8]">
+                    <span className="text-[#59594f] font-semibold">{point.date}</span>
                     <div className="flex gap-2 items-center">
-                      <span className={`font-bold ${idx === report.trajectory.length - 1 ? 'text-white' : 'text-zinc-400'}`}>{formatRupiah(point.balance)}</span>
-                      <span className="text-[11px] text-zinc-500">({point.note})</span>
+                      <span className={`font-bold ${idx === report.trajectory.length - 1 ? 'text-[#252520]' : 'text-[#59594f]'}`}>{formatRupiah(point.balance)}</span>
+                      <span className="text-[11px] text-[#928876]">({point.note})</span>
                     </div>
                   </div>
                 ))}
@@ -772,14 +772,14 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
       {activeTab === 'accounts' && (
         <div className="figma-shell">
           <div className="figma-core p-5 sm:p-6 space-y-4">
-            <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+            <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
               <div>
-                <h3 className="text-sm font-bold text-white">Rincian Saldo Rekening & E-Wallet</h3>
-                <p className="text-xs text-zinc-400 font-mono mt-0.5">// Total: {formatRupiah(report.totalLiquidBalance)}</p>
+                <h3 className="text-sm font-bold text-[#252520]">Rincian Saldo Rekening & E-Wallet</h3>
+                <p className="text-xs text-[#59594f] font-mono mt-0.5">// Total: {formatRupiah(report.totalLiquidBalance)}</p>
               </div>
               <button 
                 onClick={() => onOpenFinanceInput && onOpenFinanceInput()} 
-                className="dev-tag hover:text-white"
+                className="dev-tag hover:text-[#252520]"
               >
                 ✏️ Update Saldo
               </button>
@@ -787,19 +787,19 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {report.accounts.map(acc => (
-                <div key={acc.name} className={`p-4 rounded-2xl border flex justify-between items-center ${acc.isLatest ? 'bg-white/[0.04] border-white/20' : 'bg-[#060609] border-white/[0.05]'}`}>
+                <div key={acc.name} className={`p-4 rounded-2xl border flex justify-between items-center ${acc.isLatest ? 'bg-white/[0.04] border-[#ded7c8]' : 'bg-[#faf9f3] border-[#ded7c8]'}`}>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white">{acc.name}</span>
+                      <span className="text-xs font-bold text-[#252520]">{acc.name}</span>
                       {acc.isLatest && <span className="dev-tag-emerald text-[9px] py-0">LIVE</span>}
                     </div>
-                    <span className="text-[10px] text-zinc-500 font-mono">{acc.lastUpdated}</span>
+                    <span className="text-[10px] text-[#928876] font-mono">{acc.lastUpdated}</span>
                   </div>
-                  <span className="text-sm font-mono font-bold text-white">{formatRupiah(acc.balance)}</span>
+                  <span className="text-sm font-mono font-bold text-[#252520]">{formatRupiah(acc.balance)}</span>
                 </div>
               ))}
             </div>
-            <p className="text-[11px] text-zinc-400 font-mono pt-1">*Mandiri adalah update angka live terbaru. Saldo lain memakai data 26 Agustus.</p>
+            <p className="text-[11px] text-[#59594f] font-mono pt-1">*Mandiri adalah update angka live terbaru. Saldo lain memakai data 26 Agustus.</p>
           </div>
         </div>
       )}
@@ -809,22 +809,22 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
         <div className="space-y-4">
           <div className="figma-shell">
             <div className="figma-core p-5 sm:p-6 space-y-4">
-              <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+              <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
                 <div>
-                  <h3 className="text-sm font-bold text-white">A. Pengeluaran Fixed Bulanan</h3>
-                  <p className="text-xs text-zinc-400 font-mono">// Wajib / Rutin: Rp2.665.000/bln</p>
+                  <h3 className="text-sm font-bold text-[#252520]">A. Pengeluaran Fixed Bulanan</h3>
+                  <p className="text-xs text-[#59594f] font-mono">// Wajib / Rutin: Rp2.665.000/bln</p>
                 </div>
                 <span className="dev-tag">6_ITEMS_FIXED</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {(report.monthlyExpenses?.filter(e => e.isFixed) || []).map(item => (
-                  <div key={item.id} className="p-3.5 rounded-2xl bg-[#060609] border border-white/[0.05] flex justify-between items-center">
+                  <div key={item.id} className="p-3.5 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] flex justify-between items-center">
                     <div>
-                      <p className="text-xs font-bold text-white">{item.category}</p>
-                      <p className="text-[10px] text-zinc-500 font-mono mt-0.5">{item.notes}</p>
+                      <p className="text-xs font-bold text-[#252520]">{item.category}</p>
+                      <p className="text-[10px] text-[#928876] font-mono mt-0.5">{item.notes}</p>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs font-mono font-bold text-white">{item.amountText}</span>
+                      <span className="text-xs font-mono font-bold text-[#252520]">{item.amountText}</span>
                       <span className="text-[9px] font-mono block text-emerald-400">{item.status}</span>
                     </div>
                   </div>
@@ -835,22 +835,22 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
 
           <div className="figma-shell">
             <div className="figma-core p-5 sm:p-6 space-y-4">
-              <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+              <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
                 <div>
-                  <h3 className="text-sm font-bold text-white">B. Kebutuhan Wajib Fleksibel</h3>
-                  <p className="text-xs text-zinc-400 font-mono">// Estimasi Tambahan: ~Rp1,5M – Rp2,5M/bln</p>
+                  <h3 className="text-sm font-bold text-[#252520]">B. Kebutuhan Wajib Fleksibel</h3>
+                  <p className="text-xs text-[#59594f] font-mono">// Estimasi Tambahan: ~Rp1,5M – Rp2,5M/bln</p>
                 </div>
                 <span className="dev-tag">5_CATEGORIES</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {(report.monthlyExpenses?.filter(e => !e.isFixed) || []).map(item => (
-                  <div key={item.id} className="p-3.5 rounded-2xl bg-[#060609]/70 border border-white/[0.04] flex justify-between items-center">
+                  <div key={item.id} className="p-3.5 rounded-2xl bg-[#faf9f3]/70 border border-[#ded7c8] flex justify-between items-center">
                     <div>
-                      <p className="text-xs font-semibold text-zinc-200">{item.category}</p>
-                      <p className="text-[10px] text-zinc-500 font-mono mt-0.5">{item.notes}</p>
+                      <p className="text-xs font-semibold text-[#252520]">{item.category}</p>
+                      <p className="text-[10px] text-[#928876] font-mono mt-0.5">{item.notes}</p>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs font-mono text-zinc-400">{item.amountText}</span>
+                      <span className="text-xs font-mono text-[#59594f]">{item.amountText}</span>
                       <span className="text-[9px] font-mono block text-amber-400">Wajib, fleksibel</span>
                     </div>
                   </div>
@@ -865,10 +865,10 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
       {activeTab === 'projects' && (
         <div className="figma-shell">
           <div className="figma-core p-5 sm:p-6 space-y-4">
-            <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+            <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
               <div>
-                <h3 className="text-sm font-bold text-white">Project Cashflow & Potential Receivables</h3>
-                <p className="text-xs text-zinc-400 font-mono">
+                <h3 className="text-sm font-bold text-[#252520]">Project Cashflow & Potential Receivables</h3>
+                <p className="text-xs text-[#59594f] font-mono">
                   // Sudah Masuk: {formatRupiah(projects.reduce((acc, p) => acc + (p.paidNumeric || 0), 0))} • Pipeline OTW: {formatRupiah(projects.reduce((acc, p) => acc + (p.unpaidNumeric || 0), 0))}
                 </p>
               </div>
@@ -878,26 +878,26 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs font-mono">
                 <thead>
-                  <tr className="border-b border-white/10 text-zinc-400 uppercase text-[11px]">
-                    <th className="pb-3 pr-3 font-semibold text-white font-sans">Project</th>
+                  <tr className="border-b border-[#ded7c8] text-[#59594f] uppercase text-[11px]">
+                    <th className="pb-3 pr-3 font-semibold text-[#252520] font-sans">Project</th>
                     <th className="pb-3 px-3 font-semibold">Status</th>
                     <th className="pb-3 px-3 font-semibold">Total Nominal</th>
-                    <th className="pb-3 px-3 font-semibold text-white">Sudah Masuk</th>
+                    <th className="pb-3 px-3 font-semibold text-[#252520]">Sudah Masuk</th>
                     <th className="pb-3 px-3 font-semibold text-amber-300">Pipeline OTW</th>
                     <th className="pb-3 px-3 font-semibold">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5 text-zinc-300">
+                <tbody className="divide-y divide-white/5 text-[#59594f]">
                   {projects.map(p => (
                     <tr key={p.id} className="hover:bg-white/5 transition-colors">
-                      <td className="py-3.5 pr-3 font-sans font-bold text-white">{p.name}</td>
-                      <td className="py-3.5 px-3 text-[11px] text-zinc-400">{p.status}</td>
-                      <td className="py-3.5 px-3 text-zinc-300">{p.valueText}</td>
-                      <td className="py-3.5 px-3 text-white font-bold">{formatRupiah(p.paidNumeric || 0)}</td>
+                      <td className="py-3.5 pr-3 font-sans font-bold text-[#252520]">{p.name}</td>
+                      <td className="py-3.5 px-3 text-[11px] text-[#59594f]">{p.status}</td>
+                      <td className="py-3.5 px-3 text-[#59594f]">{p.valueText}</td>
+                      <td className="py-3.5 px-3 text-[#252520] font-bold">{formatRupiah(p.paidNumeric || 0)}</td>
                       <td className="py-3.5 px-3 text-amber-300 font-bold">{formatRupiah(p.unpaidNumeric || 0)}</td>
                       <td className="py-3.5 px-3">
                         {onOpenFollowUp && (
-                          <button onClick={() => onOpenFollowUp(p)} className="text-zinc-300 hover:text-white font-mono bg-white/5 px-2.5 py-1 rounded-lg border border-white/10">Copas WA 💬</button>
+                          <button onClick={() => onOpenFollowUp(p)} className="text-[#59594f] hover:text-[#252520] font-mono bg-white/5 px-2.5 py-1 rounded-lg border border-[#ded7c8]">Copas WA 💬</button>
                         )}
                       </td>
                     </tr>
@@ -913,10 +913,10 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
       {activeTab === 'history' && (
         <div className="figma-shell">
           <div className="figma-core p-5 sm:p-6 space-y-4">
-            <div className="flex justify-between items-center border-b border-white/[0.06] pb-3">
+            <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
               <div>
-                <h3 className="text-sm font-bold text-white">Riwayat Transaksi & Bukti Transfer</h3>
-                <p className="text-xs text-zinc-400 font-mono">// Log transaksi & foto bukti yang pernah dicatat</p>
+                <h3 className="text-sm font-bold text-[#252520]">Riwayat Transaksi & Bukti Transfer</h3>
+                <p className="text-xs text-[#59594f] font-mono">// Log transaksi & foto bukti yang pernah dicatat</p>
               </div>
               {onOpenFinanceInput && (
                 <button onClick={() => onOpenFinanceInput()} className="px-3 py-1.5 dev-btn-primary text-xs font-bold rounded-xl">+ Input Baru</button>
@@ -926,10 +926,10 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
             {report.transactions && report.transactions.length > 0 ? (
               <div className="space-y-2">
                 {report.transactions.map(tx => (
-                  <div key={tx.id} className="p-3.5 rounded-2xl bg-[#060609] border border-white/[0.05] flex items-center justify-between text-xs">
+                  <div key={tx.id} className="p-3.5 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] flex items-center justify-between text-xs">
                     <div>
-                      <span className="font-bold text-white block">{tx.description}</span>
-                      <span className="text-[11px] text-zinc-500 font-mono">{tx.date} • {tx.accountName} • {tx.category}</span>
+                      <span className="font-bold text-[#252520] block">{tx.description}</span>
+                      <span className="text-[11px] text-[#928876] font-mono">{tx.date} • {tx.accountName} • {tx.category}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className={`font-mono font-bold ${tx.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}`}>
@@ -938,7 +938,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                       {tx.photoUrl && (
                         <button 
                           onClick={() => setZoomedPhoto({ url: tx.photoUrl!, title: tx.description })} 
-                          className="text-[11px] text-zinc-300 bg-[#14141c] hover:bg-[#1c1c28] px-2.5 py-1 rounded-xl border border-white/10 font-mono"
+                          className="text-[11px] text-[#59594f] bg-[#fffdf5] hover:bg-[#eae5d8] px-2.5 py-1 rounded-xl border border-[#ded7c8] font-mono"
                         >
                           📷 Bukti Foto
                         </button>
@@ -948,7 +948,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-zinc-500 font-mono text-center py-6">Belum ada transaksi tambahan yang dicatat.</p>
+              <p className="text-xs text-[#928876] font-mono text-center py-6">Belum ada transaksi tambahan yang dicatat.</p>
             )}
           </div>
         </div>
@@ -960,17 +960,17 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
           {/* Header Summary */}
           <div className="figma-shell">
             <div className="figma-core p-5 sm:p-6 space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
                 <div>
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-[#252520] flex items-center gap-2">
                     <span>🏛️ Rekap & Arsip Pencapaian Bulanan</span>
                     <span className="dev-tag-emerald text-[9px]">HISTORICAL_TRACKER</span>
                   </h3>
-                  <p className="text-xs text-zinc-400 font-mono">// Perbandingan performa target, pemasukan real, pengeluaran & milestone per bulan</p>
+                  <p className="text-xs text-[#59594f] font-mono">// Perbandingan performa target, pemasukan real, pengeluaran & milestone per bulan</p>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-zinc-400">Total Periode Terekam: <strong>3 Bulan (Jul, Agu, Sep 2026)</strong></span>
+                  <span className="text-xs font-mono text-[#59594f]">Total Periode Terekam: <strong>3 Bulan (Jul, Agu, Sep 2026)</strong></span>
                 </div>
               </div>
 
@@ -978,17 +978,17 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs font-mono">
                   <thead>
-                    <tr className="border-b border-white/10 text-zinc-400 uppercase text-[11px]">
-                      <th className="pb-3 pr-3 font-semibold text-white font-sans">Bulan / Periode</th>
+                    <tr className="border-b border-[#ded7c8] text-[#59594f] uppercase text-[11px]">
+                      <th className="pb-3 pr-3 font-semibold text-[#252520] font-sans">Bulan / Periode</th>
                       <th className="pb-3 px-3 font-semibold">Status</th>
                       <th className="pb-3 px-3 font-semibold text-emerald-400">Pemasukan Real</th>
                       <th className="pb-3 px-3 font-semibold text-rose-400">Beban Keluar</th>
                       <th className="pb-3 px-3 font-semibold text-amber-300">Net Surplus</th>
-                      <th className="pb-3 px-3 font-semibold text-white">Saldo Kas Akhir</th>
+                      <th className="pb-3 px-3 font-semibold text-[#252520]">Saldo Kas Akhir</th>
                       <th className="pb-3 px-3 font-semibold">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5 text-zinc-300">
+                  <tbody className="divide-y divide-white/5 text-[#59594f]">
                     {/* Live Month: September 2026 */}
                     <tr className="hover:bg-white/5 transition-colors bg-emerald-500/[0.04]">
                       <td className="py-3.5 pr-3 font-sans font-bold text-emerald-300 flex items-center gap-1.5">
@@ -999,7 +999,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                       <td className="py-3.5 px-3 text-emerald-300 font-bold">{formatRupiah(totalPaidThisMonth)}</td>
                       <td className="py-3.5 px-3 text-rose-300 font-bold">~Rp4.500.000 (Burn)</td>
                       <td className="py-3.5 px-3 text-emerald-300 font-bold">+{formatRupiah(netMonthlySurplus)} (Proyeksi)</td>
-                      <td className="py-3.5 px-3 text-white font-bold">{formatRupiah(report.totalLiquidBalance)}</td>
+                      <td className="py-3.5 px-3 text-[#252520] font-bold">{formatRupiah(report.totalLiquidBalance)}</td>
                       <td className="py-3.5 px-3">
                         <button
                           onClick={() => {
@@ -1007,7 +1007,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                             setSelectedMonthArchive('current');
                             window.scrollTo({ top: 300, behavior: 'smooth' });
                           }}
-                          className="text-emerald-300 hover:text-white font-mono bg-emerald-500/15 hover:bg-emerald-500/30 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition-all"
+                          className="text-emerald-300 hover:text-[#252520] font-mono bg-emerald-500/15 hover:bg-emerald-500/30 px-2.5 py-1 rounded-lg border border-emerald-500/30 transition-all"
                         >
                           Lihat Live ⚡
                         </button>
@@ -1017,14 +1017,14 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                     {/* Historical Months */}
                     {monthlyArchives.map(arch => (
                       <tr key={arch.id} className="hover:bg-white/5 transition-colors">
-                        <td className="py-3.5 pr-3 font-sans font-bold text-white flex items-center gap-1.5">
+                        <td className="py-3.5 pr-3 font-sans font-bold text-[#252520] flex items-center gap-1.5">
                           <span>🏛️ {arch.monthName}</span>
                         </td>
                         <td className="py-3.5 px-3 text-[11px] text-amber-400">{arch.periodTag}</td>
                         <td className="py-3.5 px-3 text-emerald-300 font-bold">{formatRupiah(arch.realizedIncome)}</td>
                         <td className="py-3.5 px-3 text-rose-400 font-bold">-{formatRupiah(arch.realizedExpense)}</td>
                         <td className="py-3.5 px-3 text-amber-300 font-bold">+{formatRupiah(arch.netSurplus)}</td>
-                        <td className="py-3.5 px-3 text-white font-bold">{formatRupiah(arch.endingBalance)}</td>
+                        <td className="py-3.5 px-3 text-[#252520] font-bold">{formatRupiah(arch.endingBalance)}</td>
                         <td className="py-3.5 px-3">
                           <button
                             onClick={() => {
@@ -1032,7 +1032,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                               setSelectedMonthArchive(arch.id as any);
                               window.scrollTo({ top: 300, behavior: 'smooth' });
                             }}
-                            className="text-zinc-300 hover:text-white font-mono bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 transition-all"
+                            className="text-[#59594f] hover:text-[#252520] font-mono bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-[#ded7c8] transition-all"
                           >
                             Detail Rekap 🔍
                           </button>
@@ -1050,35 +1050,35 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
             {monthlyArchives.map(arch => (
               <div key={arch.id} className="figma-shell">
                 <div className="figma-core p-5 space-y-3.5">
-                  <div className="flex justify-between items-center border-b border-white/[0.06] pb-2.5">
+                  <div className="flex justify-between items-center border-b border-[#ded7c8] pb-2.5">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-amber-400" />
-                      <h4 className="text-sm font-bold text-white">{arch.monthName}</h4>
+                      <h4 className="text-sm font-bold text-[#252520]">{arch.monthName}</h4>
                       <span className="dev-tag text-[9px] bg-amber-500/10 text-amber-300 border-amber-500/20">{arch.periodTag}</span>
                     </div>
                     <span className="text-xs font-mono text-emerald-400 font-bold">{arch.progressPercent}% Target</span>
                   </div>
 
-                  <p className="text-xs text-zinc-300 leading-relaxed">{arch.summaryNote}</p>
+                  <p className="text-xs text-[#59594f] leading-relaxed">{arch.summaryNote}</p>
 
-                  <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-[#060609] border border-white/5 text-center text-xs font-mono">
+                  <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-center text-xs font-mono">
                     <div>
-                      <span className="text-[10px] text-zinc-500 block uppercase">Pemasukan</span>
+                      <span className="text-[10px] text-[#928876] block uppercase">Pemasukan</span>
                       <span className="text-emerald-400 font-bold">{formatRupiah(arch.realizedIncome)}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-zinc-500 block uppercase">Pengeluaran</span>
+                      <span className="text-[10px] text-[#928876] block uppercase">Pengeluaran</span>
                       <span className="text-rose-400 font-bold">{formatRupiah(arch.realizedExpense)}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-zinc-500 block uppercase">Surplus</span>
+                      <span className="text-[10px] text-[#928876] block uppercase">Surplus</span>
                       <span className="text-amber-300 font-bold">+{formatRupiah(arch.netSurplus)}</span>
                     </div>
                   </div>
 
                   <div className="space-y-1.5 pt-1">
-                    <span className="text-[11px] font-mono text-zinc-400 uppercase font-semibold block">🏆 Pencapaian Utama:</span>
-                    <ul className="space-y-1 text-xs text-zinc-300">
+                    <span className="text-[11px] font-mono text-[#59594f] uppercase font-semibold block">🏆 Pencapaian Utama:</span>
+                    <ul className="space-y-1 text-xs text-[#59594f]">
                       {arch.milestones.slice(0, 3).map((m, idx) => (
                         <li key={idx} className="flex items-start gap-1.5">
                           <span className="text-emerald-400 font-bold text-[10px]">✓</span>
@@ -1094,7 +1094,7 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
                       setSelectedMonthArchive(arch.id as any);
                       window.scrollTo({ top: 300, behavior: 'smooth' });
                     }}
-                    className="w-full py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-2"
+                    className="w-full py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-[#ded7c8] text-xs font-mono font-bold text-[#252520] transition-all flex items-center justify-center gap-2"
                   >
                     <span>Buka Peta Realisasi {arch.monthName}</span>
                     <span>→</span>
@@ -1113,14 +1113,14 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
           onClick={() => setZoomedPhoto(null)}
         >
           <div 
-            className="max-w-2xl w-full bg-[#0d0d12] border border-white/10 rounded-2xl p-4 shadow-2xl space-y-3"
+            className="max-w-2xl w-full bg-[#faf9f3] border border-[#ded7c8] rounded-2xl p-4 shadow-2xl space-y-3"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <h4 className="text-sm font-bold text-white">{zoomedPhoto.title}</h4>
-              <button onClick={() => setZoomedPhoto(null)} className="text-zinc-400 hover:text-white">✕</button>
+            <div className="flex justify-between items-center border-b border-[#ded7c8] pb-2">
+              <h4 className="text-sm font-bold text-[#252520]">{zoomedPhoto.title}</h4>
+              <button onClick={() => setZoomedPhoto(null)} className="text-[#59594f] hover:text-[#252520]">✕</button>
             </div>
-            <div className="flex justify-center bg-black/60 rounded-xl p-2 max-h-[75vh] overflow-auto">
+            <div className="flex justify-center bg-[#eae5d8] rounded-xl p-2 max-h-[75vh] overflow-auto">
               <img src={zoomedPhoto.url} alt={zoomedPhoto.title} className="max-w-full max-h-[70vh] object-contain rounded-lg" />
             </div>
           </div>
