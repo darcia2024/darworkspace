@@ -1,26 +1,24 @@
 import React from 'react';
 import { 
-  DollarSign,
-  Clock,
-  ShieldCheck,
-  TrendingUp,
-  Layers,
+  ArrowUpRight, 
+  TrendingUp, 
+  DollarSign, 
+  Layers, 
+  Zap, 
+  Clock, 
+  CheckCircle2, 
+  ShieldCheck, 
   Sparkles,
-  Check
+  Flame,
+  Briefcase
 } from 'lucide-react';
+import { QuickStats, TodayPursuit, FinancialReport } from '../types';
 import { soundManager } from '../utils/audio';
-import confetti from 'canvas-confetti';
-import { FinancialReport } from '../types';
 
 interface TopQuickStatsProps {
-  todayPursuit: Array<{ id: string; project: string; action: string; isDone?: boolean }>;
+  todayPursuit: TodayPursuit[];
   onTogglePursuit: (id: string) => void;
-  quickStats: {
-    paidClientActive: number;
-    waitingPaymentKickoff: number;
-    maintenanceOpen: number;
-    salesAndProductActive: number;
-  };
+  quickStats: QuickStats;
   onSelectTab: (tab: string) => void;
   financialReport?: FinancialReport;
 }
@@ -32,206 +30,309 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
   onSelectTab,
   financialReport
 }) => {
-  const completedPursuits = todayPursuit.filter(p => p.isDone).length;
-  const progressPercent = Math.round((completedPursuits / (todayPursuit.length || 1)) * 100);
-
-  const totalBal = financialReport?.totalLiquidBalance || 9892741;
-  const isRed = totalBal < (financialReport?.hardFloor || 4000000);
-  const isGreen = totalBal >= (financialReport?.monthlyIncomeTarget || 10000000);
-  const runwayDays = financialReport?.runwayDays || 66;
-  const runwayMonths = (runwayDays / 30).toFixed(1);
+  const totalLiquid = financialReport?.totalLiquidBalance || 9892741;
+  const targetIncome = financialReport?.monthlyIncomeTarget || 10000000;
+  // Realized income September from verified invoices
+  const realizedIncome = 6500000;
+  const progressPercent = Math.round((realizedIncome / targetIncome) * 100);
 
   const formatRupiah = (num: number) => {
-    return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `Rp${num.toLocaleString('id-ID')}`;
   };
 
+  const formatShortRupiah = (num: number) => {
+    if (num >= 1000000) {
+      const jt = (num / 1000000).toFixed(2).replace(/\.00$/, '');
+      return `Rp${jt}M`;
+    }
+    return formatRupiah(num);
+  };
+
+  // Sample micro-bar heights for the pink bento card
+  const barSurges = [40, 65, 30, 85, 95, 70, 100, 80];
+
   return (
-    <div className="space-y-4 font-sans select-none">
+    <div className="space-y-6 select-none font-sans">
       
-      {/* 1. SITUATION COMMAND DECK (Warm Cream Agency Card) */}
-      <div className="cream-shell">
-        <div className="p-5 sm:p-6 space-y-4 bg-[#fffdf5] rounded-[14px]">
-          
-          {/* Top Header & Progress */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3.5">
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#305d46] animate-pulse" />
-                <h2 className="text-base sm:text-lg font-bold text-[#24241f] tracking-tight">
-                  Hari ini gue harus ngejar apa?
-                </h2>
-              </div>
-              <p className="text-xs text-[#59594f]">
-                3 prioritas emas: Modul LMS Umi Elly • Handover DreamMecca • Setup KAEL SaaS Pilot
-              </p>
-            </div>
-
-            {/* Progress Pill & Beacon */}
-            <div className="flex items-center gap-2.5">
-              <div className="flex items-center gap-2 bg-[#eae5d8] border border-[#ded7c8] px-3 py-1.5 rounded-xl">
-                <span className="text-[10px] font-mono text-[#666256] uppercase font-semibold">PROGRESS</span>
-                <span className="text-xs font-mono font-bold text-[#24241f]">
-                  {completedPursuits}/{todayPursuit.length} ({progressPercent}%)
-                </span>
-              </div>
-              <span className="dev-tag-emerald text-[10px]">ACTIVE_SPRINT</span>
-            </div>
+      {/* 1. HERO HEADLINE (Matching Jobforge: Leading Italic + Bold Grotesk + Avatar Stack) */}
+      <div className="pt-2 pb-1 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#111111] leading-tight">
+              <span className="lead-italic font-normal mr-2">Autonomous</span>
+              Workflow Infrastructure
+              <span className="inline-flex items-center ml-3 -space-x-1.5 align-middle">
+                <span className="w-8 h-8 rounded-full bg-[#fdecd2] border-2 border-white flex items-center justify-center text-xs shadow-sm">⚡</span>
+                <span className="w-8 h-8 rounded-full bg-[#fce7f3] border-2 border-white flex items-center justify-center text-xs shadow-sm">💼</span>
+                <span className="w-8 h-8 rounded-full bg-[#e0f2fe] border-2 border-white flex items-center justify-center text-xs shadow-sm">🚀</span>
+              </span>
+            </h1>
+            <p className="text-xs sm:text-sm text-zinc-500 max-w-2xl mt-1.5 leading-relaxed font-normal">
+              Solopreneur command engine untuk mengunci fokus monotask, automasi tagihan, dan scaling aset recurring tanpa distraksi.
+            </p>
           </div>
 
-          {/* 4 Interactive Command Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {todayPursuit.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  soundManager.playClick();
-                  onTogglePursuit(item.id);
-                  if (!item.isDone) {
-                    soundManager.playCompletionChime();
-                    confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
-                  }
-                }}
-                className={`p-3.5 rounded-xl border text-left transition-all duration-200 flex items-start gap-3 group relative ${
-                  item.isDone
-                    ? 'bg-[#eae5d8]/60 border-[#ded7c8] opacity-50'
-                    : 'bg-[#fffdf5] border-[#ded7c8] hover:border-[#928876] hover:bg-[#ffffff] shadow-sm'
-                }`}
-              >
-                {/* Checkbox Trigger */}
-                <div className={`mt-0.5 w-4 h-4 rounded-md flex items-center justify-center border transition-all ${
-                  item.isDone
-                    ? 'bg-[#292a24] border-[#292a24] text-[#fffdf5]'
-                    : 'border-[#ded7c8] bg-[#fffdf5] group-hover:border-[#928876]'
-                }`}>
-                  {item.isDone && <Check className="w-3 h-3 stroke-[3]" />}
-                </div>
-
-                <div className="min-w-0 flex-1 space-y-0.5">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-[10px] font-mono text-[#666256] font-semibold uppercase truncate">
-                      {item.project}
-                    </span>
-                  </div>
-                  <p className={`text-xs font-medium leading-snug line-clamp-2 ${
-                    item.isDone ? 'line-through text-[#666256]' : 'text-[#24241f]'
-                  }`}>
-                    {item.action}
-                  </p>
-                </div>
-              </button>
-            ))}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                onSelectTab('nextgo');
+              }}
+              className="pill-black text-xs font-semibold px-5 py-2.5 shadow-md flex items-center gap-2"
+            >
+              <span>Our Next Directive</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                onSelectTab('money');
+              }}
+              className="pill-white text-xs font-semibold px-5 py-2.5 shadow-sm"
+            >
+              Telemetry Kas
+            </button>
           </div>
-
         </div>
       </div>
 
-      {/* 2. THE 4 ICONIC PASTEL STAT CARDS (EXACT FROM INVOICE DESIGN REPO) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      {/* 2. THE HERO BENTO TRIO + 1 (Exact Jobforge Bento Layout) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        {/* Card 1: Profit / Pemasukan September (Lavender #d0b4e9) */}
-        <button
+        {/* BENTO CARD 1: APRICOT (Liquid Operating Cash) */}
+        <div 
           onClick={() => {
             soundManager.playClick();
             onSelectTab('money');
           }}
-          className="stat-card profit-stat text-left group"
+          className="bento-card bento-apricot p-6 rounded-[28px] cursor-pointer group flex flex-col justify-between min-h-[190px] border border-[#fed7aa] shadow-sm hover:shadow-md transition-all"
         >
-          <div className="flex justify-between items-center w-full mb-3">
-            <span className="text-xs font-mono font-semibold text-[#34332f] uppercase tracking-wide">
-              September Realized
-            </span>
-            <div className="stat-icon-circle shadow-sm">
-              <TrendingUp className="w-3.5 h-3.5" />
-            </div>
-          </div>
           <div>
-            <div className="text-2xl font-bold font-mono tracking-tight text-[#272722]">
-              Rp 6.500.000
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-zinc-700">
+                01 // LIQUID CASH
+              </span>
+              <span className="text-[10px] font-mono bg-white/80 px-2.5 py-0.5 rounded-full text-zinc-800 font-bold border border-black/5">
+                LIVE
+              </span>
             </div>
-            <div className="text-[11px] text-[#4c4a40] font-mono mt-1">
-              65% dari target Rp10 Juta (Barber, Umi Elly, Ifdony)
+            <div className="mt-3">
+              <div className="text-3xl sm:text-4xl font-black tracking-tight text-[#111111] font-mono">
+                {formatShortRupiah(totalLiquid)}
+              </div>
+              <p className="text-xs text-zinc-700 mt-1 font-medium leading-snug">
+                Total kas likuid 7 rekening (Mandiri Rp9,78M + 6 dompet)
+              </p>
             </div>
           </div>
-        </button>
 
-        {/* Card 2: Total Kas Likuid Real (Peach #ffb99f) */}
-        <button
+          <div className="flex items-center justify-between pt-3 border-t border-black/10">
+            <span className="text-[11px] font-mono text-zinc-700 font-medium">
+              +Rp5,89M di atas Floor
+            </span>
+            <div className="btn-circle-arrow group-hover:bg-[#111111] group-hover:text-white transition-all">
+              <ArrowUpRight className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+
+        {/* BENTO CARD 2: BUBBLEGUM PINK with MICRO BAR CHART (Realisasi Profit September) */}
+        <div 
           onClick={() => {
             soundManager.playClick();
             onSelectTab('money');
           }}
-          className="stat-card paid-stat text-left group"
+          className="bento-card bento-pink p-6 rounded-[28px] cursor-pointer group flex flex-col justify-between min-h-[190px] border border-[#fbcfe8] shadow-sm hover:shadow-md transition-all"
         >
-          <div className="flex justify-between items-center w-full mb-3">
-            <span className="text-xs font-mono font-semibold text-[#34332f] uppercase tracking-wide">
-              Saldo Kas Likuid
-            </span>
-            <div className="stat-icon-circle shadow-sm">
-              <DollarSign className="w-3.5 h-3.5" />
-            </div>
-          </div>
           <div>
-            <div className="text-2xl font-bold font-mono tracking-tight text-[#272722]">
-              {formatRupiah(totalBal)}
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[#be185d]">
+                SEPTEMBER GAIN
+              </span>
+              <span className="text-[10px] font-mono bg-white/80 px-2 py-0.5 rounded-full text-[#be185d] font-bold border border-[#fbcfe8]">
+                {progressPercent}%
+              </span>
             </div>
-            <div className="text-[11px] text-[#4c4a40] font-mono mt-1">
-              Surplus +Rp5,89M di atas Hard Floor (Mandiri Rp9,78M)
+            <div className="mt-2">
+              <div className="text-3xl sm:text-4xl font-black tracking-tight text-[#111111] font-mono">
+                {formatShortRupiah(realizedIncome)}
+              </div>
+              <p className="text-xs text-[#be185d] font-medium leading-snug">
+                Dari target Rp10.000.000 (Barber + Umi Elly + Ifdony)
+              </p>
             </div>
           </div>
-        </button>
 
-        {/* Card 3: Pipeline Piutang Aktif (Sky Blue #adc6ed) */}
-        <button
+          {/* Micro Vertical Bar Chart (Iconic from Jobforge Pink Card!) */}
+          <div className="pt-2">
+            <div className="flex items-end justify-between gap-1.5 h-10 px-1 bg-white/40 rounded-xl p-1.5 border border-white/60">
+              {barSurges.map((val, idx) => (
+                <div 
+                  key={idx}
+                  className="flex-1 rounded-full bg-[#ec4899] transition-all duration-500 hover:bg-[#be185d]"
+                  style={{ height: `${val}%` }}
+                  title={`Surge #${idx + 1}: ${val}%`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* BENTO CARD 3: POWDER SKY BLUE (Stacked Telemetry Badges) */}
+        <div 
           onClick={() => {
             soundManager.playClick();
             onSelectTab('waiting');
           }}
-          className="stat-card unpaid-stat text-left group"
+          className="bento-card bento-blue p-6 rounded-[28px] cursor-pointer group flex flex-col justify-between min-h-[190px] border border-[#bae6fd] shadow-sm hover:shadow-md transition-all"
         >
-          <div className="flex justify-between items-center w-full mb-3">
-            <span className="text-xs font-mono font-semibold text-[#34332f] uppercase tracking-wide">
-              Piutang / Pipeline
-            </span>
-            <div className="stat-icon-circle shadow-sm">
-              <Clock className="w-3.5 h-3.5" />
-            </div>
-          </div>
           <div>
-            <div className="text-2xl font-bold font-mono tracking-tight text-[#272722]">
-              Rp 8.600.000
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[#0369a1]">
+                PIPELINE RADAR
+              </span>
+              <span className="text-[10px] font-mono bg-white/80 px-2 py-0.5 rounded-full text-[#0369a1] font-bold border border-[#bae6fd]">
+                OTW
+              </span>
             </div>
-            <div className="text-[11px] text-[#4c4a40] font-mono mt-1">
-              Al Madroj (Rp3,5M) + Sisa Umi Elly (Rp4M) + Ibrahim (Rp1,1M)
+
+            {/* Stacked Telemetry Badges like in Jobforge Blue Card */}
+            <div className="space-y-1.5 mt-3 font-mono">
+              <div className="flex items-center justify-between bg-white/70 px-3 py-1 rounded-xl text-xs border border-white/80">
+                <span className="text-zinc-600">Pending Termin:</span>
+                <strong className="text-[#0369a1] font-bold">Rp4.000.000</strong>
+              </div>
+              <div className="flex items-center justify-between bg-white/70 px-3 py-1 rounded-xl text-xs border border-white/80">
+                <span className="text-zinc-600">Runway Aman:</span>
+                <strong className="text-[#111111] font-bold">~2.2 Bulan</strong>
+              </div>
+              <div className="flex items-center justify-between bg-white/70 px-3 py-1 rounded-xl text-xs border border-white/80">
+                <span className="text-zinc-600">Floor Defence:</span>
+                <strong className="text-emerald-700 font-bold">Rp4.000.000</strong>
+              </div>
             </div>
           </div>
-        </button>
 
-        {/* Card 4: Defense Runway Safe (Pale Sage #e3e6c7) */}
-        <button
+          <div className="flex items-center justify-between pt-2 border-t border-black/5">
+            <span className="text-[11px] font-mono text-[#0369a1] font-semibold">
+              Lihat 6 Radar Items
+            </span>
+            <div className="btn-circle-arrow group-hover:bg-[#111111] group-hover:text-white transition-all">
+              <ArrowUpRight className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+
+        {/* BENTO CARD 4: SOFT LIME GREEN (Execution Flow & Golden Move) */}
+        <div 
           onClick={() => {
             soundManager.playClick();
-            onSelectTab('money');
+            onSelectTab('nextgo');
           }}
-          className="stat-card total-stat text-left group"
+          className="bento-card bento-lime p-6 rounded-[28px] cursor-pointer group flex flex-col justify-between min-h-[190px] border border-[#d9f99d] shadow-sm hover:shadow-md transition-all"
         >
-          <div className="flex justify-between items-center w-full mb-3">
-            <span className="text-xs font-mono font-semibold text-[#34332f] uppercase tracking-wide">
-              Defense Runway
-            </span>
-            <div className="stat-icon-circle shadow-sm">
-              <ShieldCheck className="w-3.5 h-3.5" />
-            </div>
-          </div>
           <div>
-            <div className="text-2xl font-bold font-mono tracking-tight text-[#272722]">
-              ±{runwayDays} Hari ({runwayMonths} Bln)
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[#3f6212]">
+                NEXT DIRECTIVE
+              </span>
+              <span className="text-[10px] font-mono bg-white/80 px-2 py-0.5 rounded-full text-[#3f6212] font-bold border border-[#d9f99d]">
+                MOVE #1
+              </span>
             </div>
-            <div className="text-[11px] text-[#4c4a40] font-mono mt-1">
-              Burn riil Rp4,5M/bln • Status Kas: Green Safe Growth 🟢
+            <div className="mt-3">
+              <div className="text-xl font-bold tracking-tight text-[#111111]">
+                Sprint Modul 1
+              </div>
+              <p className="text-xs text-zinc-700 mt-1 leading-relaxed">
+                LMS Umi Elly Azhariyah → Buka kunci penagihan Termin 2 (+Rp2.000.000)
+              </p>
             </div>
           </div>
-        </button>
 
+          <div className="flex items-center justify-between pt-3 border-t border-black/10">
+            <span className="text-[11px] font-mono text-[#3f6212] font-bold">
+              Timebox: 90 Menit
+            </span>
+            <div className="btn-circle-arrow group-hover:bg-[#111111] group-hover:text-white transition-all">
+              <ArrowUpRight className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* 3. CLIENT / PARTNER MONOCHROME LOGOS STRIP */}
+      <div className="py-2 px-4 rounded-2xl bg-white border border-zinc-200/70 shadow-sm flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-zinc-500">
+        <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
+          TRUSTED PARTNERS // ACTIVE CONTRACTS:
+        </span>
+        <div className="flex flex-wrap items-center gap-5 sm:gap-8 font-semibold text-zinc-700">
+          <span className="hover:text-black transition-colors cursor-default">BARBER UNDERRATED</span>
+          <span className="hover:text-black transition-colors cursor-default">UMI ELLY AZHARIYAH</span>
+          <span className="hover:text-black transition-colors cursor-default">DREAMMECCA</span>
+          <span className="hover:text-black transition-colors cursor-default">ZALVICE STUDIO</span>
+          <span className="hover:text-black transition-colors cursor-default">MARKAZ FIQIH</span>
+          <span className="hover:text-black transition-colors cursor-default">KAEL POS SAAS</span>
+        </div>
+      </div>
+
+      {/* 4. "RECOMMENDED MOVES" TAG CLOUD (Exact from Jobforge "Recommended Jobs" Pill Cloud) */}
+      <div className="space-y-2.5 text-center pt-2">
+        <div className="space-y-0.5">
+          <h3 className="text-base sm:text-lg font-extrabold text-[#111111] tracking-tight">
+            Recommended Execution Tracks
+          </h3>
+          <p className="text-xs text-zinc-500 font-normal">
+            Pilih jalur eksekusi yang paling relevan dengan prioritas lo sekarang:
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-1 font-mono text-xs">
+          <button
+            onClick={() => onSelectTab('nextgo')}
+            className="pill-black px-4 py-2 hover:scale-105 transition-all shadow-sm flex items-center gap-1.5"
+          >
+            <span>LMS Umi Elly (Cairkan Rp2M)</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </button>
+
+          <button
+            onClick={() => onSelectTab('today')}
+            className="pill-white px-4 py-2 hover:scale-105 transition-all shadow-sm"
+          >
+            DreamMecca Handover (Otak Plong)
+          </button>
+
+          <button
+            onClick={() => onSelectTab('lanes')}
+            className="pill-white px-4 py-2 hover:scale-105 transition-all shadow-sm"
+          >
+            KAEL POS (Demo Multi-Tenant)
+          </button>
+
+          <button
+            onClick={() => onSelectTab('lanes')}
+            className="pill-black px-4 py-2 hover:scale-105 transition-all shadow-sm"
+          >
+            Barber Kasir (Lunas Rp6M)
+          </button>
+
+          <button
+            onClick={() => onSelectTab('waiting')}
+            className="pill-white px-4 py-2 hover:scale-105 transition-all shadow-sm"
+          >
+            Radar Follow-up WA
+          </button>
+
+          <button
+            onClick={() => onSelectTab('deepwork')}
+            className="pill-black px-4 py-2 hover:scale-105 transition-all shadow-sm flex items-center gap-1"
+          >
+            <span>Pomodoro Focus (Gamma 40Hz)</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
     </div>

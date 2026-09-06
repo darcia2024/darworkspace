@@ -234,104 +234,105 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
   return (
     <div className="space-y-5 font-sans animate-fade-in pb-12 max-w-5xl mx-auto select-none">
       
-      {/* 1. EXECUTIVE SUMMARY HERO CARD (Figma Doppelrand Double-Bezel) */}
-      <div className={`figma-shell border-l-4 ${isRed ? 'border-l-rose-500' : isGreen ? 'border-l-emerald-500' : 'border-l-amber-500'}`}>
-        <div className="figma-core p-5 sm:p-6 space-y-4">
+      {/* 1. EXECUTIVE SUMMARY HERO CARD (Jobforge Bento Style) */}
+      <div className="bento-card p-6 sm:p-7 space-y-5 border border-zinc-200/90 shadow-sm">
+        
+        {/* Top Header */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3.5">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse" />
+            <h3 className="text-xl font-extrabold text-[#111111] tracking-tight font-sans">
+              <span className="lead-italic font-normal">Cashflow</span> & Treasury Radar
+            </h3>
+            <span className="sticker-pill sticker-lime text-[9px]">
+              {isRed 
+                ? 'RED MODE — CASH DEFENSE' 
+                : isGreen 
+                  ? 'GREEN MODE — GROWTH & EXPANSION' 
+                  : 'YELLOW MODE — RECOVERY STAGE 2'}
+            </span>
+            <span className="text-xs text-zinc-500 font-mono">// as of {currentFullDateStr} (Live)</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {onOpenFinanceInput && (
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  onOpenFinanceInput();
+                }}
+                className="pill-black px-4 py-2 text-xs font-bold flex items-center gap-1.5 shadow-sm"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ Catat Kas / Foto Bukti</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 3 Executive Metrics */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           
-          {/* Top Header */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
-            <div className="flex items-center gap-2">
-              <span className={`w-2.5 h-2.5 rounded-full ${isRed ? 'bg-rose-500' : isGreen ? 'bg-emerald-400' : 'bg-amber-400'} animate-pulse`} />
-              <span className={`text-xs font-mono font-bold uppercase ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'}`}>
-                {isRed 
-                  ? '🔴 RED MODE — CASH DEFENSE' 
-                  : isGreen 
-                    ? '🟢 GREEN MODE — GROWTH & EXPANSION' 
-                    : '🟡 YELLOW MODE — RECOVERY STAGE 2 (SAFE BUFFER)'}
-              </span>
-              <span className="text-xs text-[#59594f] font-mono">// as of {currentFullDateStr} (Live)</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {onOpenFinanceInput && (
-                <button
-                  onClick={() => {
-                    soundManager.playClick();
-                    onOpenFinanceInput();
-                  }}
-                  className="px-3.5 py-1.5 dev-btn-primary text-xs font-bold flex items-center gap-1.5 shadow-sm"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>+ Catat Kas / Foto Bukti</span>
-                </button>
-              )}
-            </div>
+          {/* Metric 1: Total Saldo Likuid (Apricot) */}
+          <div className="bento-card bento-apricot p-5 rounded-[22px] border border-[#fed7aa] space-y-1.5">
+            <span className="sticker-pill sticker-apricot text-[9px]">
+              01 // SALDO LIKUID TOTAL
+            </span>
+            <span className="text-2xl sm:text-3xl font-extrabold text-[#111111] font-sans block">
+              {formatRupiah(report.totalLiquidBalance)}
+            </span>
+            <span className="text-[11px] font-mono block text-[#c2410c] font-semibold">
+              {isRed 
+                ? `< Rp4,00M Hard Floor (Mandiri Live)` 
+                : isGreen 
+                  ? `Target +10M Tercapai! (Zona Bebas)` 
+                  : `+${formatRupiah(report.totalLiquidBalance - (report.hardFloor || 4000000))} di atas Floor (Aman)`}
+            </span>
           </div>
 
-          {/* 3 Executive Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            
-            {/* Metric 1: Total Saldo Likuid */}
-            <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
-              <span className="text-[10px] font-mono text-[#59594f] uppercase tracking-widest block">
-                01 // SALDO LIKUID TOTAL
-              </span>
-              <span className="text-2xl sm:text-3xl font-extrabold text-[#252520] font-mono block">
-                {formatRupiah(report.totalLiquidBalance)}
-              </span>
-              <span className={`text-[11px] font-mono block ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-300'}`}>
-                {isRed 
-                  ? `< Rp4,00M Hard Floor (Mandiri Live)` 
-                  : isGreen 
-                    ? `Target +10M Tercapai! (Zona Bebas)` 
-                    : `+${formatRupiah(report.totalLiquidBalance - (report.hardFloor || 4000000))} di atas Floor (Aman)`}
-              </span>
-            </div>
-
-            {/* Metric 2: Monthly Burn */}
-            <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
-              <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block">
-                02 // REAL BURN RATE
-              </span>
-              <span className="text-2xl sm:text-3xl font-extrabold text-[#252520] font-mono block">
-                ~{formatRupiah(report.estimatedRealBurn || 4500000)}
-              </span>
-              <span className="text-[11px] font-mono text-[#59594f] block">
-                Rp2,66M Wajib Tetap + ~Rp1,8M Fleksibel
-              </span>
-            </div>
-
-            {/* Metric 3: Dynamic Runway */}
-            <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
-              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block">
-                03 // DEFENSE RUNWAY
-              </span>
-              <span className="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono block">
-                ±{calculatedRunwayDays} Hari
-              </span>
-              <span className="text-[11px] font-mono text-[#59594f] block">
-                ~{calculatedRunwayMonths} Bulan operasional aman
-              </span>
-            </div>
-
+          {/* Metric 2: Monthly Burn (Pink) */}
+          <div className="bento-card bento-pink p-5 rounded-[22px] border border-[#fbcfe8] space-y-1.5">
+            <span className="sticker-pill sticker-pink text-[9px]">
+              02 // REAL BURN RATE
+            </span>
+            <span className="text-2xl sm:text-3xl font-extrabold text-[#111111] font-sans block">
+              ~{formatRupiah(report.estimatedRealBurn || 4500000)}
+            </span>
+            <span className="text-[11px] font-mono text-zinc-600 block">
+              Rp2,66M Wajib Tetap + ~Rp1,8M Fleksibel
+            </span>
           </div>
 
-          {/* Golden Rule Callout */}
-          <div className="p-3 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-xs font-mono text-[#59594f]">
-            <span className={`${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-400'} font-bold`}>// STRATEGI BULAN {currentMonthName.toUpperCase()} {currentYear}:</span> "Belum masuk rekening = belum jadi uang. Target mutlak: <strong>Minimal +Rp10 Juta Masuk di Bulan {currentMonthName}</strong>."
+          {/* Metric 3: Dynamic Runway (Lime) */}
+          <div className="bento-card bento-lime p-5 rounded-[22px] border border-[#d9f99d] space-y-1.5">
+            <span className="sticker-pill sticker-lime text-[9px]">
+              03 // DEFENSE RUNWAY
+            </span>
+            <span className="text-2xl sm:text-3xl font-extrabold text-[#111111] font-sans block">
+              ±{calculatedRunwayDays} Hari
+            </span>
+            <span className="text-[11px] font-mono text-zinc-600 block">
+              ~{calculatedRunwayMonths} Bulan operasional aman
+            </span>
           </div>
 
         </div>
+
+        {/* Golden Rule Callout */}
+        <div className="p-4 rounded-2xl bg-[#fef9c3]/70 border border-[#fef08a] text-xs font-mono text-zinc-800">
+          <span className="text-[#854d0e] font-bold">// STRATEGI BULAN {currentMonthName.toUpperCase()} {currentYear}:</span> "Belum masuk rekening = belum jadi uang. Target mutlak: <strong>Minimal +Rp10 Juta Masuk di Bulan {currentMonthName}</strong>."
+        </div>
+
       </div>
 
       {/* =========================================================================
           2. MONTHLY REVENUE TARGET & HISTORICAL ARCHIVE ENGINE
           ========================================================================= */}
-      <div className="figma-shell border-emerald-500/40 ring-1 ring-emerald-500/20">
-        <div className="figma-core p-5 sm:p-6 bg-gradient-to-br from-[#101915] via-[#090d0b] to-[#060609] space-y-5">
+      <div className="bento-card p-6 sm:p-7 space-y-5 border border-zinc-200/90 shadow-sm">
+        <div>
           
           {/* Top Month Switcher Pills Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono text-[#59594f] font-semibold uppercase tracking-wider">
                 Pilih Periode Bulan:
@@ -669,8 +670,8 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
         </div>
       </div>
 
-      {/* 3. SIMPLE NAVIGATION SUB-TABS (Pill Tabs) */}
-      <div className="flex items-center gap-1.5 bg-[#fffdf5] p-1.5 rounded-2xl border border-[#ded7c8] overflow-x-auto no-scrollbar">
+      {/* 3. SIMPLE NAVIGATION SUB-TABS (Jobforge Pill Tabs) */}
+      <div className="bento-card p-2 flex items-center gap-2 border border-zinc-200/80 overflow-x-auto no-scrollbar font-mono text-xs">
         {[
           { id: 'overview', label: '📊 Ringkasan & Roadmap' },
           { id: 'archive', label: '🏛️ Arsip & Rekap Bulanan' },
@@ -685,10 +686,10 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
               soundManager.playClick();
               setActiveTab(tab.id as any);
             }}
-            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap ${
+            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
               activeTab === tab.id
-                ? 'bg-white text-zinc-950 font-bold shadow-md'
-                : 'text-[#59594f] hover:text-[#252520] hover:bg-white/[0.04]'
+                ? 'pill-black shadow-md'
+                : 'pill-white text-zinc-600 hover:text-black'
             }`}
           >
             {tab.label}
@@ -702,67 +703,63 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
       {activeTab === 'overview' && (
         <div className="space-y-4">
           
-          <div className="figma-shell">
-            <div className="figma-core p-5 sm:p-6 space-y-4">
-              <h3 className="text-sm font-bold text-[#252520]">Simulasi Perpanjangan Runway & Target Kas</h3>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-4 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] space-y-1">
-                  <span className={`text-[11px] font-mono font-bold block ${isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-300'}`}>
-                    1. POSISI SAAT INI (LIVE)
-                  </span>
-                  <p className="text-lg font-bold text-[#252520] font-mono">{formatRupiah(report.totalLiquidBalance)}</p>
-                  <p className="text-xs text-[#59594f]">
-                    Runway: <strong className={isRed ? 'text-rose-400' : isGreen ? 'text-emerald-400' : 'text-amber-300'}>±{calculatedRunwayDays} Hari (~{calculatedRunwayMonths} Bln)</strong>
-                  </p>
-                  <span className="text-[10px] text-[#928876] font-mono block mt-1">
-                    {isRed ? '🔴 Mode Cash Defense (< Rp4M)' : isGreen ? '🟢 Green Mode (Growth & Expansion)' : '🟡 Yellow Mode (Stage 2 Safe Buffer)'}
-                  </span>
-                </div>
+          <div className="bento-card p-6 space-y-4 border border-zinc-200/90 shadow-sm">
+            <h3 className="text-base font-extrabold text-[#111111] font-sans">Simulasi Perpanjangan Runway & Target Kas</h3>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div className="bento-card bento-pink p-5 rounded-[22px] border border-[#fbcfe8] space-y-1.5">
+                <span className="sticker-pill sticker-pink text-[9px]">
+                  1. POSISI SAAT INI (LIVE)
+                </span>
+                <p className="text-xl font-extrabold text-[#111111] font-sans">{formatRupiah(report.totalLiquidBalance)}</p>
+                <p className="text-xs text-zinc-600">
+                  Runway: <strong className={isRed ? 'text-[#be185d]' : 'text-[#15803d]'}>±{calculatedRunwayDays} Hari (~{calculatedRunwayMonths} Bln)</strong>
+                </p>
+                <span className="text-[10px] text-zinc-500 font-mono block mt-1">
+                  {isRed ? '🔴 Mode Cash Defense (< Rp4M)' : '🟢 Green Mode (Growth)'}
+                </span>
+              </div>
 
-                <div className="p-4 rounded-2xl bg-[#faf9f3] border border-emerald-500/20 space-y-1">
-                  <span className="text-[11px] font-mono text-emerald-400 font-bold block">
-                    2. + TERMIN 1 UMI ELLY (DP Rp3M)
-                  </span>
-                  <p className="text-lg font-bold text-[#252520] font-mono">{formatRupiah(report.totalLiquidBalance + 3000000)}</p>
-                  <p className="text-xs text-[#59594f]">
-                    Runway: <strong className="text-emerald-400">±{Math.round(((report.totalLiquidBalance + 3000000) / (report.estimatedRealBurn || 4500000)) * 30)} Hari (~{(((report.totalLiquidBalance + 3000000) / (report.estimatedRealBurn || 4500000))).toFixed(1)} Bln)</strong>
-                  </p>
-                  <span className="text-[10px] text-emerald-400/80 font-mono block mt-1">
-                    🟢 Safe Growth Zone (Mendekati Target 10M)
-                  </span>
-                </div>
+              <div className="bento-card bento-lime p-5 rounded-[22px] border border-[#d9f99d] space-y-1.5">
+                <span className="sticker-pill sticker-lime text-[9px]">
+                  2. + TERMIN 1 UMI ELLY (DP Rp3M)
+                </span>
+                <p className="text-xl font-extrabold text-[#111111] font-sans">{formatRupiah(report.totalLiquidBalance + 3000000)}</p>
+                <p className="text-xs text-zinc-600">
+                  Runway: <strong className="text-[#15803d]">±{Math.round(((report.totalLiquidBalance + 3000000) / (report.estimatedRealBurn || 4500000)) * 30)} Hari (~{(((report.totalLiquidBalance + 3000000) / (report.estimatedRealBurn || 4500000))).toFixed(1)} Bln)</strong>
+                </p>
+                <span className="text-[10px] text-[#15803d] font-mono block mt-1 font-semibold">
+                  🟢 Safe Growth Zone (Mendekati Target 10M)
+                </span>
+              </div>
 
-                <div className="p-4 rounded-2xl bg-[#faf9f3] border border-teal-500/30 space-y-1">
-                  <span className="text-[11px] font-mono text-teal-300 font-bold block">
-                    3. + PELUNASAN BARBER / TERMIN 2 (Rp3M)
-                  </span>
-                  <p className="text-lg font-bold text-[#252520] font-mono">{formatRupiah(report.totalLiquidBalance + 6000000)}</p>
-                  <p className="text-xs text-[#59594f]">
-                    Runway: <strong className="text-teal-300">±{Math.round(((report.totalLiquidBalance + 6000000) / (report.estimatedRealBurn || 4500000)) * 30)} Hari (~{(((report.totalLiquidBalance + 6000000) / (report.estimatedRealBurn || 4500000))).toFixed(1)} Bln)</strong>
-                  </p>
-                  <span className="text-[10px] text-teal-300 font-mono block mt-1">
-                    💎 High Capital & Safe Scaling
-                  </span>
-                </div>
+              <div className="bento-card bento-blue p-5 rounded-[22px] border border-[#bae6fd] space-y-1.5">
+                <span className="sticker-pill sticker-blue text-[9px]">
+                  3. + PELUNASAN BARBER / TERMIN 2 (Rp3M)
+                </span>
+                <p className="text-xl font-extrabold text-[#111111] font-sans">{formatRupiah(report.totalLiquidBalance + 6000000)}</p>
+                <p className="text-xs text-zinc-600">
+                  Runway: <strong className="text-[#0369a1]">±{Math.round(((report.totalLiquidBalance + 6000000) / (report.estimatedRealBurn || 4500000)) * 30)} Hari (~{(((report.totalLiquidBalance + 6000000) / (report.estimatedRealBurn || 4500000))).toFixed(1)} Bln)</strong>
+                </p>
+                <span className="text-[10px] text-[#0369a1] font-mono block mt-1 font-semibold">
+                  💎 High Capital & Safe Scaling
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="figma-shell">
-            <div className="figma-core p-5 sm:p-6 space-y-3">
-              <h3 className="text-sm font-bold text-[#252520]">Pergerakan Aset Likuid Terakhir</h3>
-              <div className="space-y-2">
-                {report.trajectory.map((point, idx) => (
-                  <div key={point.date} className="flex items-center justify-between text-xs font-mono p-3 rounded-xl bg-[#faf9f3] border border-[#ded7c8]">
-                    <span className="text-[#59594f] font-semibold">{point.date}</span>
-                    <div className="flex gap-2 items-center">
-                      <span className={`font-bold ${idx === report.trajectory.length - 1 ? 'text-[#252520]' : 'text-[#59594f]'}`}>{formatRupiah(point.balance)}</span>
-                      <span className="text-[11px] text-[#928876]">({point.note})</span>
-                    </div>
+          <div className="bento-card p-6 space-y-4 border border-zinc-200/90 shadow-sm">
+            <h3 className="text-base font-extrabold text-[#111111] font-sans">Pergerakan Aset Likuid Terakhir</h3>
+            <div className="space-y-2">
+              {report.trajectory.map((point, idx) => (
+                <div key={point.date} className="flex items-center justify-between text-xs font-mono p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200/80">
+                  <span className="text-zinc-600 font-semibold">{point.date}</span>
+                  <div className="flex gap-2 items-center">
+                    <span className={`font-bold ${idx === report.trajectory.length - 1 ? 'text-[#111111]' : 'text-zinc-500'}`}>{formatRupiah(point.balance)}</span>
+                    <span className="text-[11px] text-zinc-400">({point.note})</span>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -770,37 +767,45 @@ export const MoneyCashflowView: React.FC<MoneyCashflowViewProps> = ({
 
       {/* VIEW 2: 7 ACCOUNTS */}
       {activeTab === 'accounts' && (
-        <div className="figma-shell">
-          <div className="figma-core p-5 sm:p-6 space-y-4">
-            <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
-              <div>
-                <h3 className="text-sm font-bold text-[#252520]">Rincian Saldo Rekening & E-Wallet</h3>
-                <p className="text-xs text-[#59594f] font-mono mt-0.5">// Total: {formatRupiah(report.totalLiquidBalance)}</p>
-              </div>
-              <button 
-                onClick={() => onOpenFinanceInput && onOpenFinanceInput()} 
-                className="dev-tag hover:text-[#252520]"
-              >
-                ✏️ Update Saldo
-              </button>
+        <div className="bento-card p-6 space-y-5 border border-zinc-200/90 shadow-sm">
+          <div className="flex justify-between items-center border-b border-zinc-100 pb-3">
+            <div>
+              <h3 className="text-base font-extrabold text-[#111111] font-sans">Rincian Saldo Rekening & E-Wallet</h3>
+              <p className="text-xs text-zinc-500 font-mono mt-0.5">// Total: {formatRupiah(report.totalLiquidBalance)}</p>
             </div>
+            <button 
+              onClick={() => onOpenFinanceInput && onOpenFinanceInput()} 
+              className="pill-black text-xs font-semibold px-4 py-1.5 shadow-sm"
+            >
+              ✏️ Update Saldo
+            </button>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {report.accounts.map(acc => (
-                <div key={acc.name} className={`p-4 rounded-2xl border flex justify-between items-center ${acc.isLatest ? 'bg-white/[0.04] border-[#ded7c8]' : 'bg-[#faf9f3] border-[#ded7c8]'}`}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {report.accounts.map((acc, idx) => {
+              const accThemes = [
+                { bg: 'bento-apricot', border: 'border-[#fed7aa]' },
+                { bg: 'bento-blue', border: 'border-[#bae6fd]' },
+                { bg: 'bento-pink', border: 'border-[#fbcfe8]' },
+                { bg: 'bento-lime', border: 'border-[#d9f99d]' },
+              ];
+              const theme = accThemes[idx % accThemes.length];
+
+              return (
+                <div key={acc.name} className={`bento-card ${theme.bg} p-5 rounded-[22px] border ${theme.border} flex justify-between items-center shadow-xs`}>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-[#252520]">{acc.name}</span>
-                      {acc.isLatest && <span className="dev-tag-emerald text-[9px] py-0">LIVE</span>}
+                      <span className="text-sm font-extrabold text-[#111111] font-sans">{acc.name}</span>
+                      {acc.isLatest && <span className="sticker-pill sticker-lime text-[9px] py-0">LIVE</span>}
                     </div>
-                    <span className="text-[10px] text-[#928876] font-mono">{acc.lastUpdated}</span>
+                    <span className="text-[11px] text-zinc-600 font-mono">{acc.lastUpdated}</span>
                   </div>
-                  <span className="text-sm font-mono font-bold text-[#252520]">{formatRupiah(acc.balance)}</span>
+                  <span className="text-base font-mono font-extrabold text-[#111111]">{formatRupiah(acc.balance)}</span>
                 </div>
-              ))}
-            </div>
-            <p className="text-[11px] text-[#59594f] font-mono pt-1">*Mandiri adalah update angka live terbaru. Saldo lain memakai data 26 Agustus.</p>
+              );
+            })}
           </div>
+          <p className="text-[11px] text-zinc-500 font-mono pt-1">*Mandiri adalah update angka live terbaru. Saldo lain memakai data 26 Agustus.</p>
         </div>
       )}
 

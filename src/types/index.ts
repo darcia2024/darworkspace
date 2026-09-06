@@ -144,19 +144,23 @@ export interface InvoiceRecord {
   createdAt: string;
 }
 
+export interface QuickStats {
+  paidClientActive: number;
+  waitingPaymentKickoff: number;
+  maintenanceOpen: number;
+  salesAndProductActive: number;
+}
+
+export interface TodayPursuit {
+  id: string;
+  project: string;
+  action: string;
+  isDone?: boolean;
+}
+
 export interface DaruWorkOSState {
-  todayPursuit: Array<{
-    id: string;
-    project: string;
-    action: string;
-    isDone?: boolean;
-  }>;
-  quickStats: {
-    paidClientActive: number;
-    waitingPaymentKickoff: number;
-    maintenanceOpen: number;
-    salesAndProductActive: number;
-  };
+  todayPursuit: TodayPursuit[];
+  quickStats: QuickStats;
   todayBlocks: TodayBlock[];
   projects: ProjectCard[];
   waitingItems: WaitingItem[];

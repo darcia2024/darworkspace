@@ -60,75 +60,75 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
     <div className="space-y-6 font-sans animate-fade-in select-none">
       
       {/* Header */}
-      <div className="figma-shell">
-        <div className="figma-core p-4 sm:p-5 bg-[#fffdf5] flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#925f18]" />
-              <h3 className="text-base font-bold text-[#252520] tracking-tight">Waiting View & Pipeline Radar</h3>
-              <span className="dev-tag text-[9px]">{waitingItems.length} ITEMS ACTIVE</span>
-            </div>
-            <p className="text-xs text-[#59594f] font-mono mt-0.5">
-              // External dependencies: Umi Elly (Termin 2 Rp2M), Bedug (Rp2.2M), Teh Umi, El Massa, Ar-Ruwad, Watra
-            </p>
+      <div className="bento-card p-5 sm:p-6 bg-white border border-zinc-200/90 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <Clock className="w-4 h-4 text-[#ea580c]" />
+            <h3 className="text-xl font-extrabold text-[#111111] tracking-tight font-sans">
+              <span className="lead-italic font-normal">Waiting</span> & Cash Pipeline Radar
+            </h3>
+            <span className="sticker-pill sticker-yellow text-[9px]">{waitingItems.length} ITEMS ACTIVE</span>
           </div>
-
-          <button
-            onClick={() => setIsAdding(!isAdding)}
-            className="flex items-center gap-1.5 px-4 py-2 dev-btn-primary text-xs font-semibold shadow-sm"
-          >
-            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>Add Waiting Item</span>
-          </button>
+          <p className="text-xs text-zinc-500 font-mono mt-1">
+            // External dependencies: Umi Elly (Termin 2 Rp2M), Bedug (Rp2.2M), Teh Umi, El Massa, Ar-Ruwad, Watra
+          </p>
         </div>
+
+        <button
+          onClick={() => setIsAdding(!isAdding)}
+          className="pill-black flex items-center gap-2 text-xs font-semibold shadow-md"
+        >
+          <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+          <span>Add Waiting Item</span>
+        </button>
       </div>
 
       {/* Add Inline Form */}
       {isAdding && (
-        <div className="p-5 rounded-2xl bg-[#fffdf5] border border-[#ded7c8] shadow-md space-y-3 animate-slide-up font-mono text-xs">
-          <h4 className="text-sm font-bold text-[#252520] font-sans">Tambah Item Antrian Eksternal</h4>
+        <div className="bento-card p-6 bg-white border border-zinc-200 shadow-lg space-y-4 animate-slide-up font-mono text-xs">
+          <h4 className="text-base font-extrabold text-[#111111] font-sans">Tambah Item Antrian Eksternal</h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-[11px] text-[#59594f] mb-1">Client / Project</label>
+              <label className="block text-[11px] text-zinc-500 mb-1">Client / Project</label>
               <input
                 type="text"
                 placeholder="Contoh: Barber POS"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl px-3 py-2 text-xs text-[#252520] focus:outline-none focus:border-[#292a24]"
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-black font-sans"
               />
             </div>
             <div>
-              <label className="block text-[11px] text-[#59594f] mb-1">Reason / Menunggu Apa</label>
+              <label className="block text-[11px] text-zinc-500 mb-1">Reason / Menunggu Apa</label>
               <input
                 type="text"
                 placeholder="Contoh: Menunggu approval modul"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl px-3 py-2 text-xs text-[#252520] focus:outline-none focus:border-[#292a24]"
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-black font-sans"
               />
             </div>
             <div>
-              <label className="block text-[11px] text-[#59594f] mb-1">Value / Potensi Kas</label>
+              <label className="block text-[11px] text-zinc-500 mb-1">Value / Potensi Kas</label>
               <input
                 type="text"
                 placeholder="Contoh: Rp2.000.000"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl px-3 py-2 text-xs text-[#252520] focus:outline-none focus:border-[#292a24]"
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-black font-sans"
               />
             </div>
           </div>
-          <div className="flex justify-end gap-2 pt-2 border-t border-[#ded7c8]">
+          <div className="flex justify-end gap-2 pt-2 border-t border-zinc-100">
             <button
               onClick={() => setIsAdding(false)}
-              className="px-3.5 py-1.5 rounded-xl bg-[#faf9f3] text-[#59594f] text-xs hover:bg-[#eae5d8] border border-[#ded7c8] font-medium"
+              className="pill-white px-4 py-2 text-zinc-600 text-xs font-medium"
             >
               Cancel
             </button>
             <button
               onClick={handleCreate}
-              className="px-4 py-1.5 rounded-xl dev-btn-primary text-xs font-semibold shadow-sm"
+              className="pill-black px-5 py-2 text-xs font-semibold shadow-sm"
             >
               Save Item
             </button>
@@ -138,47 +138,55 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
 
       {/* Waiting Items Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {waitingItems.map((item) => (
-          <div
-            key={item.id}
-            className="figma-shell hover:border-[#928876] transition-all"
-          >
-            <div className="figma-core p-5 bg-[#fffdf5] h-full flex flex-col justify-between space-y-4">
-              <div className="space-y-2.5">
+        {waitingItems.map((item, idx) => {
+          const itemThemes = [
+            { bg: 'bento-apricot', border: 'border-[#fed7aa]', sticker: 'sticker-apricot' },
+            { bg: 'bento-blue', border: 'border-[#bae6fd]', sticker: 'sticker-blue' },
+            { bg: 'bento-pink', border: 'border-[#fbcfe8]', sticker: 'sticker-pink' },
+            { bg: 'bento-lime', border: 'border-[#d9f99d]', sticker: 'sticker-lime' },
+          ];
+          const theme = itemThemes[idx % itemThemes.length];
+
+          return (
+            <div
+              key={item.id}
+              className={`bento-card ${theme.bg} border ${theme.border} p-5 transition-all hover:-translate-y-0.5 hover:shadow-md h-full flex flex-col justify-between space-y-4`}
+            >
+              <div className="space-y-3">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <span className="dev-tag text-[9px]">
+                    <span className={`sticker-pill ${theme.sticker} text-[9px]`}>
                       {item.status.toUpperCase()}
                     </span>
-                    <h4 className="text-base font-bold text-[#252520] mt-1.5 tracking-tight">{item.name}</h4>
+                    <h4 className="text-base font-extrabold text-[#111111] mt-2 tracking-tight font-sans">{item.name}</h4>
                   </div>
-                  <span className="text-xs font-bold text-[#305d46] bg-[#e2ecdc] border border-[#305d46]/30 px-2.5 py-1 rounded-lg font-mono">
+                  <span className="text-xs font-bold text-zinc-900 bg-white/80 border border-black/5 px-2.5 py-1 rounded-full font-mono shadow-xs">
                     {item.value}
                   </span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-xs space-y-1 font-mono">
-                  <div className="text-[#59594f]">
-                    <span className="font-bold text-[#252520]">Alasan:</span> {item.reason}
+                <div className="p-3 rounded-2xl bg-white/70 border border-black/5 text-xs space-y-1.5 font-mono">
+                  <div className="text-zinc-600">
+                    <span className="font-bold text-zinc-900 font-sans">Alasan:</span> {item.reason}
                   </div>
                   {item.actionToUnblock && (
-                    <div className="text-[#925f18]">
-                      <span className="font-bold">Next Action:</span> {item.actionToUnblock}
+                    <div className="text-[#c2410c]">
+                      <span className="font-bold font-sans">Next Action:</span> {item.actionToUnblock}
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-2 border-t border-[#ded7c8] flex items-center justify-between gap-2 text-xs font-mono">
+              <div className="pt-3 border-t border-black/5 flex items-center justify-between gap-2 text-xs font-mono">
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => handleQuickCopy(item)}
-                    className="p-1.5 rounded-lg bg-[#faf9f3] hover:bg-[#eae5d8] text-[#59594f] hover:text-[#252520] border border-[#ded7c8] transition-colors"
+                    className="p-2 rounded-full bg-white text-zinc-700 hover:text-black border border-black/5 shadow-xs transition-colors"
                     title="Copas quick message"
                   >
                     {copiedId === item.id ? (
-                      <Check className="w-3.5 h-3.5 text-[#305d46]" />
+                      <Check className="w-3.5 h-3.5 text-[#15803d]" />
                     ) : (
                       <Copy className="w-3.5 h-3.5" />
                     )}
@@ -190,7 +198,7 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
                         soundManager.playClick();
                         onOpenFollowUpModal(item);
                       }}
-                      className="px-2.5 py-1.5 rounded-lg bg-[#ffb99f]/30 hover:bg-[#ffb99f]/60 text-[#814637] border border-[#ffb99f] transition-colors flex items-center gap-1 font-medium"
+                      className="px-3 py-1.5 rounded-full bg-white text-[#c2410c] border border-black/5 shadow-xs hover:bg-zinc-50 transition-colors flex items-center gap-1 font-semibold"
                       title="Buka generator pesan follow-up"
                     >
                       <MessageSquare className="w-3 h-3" />
@@ -204,15 +212,15 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
                     soundManager.playClick();
                     onResolveItem(item.id);
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-[#e2ecdc] hover:bg-[#d5e4cf] text-[#305d46] border border-[#305d46]/30 font-bold transition-colors"
+                  className="px-3.5 py-1.5 rounded-full bg-[#ecfccb] hover:bg-[#d9f99d] text-[#15803d] border border-[#d9f99d] font-bold transition-colors shadow-xs"
                 >
                   ✓ Beres
                 </button>
               </div>
 
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
     </div>

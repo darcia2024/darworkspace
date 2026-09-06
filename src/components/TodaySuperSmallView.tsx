@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { 
   Play, 
   Check, 
@@ -59,57 +59,53 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
     <div className="space-y-5 font-sans select-none animate-fade-in">
       
       {/* 1. STRATEGY MODE SWITCHER BANNER */}
-      <div className="figma-shell">
-        <div className="figma-core p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 bg-[#fffdf5]">
-          
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#305d46] animate-pulse" />
-              <h3 className="text-sm font-bold text-[#252520] tracking-tight">
-                Hari ini mau ngerjain apa dulu?
-              </h3>
-              <span className="dev-tag text-[9px]">
-                {strategyMode === 'single' ? 'MONOTASK_LOCK' : 'MULTI_SPRINT_BATCH'}
-              </span>
-            </div>
-            <p className="text-xs text-[#59594f]">
-              Pilih mode eksekusi: Fokus 1 hal sampai tuntas tanpa distraksi, atau batch beberapa hal sekaligus.
-            </p>
+      <div className="bento-card p-5 flex flex-wrap items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse" />
+            <h3 className="text-base font-extrabold text-[#111111] tracking-tight font-sans">
+              <span className="lead-italic font-normal mr-1">Choose</span> Your Execution Track
+            </h3>
+            <span className="sticker-pill sticker-lime text-[10px]">
+              {strategyMode === 'single' ? 'EXCLUSIVE MONOTASK' : 'PARALLEL SPRINT BATCH'}
+            </span>
           </div>
+          <p className="text-xs text-zinc-500 font-normal">
+            Pilih mode eksekusi: Kunci 1 hal sampai tuntas tanpa distraksi, atau batch beberapa sprint sekaligus.
+          </p>
+        </div>
 
-          {/* Mode Switcher Buttons */}
-          <div className="flex items-center gap-1.5 bg-[#eae5d8] p-1.5 rounded-2xl border border-[#ded7c8] font-mono text-xs">
-            <button
-              onClick={() => {
-                soundManager.playClick();
-                setStrategyMode('single');
-              }}
-              className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-2 ${
-                strategyMode === 'single'
-                  ? 'bg-[#292a24] text-[#fffdf5] font-bold shadow-sm'
-                  : 'text-[#59594f] hover:text-[#252520] hover:bg-[#fffdf5]/60'
-              }`}
-            >
-              <Target className="w-3.5 h-3.5" />
-              <span>1 Hal Dulu (Single Focus)</span>
-            </button>
+        {/* Mode Switcher Buttons */}
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <button
+            onClick={() => {
+              soundManager.playClick();
+              setStrategyMode('single');
+            }}
+            className={`px-4 py-2 rounded-full transition-all flex items-center gap-2 font-semibold ${
+              strategyMode === 'single'
+                ? 'pill-black shadow-md'
+                : 'pill-white text-zinc-600'
+            }`}
+          >
+            <Target className="w-3.5 h-3.5" />
+            <span>1 Hal Dulu (Single Focus)</span>
+          </button>
 
-            <button
-              onClick={() => {
-                soundManager.playClick();
-                setStrategyMode('multi');
-              }}
-              className={`px-3.5 py-2 rounded-xl transition-all flex items-center gap-2 ${
-                strategyMode === 'multi'
-                  ? 'bg-[#292a24] text-[#fffdf5] font-bold shadow-sm'
-                  : 'text-[#59594f] hover:text-[#252520] hover:bg-[#fffdf5]/60'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>Beberapa Hal (Multi-Sprint)</span>
-            </button>
-          </div>
-
+          <button
+            onClick={() => {
+              soundManager.playClick();
+              setStrategyMode('multi');
+            }}
+            className={`px-4 py-2 rounded-full transition-all flex items-center gap-2 font-semibold ${
+              strategyMode === 'multi'
+                ? 'pill-black shadow-md'
+                : 'pill-white text-zinc-600'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>Beberapa Hal (Multi-Sprint)</span>
+          </button>
         </div>
       </div>
 
@@ -121,116 +117,140 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
           
           {/* Active Single Focus Hero Stage */}
           {activeSingleBlock && (
-            <div className="figma-shell border-[#305d46]/30 shadow-md">
-              <div className="figma-core p-5 sm:p-6 bg-[#fffdf5] space-y-4">
-                
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="dev-tag-emerald flex items-center gap-1">
-                      <Flame className="w-3 h-3 text-[#305d46]" />
-                      <span>EXCLUSIVE MONOTASK LOCK</span>
-                    </span>
-                    <span className="dev-tag text-[9px]">{activeSingleBlock.blockType.toUpperCase()}</span>
-                  </div>
-
-                  <span className="text-xs font-mono text-[#59594f] flex items-center gap-1 bg-[#eae5d8] px-3 py-1 rounded-xl border border-[#ded7c8]">
-                    <Clock className="w-3.5 h-3.5 text-[#59594f]" />
-                    <span>Timebox: <strong className="text-[#252520] font-bold">{activeSingleBlock.timeboxMinutes} Menit</strong></span>
+            <div className="bento-card p-6 sm:p-7 space-y-4 border border-zinc-200/90 shadow-md">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3.5">
+                <div className="flex items-center gap-2">
+                  <span className="sticker-pill sticker-pink flex items-center gap-1">
+                    <Flame className="w-3 h-3 text-[#be185d]" />
+                    <span>LOCKED IN TIMER</span>
                   </span>
+                  <span className="sticker-pill sticker-blue text-[10px]">{activeSingleBlock.blockType.toUpperCase()}</span>
                 </div>
 
-                <div className="space-y-2">
-                  <h4 className="text-xl sm:text-2xl font-extrabold text-[#252520] tracking-tight">
-                    {activeSingleBlock.projectName}
-                  </h4>
-                  <p className="text-sm text-[#252520] leading-relaxed max-w-3xl">
-                    <span className="text-[#925f18] font-bold font-mono">Action Langkah Demi Langkah:</span> {activeSingleBlock.action}
+                <span className="text-xs font-mono text-zinc-600 flex items-center gap-1 bg-zinc-100 px-3 py-1 rounded-full border border-zinc-200">
+                  <Clock className="w-3.5 h-3.5 text-zinc-500" />
+                  <span>Timebox: <strong className="text-black font-bold">{activeSingleBlock.timeboxMinutes} Menit</strong></span>
+                </span>
+              </div>
+
+              <div className="space-y-2.5">
+                <h4 className="text-2xl sm:text-3xl font-extrabold text-[#111111] tracking-tight font-sans">
+                  {activeSingleBlock.projectName}
+                </h4>
+                <div className="p-3.5 rounded-2xl bg-[#fef9c3]/60 border border-[#fef08a] text-xs font-mono text-zinc-800 space-y-1">
+                  <span className="text-[#854d0e] font-bold block uppercase tracking-wide">
+                    ⚡ Micro-Action Langkah Demi Langkah:
+                  </span>
+                  <p className="text-sm font-sans font-medium text-zinc-900 leading-relaxed">
+                    {activeSingleBlock.action}
                   </p>
-
-                  {activeSingleBlock.rule && (
-                    <div className="p-3 rounded-2xl bg-[#faf9f3] border border-[#ded7c8] text-xs font-mono text-[#59594f]">
-                      <span className="text-[#305d46] font-bold">// ATURAN FOKUS:</span> {activeSingleBlock.rule}
-                    </div>
-                  )}
                 </div>
 
-                <div className="pt-3 border-t border-[#ded7c8] flex flex-wrap items-center justify-between gap-3">
-                  <div className="text-xs text-[#59594f] font-mono">
-                    Tutup semua tab lain. Kunci pikiran ke 1 hal ini sampai timebox selesai.
+                {activeSingleBlock.rule && (
+                  <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200/80 text-xs font-mono text-zinc-600">
+                    <span className="text-[#3f6212] font-bold">// ATURAN FOKUS:</span> {activeSingleBlock.rule}
                   </div>
+                )}
+              </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        soundManager.playClick();
-                        onToggleBlock(activeSingleBlock.id);
-                        if (!activeSingleBlock.isDone) {
-                          soundManager.playCompletionChime();
-                          confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
-                        }
-                      }}
-                      className={`px-4 py-2 rounded-xl text-xs font-mono font-medium transition-all ${
-                        activeSingleBlock.isDone
-                          ? 'bg-[#e2ecdc] text-[#305d46] border border-[#305d46]/30'
-                          : 'bg-[#faf9f3] hover:bg-[#eae5d8] text-[#252520] border border-[#ded7c8]'
-                      }`}
-                    >
-                      {activeSingleBlock.isDone ? 'Sudah Selesai' : 'Tandai Beres'}
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        soundManager.playClick();
-                        onStartFocus(activeSingleBlock);
-                      }}
-                      className="group pl-5 pr-3 py-2 dev-btn-primary text-xs font-bold flex items-center gap-2.5 shadow-md"
-                    >
-                      <span>Mulai Focus Lock ({activeSingleBlock.timeboxMinutes}m)</span>
-                      <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
-                        <ArrowUpRight className="w-3 h-3 text-[#fffdf5] stroke-[2.5]" />
-                      </div>
-                    </button>
-                  </div>
+              <div className="pt-3 border-t border-zinc-100 flex flex-wrap items-center justify-between gap-3">
+                <div className="text-xs text-zinc-500 font-mono">
+                  Tutup semua tab lain. Kunci pikiran ke 1 tugas ini sampai timebox selesai.
                 </div>
 
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      soundManager.playClick();
+                      onToggleBlock(activeSingleBlock.id);
+                      if (!activeSingleBlock.isDone) {
+                        soundManager.playCompletionChime();
+                        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+                      }
+                    }}
+                    className={`px-4 py-2 rounded-full text-xs font-mono font-semibold transition-all ${
+                      activeSingleBlock.isDone
+                        ? 'bg-[#ecfccb] text-[#3f6212] border border-[#d9f99d]'
+                        : 'pill-white text-zinc-700'
+                    }`}
+                  >
+                    {activeSingleBlock.isDone ? '✓ Sudah Selesai' : 'Tandai Beres'}
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      soundManager.playClick();
+                      onStartFocus(activeSingleBlock);
+                    }}
+                    className="pill-black text-xs font-bold flex items-center gap-2 shadow-md"
+                  >
+                    <span>Mulai Focus Lock ({activeSingleBlock.timeboxMinutes}m)</span>
+                    <ArrowUpRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           )}
 
-          {/* Quick Switch to other Single Tasks */}
-          <div className="space-y-2">
-            <span className="text-xs font-mono text-[#59594f] px-1">
-              Atau klik untuk ganti fokus ke tugas lain:
-            </span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {todayBlocks.map((block) => {
+          {/* Quick Switch to other Single Tasks (Fanned-out Bento Pastel Cards!) */}
+          <div className="space-y-2.5 pt-2">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-semibold">
+                // EXPLORE TASKS • GANTI FOKUS KE KARTU LAIN:
+              </span>
+              <span className="text-[11px] font-mono text-zinc-400">
+                {todayBlocks.length} Triad Available
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+              {todayBlocks.map((block, idx) => {
                 const isSelected = block.id === selectedSingleId;
+                const pastelThemes = [
+                  { bg: 'bento-apricot', border: 'border-[#fed7aa]', tag: 'sticker-apricot', accent: 'text-[#c2410c]' },
+                  { bg: 'bento-blue', border: 'border-[#bae6fd]', tag: 'sticker-blue', accent: 'text-[#0369a1]' },
+                  { bg: 'bento-pink', border: 'border-[#fbcfe8]', tag: 'sticker-pink', accent: 'text-[#be185d]' },
+                  { bg: 'bento-lime', border: 'border-[#d9f99d]', tag: 'sticker-lime', accent: 'text-[#3f6212]' },
+                ];
+                const theme = pastelThemes[idx % pastelThemes.length];
+
                 return (
-                  <button
+                  <div
                     key={block.id}
                     onClick={() => {
                       soundManager.playClick();
                       setSelectedSingleId(block.id);
                     }}
-                    className={`p-3.5 rounded-2xl border text-left transition-all duration-200 space-y-1.5 ${
-                      isSelected
-                        ? 'bg-[#fffdf5] border-[#292a24] shadow-md ring-1 ring-[#292a24]'
-                        : block.isDone
-                        ? 'bg-[#eae5d8]/40 border-[#ded7c8] opacity-50'
-                        : 'bg-[#fffdf5] border-[#ded7c8] hover:border-[#928876] hover:bg-white'
-                    }`}
+                    className={`bento-card ${theme.bg} p-5 rounded-[24px] border ${theme.border} cursor-pointer transition-all duration-200 flex flex-col justify-between min-h-[160px] ${
+                      isSelected ? 'ring-2 ring-[#111111] shadow-lg -translate-y-1' : 'hover:-translate-y-1 hover:shadow-md'
+                    } ${block.isDone ? 'opacity-50' : ''}`}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="dev-tag text-[9px] py-0">{block.blockType}</span>
-                      <span className="text-[10px] font-mono text-[#59594f]">{block.timeboxMinutes}m</span>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className={`sticker-pill ${theme.tag} text-[9px] py-0.5 px-2`}>
+                          {block.blockType}
+                        </span>
+                        <span className="text-[10px] font-mono font-bold bg-white/70 px-2 py-0.5 rounded-full text-zinc-800">
+                          {block.timeboxMinutes}m
+                        </span>
+                      </div>
+                      <h5 className="text-sm font-extrabold text-[#111111] line-clamp-1">
+                        {block.projectName}
+                      </h5>
+                      <p className="text-[11px] text-zinc-700 line-clamp-2 leading-relaxed">
+                        {block.action}
+                      </p>
                     </div>
-                    <h5 className={`text-xs font-bold truncate ${isSelected ? 'text-[#252520]' : 'text-[#252520]'}`}>
-                      {block.projectName}
-                    </h5>
-                    <p className="text-[11px] text-[#59594f] line-clamp-2 leading-relaxed">
-                      {block.action}
-                    </p>
-                  </button>
+
+                    <div className="pt-3 border-t border-black/5 flex items-center justify-between mt-2">
+                      <span className={`text-[10px] font-mono font-bold ${theme.accent}`}>
+                        {isSelected ? '● LOCKED' : 'Pilih Task'}
+                      </span>
+                      <div className="btn-circle-arrow w-7 h-7">
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -246,134 +266,135 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
         <div className="space-y-4">
           
           {/* Multi-Sprint Batch Cockpit Bar */}
-          <div className="figma-shell border-[#b87e2b]/30">
-            <div className="figma-core p-5 bg-[#fffdf5] space-y-4">
-              
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="dev-tag-amber flex items-center gap-1">
-                    <Zap className="w-3 h-3 text-[#925f18]" />
-                    <span>PARALLEL MULTI-SPRINT BATCH</span>
-                  </span>
-                  <span className="text-xs font-mono font-bold text-[#252520] bg-[#eae5d8] px-2.5 py-1 rounded-lg border border-[#ded7c8]">
-                    {activeMultiBlocks.length} Task Dipilih ({totalMultiMinutes}m Total)
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleSelectAllMulti}
-                    className="px-3 py-1.5 rounded-xl bg-[#faf9f3] hover:bg-[#eae5d8] text-[#252520] text-xs font-mono border border-[#ded7c8]"
-                  >
-                    Pilih Semua ({todayBlocks.length} Task)
-                  </button>
-                  <button
-                    onClick={() => {
-                      soundManager.playClick();
-                      if (onStartMultiFocus) {
-                        onStartMultiFocus(activeMultiBlocks);
-                      } else if (activeMultiBlocks[0]) {
-                        onStartFocus(activeMultiBlocks[0]);
-                      }
-                    }}
-                    disabled={activeMultiBlocks.length === 0}
-                    className="group pl-4 pr-3 py-1.5 dev-btn-primary text-xs font-bold flex items-center gap-2 disabled:opacity-40 shadow-sm"
-                  >
-                    <span>Jalankan Batch ({totalMultiMinutes}m)</span>
-                    <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center group-hover:translate-x-0.5 transition-transform">
-                      <ArrowRight className="w-3 h-3 text-[#fffdf5] stroke-[2.5]" />
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              {/* Execution Sequence Flow */}
-              <div className="space-y-1.5">
-                <span className="text-[10px] font-mono text-[#59594f] uppercase tracking-wider block">
-                  Urutan Eksekusi Interleaved:
+          <div className="bento-card p-6 space-y-4 border border-zinc-200/90 shadow-md">
+            
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="sticker-pill sticker-yellow flex items-center gap-1">
+                  <Zap className="w-3 h-3 text-[#854d0e]" />
+                  <span>PARALLEL MULTI-SPRINT BATCH</span>
                 </span>
-                <div className="flex flex-wrap items-center gap-2">
-                  {activeMultiBlocks.map((b, idx) => (
-                    <div 
-                      key={b.id}
-                      className="flex items-center gap-2 bg-[#faf9f3] border border-[#ded7c8] px-3 py-1.5 rounded-xl text-xs font-mono"
-                    >
-                      <span className="w-4 h-4 rounded-full bg-[#fdf3d8] text-[#925f18] font-bold text-[10px] flex items-center justify-center border border-[#b87e2b]/30">
-                        {idx + 1}
-                      </span>
-                      <span className="text-[#252520] font-semibold">{b.projectName}</span>
-                      <span className="text-[#59594f]">({b.timeboxMinutes}m)</span>
-                    </div>
-                  ))}
-                </div>
+                <span className="text-xs font-mono font-bold text-zinc-800 bg-zinc-100 px-3 py-1 rounded-full border border-zinc-200">
+                  {activeMultiBlocks.length} Task Dipilih ({totalMultiMinutes}m Total)
+                </span>
               </div>
 
+              <div className="flex items-center gap-2 font-mono">
+                <button
+                  onClick={handleSelectAllMulti}
+                  className="pill-white text-xs text-zinc-700"
+                >
+                  Pilih Semua ({todayBlocks.length} Task)
+                </button>
+                <button
+                  onClick={() => {
+                    soundManager.playClick();
+                    if (onStartMultiFocus) {
+                      onStartMultiFocus(activeMultiBlocks);
+                    } else if (activeMultiBlocks[0]) {
+                      onStartFocus(activeMultiBlocks[0]);
+                    }
+                  }}
+                  disabled={activeMultiBlocks.length === 0}
+                  className="pill-black text-xs font-bold flex items-center gap-2 disabled:opacity-40 shadow-sm"
+                >
+                  <span>Jalankan Batch ({totalMultiMinutes}m)</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
+
+            {/* Execution Sequence Flow */}
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-semibold">
+                // URUTAN EKSEKUSI INTERLEAVED:
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                {activeMultiBlocks.map((b, idx) => (
+                  <div 
+                    key={b.id}
+                    className="flex items-center gap-2 bg-zinc-50 border border-zinc-200/80 px-3 py-1.5 rounded-full text-xs font-mono"
+                  >
+                    <span className="w-4 h-4 rounded-full bg-[#ecfccb] text-[#3f6212] font-bold text-[10px] flex items-center justify-center border border-[#d9f99d]">
+                      {idx + 1}
+                    </span>
+                    <span className="text-[#111111] font-semibold">{b.projectName}</span>
+                    <span className="text-zinc-500">({b.timeboxMinutes}m)</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
 
           {/* Cards with Multi-Checkboxes */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {todayBlocks.map((block) => {
+            {todayBlocks.map((block, idx) => {
               const isSelected = selectedMultiIds.includes(block.id);
+              const cardThemes = [
+                { bg: 'bento-apricot', border: 'border-[#fed7aa]', tag: 'sticker-apricot' },
+                { bg: 'bento-blue', border: 'border-[#bae6fd]', tag: 'sticker-blue' },
+                { bg: 'bento-pink', border: 'border-[#fbcfe8]', tag: 'sticker-pink' },
+                { bg: 'bento-lime', border: 'border-[#d9f99d]', tag: 'sticker-lime' },
+              ];
+              const theme = cardThemes[idx % cardThemes.length];
 
               return (
                 <div
                   key={block.id}
                   onClick={() => toggleMultiSelect(block.id)}
-                  className={`figma-shell transition-all duration-300 cursor-pointer ${
+                  className={`bento-card ${theme.bg} p-6 border ${theme.border} transition-all duration-300 cursor-pointer ${
                     isSelected
-                      ? 'border-[#292a24] shadow-md ring-1 ring-[#292a24]'
+                      ? 'ring-2 ring-[#111111] shadow-lg -translate-y-0.5'
                       : block.isDone
                       ? 'opacity-40'
-                      : 'hover:border-[#928876]'
+                      : 'hover:shadow-md'
                   }`}
                 >
-                  <div className="figma-core p-5 h-full flex flex-col justify-between space-y-4 bg-[#fffdf5]">
+                  <div className="h-full flex flex-col justify-between space-y-4">
                     
                     <div className="space-y-3">
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2.5">
-                          <div className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-all ${
+                          <div className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all ${
                             isSelected 
-                              ? 'bg-[#292a24] border-[#292a24] text-[#fffdf5]' 
-                              : 'border-[#ded7c8] bg-[#faf9f3]'
+                              ? 'bg-[#111111] border-[#111111] text-white' 
+                              : 'border-black/20 bg-white/60'
                           }`}>
                             {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                           </div>
-                          <span className="dev-tag">
+                          <span className={`sticker-pill ${theme.tag} text-[10px]`}>
                             {block.blockType.toUpperCase()}
                           </span>
                         </div>
                         
-                        <span className="text-[11px] font-mono text-[#59594f] flex items-center gap-1 bg-[#eae5d8] px-2 py-0.5 rounded-md border border-[#ded7c8]">
-                          <Clock className="w-3 h-3 text-[#59594f]" />
+                        <span className="text-[11px] font-mono font-bold text-zinc-700 flex items-center gap-1 bg-white/70 px-2.5 py-0.5 rounded-full border border-black/5">
+                          <Clock className="w-3 h-3 text-zinc-500" />
                           <span>{block.timeboxMinutes}m</span>
                         </span>
                       </div>
 
                       <div>
-                        <h4 className={`text-base font-bold tracking-tight ${
-                          block.isDone ? 'line-through text-[#59594f]' : 'text-[#252520]'
+                        <h4 className={`text-base font-extrabold tracking-tight ${
+                          block.isDone ? 'line-through text-zinc-400' : 'text-[#111111]'
                         }`}>
                           {block.projectName}
                         </h4>
-                        <p className={`text-xs mt-1.5 leading-relaxed ${
-                          block.isDone ? 'text-[#59594f]' : 'text-[#59594f]'
-                        }`}>
+                        <p className="text-xs mt-1.5 leading-relaxed text-zinc-700 font-sans">
                           {block.action}
                         </p>
                       </div>
 
                       {block.rule && (
-                        <div className="p-2.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-[11px] font-mono text-[#59594f]">
-                          <span className="text-[#305d46] font-bold">// RULE:</span> {block.rule}
+                        <div className="p-2.5 rounded-2xl bg-white/60 border border-black/5 text-[11px] font-mono text-zinc-700">
+                          <span className="text-[#15803d] font-bold">// RULE:</span> {block.rule}
                         </div>
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-[#ded7c8] text-xs font-mono">
-                      <span className={isSelected ? 'text-[#305d46] font-semibold' : 'text-[#59594f]'}>
-                        {isSelected ? 'Masuk dalam Batch Sprint' : '+ Klik untuk tambahkan'}
+                    <div className="flex items-center justify-between pt-3 border-t border-black/5 text-xs font-mono">
+                      <span className={isSelected ? 'text-[#15803d] font-bold' : 'text-zinc-600'}>
+                        {isSelected ? '✓ Masuk dalam Batch Sprint' : '+ Klik untuk tambahkan'}
                       </span>
                       <button
                         onClick={(e) => {
@@ -381,7 +402,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
                           soundManager.playClick();
                           onStartFocus(block);
                         }}
-                        className="text-[#59594f] hover:text-[#252520] flex items-center gap-1 font-medium"
+                        className="text-zinc-800 hover:text-black flex items-center gap-1 font-semibold"
                       >
                         <span>Fokus ini saja</span>
                         <ArrowUpRight className="w-3.5 h-3.5" />

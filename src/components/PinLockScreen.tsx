@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Lock, ShieldCheck, KeyRound, AlertCircle, Sparkles, Delete, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { soundManager } from '../utils/audio';
 
@@ -116,47 +116,48 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f1eddf] text-[#252520] flex flex-col justify-center items-center p-4 selection:bg-[#292a24]/20 selection:text-[#252520] relative overflow-hidden font-sans">
-      {/* Subtle Warm Background Elements */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#e3e6c7]/40 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/2 -translate-x-1/2 translate-y-1/2 w-[30rem] h-[30rem] bg-[#d0b4e9]/20 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-[#fafafa] text-[#111111] flex flex-col justify-center items-center p-4 selection:bg-[#111111] selection:text-white relative overflow-hidden font-sans select-none">
+      {/* Background Pastel Floating Blobs */}
+      <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-[#fdecd2]/60 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#fce7f3]/50 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-2/3 left-1/2 -translate-x-1/2 w-72 h-72 bg-[#e0f2fe]/50 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Main Lock Card */}
-      <div className={`w-full max-w-md bg-[#fffdf5] border ${error ? 'border-rose-400 shadow-rose-300/30' : isSuccess ? 'border-emerald-500 shadow-emerald-400/20' : 'border-[#ded7c8] shadow-xl'} rounded-2xl p-8 relative z-10 transition-all duration-300 ${error ? 'animate-bounce' : ''}`}>
+      {/* Main Bento Lock Card */}
+      <div className={`w-full max-w-md bg-white border ${
+        error ? 'border-rose-400 shadow-rose-200/40' : isSuccess ? 'border-emerald-500 shadow-emerald-200/40' : 'border-zinc-200/90 shadow-2xl'
+      } rounded-[32px] p-7 sm:p-9 relative z-10 transition-all duration-300 ${error ? 'animate-bounce' : ''}`}>
         
-        {/* Header Icon */}
+        {/* Header Icon & Branding */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 ${
+          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 shadow-md ${
             isSuccess 
-              ? 'bg-[#e2ecdc] text-[#305d46] border border-[#305d46]/40 shadow-md' 
+              ? 'bg-[#ecfccb] text-[#3f6212] border border-[#d9f99d]' 
               : error 
-                ? 'bg-[#f9ded1] text-[#814637] border border-[#814637]/40 shadow-md' 
-                : 'bg-[#292a24] text-[#fffdf5] border border-[#292a24] shadow-md'
+                ? 'bg-[#fce7f3] text-[#be185d] border border-[#fbcfe8]' 
+                : 'bg-[#111111] text-white'
           }`}>
             {isSuccess ? (
-              <CheckCircle2 className="w-8 h-8 animate-scale" />
+              <CheckCircle2 className="w-8 h-8" />
             ) : error ? (
               <AlertCircle className="w-8 h-8" />
             ) : (
-              <Lock className="w-8 h-8" />
+              <Lock className="w-7 h-7" />
             )}
           </div>
           
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#252520] bg-[#e3e6c7] border border-[#ded7c8] px-3 py-1 rounded-full">
-              SECURITY CHECKPOINT
-            </span>
-          </div>
+          <span className="sticker-pill sticker-lime text-[10px] uppercase font-bold tracking-wider mb-2">
+            SECURITY CHECKPOINT
+          </span>
           
-          <h1 className="text-2xl font-black tracking-tight text-[#252520] mt-1 font-sans">
-            DARU WORK OS
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111111]">
+            <span className="lead-italic font-normal">Daru</span>.OS
           </h1>
-          <p className="text-xs text-[#59594f] mt-1 max-w-xs font-mono">
+          <p className="text-xs text-zinc-500 mt-1 max-w-xs font-normal">
             Akses Terproteksi. Masukkan 6 Digit PIN Otorisasi Anda.
           </p>
         </div>
 
-        {/* PIN Inputs (6 Boxes) */}
+        {/* 6 PIN Input Boxes */}
         <div className="flex justify-center items-center gap-2.5 sm:gap-3 mb-6">
           {pin.map((digit, idx) => (
             <input
@@ -168,35 +169,34 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
               value={digit}
               onChange={e => handleInputChange(idx, e.target.value)}
               onKeyDown={e => handleKeyDown(idx, e)}
-              className={`w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-xl border bg-[#faf9f3] transition-all duration-200 focus:outline-none font-mono ${
+              className={`w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-2xl border bg-zinc-50 transition-all duration-200 focus:outline-none font-mono ${
                 digit 
-                  ? 'border-[#292a24] text-[#252520] shadow-sm' 
-                  : 'border-[#ded7c8] text-[#252520]'
+                  ? 'border-[#111111] bg-white text-[#111111] shadow-sm' 
+                  : 'border-zinc-200 text-[#111111]'
               } ${
                 error 
                   ? 'border-rose-400 bg-rose-50 text-rose-700' 
                   : isSuccess 
                     ? 'border-emerald-500 bg-emerald-50 text-emerald-700' 
-                    : 'focus:border-[#292a24] focus:ring-2 focus:ring-[#292a24]/10'
+                    : 'focus:border-[#111111] focus:ring-2 focus:ring-black/10'
               }`}
             />
           ))}
         </div>
 
-        {/* Error message */}
+        {/* Feedback Message */}
         {error && (
           <div className="text-center mb-4">
-            <p className="text-xs font-medium text-rose-600 flex items-center justify-center gap-1.5 animate-pulse font-mono">
+            <p className="text-xs font-semibold text-rose-600 flex items-center justify-center gap-1.5 animate-pulse font-mono">
               <AlertCircle className="w-3.5 h-3.5" />
               {errorMessage}
             </p>
           </div>
         )}
 
-        {/* Success message */}
         {isSuccess && (
           <div className="text-center mb-4">
-            <p className="text-xs font-medium text-emerald-600 flex items-center justify-center gap-1.5 font-mono">
+            <p className="text-xs font-semibold text-emerald-600 flex items-center justify-center gap-1.5 font-mono">
               <CheckCircle2 className="w-3.5 h-3.5" />
               PIN Terverifikasi! Membuka Workspace...
             </p>
@@ -210,7 +210,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
               key={num}
               type="button"
               onClick={() => handleKeypadPress(num)}
-              className="h-12 rounded-xl bg-[#faf9f3] hover:bg-[#eae5d8] active:bg-[#ded7c8] border border-[#ded7c8] text-lg font-bold text-[#252520] transition-all duration-150 flex items-center justify-center shadow-sm font-mono"
+              className="h-12 rounded-2xl bg-white hover:bg-zinc-100 active:scale-95 border border-zinc-200/90 text-lg font-bold text-[#111111] transition-all duration-150 flex items-center justify-center shadow-sm font-mono"
             >
               {num}
             </button>
@@ -218,37 +218,37 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
           <button
             type="button"
             onClick={() => setPin(['', '', '', '', '', ''])}
-            className="h-12 rounded-xl bg-[#faf9f3] hover:bg-[#eae5d8] border border-[#ded7c8] text-xs font-semibold text-[#59594f] hover:text-[#252520] transition-all duration-150 flex items-center justify-center font-mono"
+            className="h-12 rounded-2xl bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-xs font-bold text-zinc-600 hover:text-black transition-all duration-150 flex items-center justify-center font-mono"
           >
             Clear
           </button>
           <button
             type="button"
             onClick={() => handleKeypadPress('0')}
-            className="h-12 rounded-xl bg-[#faf9f3] hover:bg-[#eae5d8] active:bg-[#ded7c8] border border-[#ded7c8] text-lg font-bold text-[#252520] transition-all duration-150 flex items-center justify-center shadow-sm font-mono"
+            className="h-12 rounded-2xl bg-white hover:bg-zinc-100 active:scale-95 border border-zinc-200/90 text-lg font-bold text-[#111111] transition-all duration-150 flex items-center justify-center shadow-sm font-mono"
           >
             0
           </button>
           <button
             type="button"
             onClick={handleBackspace}
-            className="h-12 rounded-xl bg-[#faf9f3] hover:bg-[#eae5d8] border border-[#ded7c8] text-[#59594f] hover:text-rose-600 transition-all duration-150 flex items-center justify-center"
+            className="h-12 rounded-2xl bg-zinc-100 hover:bg-rose-50 border border-zinc-200 text-zinc-600 hover:text-rose-600 transition-all duration-150 flex items-center justify-center"
           >
             <Delete className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Persistence Notice */}
-        <div className="pt-4 border-t border-[#ded7c8] flex items-center justify-center gap-2 text-[11px] text-[#59594f] text-center font-mono">
+        {/* Persistent Authorization Notice */}
+        <div className="pt-4 border-t border-zinc-100 flex items-center justify-center gap-2 text-[11px] text-zinc-500 text-center font-mono">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-          <span>Device ini akan diingat otomatis selamanya.</span>
+          <span>Device ini akan diotorisasi permanen.</span>
         </div>
       </div>
 
       {/* Footer Branding */}
-      <div className="mt-6 text-center text-xs text-[#59594f] flex items-center gap-2 relative z-10 font-mono">
-        <Sparkles className="w-3.5 h-3.5 text-[#292a24]" />
-        <span>Daru Work OS // Editorial Agency System</span>
+      <div className="mt-6 text-center text-xs text-zinc-400 flex items-center gap-2 relative z-10 font-mono">
+        <Sparkles className="w-3.5 h-3.5 text-zinc-500" />
+        <span>DARU WORK OS // PLAYFUL BENTO ARCHITECTURE</span>
       </div>
     </div>
   );

@@ -260,53 +260,53 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     <div className="space-y-6 font-sans select-none animate-fade-in pb-12">
       
       {/* Header with Switcher */}
-      <div className="figma-shell">
-        <div className="figma-core p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 bg-[#fffdf5]">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#305d46] animate-pulse" />
-              <h3 className="text-base font-bold text-[#252520] tracking-tight">Daru Project Workspace</h3>
-              <span className="dev-tag text-[9px]">{viewMode === 'lanes' ? '6_LANES_MODE' : 'KANBAN_BOARD'}</span>
-            </div>
-            <p className="text-xs text-[#59594f] font-normal mt-0.5">
-              Kelola beban kerja per Lane strategis • Drag & Drop antar Lane/Kolom • Direct Focus & WhatsApp Trigger
-            </p>
-          </div>
-
-          {/* Action Buttons */}
+      <div className="bento-card p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 border border-zinc-200/90 shadow-sm">
+        <div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                soundManager.playClick();
-                setIsAddModalOpen(true);
-              }}
-              className="px-3.5 py-1.5 dev-btn-primary text-xs font-bold flex items-center gap-1.5 shadow-sm"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>+ Tambah Project</span>
-            </button>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse" />
+            <h3 className="text-xl font-extrabold text-[#111111] tracking-tight font-sans">
+              <span className="lead-italic font-normal">Project</span> Workspace & Kanban
+            </h3>
+            <span className="sticker-pill sticker-lime text-[9px]">{viewMode === 'lanes' ? '6_LANES_MODE' : 'KANBAN_BOARD'}</span>
+          </div>
+          <p className="text-xs text-zinc-500 font-normal mt-1">
+            Kelola beban kerja per Lane strategis • Drag & Drop antar Lane/Kolom • Direct Focus & WhatsApp Trigger
+          </p>
+        </div>
 
-            {/* View Mode Toggle */}
-            <div className="flex items-center gap-1 bg-[#eae5d8] p-1 rounded-xl border border-[#ded7c8] font-mono text-xs">
-              <button
-                onClick={() => { soundManager.playClick(); setViewMode('lanes'); }}
-                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                  viewMode === 'lanes' ? 'bg-[#292a24] text-[#fffdf5] font-bold shadow-sm' : 'text-[#59594f] hover:text-[#252520]'
-                }`}
-              >
-                <Filter className="w-3.5 h-3.5" />
-                <span>Lanes View</span>
-              </button>
-              <button
-                onClick={() => { soundManager.playClick(); setViewMode('board'); }}
-                className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
-                  viewMode === 'board' ? 'bg-[#292a24] text-[#fffdf5] font-bold shadow-sm' : 'text-[#59594f] hover:text-[#252520]'
-                }`}
-              >
-                <Columns className="w-3.5 h-3.5" />
-                <span>Board View</span>
-              </button>
-            </div>
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2.5 font-mono text-xs">
+          <button
+            onClick={() => {
+              soundManager.playClick();
+              setIsAddModalOpen(true);
+            }}
+            className="pill-black px-4 py-2 font-bold flex items-center gap-1.5 shadow-sm"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>+ Tambah Project</span>
+          </button>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center gap-1 bg-zinc-100 p-1 rounded-full border border-zinc-200">
+            <button
+              onClick={() => { soundManager.playClick(); setViewMode('lanes'); }}
+              className={`px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5 font-semibold ${
+                viewMode === 'lanes' ? 'pill-black shadow-xs' : 'text-zinc-600 hover:text-black'
+              }`}
+            >
+              <Filter className="w-3.5 h-3.5" />
+              <span>Lanes View</span>
+            </button>
+            <button
+              onClick={() => { soundManager.playClick(); setViewMode('board'); }}
+              className={`px-3.5 py-1.5 rounded-full transition-all flex items-center gap-1.5 font-semibold ${
+                viewMode === 'board' ? 'pill-black shadow-xs' : 'text-zinc-600 hover:text-black'
+              }`}
+            >
+              <Columns className="w-3.5 h-3.5" />
+              <span>Board View</span>
+            </button>
           </div>
         </div>
       </div>
@@ -318,11 +318,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
         <div className="space-y-6">
           
           {/* Lane Filter Pill Switcher */}
-          <div className="flex items-center gap-1.5 bg-[#fffdf5] p-1.5 rounded-2xl border border-[#ded7c8] overflow-x-auto no-scrollbar font-mono text-xs shadow-sm">
+          <div className="bento-card p-2.5 flex items-center gap-2 border border-zinc-200/80 overflow-x-auto no-scrollbar font-mono text-xs shadow-xs">
             <button
               onClick={() => { soundManager.playClick(); setSelectedLane('ALL'); }}
-              className={`px-4 py-2 rounded-xl transition-all whitespace-nowrap ${
-                selectedLane === 'ALL' ? 'bg-[#292a24] text-[#fffdf5] font-bold shadow-sm' : 'text-[#59594f] hover:text-[#252520] hover:bg-[#eae5d8]'
+              className={`px-4 py-2 rounded-full transition-all whitespace-nowrap font-semibold ${
+                selectedLane === 'ALL' ? 'pill-black shadow-xs' : 'pill-white text-zinc-600 hover:text-black'
               }`}
             >
               ALL_LANES ({projects.length})
@@ -333,8 +333,8 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                 <button
                   key={l}
                   onClick={() => { soundManager.playClick(); setSelectedLane(l); }}
-                  className={`px-3.5 py-2 rounded-xl transition-all whitespace-nowrap ${
-                    selectedLane === l ? 'bg-[#292a24] text-[#fffdf5] font-bold shadow-sm' : 'text-[#59594f] hover:text-[#252520] hover:bg-[#eae5d8]'
+                  className={`px-3.5 py-2 rounded-full transition-all whitespace-nowrap font-semibold ${
+                    selectedLane === l ? 'pill-black shadow-xs' : 'pill-white text-zinc-600 hover:text-black'
                   }`}
                 >
                   {laneConfigs[l].tag} ({count})
@@ -359,14 +359,14 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                 return (
                   <div 
                     key={laneKey} 
-                    className={`figma-shell transition-all duration-200 ${
-                      isHoveredLane ? 'ring-2 ring-[#305d46] border-[#305d46] scale-[1.005]' : ''
+                    className={`bento-card p-6 border border-zinc-200/90 shadow-sm transition-all duration-200 ${
+                      isHoveredLane ? 'ring-2 ring-[#111111] scale-[1.005]' : ''
                     }`}
                     onDragOver={(e) => handleDragOverLane(e, laneKey)}
                     onDragLeave={() => setDragOverLane(null)}
                     onDrop={(e) => handleDropLane(e, laneKey)}
                   >
-                    <div className="figma-core p-5 sm:p-6 space-y-4 bg-[#fffdf5]">
+                    <div className="space-y-4">
                       
                       {/* Lane Header Banner */}
                       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3.5">
@@ -576,43 +576,49 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
           ========================================================================= */}
       {viewMode === 'board' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
-          {boardColumns.map((col) => {
+          {boardColumns.map((col, idx) => {
             const colProjects = projects.filter(p => p.boardColumn === col.id);
             const isColumnHovered = dragOverColumn === col.id;
+
+            const colThemes = [
+              { bg: 'bg-[#fafafa]', border: 'border-zinc-200', sticker: 'sticker-yellow' },
+              { bg: 'bento-lime', border: 'border-[#d9f99d]', sticker: 'sticker-lime' },
+              { bg: 'bento-apricot', border: 'border-[#fed7aa]', sticker: 'sticker-apricot' },
+              { bg: 'bento-pink', border: 'border-[#fbcfe8]', sticker: 'sticker-pink' },
+            ];
+            const theme = colThemes[idx % colThemes.length];
 
             return (
               <div 
                 key={col.id} 
-                className={`figma-shell transition-all duration-200 ${
+                className={`bento-card ${theme.bg} border ${theme.border} p-4 space-y-3 min-h-[500px] flex flex-col justify-start transition-all duration-200 shadow-sm ${
                   isColumnHovered 
-                    ? 'ring-2 ring-[#305d46] border-[#305d46] scale-[1.01]' 
+                    ? 'ring-2 ring-[#111111] scale-[1.01]' 
                     : ''
                 }`}
                 onDragOver={(e) => handleDragOverColumn(e, col.id)}
                 onDragLeave={() => setDragOverColumn(null)}
                 onDrop={(e) => handleDropColumn(e, col.id)}
               >
-                <div className="figma-core p-3.5 space-y-3 min-h-[500px] flex flex-col justify-start bg-[#fffdf5]">
-                  
-                  {/* Column Header */}
-                  <div className={`p-3 rounded-xl bg-[#faf9f3] border ${col.color} flex items-center justify-between`}>
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-mono font-bold tracking-wider">{col.label}</span>
-                      </div>
-                      <p className="text-[10px] text-[#59594f] font-mono">{col.desc}</p>
+                {/* Column Header */}
+                <div className="p-3 rounded-2xl bg-white/80 border border-black/5 flex items-center justify-between shadow-xs">
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`sticker-pill ${theme.sticker} text-[9px]`}>{col.label}</span>
                     </div>
-                    <span className="text-xs font-mono font-bold text-[#252520] bg-[#eae5d8] border border-[#ded7c8] px-2 py-0.5 rounded-lg">
-                      {colProjects.length}
-                    </span>
+                    <p className="text-[10px] text-zinc-500 font-mono mt-1">{col.desc}</p>
                   </div>
+                  <span className="text-xs font-mono font-bold text-zinc-900 bg-zinc-100 border border-zinc-200 px-2.5 py-0.5 rounded-full">
+                    {colProjects.length}
+                  </span>
+                </div>
 
-                  {/* Drop Placeholder Indicator when hovering */}
-                  {isColumnHovered && draggedProjectId && (
-                    <div className="p-3.5 rounded-2xl border-2 border-dashed border-[#305d46] bg-[#e2ecdc] text-[#305d46] text-xs font-mono text-center animate-pulse">
-                      Lepaskan untuk pindah ke {col.label}
-                    </div>
-                  )}
+                {/* Drop Placeholder Indicator when hovering */}
+                {isColumnHovered && draggedProjectId && (
+                  <div className="p-3.5 rounded-2xl border-2 border-dashed border-[#111111] bg-white text-[#111111] text-xs font-mono text-center animate-pulse">
+                    Lepaskan untuk pindah ke {col.label}
+                  </div>
+                )}
 
                   {/* Cards Container */}
                   <div className="space-y-3 flex-1">
@@ -714,13 +720,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                     })}
 
                     {colProjects.length === 0 && !isColumnHovered && (
-                      <div className="p-8 text-center text-[#59594f] font-mono text-xs border border-dashed border-[#ded7c8] rounded-2xl bg-[#faf9f3]">
+                      <div className="p-8 text-center text-zinc-500 font-mono text-xs border border-dashed border-zinc-300 rounded-2xl bg-white/60">
                         Tarik kartu ke sini
                       </div>
                     )}
                   </div>
-
-                </div>
               </div>
             );
           })}

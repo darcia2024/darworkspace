@@ -290,7 +290,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f1eddf] text-[#252520] flex flex-col lg:flex-row font-sans selection:bg-[#292a24]/20 selection:text-[#252520]">
+    <div className="min-h-screen bg-[#fafafa] text-[#111111] flex flex-col lg:flex-row font-sans selection:bg-[#111111] selection:text-white">
       
       {/* 1. Sleek Left Dashboard Sidebar */}
       <Sidebar
@@ -313,16 +313,16 @@ export function App() {
       />
 
       {/* 2. Main Dashboard Content View */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-[#f1eddf]">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-[#fafafa]">
         
         {/* Top Agency Editorial Breadcrumb Bar */}
-        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-[#ded7c8] bg-[#f1eddf]/90 backdrop-blur-md sticky top-0 z-20">
-          <div className="flex items-center gap-2 text-xs font-mono text-[#59594f]">
-            <span className="text-[#252520] font-semibold">Workspace</span>
-            <span className="text-[#ded7c8]">/</span>
-            <span className="text-[#252520]">{tabLabels[activeTab]}</span>
-            <span className="text-[#ded7c8]">/</span>
-            <span className="px-2 py-0.5 rounded-full bg-[#e3e6c7] text-[#252520] text-[10px] font-mono font-bold tracking-wide">PROD</span>
+        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-zinc-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-20">
+          <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+            <span className="text-[#111111] font-bold">Daru.OS</span>
+            <span className="text-zinc-300">/</span>
+            <span className="text-zinc-800 font-medium">{tabLabels[activeTab]}</span>
+            <span className="text-zinc-300">/</span>
+            <span className="px-2.5 py-0.5 rounded-full bg-[#ecfccb] text-[#3f6212] text-[10px] font-mono font-bold border border-[#d9f99d]">LIVE ACTIVE</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -332,9 +332,9 @@ export function App() {
                 setTargetInvoiceProject(null);
                 setIsInvoiceOpen(true);
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#fffdf5] hover:bg-[#eae5d8] text-[#252520] border border-[#ded7c8] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
+              className="pill-white text-xs font-mono flex items-center gap-1.5"
             >
-              <Receipt className="w-3.5 h-3.5 text-[#252520]" />
+              <Receipt className="w-3.5 h-3.5 text-zinc-700" />
               <span>+ Buat Invoice ⌘I</span>
             </button>
 
@@ -343,7 +343,7 @@ export function App() {
                 soundManager.playClick();
                 setIsFinanceInputOpen(true);
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#292a24] hover:bg-[#1a1b16] text-[#fffdf5] border border-[#292a24] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
+              className="pill-black text-xs font-mono flex items-center gap-1.5"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>+ Catat Kas</span>
@@ -355,9 +355,9 @@ export function App() {
                 setTargetFollowUpProject(null);
                 setIsFollowUpOpen(true);
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#fffdf5] hover:bg-[#eae5d8] text-[#252520] border border-[#ded7c8] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
+              className="pill-white text-xs font-mono flex items-center gap-1.5"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#59594f]" />
+              <MessageSquare className="w-3.5 h-3.5 text-zinc-500" />
               <span>Copas WA</span>
             </button>
 
@@ -366,9 +366,9 @@ export function App() {
                 soundManager.playClick();
                 setIsCopilotOpen((prev) => !prev);
               }}
-              className="px-3 py-1.5 rounded-lg bg-[#d0b4e9]/30 hover:bg-[#d0b4e9]/50 text-[#252520] border border-[#d0b4e9] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
+              className="px-3.5 py-1.5 rounded-full bg-[#fce7f3] hover:bg-[#fbcfe8] text-[#be185d] border border-[#fbcfe8] text-xs font-mono font-semibold transition-all flex items-center gap-1.5 shadow-sm"
             >
-              <Bot className="w-3.5 h-3.5 text-[#59594f]" />
+              <Bot className="w-3.5 h-3.5" />
               <span>Partner ⌘K</span>
             </button>
 
@@ -379,7 +379,7 @@ export function App() {
                 setIsAuthenticated(false);
               }}
               title="Kunci Layar (Lock Device)"
-              className="p-2 rounded-lg bg-[#fffdf5] hover:bg-rose-100 text-[#59594f] hover:text-rose-600 border border-[#ded7c8] text-xs font-mono transition-all flex items-center gap-1.5 shadow-sm"
+              className="p-2 rounded-full bg-white hover:bg-rose-50 text-zinc-400 hover:text-rose-600 border border-zinc-200 text-xs transition-all flex items-center justify-center shadow-sm"
             >
               <Lock className="w-3.5 h-3.5" />
             </button>
@@ -480,6 +480,71 @@ export function App() {
             />
           )}
 
+        
+          {/* HIGH-CONTRAST BLACK FOOTER BANNER (Exact Jobforge Signature Footer!) */}
+          <section className="bg-[#0c0c0e] text-white rounded-[32px] p-8 sm:p-14 mt-12 mb-8 border border-zinc-800 text-center relative overflow-hidden shadow-2xl select-none">
+            {/* Ambient subtle glow */}
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-zinc-800/30 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-zinc-800/20 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Floating Playful Pastel Sticker Tags */}
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-6 relative z-10">
+              <span className="sticker-pill sticker-pink transform -rotate-2 text-xs">
+                Sprint Modul 1 LMS
+              </span>
+              <span className="sticker-pill sticker-lime transform rotate-3 text-xs">
+                DreamMecca Handover
+              </span>
+              <span className="sticker-pill sticker-yellow transform -rotate-1 text-xs">
+                KAEL POS Multi-Tenant
+              </span>
+              <span className="sticker-pill sticker-blue transform rotate-2 text-xs">
+                Barber Kasir Lunas
+              </span>
+              <span className="sticker-pill sticker-apricot transform -rotate-3 text-xs">
+                Mandiri Live Rp9,78M
+              </span>
+            </div>
+
+            {/* Giant Bold Headline with Italic Accent */}
+            <div className="space-y-3 relative z-10 max-w-2xl mx-auto">
+              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight uppercase font-sans">
+                LET'S <span className="lead-italic font-normal normal-case text-amber-200">Scale</span> YOUR REVENUE
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-lg mx-auto leading-relaxed">
+                Tuntaskan deliverable ber-DP, amankan sisa Rp3,5M target September, dan ubah servis solo menjadi aset software multi-tenant.
+              </p>
+            </div>
+
+            {/* Quick Action Buttons */}
+            <div className="flex flex-wrap items-center justify-center gap-3 mt-8 relative z-10">
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setActiveTab('today');
+                }}
+                className="px-6 py-3 rounded-full bg-white text-black font-bold text-xs hover:bg-zinc-200 transition-all shadow-lg flex items-center gap-2"
+              >
+                <span>Mulai Eksekusi Hari Ini</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => {
+                  soundManager.playClick();
+                  setIsFinanceInputOpen(true);
+                }}
+                className="px-6 py-3 rounded-full bg-zinc-900 text-white font-bold text-xs border border-zinc-700 hover:bg-zinc-800 transition-all shadow-md"
+              >
+                + Catat Kas Masuk
+              </button>
+            </div>
+
+            {/* Brand footer line */}
+            <div className="mt-10 pt-6 border-t border-zinc-800/80 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-zinc-400 relative z-10">
+              <span>DARU WORK OS // AUTONOMOUS OPERATING SYSTEM</span>
+              <span>EST. 2026 • SOLO MULTITASK ARCHITECTURE</span>
+            </div>
+          </section>
         </main>
       </div>
 
