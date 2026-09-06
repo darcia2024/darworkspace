@@ -50,12 +50,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const totalLiquid = financialReport?.totalLiquidBalance || 9892741;
 
   const navItems: { id: ActiveTabType; label: string; icon: any; badge?: string; badgeColor?: string }[] = [
-    { id: 'today', label: 'Today Execution', icon: Target, badge: todayCompletedCount > 0 ? `${todayCompletedCount}/4` : undefined, badgeColor: 'bg-[#ecfccb] text-[#3f6212] border-[#d9f99d]' },
-    { id: 'nextgo', label: 'Next Should Be Go', icon: Compass, badge: 'HOT', badgeColor: 'bg-[#fce7f3] text-[#be185d] border-[#fbcfe8]' },
-    { id: 'lanes', label: 'Project Workspace', icon: Layers, badge: '6 Lanes', badgeColor: 'bg-zinc-100 text-zinc-700 border-zinc-200' },
-    { id: 'waiting', label: 'Waiting Radar', icon: Clock, badge: waitingCount > 0 ? `${waitingCount}` : undefined, badgeColor: 'bg-[#e0f2fe] text-[#0369a1] border-[#bae6fd]' },
-    { id: 'money', label: 'Cashflow Matrix', icon: DollarSign, badge: 'Live', badgeColor: 'bg-[#fed7aa] text-[#c2410c] border-[#fed7aa]' },
-    { id: 'deepwork', label: 'Focus Studio', icon: Flame, badge: '40Hz', badgeColor: 'bg-[#f3e8ff] text-[#6b21a8] border-[#e9d5ff]' }
+    { id: 'today', label: 'Sikat Hari Ini', icon: Target, badge: todayCompletedCount > 0 ? `${todayCompletedCount}/4 Tuntas` : undefined, badgeColor: 'bg-[#ecfccb] text-[#14532d] font-bold border-[#bef264]' },
+    { id: 'nextgo', label: 'Abis Ini Ngapain?', icon: Compass, badge: 'GAS', badgeColor: 'bg-[#fce7f3] text-[#9d174d] font-bold border-[#fbcfe8]' },
+    { id: 'lanes', label: 'Markas Project', icon: Layers, badge: '6 Jalur', badgeColor: 'bg-zinc-100 text-zinc-900 font-bold border-zinc-300' },
+    { id: 'waiting', label: 'Radar Tagihan & Klien', icon: Clock, badge: waitingCount > 0 ? `${waitingCount} Nunggu` : undefined, badgeColor: 'bg-[#e0f2fe] text-[#075985] font-bold border-[#bae6fd]' },
+    { id: 'money', label: 'Cek Dompet & Cuan', icon: DollarSign, badge: 'Real-Time', badgeColor: 'bg-[#ffedd5] text-[#9a3412] font-bold border-[#fed7aa]' },
+    { id: 'deepwork', label: 'Kamar Fokus 40Hz', icon: Flame, badge: 'Zen Mode', badgeColor: 'bg-[#f3e8ff] text-[#581c87] font-bold border-[#e9d5ff]' }
   ];
 
   const formatShortRupiah = (num: number) => {
@@ -79,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </span>
                 <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
               </div>
-              <p className="text-[11px] text-zinc-500 font-mono">Solo Workstation 2026</p>
+              <p className="text-[11px] text-zinc-700 font-semibold font-mono">Markas Tempur Daru 🚀</p>
             </div>
           </div>
 
@@ -94,7 +94,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* 2. Navigation Pills */}
         <div className="space-y-1.5">
           <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-600 font-bold px-3">
-            WORKSPACE NAVIGATION
+            MENU UTAMA
           </span>
           <nav className="space-y-1">
             {navItems.map((item) => {
@@ -112,11 +112,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full transition-all text-xs font-semibold ${
                     isActive
                       ? 'bg-[#111111] text-white shadow-sm'
-                      : 'text-zinc-600 hover:text-[#111111] hover:bg-zinc-100/80'
+                      : 'text-zinc-800 hover:text-black hover:bg-zinc-100'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-zinc-500'}`} />
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-zinc-700'}`} />
                     <span>{item.label}</span>
                   </div>
 
@@ -136,12 +136,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* 3. Quick Actions Bento Stickers */}
         <div className="space-y-2 pt-2 border-t border-zinc-100">
           <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-600 font-bold px-3">
-            QUICK ACTIONS
+            SHORTCUT CEPAT
           </span>
           <div className="grid grid-cols-2 gap-2 text-xs font-mono">
             <button
               onClick={() => { soundManager.playClick(); onOpenInvoice(); }}
-              className="p-2.5 rounded-2xl bg-[#e0f2fe] text-[#0369a1] border border-[#bae6fd] hover:scale-[1.02] transition-all flex items-center gap-1.5 font-semibold text-[11px]"
+              className="p-2.5 rounded-2xl bg-[#e0f2fe] text-[#075985] font-bold border border-[#7dd3fc] hover:scale-[1.02] transition-all flex items-center gap-1.5 font-semibold text-[11px]"
             >
               <Receipt className="w-3.5 h-3.5" />
               <span>+ Invoice</span>
@@ -149,7 +149,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={() => { soundManager.playClick(); onOpenFinanceInput(); }}
-              className="p-2.5 rounded-2xl bg-[#ecfccb] text-[#3f6212] border border-[#d9f99d] hover:scale-[1.02] transition-all flex items-center gap-1.5 font-semibold text-[11px]"
+              className="p-2.5 rounded-2xl bg-[#ecfccb] text-[#14532d] font-bold border border-[#a3e635] hover:scale-[1.02] transition-all flex items-center gap-1.5 font-semibold text-[11px]"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>+ Catat Kas</span>
@@ -157,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={() => { soundManager.playClick(); onOpenFollowUp(); }}
-              className="p-2.5 rounded-2xl bg-[#ffedd5] text-[#c2410c] border border-[#fed7aa] hover:scale-[1.02] transition-all flex items-center gap-1.5 font-semibold text-[11px]"
+              className="p-2.5 rounded-2xl bg-[#ffedd5] text-[#9a3412] font-bold border border-[#fdba74] hover:scale-[1.02] transition-all flex items-center gap-1.5 font-semibold text-[11px]"
             >
               <MessageSquare className="w-3.5 h-3.5" />
               <span>Copas WA</span>
@@ -165,7 +165,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={() => { soundManager.playClick(); onOpenCopilot(); }}
-              className="p-2.5 rounded-2xl bg-[#fce7f3] text-[#be185d] border border-[#fbcfe8] hover:scale-[1.02] transition-all flex items-center gap-1.5 font-semibold text-[11px]"
+              className="p-2.5 rounded-2xl bg-[#fce7f3] text-[#9d174d] font-bold border border-[#f9a8d4] hover:scale-[1.02] transition-all flex items-center gap-1.5 font-semibold text-[11px]"
             >
               <Bot className="w-3.5 h-3.5" />
               <span>Partner AI</span>
@@ -180,16 +180,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={() => { soundManager.playClick(); setActiveTab('money'); }}
           className="p-3.5 rounded-2xl bg-[#fafafa] border border-zinc-200/80 hover:border-zinc-300 cursor-pointer transition-all space-y-1"
         >
-          <div className="flex items-center justify-between text-[10px] font-mono text-zinc-500">
+          <div className="flex items-center justify-between text-[10px] font-mono text-zinc-700 font-medium">
             <span>MANDIRI + CASHPACK</span>
-            <span className="text-emerald-700 font-bold">ONLINE</span>
+            <span className="text-emerald-800 font-extrabold bg-emerald-100 px-2 py-0.5 rounded-full">AMAN</span>
           </div>
           <div className="text-base font-black text-[#111111] font-mono">
             {formatShortRupiah(totalLiquid)}
           </div>
           <div className="text-[10px] text-zinc-500 font-mono flex items-center justify-between">
-            <span>Surplus Kas</span>
-            <span className="text-emerald-600 font-bold">+Rp5,89M</span>
+            <span>Surplus Kas Likuid</span>
+            <span className="text-emerald-800 font-extrabold">+Rp5,89M</span>
           </div>
         </div>
 
@@ -198,7 +198,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           className="w-full py-2 px-3 rounded-full bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-700 text-xs font-mono font-medium flex items-center justify-center gap-1.5 transition-colors"
         >
           <FileDown className="w-3.5 h-3.5" />
-          <span>Export ke Obsidian</span>
+          <span>Ekspor Catatan ke Obsidian</span>
         </button>
       </div>
 

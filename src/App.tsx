@@ -509,10 +509,10 @@ export function App() {
             {/* Giant Bold Headline with Italic Accent */}
             <div className="space-y-3 relative z-10 max-w-2xl mx-auto">
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight uppercase font-sans">
-                LET'S <span className="lead-italic font-normal normal-case text-amber-200">Scale</span> YOUR REVENUE
+                YUK <span className="lead-italic font-normal normal-case text-amber-300">Tuntasin</span> TARGET BULAN INI!
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-normal max-w-lg mx-auto leading-relaxed">
-                Tuntaskan deliverable ber-DP, amankan sisa Rp3,5M target September, dan ubah servis solo menjadi aset software multi-tenant.
+              <p className="text-xs sm:text-sm text-zinc-200 font-medium max-w-lg mx-auto leading-relaxed">
+                Udah jalan mantap banget bro! Sisa Rp3,5 Juta lagi buat tembus target Rp10 Juta September. Gaskeun tuntaskan satu-satu!
               </p>
             </div>
 
@@ -525,7 +525,7 @@ export function App() {
                 }}
                 className="px-6 py-3 rounded-full bg-white text-black font-bold text-xs hover:bg-zinc-200 transition-all shadow-lg flex items-center gap-2"
               >
-                <span>Mulai Eksekusi Hari Ini</span>
+                <span>Sikat Kerja Hari Ini 🚀</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
               <button
@@ -535,12 +535,12 @@ export function App() {
                 }}
                 className="px-6 py-3 rounded-full bg-zinc-900 text-white font-bold text-xs border border-zinc-700 hover:bg-zinc-800 transition-all shadow-md"
               >
-                + Catat Kas Masuk
+                + Catat Duit Masuk 💰
               </button>
             </div>
 
             {/* Brand footer line */}
-            <div className="mt-10 pt-6 border-t border-zinc-800/80 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-zinc-400 relative z-10">
+            <div className="mt-10 pt-6 border-t border-zinc-800/80 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-zinc-300 font-medium relative z-10">
               <span>DARU WORK OS // AUTONOMOUS OPERATING SYSTEM</span>
               <span>EST. 2026 • SOLO MULTITASK ARCHITECTURE</span>
             </div>

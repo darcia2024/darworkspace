@@ -59,16 +59,16 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#111111] leading-tight">
-              <span className="lead-italic font-normal mr-2">Autonomous</span>
-              Workflow Infrastructure
+              <span className="lead-italic font-normal mr-2">Fokus</span>
+              Satu-Satu, Cuan Ngalir!
               <span className="inline-flex items-center ml-3 -space-x-1.5 align-middle">
                 <span className="w-8 h-8 rounded-full bg-[#fdecd2] border-2 border-white flex items-center justify-center text-xs shadow-sm">⚡</span>
-                <span className="w-8 h-8 rounded-full bg-[#fce7f3] border-2 border-white flex items-center justify-center text-xs shadow-sm">💼</span>
+                <span className="w-8 h-8 rounded-full bg-[#fce7f3] border-2 border-white flex items-center justify-center text-xs shadow-sm">💰</span>
                 <span className="w-8 h-8 rounded-full bg-[#e0f2fe] border-2 border-white flex items-center justify-center text-xs shadow-sm">🚀</span>
               </span>
             </h1>
-            <p className="text-xs sm:text-sm text-zinc-500 max-w-2xl mt-1.5 leading-relaxed font-normal">
-              Solopreneur command engine untuk mengunci fokus monotask, automasi tagihan, dan scaling aset recurring tanpa distraksi.
+            <p className="text-xs sm:text-sm text-zinc-800 max-w-2xl mt-1.5 leading-relaxed font-medium">
+              Santai aja bro, jangan overthinking. Beresin 1 tugas berbayar hari ini, tagih DP-nya, dan biar sistem ini yang jagain sirkulasi kas lo!
             </p>
           </div>
 
@@ -80,7 +80,7 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
               }}
               className="pill-black text-xs font-semibold px-5 py-2.5 shadow-md flex items-center gap-2"
             >
-              <span>Our Next Directive</span>
+              <span>Langkah Paling Cuan 🚀</span>
               <ArrowUpRight className="w-4 h-4" />
             </button>
             <button
@@ -90,7 +90,7 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
               }}
               className="pill-white text-xs font-semibold px-5 py-2.5 shadow-sm"
             >
-              Telemetry Kas
+              Cek Dompet & Rekening
             </button>
           </div>
         </div>
@@ -109,8 +109,8 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
         >
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-zinc-700">
-                01 // LIQUID CASH
+              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-zinc-900 font-bold">
+                01 // SALDO KAS AMAN
               </span>
               <span className="text-[10px] font-mono bg-white/80 px-2.5 py-0.5 rounded-full text-zinc-800 font-bold border border-black/5">
                 LIVE
@@ -120,15 +120,15 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
               <div className="text-3xl sm:text-4xl font-black tracking-tight text-[#111111] font-mono">
                 {formatShortRupiah(totalLiquid)}
               </div>
-              <p className="text-xs text-zinc-700 mt-1 font-medium leading-snug">
-                Total kas likuid 7 rekening (Mandiri Rp9,78M + 6 dompet)
+              <p className="text-xs text-zinc-900 font-bold mt-1 font-medium leading-snug">
+                Total uang cair di 7 rekening (Mandiri Rp9,78M + e-wallet)
               </p>
             </div>
           </div>
 
           <div className="flex items-center justify-between pt-3 border-t border-black/10">
             <span className="text-[11px] font-mono text-zinc-700 font-medium">
-              +Rp5,89M di atas Floor
+              Aman +Rp5,89M di atas batas minimal
             </span>
             <div className="btn-circle-arrow group-hover:bg-[#111111] group-hover:text-white transition-all">
               <ArrowUpRight className="w-4 h-4" />
@@ -142,12 +142,12 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
             soundManager.playClick();
             onSelectTab('money');
           }}
-          className="bento-card bento-pink p-6 rounded-[28px] cursor-pointer group flex flex-col justify-between min-h-[190px] border border-[#fbcfe8] shadow-sm hover:shadow-md transition-all"
+          className="bento-card bento-pink p-6 rounded-[28px] cursor-pointer group flex flex-col justify-between min-h-[190px] border border-[#f472b6] shadow-sm hover:shadow-md transition-all"
         >
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[#be185d]">
-                SEPTEMBER GAIN
+              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[#9d174d]">
+                PROFIT SEPTEMBER
               </span>
               <span className="text-[10px] font-mono bg-white/80 px-2 py-0.5 rounded-full text-[#be185d] font-bold border border-[#fbcfe8]">
                 {progressPercent}%
@@ -158,7 +158,7 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
                 {formatShortRupiah(realizedIncome)}
               </div>
               <p className="text-xs text-[#be185d] font-medium leading-snug">
-                Dari target Rp10.000.000 (Barber + Umi Elly + Ifdony)
+                Udah masuk Rp6,5M dari target Rp10 Juta (Kurang 3,5jt lagi bro!)
               </p>
             </div>
           </div>
@@ -169,7 +169,7 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
               {barSurges.map((val, idx) => (
                 <div 
                   key={idx}
-                  className="flex-1 rounded-full bg-[#ec4899] transition-all duration-500 hover:bg-[#be185d]"
+                  className="flex-1 rounded-full bg-[#db2777] transition-all duration-500 hover:bg-[#9d174d]"
                   style={{ height: `${val}%` }}
                   title={`Surge #${idx + 1}: ${val}%`}
                 />
@@ -188,8 +188,8 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
         >
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[#0369a1]">
-                PIPELINE RADAR
+              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[#075985]">
+                UANG OTW MASUK
               </span>
               <span className="text-[10px] font-mono bg-white/80 px-2 py-0.5 rounded-full text-[#0369a1] font-bold border border-[#bae6fd]">
                 OTW
@@ -199,15 +199,15 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
             {/* Stacked Telemetry Badges like in Jobforge Blue Card */}
             <div className="space-y-1.5 mt-3 font-mono">
               <div className="flex items-center justify-between bg-white/70 px-3 py-1 rounded-xl text-xs border border-white/80">
-                <span className="text-zinc-600">Pending Termin:</span>
+                <span className="text-zinc-800 font-semibold">Duit Lagi Ditunggu:</span>
                 <strong className="text-[#0369a1] font-bold">Rp4.000.000</strong>
               </div>
               <div className="flex items-center justify-between bg-white/70 px-3 py-1 rounded-xl text-xs border border-white/80">
-                <span className="text-zinc-600">Runway Aman:</span>
+                <span className="text-zinc-600">Nafas Kas (Runway):</span>
                 <strong className="text-[#111111] font-bold">~2.2 Bulan</strong>
               </div>
               <div className="flex items-center justify-between bg-white/70 px-3 py-1 rounded-xl text-xs border border-white/80">
-                <span className="text-zinc-600">Floor Defence:</span>
+                <span className="text-zinc-600">Batas Aman Dompet:</span>
                 <strong className="text-emerald-700 font-bold">Rp4.000.000</strong>
               </div>
             </div>
@@ -215,7 +215,7 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
 
           <div className="flex items-center justify-between pt-2 border-t border-black/5">
             <span className="text-[11px] font-mono text-[#0369a1] font-semibold">
-              Lihat 6 Radar Items
+              Cek 6 Klien yang Lagi Nahan Duit
             </span>
             <div className="btn-circle-arrow group-hover:bg-[#111111] group-hover:text-white transition-all">
               <ArrowUpRight className="w-4 h-4" />
@@ -233,26 +233,26 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
         >
           <div>
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[#3f6212]">
-                NEXT DIRECTIVE
+              <span className="text-[11px] font-mono font-bold tracking-wider uppercase text-[#14532d]">
+                ACTION HARI INI
               </span>
               <span className="text-[10px] font-mono bg-white/80 px-2 py-0.5 rounded-full text-[#3f6212] font-bold border border-[#d9f99d]">
-                MOVE #1
+                STEP 1
               </span>
             </div>
             <div className="mt-3">
               <div className="text-xl font-bold tracking-tight text-[#111111]">
                 Sprint Modul 1
               </div>
-              <p className="text-xs text-zinc-700 mt-1 leading-relaxed">
-                LMS Umi Elly Azhariyah → Buka kunci penagihan Termin 2 (+Rp2.000.000)
+              <p className="text-xs text-zinc-900 font-medium mt-1 leading-relaxed">
+                Kelar Modul 1 LMS Umi Elly → Langsung cair Termin 2 (+Rp2 Juta!)
               </p>
             </div>
           </div>
 
           <div className="flex items-center justify-between pt-3 border-t border-black/10">
             <span className="text-[11px] font-mono text-[#3f6212] font-bold">
-              Timebox: 90 Menit
+              Fokus: 90 Menit Aja
             </span>
             <div className="btn-circle-arrow group-hover:bg-[#111111] group-hover:text-white transition-all">
               <ArrowUpRight className="w-4 h-4" />
@@ -264,8 +264,8 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
 
       {/* 3. CLIENT / PARTNER MONOCHROME LOGOS STRIP */}
       <div className="py-2 px-4 rounded-2xl bg-white border border-zinc-200/70 shadow-sm flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-zinc-500">
-        <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
-          TRUSTED PARTNERS // ACTIVE CONTRACTS:
+        <span className="text-[10px] uppercase font-bold text-zinc-700 font-bold tracking-wider">
+          PARTNER & PROJECT AKTIF LO:
         </span>
         <div className="flex flex-wrap items-center gap-5 sm:gap-8 font-semibold text-zinc-700">
           <span className="hover:text-black transition-colors cursor-default">BARBER UNDERRATED</span>
@@ -281,10 +281,10 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
       <div className="space-y-2.5 text-center pt-2">
         <div className="space-y-0.5">
           <h3 className="text-base sm:text-lg font-extrabold text-[#111111] tracking-tight">
-            Recommended Execution Tracks
+            Mau Mulai dari Mana Bro?
           </h3>
-          <p className="text-xs text-zinc-500 font-normal">
-            Pilih jalur eksekusi yang paling relevan dengan prioritas lo sekarang:
+          <p className="text-xs text-zinc-700 font-medium">
+            Tinggal klik salah satu, gak usah bingung mikir langkah awal:
           </p>
         </div>
 
@@ -293,7 +293,7 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
             onClick={() => onSelectTab('nextgo')}
             className="pill-black px-4 py-2 hover:scale-105 transition-all shadow-sm flex items-center gap-1.5"
           >
-            <span>LMS Umi Elly (Cairkan Rp2M)</span>
+            <span>🚀 Kerjain LMS Umi Elly (Cairkan Rp2 Juta)</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </button>
 

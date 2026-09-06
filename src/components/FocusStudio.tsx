@@ -143,11 +143,11 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
             <div className="flex items-center gap-2">
               <Target className="w-4 h-4 text-[#10b981]" />
               <h3 className="text-base font-extrabold text-[#111111] tracking-tight font-sans">
-                <span className="lead-italic font-normal">Pilih</span> Task Kunci untuk Deep Work:
+                <span className="lead-italic font-normal">Pilih Satu Task</span> Buat Disikat Sekarang:
               </h3>
             </div>
-            <p className="text-xs text-zinc-500 font-normal">
-              Pilih salah satu tugas dari Triad hari ini untuk mengunci timebox dan instruksi langkah demi langkah.
+            <p className="text-xs text-zinc-800 font-medium">
+              Pasang headphone lo, tutup tab lain yang bikin buyar, dan nikmati sensasi nuntasin kerjaan!
             </p>
           </div>
 
@@ -198,7 +198,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
                 </div>
 
                 <div className="pt-2 border-t border-black/5 flex items-center justify-between text-[10px] font-mono">
-                  <span className={isSelected ? 'text-[#15803d] font-bold' : 'text-zinc-600'}>
+                  <span className={isSelected ? 'text-[#15803d] font-bold' : 'text-zinc-800 font-semibold'}>
                     {isSelected ? '✓ Terkunci di Timer' : 'Pilih Task Ini'}
                   </span>
                 </div>
@@ -232,7 +232,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
               )}
             </div>
           ) : (
-            <div className="p-5 rounded-2xl bg-zinc-50 border border-dashed border-zinc-300 max-w-xl w-full text-center text-xs font-mono text-zinc-500">
+            <div className="p-5 rounded-2xl bg-zinc-50 border border-dashed border-zinc-300 max-w-xl w-full text-center text-xs font-mono text-zinc-700 font-medium">
               Belum ada task yang dikunci. Pilih task di atas atau langsung mulai timer bebas.
             </div>
           )}
@@ -261,7 +261,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
                 className={`px-4 py-1.5 rounded-full transition-all font-semibold ${
                   sessionDurationMinutes === mins
                     ? 'pill-black shadow-xs'
-                    : 'text-zinc-600 hover:text-black'
+                    : 'text-zinc-800 font-semibold hover:text-black'
                 }`}
               >
                 {mins}m
@@ -317,7 +317,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
 
           {/* Ambient Soundscape Selection */}
           <div className="pt-4 border-t border-zinc-100 w-full flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-            <div className="flex items-center gap-2 text-zinc-500">
+            <div className="flex items-center gap-2 text-zinc-700 font-medium">
               <Headphones className="w-4 h-4 text-[#111111]" />
               <span>Binaural Soundscape:</span>
             </div>
@@ -334,7 +334,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
                   className={`px-3.5 py-1.5 rounded-full transition-all font-semibold ${
                     soundMode === s.id
                       ? 'pill-black shadow-xs'
-                      : 'pill-white text-zinc-600 hover:text-black'
+                      : 'pill-white text-zinc-800 font-semibold hover:text-black'
                   }`}
                 >
                   {s.label}

@@ -65,12 +65,12 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-[#ea580c]" />
             <h3 className="text-xl font-extrabold text-[#111111] tracking-tight font-sans">
-              <span className="lead-italic font-normal">Waiting</span> & Cash Pipeline Radar
+              <span className="lead-italic font-normal">Radar Tagihan:</span> Siapa Aja yang Masih Nahan Duit?
             </h3>
             <span className="sticker-pill sticker-yellow text-[9px]">{waitingItems.length} ITEMS ACTIVE</span>
           </div>
-          <p className="text-xs text-zinc-500 font-mono mt-1">
-            // External dependencies: Umi Elly (Termin 2 Rp2M), Bedug (Rp2.2M), Teh Umi, El Massa, Ar-Ruwad, Watra
+          <p className="text-xs text-zinc-800 font-medium font-sans mt-1">
+            Pantau klien yang belum transfer atau belum kasih feedback biar gak kelupaan ditagih.
           </p>
         </div>
 
@@ -79,17 +79,17 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
           className="pill-black flex items-center gap-2 text-xs font-semibold shadow-md"
         >
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-          <span>Add Waiting Item</span>
+          <span>+ Catat Tagihan / Klien</span>
         </button>
       </div>
 
       {/* Add Inline Form */}
       {isAdding && (
         <div className="bento-card p-6 bg-white border border-zinc-200 shadow-lg space-y-4 animate-slide-up font-mono text-xs">
-          <h4 className="text-base font-extrabold text-[#111111] font-sans">Tambah Item Antrian Eksternal</h4>
+          <h4 className="text-base font-extrabold text-[#111111] font-sans">Catat Siapa yang Lagi Ditungguin</h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-[11px] text-zinc-500 mb-1">Client / Project</label>
+              <label className="block text-[11px] text-zinc-800 font-medium mb-1">Client / Project</label>
               <input
                 type="text"
                 placeholder="Contoh: Barber POS"
@@ -99,7 +99,7 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
               />
             </div>
             <div>
-              <label className="block text-[11px] text-zinc-500 mb-1">Reason / Menunggu Apa</label>
+              <label className="block text-[11px] text-zinc-800 font-medium mb-1">Reason / Menunggu Apa</label>
               <input
                 type="text"
                 placeholder="Contoh: Menunggu approval modul"
@@ -109,7 +109,7 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
               />
             </div>
             <div>
-              <label className="block text-[11px] text-zinc-500 mb-1">Value / Potensi Kas</label>
+              <label className="block text-[11px] text-zinc-800 font-medium mb-1">Value / Potensi Kas</label>
               <input
                 type="text"
                 placeholder="Contoh: Rp2.000.000"
@@ -122,7 +122,7 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
           <div className="flex justify-end gap-2 pt-2 border-t border-zinc-100">
             <button
               onClick={() => setIsAdding(false)}
-              className="pill-white px-4 py-2 text-zinc-600 text-xs font-medium"
+              className="pill-white px-4 py-2 text-zinc-900 font-semibold text-xs font-medium"
             >
               Cancel
             </button>
@@ -166,7 +166,7 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
                 </div>
 
                 <div className="p-3 rounded-2xl bg-white/70 border border-black/5 text-xs space-y-1.5 font-mono">
-                  <div className="text-zinc-600">
+                  <div className="text-zinc-900 font-semibold">
                     <span className="font-bold text-zinc-900 font-sans">Alasan:</span> {item.reason}
                   </div>
                   {item.actionToUnblock && (

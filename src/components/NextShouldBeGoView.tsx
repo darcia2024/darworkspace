@@ -66,10 +66,10 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
     {
       id: 'move-1',
       rank: 1,
-      badge: 'PRIORITAS MUTLAK #1 // CASH ACCELERATOR',
+      badge: 'LANGKAH #1 // DUIT PALING CEPET MASUK 🚀',
       badgeColor: 'bg-[#e2ecdc] text-[#305d46] border border-[#305d46]/30',
       title: 'LMS Umi Elly Azhariyah — Sprint Modul 1 & Portal Santri',
-      subtitle: 'DP Rp3.000.000 Sudah Masuk Kas → Kunci Pencairan Termin 2 (+Rp2.000.000)',
+      subtitle: 'DP Rp3 Juta Udah Masuk Rekening → Selesaiin Modul 1 Buat Cairin +Rp2 Juta Lagi!',
       projectTarget: 'Umi Elly — LMS Peradaban Islam Azhariyah',
       roiType: 'CASH_ACCELERATOR',
       cashImpactText: '+Rp2.000.000 (Termin 2) + Rp2.000.000 (Termin 3)',
@@ -77,12 +77,12 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       urgency: 'IMMEDIATE',
       energyLevel: 'high',
       description: 'DP Termin 1 (Rp3M) sudah cair ke Mandiri. Klien sedang dalam momentum antusias tinggi. Eksekusi cepat modul tahap 1 adalah kartu as untuk langsung trigger invoice Termin 2 (+Rp2M) minggu ini.',
-      keyWhy: 'Kunci paling cepat melesatkan saldo kas dari Rp9,89M ke Rp11,89M+ dan menyempurnakan target September 100%!',
+      keyWhy: 'Ini cara paling instan buat naikin saldo kas lo jadi Rp11,89M+ dan lunasin target September 100%!',
       actionChecklist: [
         { id: 'act-1-1', text: 'Setup folder arsitektur & struktur modular LMS Azhariyah', done: false },
-        { id: 'act-1-2', text: 'Buat dashboard kurikulum & portal akses materi santri (Clean Geist UI)', done: false },
-        { id: 'act-1-3', text: 'Siapkan video/demo interaktif prototype modul 1 untuk approval Umi Elly', done: false },
-        { id: 'act-1-4', text: 'Kirim preview & siapkan draft penagihan Termin 2 (+Rp2.000.000)', done: false },
+        { id: 'act-1-2', text: 'Bikin dashboard kurikulum & akses santri yang rapi & estetik', done: false },
+        { id: 'act-1-3', text: 'Bikin video singkat demo modul 1 buat dikirim ke WA Umi Elly', done: false },
+        { id: 'act-1-4', text: 'Kirim preview ke Umi Elly & langsung tagih Termin 2 (+Rp2 Juta)', done: false },
       ],
       financialUnlockNote: 'Jika modul 1 selesai: Langsung mencairkan Termin 2 (+Rp2M). Total pembayaran proyek ini: Rp7.000.000.',
       projectRefId: 'p-umi-elly'
@@ -90,10 +90,10 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
     {
       id: 'move-2',
       rank: 2,
-      badge: 'PRIORITAS #2 // CLEAN DESK & MIND CLARITY',
+      badge: 'LANGKAH #2 // BEBASKAN OTAK DARI BEBAN ✨',
       badgeColor: 'bg-[#e2edf9] text-[#2b5675] border border-[#3c6b8c]/30',
       title: 'DreamMecca Platform — Final Polish & Official Handover',
-      subtitle: 'Sudah Lunas dari Lama → Tuntaskan 100% Biar Bebas Utang Deliverable',
+      subtitle: 'Udah Dibayar Lunas dari Dulu → Tinggal Serah Terima Biar Gak Ada Utang Pikiran!',
       projectTarget: 'DreamMecca Platform',
       roiType: 'CLEAN_DESK',
       cashImpactText: 'Nol Utang Mental (100% Zero Historical Debt)',
@@ -101,7 +101,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       urgency: 'HIGH',
       energyLevel: 'medium',
       description: 'Uang platform DreamMecca sudah lunas dibayar klien dari lama. Menuntaskan dan menyerahkan deliverable terakhir platform ini akan membersihkan sisa beban pikiran masa lalu.',
-      keyWhy: 'Membuat kapasitas otak 100% plong dan bebas dari risiko revisi menumpuk.',
+      keyWhy: 'Biar kepala lo plong 100% dan lo bisa fokus total tanpa kepikiran sisa revisi lama!',
       actionChecklist: [
         { id: 'act-2-1', text: 'Review kelengkapan UI paket umrah & alur kontak WhatsApp', done: false },
         { id: 'act-2-2', text: 'Testing respon form & checklist deploy production', done: false },
@@ -114,10 +114,10 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
     {
       id: 'move-3',
       rank: 3,
-      badge: 'PRIORITAS #3 // HIGH-LEVERAGE ASSET (MRR)',
+      badge: 'LANGKAH #3 // MESIN CUAN PASIF (RECURRING) 💼',
       badgeColor: 'bg-[#f0e6f9] text-[#4e3a68] border border-[#4e3a68]/30',
       title: 'KAEL POS SaaS — Repackage Core Engine & Demo Multi-Tenant',
-      subtitle: 'Validasi Sukses di Barber Rp6M → Jadikan Mesin Recurring Revenue (MRR)',
+      subtitle: 'Kemarin Sukses Dijual Rp6M di Barber → Sekarang Waktunya Dijual Berulang Tiap Bulan!',
       projectTarget: 'Setting KAEL (Core Product)',
       roiType: 'WEALTH_SCALE',
       cashImpactText: 'Langganan Bulanan (MRR) dari Jaringan Outlet',
@@ -125,7 +125,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       urgency: 'STRATEGIC',
       energyLevel: 'creative',
       description: 'Engine kasir & membership Barber Underrated kemarin terbukti berhasil lo jual Rp6 Juta lunas. Sekarang saatnya membungkus core yang sama jadi SaaS multi-outlet untuk passive recurring cashflow.',
-      keyWhy: 'Mengubah solo-developer service (aktif barter waktu) menjadi software asset yang menghasilkan uang saat tidur.',
+      keyWhy: 'Biar lo gak terus-terusan barter waktu sama uang, tapi punya aset software yang ngasilin cuan terus.',
       actionChecklist: [
         { id: 'act-3-1', text: 'Kunci konfigurasi permission role Kasir vs Owner vs Admin', done: false },
         { id: 'act-3-2', text: 'Rapikan demo tenant kafe/barber siap live pitch ke calon klien', done: false },
@@ -193,19 +193,19 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
           <div className="bento-card bento-lime p-5 rounded-[22px] border border-[#d9f99d] space-y-1.5">
             <span className="sticker-pill sticker-lime text-[9px]">01 // POSISI MOMENTUM</span>
             <span className="text-base font-extrabold text-[#111111] block font-sans">65% Target Tembus!</span>
-            <p className="text-xs text-zinc-600 leading-snug">Kas aman di Rp9,89M (Surplus +Rp5,89M di atas Floor). Bebas utang deliverable.</p>
+            <p className="text-xs text-zinc-800 font-semibold leading-snug">Kas aman di Rp9,89M (Surplus +Rp5,89M di atas Floor). Bebas utang deliverable.</p>
           </div>
 
           <div className="bento-card bento-apricot p-5 rounded-[22px] border border-[#fed7aa] space-y-1.5">
             <span className="sticker-pill sticker-apricot text-[9px]">02 // SISA TARGET SEP</span>
             <span className="text-base font-extrabold text-[#111111] block font-sans">Sisa Rp3.500.000 OTW</span>
-            <p className="text-xs text-zinc-600 leading-snug">Terkunci di Termin 2 (Rp2M) & Termin 3 (Rp2M) project LMS Umi Elly.</p>
+            <p className="text-xs text-zinc-800 font-semibold leading-snug">Terkunci di Termin 2 (Rp2M) & Termin 3 (Rp2M) project LMS Umi Elly.</p>
           </div>
 
           <div className="bento-card bento-blue p-5 rounded-[22px] border border-[#bae6fd] space-y-1.5">
             <span className="sticker-pill sticker-blue text-[9px]">03 // STRATEGI GOLDEN MOVE</span>
             <span className="text-base font-extrabold text-[#111111] block font-sans">Sprint Cepat → Cairkan Sisa</span>
-            <p className="text-xs text-zinc-600 leading-snug">Kerjakan hal dengan dampak cash & mental clarity tertinggi sekarang.</p>
+            <p className="text-xs text-zinc-800 font-semibold leading-snug">Kerjakan hal dengan dampak cash & mental clarity tertinggi sekarang.</p>
           </div>
         </div>
 
@@ -238,7 +238,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
               className={`px-3.5 py-1.5 rounded-full transition-all whitespace-nowrap font-semibold ${
                 energyFilter === btn.id
                   ? 'pill-black shadow-md'
-                  : 'pill-white text-zinc-600 hover:text-black'
+                  : 'pill-white text-zinc-800 font-semibold hover:text-black'
               }`}
             >
               {btn.label}
@@ -250,7 +250,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
       {/* 3. THE 3 GOLDEN STRATEGIC MOVES MATRIX */}
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
-          <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-semibold">
+          <span className="text-xs font-mono text-zinc-700 font-medium uppercase tracking-wider font-semibold">
             // DAFTAR LANGKAH PALING BERDAMPAK (URUTAN PRIORITAS):
           </span>
           <span className="text-[11px] font-mono text-[#15803d] font-bold">
@@ -285,7 +285,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
                       {move.badge}
                     </span>
                     <span className="text-xs font-mono text-zinc-700 flex items-center gap-1 bg-white/70 px-3 py-1 rounded-full border border-black/5 font-semibold">
-                      <Clock className="w-3 h-3 text-zinc-500" />
+                      <Clock className="w-3 h-3 text-zinc-700 font-medium" />
                       {move.timeboxMinutes} Menit Timebox
                     </span>
                   </div>
@@ -318,7 +318,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
                 </p>
 
                 <div className="pt-3 border-t border-black/5 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-                  <div className="text-zinc-600">
+                  <div className="text-zinc-800 font-semibold">
                     Progress Tindakan: <strong className={completedCount > 0 ? "text-[#15803d] font-bold" : "text-[#111111]"}>{completedCount}/{totalActionCount} Selesai</strong>
                   </div>
 
@@ -338,7 +338,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
                 {isExpanded && (
                   <div className="pt-4 border-t border-black/10 space-y-4 animate-fade-in">
                     <div className="space-y-2">
-                      <span className="text-[11px] font-mono text-zinc-600 uppercase font-bold tracking-wider block">
+                      <span className="text-[11px] font-mono text-zinc-800 font-semibold uppercase font-bold tracking-wider block">
                         Checklist Eksekusi Micro-Step (Tandai Saat Selesai):
                       </span>
                       <div className="space-y-2">
@@ -358,10 +358,10 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
                                 {isDone ? (
                                   <CheckCircle2 className="w-4 h-4 text-[#15803d]" />
                                 ) : (
-                                  <Circle className="w-4 h-4 text-zinc-400" />
+                                  <Circle className="w-4 h-4 text-zinc-600 font-bold" />
                                 )}
                               </div>
-                              <span className={`text-xs font-sans font-medium leading-relaxed ${isDone ? 'line-through text-zinc-500' : ''}`}>
+                              <span className={`text-xs font-sans font-medium leading-relaxed ${isDone ? 'line-through text-zinc-700 font-medium' : ''}`}>
                                 {act.text}
                               </span>
                             </button>
@@ -409,7 +409,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
               <span className="lead-italic font-normal">September</span> 2026 Execution Blueprint
               <span className="sticker-pill sticker-lime text-[9px]">TIMELINE</span>
             </h3>
-            <p className="text-xs text-zinc-500 font-mono">// 4 Fase strategis untuk mengunci target +Rp10 Juta dan scaling SaaS</p>
+            <p className="text-xs text-zinc-700 font-medium font-mono">// 4 Fase strategis untuk mengunci target +Rp10 Juta dan scaling SaaS</p>
           </div>
         </div>
 
@@ -482,7 +482,7 @@ export const NextShouldBeGoView: React.FC<NextShouldBeGoViewProps> = ({
           </div>
           <div>
             <h4 className="text-base font-extrabold text-[#111111] font-sans">Siap Mulai Eksekusi Sekarang?</h4>
-            <p className="text-xs text-zinc-500 font-sans">Pilih salah satu move di atas, lalu kunci layar dan fokus coding tanpa distraksi.</p>
+            <p className="text-xs text-zinc-700 font-medium font-sans">Pilih salah satu move di atas, lalu kunci layar dan fokus coding tanpa distraksi.</p>
           </div>
         </div>
 

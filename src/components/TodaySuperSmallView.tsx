@@ -64,14 +64,14 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse" />
             <h3 className="text-base font-extrabold text-[#111111] tracking-tight font-sans">
-              <span className="lead-italic font-normal mr-1">Choose</span> Your Execution Track
+              <span className="lead-italic font-normal mr-1">Gaya Kerja</span> Lo Hari Ini
             </h3>
             <span className="sticker-pill sticker-lime text-[10px]">
-              {strategyMode === 'single' ? 'EXCLUSIVE MONOTASK' : 'PARALLEL SPRINT BATCH'}
+              {strategyMode === 'single' ? '🎯 FOKUS 1 HAL (ANTI MUMET)' : '⚡ SIKAT BEBERAPA (MULTI-SPRINT)'}
             </span>
           </div>
-          <p className="text-xs text-zinc-500 font-normal">
-            Pilih mode eksekusi: Kunci 1 hal sampai tuntas tanpa distraksi, atau batch beberapa sprint sekaligus.
+          <p className="text-xs text-zinc-700 font-medium">
+            Pilih yang bikin lo nyaman: Tuntaskan 1 tugas dulu sampe beres tanpa gangguan, atau jalanin beberapa sprint sekaligus.
           </p>
         </div>
 
@@ -85,11 +85,11 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
             className={`px-4 py-2 rounded-full transition-all flex items-center gap-2 font-semibold ${
               strategyMode === 'single'
                 ? 'pill-black shadow-md'
-                : 'pill-white text-zinc-600'
+                : 'pill-white text-zinc-800 font-bold'
             }`}
           >
             <Target className="w-3.5 h-3.5" />
-            <span>1 Hal Dulu (Single Focus)</span>
+            <span>1 Hal Dulu (Fokus Penuh)</span>
           </button>
 
           <button
@@ -100,11 +100,11 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
             className={`px-4 py-2 rounded-full transition-all flex items-center gap-2 font-semibold ${
               strategyMode === 'multi'
                 ? 'pill-black shadow-md'
-                : 'pill-white text-zinc-600'
+                : 'pill-white text-zinc-800 font-medium'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>Beberapa Hal (Multi-Sprint)</span>
+            <span>Beberapa Hal (Multi-Task)</span>
           </button>
         </div>
       </div>
@@ -122,7 +122,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
                 <div className="flex items-center gap-2">
                   <span className="sticker-pill sticker-pink flex items-center gap-1">
                     <Flame className="w-3 h-3 text-[#be185d]" />
-                    <span>LOCKED IN TIMER</span>
+                    <span>WAKTU DIKUNCI 🔥</span>
                   </span>
                   <span className="sticker-pill sticker-blue text-[10px]">{activeSingleBlock.blockType.toUpperCase()}</span>
                 </div>
@@ -138,24 +138,24 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
                   {activeSingleBlock.projectName}
                 </h4>
                 <div className="p-3.5 rounded-2xl bg-[#fef9c3]/60 border border-[#fef08a] text-xs font-mono text-zinc-800 space-y-1">
-                  <span className="text-[#854d0e] font-bold block uppercase tracking-wide">
-                    ⚡ Micro-Action Langkah Demi Langkah:
+                  <span className="text-[#713f12] font-black block uppercase tracking-wide">
+                    ⚡ LANGKAH KONKRIT YANG HARUS LO BIKIN SEKARANG:
                   </span>
-                  <p className="text-sm font-sans font-medium text-zinc-900 leading-relaxed">
+                  <p className="text-sm font-sans font-medium text-zinc-950 font-bold leading-relaxed">
                     {activeSingleBlock.action}
                   </p>
                 </div>
 
                 {activeSingleBlock.rule && (
                   <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200/80 text-xs font-mono text-zinc-600">
-                    <span className="text-[#3f6212] font-bold">// ATURAN FOKUS:</span> {activeSingleBlock.rule}
+                    <span className="text-[#14532d] font-bold">📌 ATURAN BIAR CEPET BERES:</span> {activeSingleBlock.rule}
                   </div>
                 )}
               </div>
 
               <div className="pt-3 border-t border-zinc-100 flex flex-wrap items-center justify-between gap-3">
-                <div className="text-xs text-zinc-500 font-mono">
-                  Tutup semua tab lain. Kunci pikiran ke 1 tugas ini sampai timebox selesai.
+                <div className="text-xs text-zinc-800 font-medium">
+                  Tutup dulu sosmed & tab lain bro. Kunci fokus ke tugas ini, abis itu lo bebas istirahat!
                 </div>
 
                 <div className="flex items-center gap-2">

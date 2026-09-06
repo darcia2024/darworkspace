@@ -19,10 +19,10 @@ export const DecisionAnchorBox: React.FC<DecisionAnchorBoxProps> = ({ onSelectAc
           <Terminal className="w-4 h-4 text-[#111111] stroke-[2]" />
           <div>
             <h3 className="text-base font-extrabold text-[#111111] tracking-tight font-sans">
-              <span className="lead-italic font-normal">Panduan</span> Fokus Saat Kepala Penuh
+              <span className="lead-italic font-normal">Kepala Lo Penuh?</span> Ikutin Urutan Ini Bro!
             </h3>
-            <p className="text-xs text-zinc-500 font-mono">
-              // Urutan prioritas mutlak eksekusi:
+            <p className="text-xs text-zinc-700 font-medium">
+              Gak usah pusing milih, tinggal sikat dari nomor 1 ke bawah:
             </p>
           </div>
         </div>
@@ -37,8 +37,8 @@ export const DecisionAnchorBox: React.FC<DecisionAnchorBoxProps> = ({ onSelectAc
           <div className="flex items-center gap-3">
             <span className="w-7 h-7 rounded-full bg-[#111111] text-white font-mono font-bold text-xs flex items-center justify-center shadow-xs">01</span>
             <div>
-              <span className="text-zinc-600 font-mono text-[11px]">Project aktif ber-DP & momentum tinggi:</span>
-              <p className="text-[#111111] font-extrabold text-sm font-sans">Sprint Modul 1 LMS Umi Elly (Buka Termin 2 +Rp2M)</p>
+              <span className="text-zinc-800 font-semibold text-[11px]">Langkah 1: Project ber-DP & paling cepet cairin duit</span>
+              <p className="text-black font-extrabold text-sm font-sans">Sprint LMS Umi Elly → Langsung Buka Tagihan Termin 2 (+Rp2 Juta!)</p>
             </div>
           </div>
           <button
@@ -57,8 +57,8 @@ export const DecisionAnchorBox: React.FC<DecisionAnchorBoxProps> = ({ onSelectAc
           <div className="flex items-center gap-3">
             <span className="w-7 h-7 rounded-full bg-white text-zinc-800 font-mono font-bold text-xs flex items-center justify-center border border-black/5 shadow-xs">02</span>
             <div>
-              <span className="text-zinc-600 font-mono text-[11px]">Project lunas butuh final handover:</span>
-              <p className="text-[#111111] font-extrabold text-sm font-sans">Final Polish & Serah Terima DreamMecca (Bebas Utang Mental)</p>
+              <span className="text-zinc-800 font-semibold text-[11px]">Langkah 2: Tuntaskan sisa utang kerjaan biar pikiran lega</span>
+              <p className="text-black font-extrabold text-sm font-sans">Serah Terima Resmi DreamMecca → Pikiran 100% Plong Tanpa Beban</p>
             </div>
           </div>
           <button
@@ -77,8 +77,8 @@ export const DecisionAnchorBox: React.FC<DecisionAnchorBoxProps> = ({ onSelectAc
           <div className="flex items-center gap-3">
             <span className="w-7 h-7 rounded-full bg-white text-zinc-800 font-mono font-bold text-xs flex items-center justify-center border border-black/5 shadow-xs">03</span>
             <div>
-              <span className="text-zinc-600 font-mono text-[11px]">Core Product SaaS untuk Recurring MRR:</span>
-              <p className="text-[#111111] font-extrabold text-sm font-sans">Repackage Demo Multi-Tenant & Role Kasir KAEL POS</p>
+              <span className="text-zinc-800 font-semibold text-[11px]">Langkah 3: Bangun mesin software penghasil uang pasif</span>
+              <p className="text-black font-extrabold text-sm font-sans">Bungkus Demo KAEL POS SaaS → Siap Jual Langganan Tiap Bulan</p>
             </div>
           </div>
           <button
