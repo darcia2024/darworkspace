@@ -1,7 +1,7 @@
 import { DaruWorkOSState } from '../types';
 import { INITIAL_STATE } from './initialData';
 
-const STORAGE_KEY = 'DARU_WORK_OS_STATE_V23';
+const STORAGE_KEY = 'DARU_WORK_OS_STATE_V24';
 
 export function loadState(): DaruWorkOSState {
   try {
