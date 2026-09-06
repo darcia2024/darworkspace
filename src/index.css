@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500;1,600;1,700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -17,14 +17,18 @@
     --text-muted: #71717a;
     --border-color: #e4e4e7;
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-serif: 'Playfair Display', Georgia, serif;
-    --font-mono: 'Space Mono', monospace;
+    --font-serif: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, monospace;
+  }
+
+  *, *::before, *::after {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   body {
     background-color: #fafafa;
     color: #111111;
-    font-family: var(--font-sans);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
     letter-spacing: -0.02em;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -161,9 +165,9 @@
 
 /* 4. Playful Sticker Pills */
 .sticker-pill, .dev-tag {
-  font-family: 'Space Mono', monospace;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   padding: 4px 12px;
   border-radius: 9999px;
   display: inline-flex;
@@ -276,9 +280,9 @@
 
 /* 7. Typography Accents */
 .lead-italic {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* Glass effect */

@@ -49,9 +49,9 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', '"Sora"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        serif: ['"Playfair Display"', 'Georgia', 'serif'],
-        mono: ['"Space Mono"', '"JetBrains Mono"', 'monospace'],
+        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        serif: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        mono: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'monospace'],
       },
       borderRadius: {
         'xl': '0.75rem',
