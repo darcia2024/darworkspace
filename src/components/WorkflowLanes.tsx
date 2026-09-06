@@ -97,7 +97,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       icon: Activity,
       tag: 'LANE_05',
       rule: 'HEALTH & DISCIPLINE: Rekap keuangan & sinkron saldo tiap malam.',
-      color: 'border-[#ded7c8] text-[#59594f] bg-[#eae5d8]'
+      color: 'border-zinc-300 text-zinc-800 bg-zinc-100 font-bold'
     },
     parking_lot: {
       title: 'Lane 6 — Parking Lot (Ide Disimpan)',
@@ -105,17 +105,17 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       icon: Archive,
       tag: 'LANE_06',
       rule: 'ANTI DISTRAKSI: Parkir di sini dulu biar otak tenang.',
-      color: 'border-[#ded7c8] text-[#814637] bg-[#f9ded1]'
+      color: 'border-[#fed7aa] text-[#9a3412] bg-[#ffedd5] font-bold'
     },
   };
 
   const allLanes: LaneType[] = ['client_delivery', 'maintenance', 'bizdev', 'own_product', 'operations', 'parking_lot'];
 
   const boardColumns: { id: BoardColumn; label: string; desc: string; color: string }[] = [
-    { id: 'QUEUE', label: '1. QUEUE // ANTRIAN', desc: 'Siap dieksekusi berikutnya', color: 'border-[#ded7c8] text-[#252520]' },
+    { id: 'QUEUE', label: '1. QUEUE // ANTRIAN', desc: 'Siap dieksekusi berikutnya', color: 'border-zinc-200 text-[#111111]' },
     { id: 'DOING', label: '2. DOING // SEDANG AKTIF', desc: 'Max 1-2 Task bersamaan', color: 'border-[#305d46]/40 text-[#305d46]' },
     { id: 'WAITING', label: '3. WAITING // FEEDBACK & DP', desc: 'Menunggu respon/uang masuk', color: 'border-[#b87e2b]/40 text-[#925f18]' },
-    { id: 'PARKED', label: '4. PARKED // DISIMPAN', desc: 'Ide & project yang di-pause', color: 'border-[#ded7c8] text-[#59594f]' }
+    { id: 'PARKED', label: '4. PARKED // DISIMPAN', desc: 'Ide & project yang di-pause', color: 'border-zinc-200 text-zinc-700' }
   ];
 
   const formatRupiah = (num: number) => {
@@ -369,24 +369,24 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                     <div className="space-y-4">
                       
                       {/* Lane Header Banner */}
-                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#ded7c8] pb-3.5">
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 pb-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="p-2.5 rounded-2xl bg-[#eae5d8] border border-[#ded7c8] text-[#252520]">
-                            <Icon className="w-5 h-5 text-[#252520] stroke-[2]" />
+                          <div className="p-2.5 rounded-2xl bg-[#fafafa] border border-zinc-200 text-[#111111]">
+                            <Icon className="w-5 h-5 text-[#111111] stroke-[2]" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <h4 className="text-base font-bold text-[#252520] tracking-tight">{config.title}</h4>
+                              <h4 className="text-base font-bold text-[#111111] tracking-tight">{config.title}</h4>
                               <span className={`dev-tag ${config.color}`}>{config.tag}</span>
                             </div>
-                            <p className="text-xs text-[#59594f] font-normal mt-0.5">{config.subtitle}</p>
+                            <p className="text-xs text-zinc-700 font-normal mt-0.5">{config.subtitle}</p>
                           </div>
                         </div>
 
                         {/* Lane Stats & Add Project Button */}
                         <div className="flex items-center gap-2">
                           {(lanePaidTotal > 0 || laneUnpaidTotal > 0) && (
-                            <div className="hidden sm:flex items-center gap-2 text-xs font-mono bg-[#faf9f3] px-3 py-1.5 rounded-xl border border-[#ded7c8]">
+                            <div className="hidden sm:flex items-center gap-2 text-xs font-mono bg-white px-3 py-1.5 rounded-xl border border-zinc-200">
                               {lanePaidTotal > 0 && (
                                 <span className="text-[#305d46] font-bold">Paid: {formatRupiah(lanePaidTotal)}</span>
                               )}
@@ -407,7 +407,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                               setNewProjectLane(laneKey);
                               setIsAddModalOpen(true);
                             }}
-                            className="p-1.5 rounded-xl bg-[#faf9f3] hover:bg-[#eae5d8] text-[#252520] border border-[#ded7c8] text-xs font-mono flex items-center gap-1 transition-all"
+                            className="p-1.5 rounded-xl bg-white hover:bg-[#fafafa] text-[#111111] border border-zinc-200 text-xs font-mono flex items-center gap-1 transition-all"
                             title={`Tambah project ke ${config.title}`}
                           >
                             <Plus className="w-3.5 h-3.5" />
@@ -417,7 +417,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                       </div>
 
                       {/* Strategic Lane Rule Banner */}
-                      <div className="p-2.5 rounded-xl bg-[#faf9f3] border border-[#ded7c8] text-xs font-mono text-[#59594f] flex items-center justify-between">
+                      <div className="p-2.5 rounded-xl bg-white border border-zinc-200 text-xs font-mono text-zinc-700 flex items-center justify-between">
                         <div>
                           <span className="text-[#925f18] font-bold">// STRATEGI:</span> {config.rule}
                         </div>
@@ -446,8 +446,8 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                               }}
                               className={`p-4 rounded-2xl border text-left transition-all duration-200 space-y-3 cursor-grab active:cursor-grabbing ${
                                 isBeingDragged
-                                  ? 'opacity-30 scale-95 border-dashed border-[#292a24] bg-[#eae5d8]'
-                                  : 'bg-[#faf9f3] border-[#ded7c8] hover:border-[#928876] hover:bg-[#fffdf5] hover:-translate-y-0.5 shadow-sm'
+                                  ? 'opacity-30 scale-95 border-dashed border-[#292a24] bg-[#fafafa]'
+                                  : 'bg-white border-zinc-200 hover:border-[#928876] hover:bg-white hover:-translate-y-0.5 shadow-sm'
                               }`}
                             >
                               {/* Card Header & Priority */}
@@ -457,23 +457,23 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                     <span className="dev-tag text-[9px] py-0 px-2">
                                       {p.priority}
                                     </span>
-                                    <span className="text-[10px] font-mono text-[#59594f]">
+                                    <span className="text-[10px] font-mono text-zinc-700">
                                       {p.paymentStatus}
                                     </span>
                                   </div>
-                                  <h5 className="text-sm font-bold text-[#252520] mt-1.5 truncate">{p.name}</h5>
-                                  <p className="text-[11px] text-[#59594f] font-mono">{p.valueText}</p>
+                                  <h5 className="text-sm font-bold text-[#111111] mt-1.5 truncate">{p.name}</h5>
+                                  <p className="text-[11px] text-zinc-700 font-mono">{p.valueText}</p>
                                 </div>
-                                <GripVertical className="w-4 h-4 text-[#928876] group-hover:text-[#252520] shrink-0" />
+                                <GripVertical className="w-4 h-4 text-zinc-500 group-hover:text-[#111111] shrink-0" />
                               </div>
 
                               {/* Next Action Pod */}
-                              <div className="p-2.5 rounded-xl bg-[#fffdf5] border border-[#ded7c8] text-[11px] space-y-1">
-                                <p className="text-[#252520] leading-relaxed">
+                              <div className="p-2.5 rounded-xl bg-white border border-zinc-200 text-[11px] space-y-1">
+                                <p className="text-[#111111] leading-relaxed">
                                   <span className="text-[#925f18] font-mono font-bold">Next:</span> {p.nextAction}
                                 </p>
                                 {p.rule && (
-                                  <p className="text-[10px] text-[#59594f] font-mono italic">
+                                  <p className="text-[10px] text-zinc-700 font-mono italic">
                                     // {p.rule}
                                   </p>
                                 )}
@@ -481,7 +481,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
 
                               {/* Interactive Kanban Column Switcher Pills */}
                               <div className="space-y-1">
-                                <span className="text-[9px] font-mono text-[#59594f] block uppercase tracking-wider">
+                                <span className="text-[9px] font-mono text-zinc-700 block uppercase tracking-wider">
                                   Status Kolom Kanban:
                                 </span>
                                 <div className="grid grid-cols-4 gap-1">
@@ -498,7 +498,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                             : col === 'PARKED'
                                             ? 'bg-[#f9ded1] text-[#814637] border border-[#814637]/30'
                                             : 'bg-[#292a24] text-[#fffdf5] shadow-sm'
-                                          : 'bg-[#eae5d8] text-[#59594f] hover:text-[#252520] hover:bg-[#ded7c8]'
+                                          : 'bg-[#fafafa] text-zinc-700 hover:text-[#111111] hover:bg-[#ded7c8]'
                                       }`}
                                     >
                                       {col}
@@ -508,13 +508,13 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                               </div>
 
                               {/* Action Buttons */}
-                              <div className="pt-2.5 border-t border-[#ded7c8] flex items-center justify-between gap-1 text-[11px] font-mono">
+                              <div className="pt-2.5 border-t border-zinc-200 flex items-center justify-between gap-1 text-[11px] font-mono">
                                 <button
                                   onClick={() => {
                                     soundManager.playClick();
                                     onStartFocusOnProject(p);
                                   }}
-                                  className="text-[#252520] hover:text-black font-medium flex items-center gap-1 bg-[#fffdf5] px-2.5 py-1.5 rounded-xl border border-[#ded7c8] hover:bg-[#eae5d8] transition-colors shadow-sm"
+                                  className="text-[#111111] hover:text-black font-medium flex items-center gap-1 bg-white px-2.5 py-1.5 rounded-xl border border-zinc-200 hover:bg-[#fafafa] transition-colors shadow-sm"
                                 >
                                   <span>Focus</span>
                                   <ArrowRight className="w-3 h-3" />
@@ -527,10 +527,10 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                         soundManager.playClick();
                                         onOpenInvoiceForProject(p);
                                       }}
-                                      className="text-[#252520] hover:text-black flex items-center gap-1 bg-[#adc6ed]/40 px-2.5 py-1.5 rounded-xl border border-[#adc6ed] hover:bg-[#adc6ed]/70 transition-colors shadow-sm"
+                                      className="text-[#111111] hover:text-black flex items-center gap-1 bg-[#adc6ed]/40 px-2.5 py-1.5 rounded-xl border border-[#adc6ed] hover:bg-[#adc6ed]/70 transition-colors shadow-sm"
                                       title="Buat invoice tagihan untuk project ini"
                                     >
-                                      <Receipt className="w-3 h-3 text-[#252520]" />
+                                      <Receipt className="w-3 h-3 text-[#111111]" />
                                       <span>Invoice</span>
                                     </button>
                                   )}
@@ -556,7 +556,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                         })}
 
                         {laneProjects.length === 0 && !isHoveredLane && (
-                          <div className="col-span-full p-8 text-center text-[#59594f] font-mono text-xs border border-dashed border-[#ded7c8] rounded-2xl bg-[#faf9f3]">
+                          <div className="col-span-full p-8 text-center text-zinc-700 font-mono text-xs border border-dashed border-zinc-200 rounded-2xl bg-white">
                             Belum ada project di lane ini. Tarik project ke sini atau klik "+ Tambah".
                           </div>
                         )}
@@ -636,8 +636,8 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                           }}
                           className={`p-4 rounded-2xl border text-left transition-all duration-200 space-y-2.5 cursor-grab active:cursor-grabbing ${
                             isBeingDragged
-                              ? 'opacity-30 scale-95 border-dashed border-[#292a24] bg-[#eae5d8]'
-                              : 'bg-[#faf9f3] border-[#ded7c8] hover:border-[#928876] hover:bg-[#fffdf5] hover:-translate-y-0.5 shadow-sm'
+                              ? 'opacity-30 scale-95 border-dashed border-[#292a24] bg-[#fafafa]'
+                              : 'bg-white border-zinc-200 hover:border-[#928876] hover:bg-white hover:-translate-y-0.5 shadow-sm'
                           }`}
                         >
                           {/* Card Header & Priority */}
@@ -647,23 +647,23 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                 <span className="dev-tag text-[9px] py-0 px-2">
                                   {project.priority}
                                 </span>
-                                <span className="text-[10px] font-mono text-[#59594f]">
+                                <span className="text-[10px] font-mono text-zinc-700">
                                   {project.paymentStatus}
                                 </span>
                               </div>
-                              <h5 className="text-sm font-bold text-[#252520] mt-1 truncate">{project.name}</h5>
-                              <p className="text-[11px] text-[#59594f] font-mono">{project.valueText}</p>
+                              <h5 className="text-sm font-bold text-[#111111] mt-1 truncate">{project.name}</h5>
+                              <p className="text-[11px] text-zinc-700 font-mono">{project.valueText}</p>
                             </div>
-                            <GripVertical className="w-3.5 h-3.5 text-[#928876] group-hover:text-[#252520]" />
+                            <GripVertical className="w-3.5 h-3.5 text-zinc-500 group-hover:text-[#111111]" />
                           </div>
 
                           {/* Next Action Pod */}
-                          <div className="p-2.5 rounded-xl bg-[#fffdf5] border border-[#ded7c8] text-[11px] space-y-1">
-                            <p className="text-[#252520]">
+                          <div className="p-2.5 rounded-xl bg-white border border-zinc-200 text-[11px] space-y-1">
+                            <p className="text-[#111111]">
                               <span className="text-[#925f18] font-mono font-bold">Next:</span> {project.nextAction}
                             </p>
                             {project.rule && (
-                              <p className="text-[10px] text-[#59594f] font-mono italic">
+                              <p className="text-[10px] text-zinc-700 font-mono italic">
                                 // {project.rule}
                               </p>
                             )}
@@ -671,13 +671,13 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
 
                           {/* Action Buttons */}
                           {project.boardColumn !== 'PARKED' && (
-                            <div className="pt-2 border-t border-[#ded7c8] flex items-center justify-between gap-1 text-[11px] font-mono">
+                            <div className="pt-2 border-t border-zinc-200 flex items-center justify-between gap-1 text-[11px] font-mono">
                               <button
                                 onClick={() => {
                                   soundManager.playClick();
                                   onStartFocusOnProject(project);
                                 }}
-                                className="text-[#252520] hover:text-black font-medium flex items-center gap-1 bg-[#fffdf5] px-2.5 py-1 rounded-lg border border-[#ded7c8] hover:bg-[#eae5d8] transition-colors shadow-sm"
+                                className="text-[#111111] hover:text-black font-medium flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-zinc-200 hover:bg-[#fafafa] transition-colors shadow-sm"
                               >
                                 <span>Focus</span>
                                 <ArrowRight className="w-3 h-3" />
@@ -690,10 +690,10 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                       soundManager.playClick();
                                       onOpenInvoiceForProject(project);
                                     }}
-                                    className="text-[#252520] hover:text-black flex items-center gap-1 bg-[#adc6ed]/40 px-2 py-1 rounded-lg border border-[#adc6ed] hover:bg-[#adc6ed]/70 transition-colors shadow-sm"
+                                    className="text-[#111111] hover:text-black flex items-center gap-1 bg-[#adc6ed]/40 px-2 py-1 rounded-lg border border-[#adc6ed] hover:bg-[#adc6ed]/70 transition-colors shadow-sm"
                                     title="Buat invoice tagihan untuk project ini"
                                   >
-                                    <Receipt className="w-3 h-3 text-[#252520]" />
+                                    <Receipt className="w-3 h-3 text-[#111111]" />
                                     <span>Invoice</span>
                                   </button>
                                 )}
@@ -740,17 +740,17 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
           onClick={() => setIsAddModalOpen(false)}
         >
           <div 
-            className="max-w-lg w-full bg-[#fffdf5] border border-[#ded7c8] rounded-3xl p-6 shadow-2xl space-y-4"
+            className="max-w-lg w-full bg-white border border-zinc-200 rounded-3xl p-6 shadow-2xl space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center border-b border-[#ded7c8] pb-3">
+            <div className="flex justify-between items-center border-b border-zinc-200 pb-3">
               <div className="flex items-center gap-2">
                 <Plus className="w-4 h-4 text-[#305d46]" />
-                <h4 className="text-base font-bold text-[#252520]">Tambah Project Baru</h4>
+                <h4 className="text-base font-bold text-[#111111]">Tambah Project Baru</h4>
               </div>
               <button 
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-[#59594f] hover:text-[#252520]"
+                className="text-zinc-700 hover:text-[#111111]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -760,11 +760,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
               
               {/* Lane Selector */}
               <div>
-                <label className="text-[#59594f] block mb-1">Target Lane:</label>
+                <label className="text-zinc-700 block mb-1">Target Lane:</label>
                 <select
                   value={newProjectLane}
                   onChange={(e) => setNewProjectLane(e.target.value as LaneType)}
-                  className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl p-2.5 text-[#252520] focus:border-[#292a24] focus:outline-none"
+                  className="w-full bg-white border border-zinc-200 rounded-xl p-2.5 text-[#111111] focus:border-[#292a24] focus:outline-none"
                 >
                   {allLanes.map(l => (
                     <option key={l} value={l}>{laneConfigs[l].title}</option>
@@ -774,47 +774,47 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
 
               {/* Project Name */}
               <div>
-                <label className="text-[#59594f] block mb-1">Nama Project / Client:</label>
+                <label className="text-zinc-700 block mb-1">Nama Project / Client:</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Kasir Barber Underrated / Logo Baru"
                   value={newProjectName}
                   onChange={(e) => setNewProjectName(e.target.value)}
-                  className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl p-2.5 text-[#252520] focus:border-[#292a24] focus:outline-none font-sans"
+                  className="w-full bg-white border border-zinc-200 rounded-xl p-2.5 text-[#111111] focus:border-[#292a24] focus:outline-none font-sans"
                 />
               </div>
 
               {/* Next Action */}
               <div>
-                <label className="text-[#59594f] block mb-1">Next Action Konkret:</label>
+                <label className="text-zinc-700 block mb-1">Next Action Konkret:</label>
                 <input
                   type="text"
                   placeholder="e.g. Siapkan scope & kirim invoice DP 50%"
                   value={newProjectAction}
                   onChange={(e) => setNewProjectAction(e.target.value)}
-                  className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl p-2.5 text-[#252520] focus:border-[#292a24] focus:outline-none font-sans"
+                  className="w-full bg-white border border-zinc-200 rounded-xl p-2.5 text-[#111111] focus:border-[#292a24] focus:outline-none font-sans"
                 />
               </div>
 
               {/* Nominal & Priority */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[#59594f] block mb-1">Nominal / Nilai:</label>
+                  <label className="text-zinc-700 block mb-1">Nominal / Nilai:</label>
                   <input
                     type="text"
                     placeholder="e.g. Rp6.000.000 (DP Rp3M)"
                     value={newProjectValue}
                     onChange={(e) => setNewProjectValue(e.target.value)}
-                    className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl p-2.5 text-[#252520] focus:border-[#292a24] focus:outline-none"
+                    className="w-full bg-white border border-zinc-200 rounded-xl p-2.5 text-[#111111] focus:border-[#292a24] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="text-[#59594f] block mb-1">Priority Level:</label>
+                  <label className="text-zinc-700 block mb-1">Priority Level:</label>
                   <select
                     value={newProjectPriority}
                     onChange={(e) => setNewProjectPriority(e.target.value as PriorityLevel)}
-                    className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl p-2.5 text-[#252520] focus:border-[#292a24] focus:outline-none"
+                    className="w-full bg-white border border-zinc-200 rounded-xl p-2.5 text-[#111111] focus:border-[#292a24] focus:outline-none"
                   >
                     <option value="P0">P0 (Critical / Hari Ini)</option>
                     <option value="P1">P1 (High Priority)</option>
@@ -826,11 +826,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
 
               {/* Initial Kanban Column */}
               <div>
-                <label className="text-[#59594f] block mb-1">Masuk Kolom Kanban:</label>
+                <label className="text-zinc-700 block mb-1">Masuk Kolom Kanban:</label>
                 <select
                   value={newProjectCol}
                   onChange={(e) => setNewProjectCol(e.target.value as BoardColumn)}
-                  className="w-full bg-[#faf9f3] border border-[#ded7c8] rounded-xl p-2.5 text-[#252520] focus:border-[#292a24] focus:outline-none"
+                  className="w-full bg-white border border-zinc-200 rounded-xl p-2.5 text-[#111111] focus:border-[#292a24] focus:outline-none"
                 >
                   <option value="QUEUE">Queue (Antrian)</option>
                   <option value="DOING">Doing (Sedang Dikerjakan)</option>
@@ -839,11 +839,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                 </select>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-[#ded7c8]">
+              <div className="flex justify-end gap-2 pt-2 border-t border-zinc-200">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-[#faf9f3] hover:bg-[#eae5d8] text-[#59594f] border border-[#ded7c8] transition-colors"
+                  className="px-4 py-2 rounded-xl bg-white hover:bg-[#fafafa] text-zinc-700 border border-zinc-200 transition-colors"
                 >
                   Batal
                 </button>
