@@ -45,7 +45,7 @@ export const TopQuickStats: React.FC<TopQuickStatsProps> = ({
   const totalLiquid = financialReport?.totalLiquidBalance || 8306524;
   const hardFloor = financialReport?.hardFloor || 4000000;
   const surplusFloor = totalLiquid - hardFloor;
-  const mandiriAccount = financialReport?.accounts?.find((a) => a.name.toLowerCase().includes('mandiri'));
+  const mandiriAccount = financialReport?.accounts?.find((a) => (a?.name || '').toLowerCase().includes('mandiri'));
   const mandiriBalanceText = mandiriAccount ? formatShortRupiah(mandiriAccount.balance) : 'Rp6,85M';
   const targetIncome = financialReport?.monthlyIncomeTarget || 10000000;
   // Realized income September from verified invoices

@@ -104,15 +104,20 @@ export function App() {
   };
 
   const handleStartFocusOnProject = (project: ProjectCard) => {
-    const existing = state.todayBlocks.find((b) => b.projectName.toLowerCase().includes(project.name.toLowerCase()));
+    const projName = (project?.name || '').toLowerCase().trim();
+    const existing = (state.todayBlocks || []).find((b) => {
+      if (!b || !b.projectName || !projName) return false;
+      const bName = b.projectName.toLowerCase().trim();
+      return bName.includes(projName) || projName.includes(bName);
+    });
     if (existing) {
       setActiveFocusBlock(existing);
     } else {
       const tempBlock: TodayBlock = {
         id: `tb-${Date.now()}`,
-        blockType: 'Deep Work 1',
-        projectName: project.name,
-        action: project.nextAction,
+        blockType: project.lane === 'maintenance' ? 'Admin/Maintenance' : 'Deep Work 1',
+        projectName: project.name || 'Project Focus',
+        action: project.nextAction || 'Eksekusi sprint tugas project',
         timeboxMinutes: 50,
         isDone: false,
         rule: project.rule || 'Fokus eksekusi next action konkrit.'
@@ -125,7 +130,8 @@ export function App() {
   // Handlers for Projects with Full Cross-System Auto-Sync
   const handleUpdateProject = (updatedProject: ProjectCard) => {
     setState((prev) => {
-      const updatedProjects = prev.projects.map((p) => (p.id === updatedProject.id ? updatedProject : p));
+      const currentProjects = Array.isArray(prev.projects) ? prev.projects : [];
+      const updatedProjects = currentProjects.map((p) => (p.id === updatedProject.id ? updatedProject : p));
 
       // 1. Recalculate QuickStats automatically
       const paidClientActive = updatedProjects.filter(p => p.boardColumn === 'DOING' && p.lane === 'client_delivery').length;
@@ -134,38 +140,75 @@ export function App() {
       const salesAndProductActive = updatedProjects.filter(p => p.boardColumn === 'DOING' && (p.lane === 'own_product' || p.lane === 'bizdev')).length;
 
       // 2. Automatically sync waitingItems list
-      let updatedWaitingItems = [...prev.waitingItems];
+      let updatedWaitingItems = [...(Array.isArray(prev.waitingItems) ? prev.waitingItems : [])];
+      const targetNameLower = (updatedProject.name || '').toLowerCase().trim();
+
       if (updatedProject.boardColumn === 'WAITING') {
-        const existingWaitingIdx = updatedWaitingItems.findIndex(w => w.id === `w-${updatedProject.id}` || w.name.toLowerCase().includes(updatedProject.name.toLowerCase()));
+        const existingWaitingIdx = updatedWaitingItems.findIndex(w => {
+          if (!w) return false;
+          if (w.id === `w-${updatedProject.id}`) return true;
+          if (!w.name || !targetNameLower) return false;
+          const wNameLower = w.name.toLowerCase().trim();
+          return wNameLower.includes(targetNameLower) || targetNameLower.includes(wNameLower);
+        });
+
         const waitingEntry: WaitingItem = {
           id: existingWaitingIdx >= 0 ? updatedWaitingItems[existingWaitingIdx].id : `w-${updatedProject.id}`,
-          name: updatedProject.name,
+          name: updatedProject.name || 'Project',
           reason: updatedProject.nextAction || 'Menunggu respon atau pembayaran klien',
           value: updatedProject.valueText || 'Pending',
           nextTrigger: 'Konfirmasi dari klien / transfer pembayaran',
           actionToUnblock: updatedProject.nextAction || 'Follow-up via WhatsApp',
           followUpDate: 'Hari ini',
-          status: (updatedProject.paidNumeric || 0) > 0 ? 'Waiting Approval' : 'Waiting Payment'
+          status: ((updatedProject.paidNumeric || 0) > 0 ? 'Waiting Approval' : 'Waiting Payment') as any
         };
+
         if (existingWaitingIdx >= 0) {
           updatedWaitingItems[existingWaitingIdx] = waitingEntry;
         } else {
           updatedWaitingItems.unshift(waitingEntry);
         }
       } else {
-        // If project moved out of WAITING (to DOING or DONE), remove from waiting radar
-        updatedWaitingItems = updatedWaitingItems.filter(w => w.id !== `w-${updatedProject.id}` && !w.name.toLowerCase().includes(updatedProject.name.toLowerCase()));
+        // If project moved out of WAITING (to DOING, QUEUE, DONE, etc), remove from waiting radar
+        updatedWaitingItems = updatedWaitingItems.filter(w => {
+          if (!w) return false;
+          if (w.id === `w-${updatedProject.id}`) return false;
+          if (w.name && targetNameLower) {
+            const wNameLower = w.name.toLowerCase().trim();
+            if (wNameLower === targetNameLower || (wNameLower.length > 3 && targetNameLower.includes(wNameLower))) {
+              return false;
+            }
+          }
+          return true;
+        });
       }
 
       // 3. Automatically sync TodayPursuit status if completed
-      const updatedTodayPursuit = prev.todayPursuit.map(tp => {
-        if (updatedProject.name.toLowerCase().includes(tp.project.toLowerCase()) || tp.project.toLowerCase().includes(updatedProject.name.toLowerCase())) {
+      const rawPursuit = Array.isArray(prev.todayPursuit) ? prev.todayPursuit : [];
+      const updatedTodayPursuit = rawPursuit.map(tp => {
+        if (!tp) return tp;
+        const tpProjectName = (tp.project || tp.title || '').toLowerCase().trim();
+        const isTargetMatch = targetNameLower && tpProjectName && (
+          targetNameLower.includes(tpProjectName) || tpProjectName.includes(targetNameLower)
+        );
+
+        if (isTargetMatch) {
           return {
             ...tp,
-            isDone: updatedProject.boardColumn === 'DONE'
+            project: tp.project || tp.title || updatedProject.name,
+            title: tp.title || tp.project || updatedProject.name,
+            isDone: updatedProject.boardColumn === 'DONE',
+            isCompleted: updatedProject.boardColumn === 'DONE'
           };
         }
-        return tp;
+
+        return {
+          ...tp,
+          project: tp.project || tp.title || 'General Task',
+          title: tp.title || tp.project || 'General Task',
+          isDone: tp.isDone ?? tp.isCompleted ?? false,
+          isCompleted: tp.isCompleted ?? tp.isDone ?? false
+        };
       });
 
       return {
@@ -497,7 +540,12 @@ export function App() {
 
               <DecisionAnchorBox
                 onSelectAction={(target) => {
-                  const matched = state.todayBlocks.find(b => target.toLowerCase().includes(b.projectName.toLowerCase()));
+                  const targetLower = (target || '').toLowerCase().trim();
+                  const matched = (state.todayBlocks || []).find((b) => {
+                    if (!b || !b.projectName || !targetLower) return false;
+                    const bLower = b.projectName.toLowerCase().trim();
+                    return targetLower.includes(bLower) || bLower.includes(targetLower);
+                  });
                   if (matched) {
                     handleStartFocus(matched);
                   } else {

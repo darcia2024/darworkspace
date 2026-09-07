@@ -158,7 +158,12 @@ export interface TodayPursuit {
   id: string;
   project: string;
   action: string;
+  title?: string;
+  tag?: string;
+  timeEstimate?: string;
+  impact?: string;
   isDone?: boolean;
+  isCompleted?: boolean;
 }
 
 export interface DaruWorkOSState {

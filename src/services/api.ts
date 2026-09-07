@@ -71,7 +71,23 @@ class ApiService {
       const cloudState = await fetchUpstashState();
       if (cloudState && cloudState.projects && cloudState.financialReport) {
         console.info('Loaded state from Upstash Redis Cloud');
-        saveLocalStorageState(cloudState);
+        const normalized: DaruWorkOSState = {
+          ...cloudState,
+          projects: Array.isArray(cloudState.projects) ? cloudState.projects : [],
+          waitingItems: Array.isArray(cloudState.waitingItems) ? cloudState.waitingItems : [],
+          todayBlocks: Array.isArray(cloudState.todayBlocks) ? cloudState.todayBlocks : [],
+          todayPursuit: Array.isArray(cloudState.todayPursuit)
+            ? cloudState.todayPursuit.map((tp: any) => ({
+                ...tp,
+                project: tp.project || tp.title || 'General Pursuit',
+                action: tp.action || tp.title || '',
+                title: tp.title || tp.project || '',
+                isDone: tp.isDone ?? tp.isCompleted ?? false,
+                isCompleted: tp.isCompleted ?? tp.isDone ?? false,
+              }))
+            : [],
+        };
+        saveLocalStorageState(normalized);
         this.currentStatus = {
           ...this.currentStatus,
           isOnline: true,
@@ -80,7 +96,7 @@ class ApiService {
           error: null
         };
         this.notifyStatus();
-        return cloudState;
+        return normalized;
       }
     } catch (err) {
       console.warn('Upstash fetch failed, trying fallback:', err);
@@ -92,13 +108,30 @@ class ApiService {
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.state) {
-          saveLocalStorageState(json.state);
+          const raw = json.state;
+          const normalized: DaruWorkOSState = {
+            ...raw,
+            projects: Array.isArray(raw.projects) ? raw.projects : [],
+            waitingItems: Array.isArray(raw.waitingItems) ? raw.waitingItems : [],
+            todayBlocks: Array.isArray(raw.todayBlocks) ? raw.todayBlocks : [],
+            todayPursuit: Array.isArray(raw.todayPursuit)
+              ? raw.todayPursuit.map((tp: any) => ({
+                  ...tp,
+                  project: tp.project || tp.title || 'General Pursuit',
+                  action: tp.action || tp.title || '',
+                  title: tp.title || tp.project || '',
+                  isDone: tp.isDone ?? tp.isCompleted ?? false,
+                  isCompleted: tp.isCompleted ?? tp.isDone ?? false,
+                }))
+              : [],
+          };
+          saveLocalStorageState(normalized);
           this.currentStatus.lastSyncedAt = new Date().toLocaleTimeString('id-ID');
           this.currentStatus.isOnline = true;
           this.notifyStatus();
           // Seed Upstash Redis with this state
-          saveUpstashState(json.state).catch(() => {});
-          return json.state;
+          saveUpstashState(normalized).catch(() => {});
+          return normalized;
         }
       }
     } catch (e) {

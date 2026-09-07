@@ -166,9 +166,21 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       status: newStatus
     });
 
-    soundManager.playCompletionChime();
+    const safeConfetti = (opts: confetti.Options) => {
+      try {
+        if (typeof confetti === 'function') {
+          confetti(opts);
+        } else if (typeof (confetti as any)?.default === 'function') {
+          (confetti as any).default(opts);
+        }
+      } catch (e) {
+        console.warn('Confetti skipped:', e);
+      }
+    };
+
+    try { soundManager.playCompletionChime(); } catch {}
     if (targetCol === 'DOING' || targetCol === 'DONE') {
-      confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+      safeConfetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
     }
   };
 
@@ -200,17 +212,21 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     };
 
     onUpdateProject(updatedProject);
-    soundManager.playCompletionChime();
-    confetti({ particleCount: 35, spread: 55, origin: { y: 0.7 } });
+    try { soundManager.playCompletionChime(); } catch {}
+    try {
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 35, spread: 55, origin: { y: 0.7 } });
+      }
+    } catch {}
   };
 
   // Quick Switch Column directly inside Card
   const handleSwitchColumn = (project: ProjectCard, newCol: BoardColumn) => {
-    soundManager.playClick();
+    try { soundManager.playClick(); } catch {}
     let newStatus = project.status;
     if (newCol === 'DOING') newStatus = 'Doing';
     else if (newCol === 'QUEUE') newStatus = 'Queue';
-    else if (newCol === 'WAITING') newStatus = (project.paidNumeric > 0 ? 'Waiting Approval' : 'Waiting Payment');
+    else if (newCol === 'WAITING') newStatus = ((project.paidNumeric || 0) > 0 ? 'Waiting Approval' : 'Waiting Payment');
     else if (newCol === 'PARKED') newStatus = 'Parked';
     else if (newCol === 'DONE') newStatus = 'Done';
 
@@ -221,8 +237,16 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     });
 
     if (newCol === 'DOING' || newCol === 'DONE') {
-      soundManager.playCompletionChime();
-      confetti({ particleCount: 25, spread: 45, origin: { y: 0.6 } });
+      try { soundManager.playCompletionChime(); } catch {}
+      try {
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 25, spread: 45, origin: { y: 0.6 } });
+        } else if (typeof (confetti as any)?.default === 'function') {
+          (confetti as any).default({ particleCount: 25, spread: 45, origin: { y: 0.6 } });
+        }
+      } catch (e) {
+        console.warn('Confetti skipped:', e);
+      }
     }
   };
 

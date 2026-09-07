@@ -23,10 +23,19 @@ export function loadState(): DaruWorkOSState {
         runwayMonths: parsed.financialReport?.runwayMonths || INITIAL_STATE.financialReport.runwayMonths,
       },
       quickStats: parsed.quickStats || INITIAL_STATE.quickStats,
-      todayBlocks: parsed.todayBlocks || INITIAL_STATE.todayBlocks,
-      todayPursuit: parsed.todayPursuit || INITIAL_STATE.todayPursuit,
-      projects: parsed.projects || INITIAL_STATE.projects,
-      waitingItems: parsed.waitingItems || INITIAL_STATE.waitingItems,
+      todayBlocks: Array.isArray(parsed.todayBlocks) ? parsed.todayBlocks : INITIAL_STATE.todayBlocks,
+      todayPursuit: Array.isArray(parsed.todayPursuit)
+        ? parsed.todayPursuit.map((tp: any) => ({
+            ...tp,
+            project: tp.project || tp.title || 'General Pursuit',
+            action: tp.action || tp.title || '',
+            title: tp.title || tp.project || '',
+            isDone: tp.isDone ?? tp.isCompleted ?? false,
+            isCompleted: tp.isCompleted ?? tp.isDone ?? false,
+          }))
+        : INITIAL_STATE.todayPursuit,
+      projects: Array.isArray(parsed.projects) ? parsed.projects : INITIAL_STATE.projects,
+      waitingItems: Array.isArray(parsed.waitingItems) ? parsed.waitingItems : INITIAL_STATE.waitingItems,
     };
   } catch (error) {
     console.error('Failed to load state from localStorage', error);
