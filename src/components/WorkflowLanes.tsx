@@ -26,6 +26,7 @@ import {
 import { ProjectCard, LaneType, BoardColumn, PriorityLevel } from '../types';
 import { soundManager } from '../utils/audio';
 import confetti from 'canvas-confetti';
+import { ProjectEditor } from './ProjectEditor';
 
 interface WorkflowLanesProps {
   projects: ProjectCard[];
@@ -45,6 +46,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
   onOpenInvoiceForProject
 }) => {
   const [viewMode, setViewMode] = useState<'board' | 'lanes'>('board');
+  const [editingProject, setEditingProject] = useState<ProjectCard | null>(null);
   const [selectedLane, setSelectedLane] = useState<string>('ALL');
   
   // Drag and drop state
@@ -118,7 +120,8 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     { id: 'DOING', label: '⚡ SEDANG DIGARAP', desc: 'Fokus aktif lo hari ini', color: 'border-[#305d46]/40 text-[#305d46]' },
     { id: 'WAITING', label: '⏳ LAGI NUNGGU', desc: 'Menunggu respon / pembayaran klien', color: 'border-[#b87e2b]/40 text-[#925f18]' },
     { id: 'QUEUE', label: '📋 ANTRIAN KICKOFF', desc: 'Siap dieksekusi giliran berikutnya', color: 'border-zinc-200 text-[#111111]' },
-    { id: 'DONE', label: '✅ BERES & LUNAS', desc: '100% Selesai tanpa beban pikiran', color: 'border-emerald-300 text-emerald-800' }
+    { id: 'DONE', label: '✅ PEKERJAAN SELESAI', desc: 'Status pembayaran dilihat terpisah', color: 'border-emerald-300 text-emerald-800' },
+    { id: 'PARKED', label: 'DISIMPAN DULU', desc: 'Belum dijadwalkan untuk dikerjakan', color: 'border-zinc-300 text-zinc-700' }
   ];
 
   const formatRupiah = (num: number) => {
@@ -254,6 +257,8 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
   const handleCreateProject = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProjectName.trim()) return;
+    const nominal = Number(newProjectValue || 0);
+    if (!Number.isSafeInteger(nominal) || nominal < 0) { alert('Isi nilai kontrak sebagai nominal rupiah bulat, minimal nol.'); return; }
 
     const newProject: Omit<ProjectCard, 'id'> = {
       name: newProjectName.trim(),
@@ -261,10 +266,10 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       boardColumn: newProjectCol,
       status: newProjectCol === 'DOING' ? 'Doing' : newProjectCol === 'WAITING' ? 'Waiting Payment' : newProjectCol === 'PARKED' ? 'Parked' : 'Queue',
       paymentStatus: newProjectLane === 'client_delivery' ? 'Expected' : 'Free',
-      valueText: newProjectValue.trim() || 'Custom Scope',
-      nominalNumeric: 0,
+      valueText: nominal ? `Rp${nominal.toLocaleString('id-ID')}` : 'Tanpa nilai kontrak',
+      nominalNumeric: nominal,
       paidNumeric: 0,
-      unpaidNumeric: 0,
+      unpaidNumeric: nominal,
       priority: newProjectPriority,
       currentGoal: newProjectName.trim(),
       nextAction: newProjectAction.trim() || 'Mulai kickoff & susun spesifikasi.',
@@ -514,7 +519,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                   Status Kolom Kanban:
                                 </span>
                                 <div className="grid grid-cols-4 gap-1">
-                                  {(['DOING', 'QUEUE', 'WAITING', 'PARKED'] as BoardColumn[]).map((col) => (
+                                  {(['DOING', 'QUEUE', 'WAITING', 'PARKED', 'DONE'] as BoardColumn[]).map((col) => (
                                     <button
                                       key={col}
                                       onClick={() => handleSwitchColumn(p, col)}
@@ -537,6 +542,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                               </div>
 
                               {/* Action Buttons */}
+                              <button className="text-xs underline" onClick={() => setEditingProject(p)}>Edit project</button>
                               <div className="pt-2.5 border-t border-zinc-200 flex items-center justify-between gap-1 text-[11px] font-mono">
                                 <button
                                   onClick={() => {
@@ -727,7 +733,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                   className="py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
                                   title="Pembayaran lunas & tuntas"
                                 >
-                                  <span>✓ Lunas/Done</span>
+                                  <span>✓ Pekerjaan selesai</span>
                                   <Check className="w-3 h-3" />
                                 </button>
                               </div>
@@ -768,6 +774,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                             )}
 
                             {/* Secondary Actions: Focus, Invoice, WA */}
+                            <button className="text-xs underline" onClick={() => setEditingProject(project)}>Edit project</button>
                             <div className="flex items-center justify-between gap-1 pt-1">
                               <button
                                 onClick={() => {
@@ -832,6 +839,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       {/* =========================================================================
           MODAL: ADD NEW PROJECT
           ========================================================================= */}
+      {editingProject && <ProjectEditor key={editingProject.id} project={editingProject} onSave={onUpdateProject} onClose={() => setEditingProject(null)} />}
       {isAddModalOpen && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in"
@@ -900,8 +908,10 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                 <div>
                   <label className="text-zinc-700 block mb-1">Nominal / Nilai:</label>
                   <input
-                    type="text"
-                    placeholder="e.g. Rp6.000.000 (DP Rp3M)"
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="Nilai kontrak rupiah, contoh 6000000"
                     value={newProjectValue}
                     onChange={(e) => setNewProjectValue(e.target.value)}
                     className="w-full bg-white border border-zinc-200 rounded-xl p-2.5 text-[#111111] focus:border-[#292a24] focus:outline-none"
@@ -914,7 +924,6 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                     onChange={(e) => setNewProjectPriority(e.target.value as PriorityLevel)}
                     className="w-full bg-white border border-zinc-200 rounded-xl p-2.5 text-[#111111] focus:border-[#292a24] focus:outline-none"
                   >
-                    <option value="P0">P0 (Critical / Hari Ini)</option>
                     <option value="P1">P1 (High Priority)</option>
                     <option value="P2">P2 (Medium)</option>
                     <option value="P3">P3 (Backlog)</option>

@@ -29,6 +29,8 @@ interface SidebarProps {
   onOpenFinanceInput: () => void;
   onOpenInvoice: () => void;
   todayCompletedCount: number;
+  todayTotalCount: number;
+  syncLabel: string;
   waitingCount: number;
   financialReport?: FinancialReport;
 }
@@ -42,13 +44,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenFinanceInput,
   onOpenInvoice,
   todayCompletedCount,
+  todayTotalCount,
+  syncLabel,
   waitingCount,
   financialReport
 }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  const totalLiquid = financialReport?.totalLiquidBalance || 8306524;
-  const hardFloor = financialReport?.hardFloor || 4000000;
+  const totalLiquid = financialReport?.totalLiquidBalance ?? 0;
+  const hardFloor = financialReport?.hardFloor ?? 4000000;
   const surplusFloor = totalLiquid - hardFloor;
 
   const navItems: { 
@@ -63,7 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'today', 
       label: 'Sikat Hari Ini', 
       icon: Target, 
-      badge: todayCompletedCount > 0 ? `${todayCompletedCount}/4 Tuntas` : undefined, 
+      badge: `${todayCompletedCount}/${todayTotalCount} Tuntas`,
       badgeColor: 'bg-[#ecfccb] text-[#14532d] font-bold border-[#bef264]' 
     },
     { 
@@ -88,7 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'money', 
       label: 'Cek Dompet & Cuan', 
       icon: DollarSign, 
-      badge: 'Live Cloud', 
+      badge: syncLabel,
       badgeColor: 'bg-[#ffedd5] text-[#9a3412] font-bold border-[#fed7aa]' 
     },
     { 
@@ -125,7 +129,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <p className="text-[11px] text-zinc-700 font-semibold font-mono">Markas Tempur Daru 🚀</p>
                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[9px] font-mono font-bold border border-emerald-200">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                  Cloud Redis
+                  {syncLabel}
                 </span>
               </div>
             </div>
@@ -244,7 +248,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className="p-2.5 rounded-2xl bg-[#fce7f3] text-[#9d174d] font-bold border border-[#f9a8d4] hover:scale-[1.02] transition-all flex items-center gap-1.5 font-semibold text-[11px]"
             >
               <Bot className="w-3.5 h-3.5" />
-              <span>Partner AI</span>
+              <span>Partner lokal</span>
             </button>
           </div>
         </div>
@@ -257,15 +261,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           className="p-3.5 rounded-2xl bg-[#fafafa] border border-zinc-200/80 hover:border-zinc-300 cursor-pointer transition-all space-y-1"
         >
           <div className="flex items-center justify-between text-[10px] font-mono text-zinc-700 font-medium">
-            <span>MANDIRI + CASHPACK</span>
-            <span className="text-emerald-800 font-extrabold bg-emerald-100 px-2 py-0.5 rounded-full">AMAN</span>
+            <span>SALDO LIKUID</span>
+            <span className="font-extrabold">{surplusFloor >= 0 ? 'DI ATAS BATAS' : 'DI BAWAH BATAS'}</span>
           </div>
           <div className="text-base font-black text-[#111111] font-mono">
             {formatShortRupiah(totalLiquid)}
           </div>
           <div className="text-[10px] text-zinc-500 font-mono flex items-center justify-between">
-            <span>Surplus Kas Likuid</span>
-            <span className="text-emerald-800 font-extrabold">+{formatShortRupiah(surplusFloor)}</span>
+            <span>Selisih dari batas kas</span>
+            <span className="font-extrabold">{formatShortRupiah(surplusFloor)}</span>
           </div>
         </div>
 

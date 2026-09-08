@@ -28,6 +28,7 @@ export interface ProjectCard {
 }
 
 export interface TodayBlock {
+  projectId?: string;
   id: string;
   blockType: 'Deep Work 1' | 'Deep Work 2' | 'Deep Work 3' | 'Growth Block' | 'Admin/Maintenance' | 'Admin/Product';
   projectName: string;
@@ -38,6 +39,7 @@ export interface TodayBlock {
 }
 
 export interface WaitingItem {
+  projectId?: string;
   id: string;
   name: string;
   reason: string;
@@ -155,6 +157,7 @@ export interface QuickStats {
 }
 
 export interface TodayPursuit {
+  projectId?: string;
   id: string;
   project: string;
   action: string;

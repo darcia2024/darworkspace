@@ -6,5 +6,6 @@ echo   Target 2026: Rp100M | 1 Main Win + 1 Revenue Action
 echo ========================================================
 echo.
 echo Menjalankan server lokal di http://localhost:3000 ...
-npm run dev
+cd /d "%~dp0"
+npm run dev:all
 pause

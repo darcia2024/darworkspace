@@ -1,81 +1,46 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const VAULT_PATH = 'C:\\Users\\ASUS\\OneDrive\\Documents\\Dar Vault\\Dar Vault';
-
-export function isVaultAvailable() {
-  try {
-    return fs.existsSync(VAULT_PATH);
-  } catch (e) {
-    return false;
-  }
+export function isVaultAvailable(vault = process.env.OBSIDIAN_VAULT_PATH) {
+  try { return Boolean(vault && fs.statSync(vault).isDirectory()); }
+  catch { return false; }
 }
 
-export function syncToObsidianVault(state) {
-  if (!state || !isVaultAvailable()) {
-    return { success: false, reason: 'Vault path not found or state empty' };
-  }
-
-  const results = [];
-  const todayStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+export function syncToObsidianVault(state, vault = process.env.OBSIDIAN_VAULT_PATH) {
+  if (!state || !isVaultAvailable(vault)) return { success: false, reason: 'Atur OBSIDIAN_VAULT_PATH ke folder vault yang tersedia.' };
+  // Dedicated exports preserve the user's handwritten dashboard notes.
+  const directory = path.join(vault, 'Daru Work OS Exports');
+  const stamp = new Date().toISOString();
   const report = state.financialReport;
-
-  // 1. Sync Today.md
-  try {
-    const todayFile = path.join(VAULT_PATH, '00 Dashboard', 'Today.md');
-    let todayContent = `\n_Last synced from Daru Work OS: ${todayStr}_\n\n`;
-    todayContent += `## 🎯 Target Win Hari Ini (P1 Focus)\n\n`;
-    (state.todayPursuit || []).forEach((tp) => {
-      todayContent += `- [${tp.isDone ? 'x' : ' '}] **${tp.project}** — ${tp.action}\n`;
-    });
-
-    todayContent += `\n## ⚡ Timebox Deep Work Blocks\n\n`;
-    (state.todayBlocks || []).forEach((tb, i) => {
-      todayContent += `${i + 1}. [${tb.isDone ? 'x' : ' '}] **${tb.projectName}** (${tb.timeboxMinutes || 50}m)\n`;
-      todayContent += `   - Action: ${tb.action}\n`;
-      if (tb.rule) todayContent += `   - Rule: ${tb.rule}\n`;
-    });
-
-    todayContent += `\n## 🔴 Live Financial Telemetry\n\n`;
-    if (report) {
-      todayContent += `- **Saldo Likuid:** Rp${(report.totalLiquidBalance || 0).toLocaleString('id-ID')} (${report.modeStatus})\n`;
-      todayContent += `- **Beban Fixed:** Rp${(report.fixedMonthlyBurn || 2665000).toLocaleString('id-ID')}/bln (Real: ~Rp4,5M/bln)\n`;
-      todayContent += `- **Sisa Runway:** ±${report.runwayDays || 26} Hari\n`;
-    }
-
-    fs.writeFileSync(todayFile, todayContent, 'utf-8');
-    results.push('00 Dashboard/Today.md');
-  } catch (e) {
-    console.error('Error syncing Today.md', e);
+  const today = [
+    `# Today\n\nDiperbarui: ${stamp}\n`,
+    '## Target hari ini\n',
+    ...state.todayPursuit.map((p) => `- [${p.isDone ? 'x' : ' '}] **${p.project}**: ${p.action}`),
+    '\n## Blok fokus\n',
+    ...state.todayBlocks.map((b) => `- [${b.isDone ? 'x' : ' '}] **${b.projectName}** (${b.timeboxMinutes} menit): ${b.action}`),
+    '\n## Keuangan\n',
+    `- Saldo likuid: Rp${report.totalLiquidBalance.toLocaleString('id-ID')}`,
+    `- Beban bulanan estimasi: Rp${report.estimatedRealBurn.toLocaleString('id-ID')}`,
+    `- Runway: ${report.estimatedRealBurn > 0 ? `${report.runwayDays} hari` : 'Belum ada estimasi pengeluaran'}`,
+  ].join('\n');
+  const priorities = [
+    `# Current Priorities\n\nDiperbarui: ${stamp}\n`,
+    ...state.projects.filter((p) => !['DONE', 'PARKED'].includes(p.boardColumn)).sort((a, b) => a.priority.localeCompare(b.priority))
+      .map((p) => `- **${p.name}** [${p.priority}, ${p.status}]: ${p.nextAction}`),
+    '\n## Waiting radar\n',
+    ...state.waitingItems.map((w) => `- **${w.name}** [${w.status}]: ${w.reason}\n  - Follow-up: ${w.followUpDate}; ${w.actionToUnblock}`),
+  ].join('\n');
+  const syncedFiles = [];
+  const errors = [];
+  try { fs.mkdirSync(directory, { recursive: true }); }
+  catch { return { success: false, error: 'Folder ekspor vault tidak dapat dibuat.', syncedFiles }; }
+  for (const [name, content] of [['Today.md', today], ['Current Priorities.md', priorities]]) {
+    try {
+      const target = path.join(directory, name);
+      fs.writeFileSync(`${target}.tmp`, content, 'utf8');
+      fs.renameSync(`${target}.tmp`, target);
+      syncedFiles.push(`Daru Work OS Exports/${name}`);
+    } catch { errors.push(`Gagal menulis ${name}`); }
   }
-
-  // 2. Sync Current Priorities.md
-  try {
-    const prioritiesFile = path.join(VAULT_PATH, '00 Dashboard', 'Current Priorities.md');
-    let prioContent = `\n_Last synced from Daru Work OS: ${todayStr}_\n\n`;
-    prioContent += `## Fokus Utama Sekarang\n\n`;
-    prioContent += `Fase saat ini adalah: **Konsolidasi, bukan ekspansi.**\n\n`;
-    prioContent += `### Live Snapshot — ${todayStr}\n\n`;
-    prioContent += `1. **Zalvice Logo Bang Edo** — Delivery 2 konsep logo (Paid Rp1,2M)\n`;
-    prioContent += `2. **Kasir Barber Underrated** — Finalkan alur kasir & invoice DP 50% (Rp3.000.000)\n`;
-    prioContent += `3. **Setting KAEL Core** — Setting tenant, role kasir/owner, QRIS flow\n`;
-    prioContent += `4. **Umi Elly LMS** — Tunggu konfirmasi termin 1 (Rp3.000.000)\n\n`;
-
-    prioContent += `### Active Radar Pipeline\n\n`;
-    (state.waitingItems || []).forEach((w) => {
-      prioContent += `- **${w.name}** [${w.status}]: ${w.reason} (Value: ${w.value})\n`;
-      prioContent += `  - Next Trigger: ${w.nextTrigger}\n`;
-    });
-
-    fs.writeFileSync(prioritiesFile, prioContent, 'utf-8');
-    results.push('00 Dashboard/Current Priorities.md');
-  } catch (e) {
-    console.error('Error syncing Current Priorities.md', e);
-  }
-
-  return {
-    success: true,
-    syncedFiles: results,
-    timestamp: new Date().toISOString()
-  };
+  return { success: errors.length === 0, syncedFiles, errors, timestamp: stamp };
 }

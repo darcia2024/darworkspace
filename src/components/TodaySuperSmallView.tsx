@@ -32,7 +32,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
 }) => {
   const [strategyMode, setStrategyMode] = useState<'single' | 'multi'>('single');
   const [selectedSingleId, setSelectedSingleId] = useState<string>(todayBlocks[0]?.id || 'tb-1');
-  const [selectedMultiIds, setSelectedMultiIds] = useState<string[]>(['tb-1', 'tb-2']);
+  const [selectedMultiIds, setSelectedMultiIds] = useState<string[]>(todayBlocks.filter(block => !block.isDone).slice(0, 2).map(block => block.id));
 
   const completedCount = todayBlocks.filter(b => b.isDone).length;
   const progressPercent = Math.round((completedCount / (todayBlocks.length || 4)) * 100);
@@ -71,7 +71,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
             </span>
           </div>
           <p className="text-xs text-zinc-700 font-medium">
-            Pilih yang bikin lo nyaman: Tuntaskan 1 tugas dulu sampe beres tanpa gangguan, atau jalanin beberapa sprint sekaligus.
+            Pilih satu tugas sampai beres, atau susun beberapa sprint yang dikerjakan berurutan.
           </p>
         </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { TopQuickStats } from './components/TopQuickStats';
 import { TodaySuperSmallView } from './components/TodaySuperSmallView';
@@ -13,8 +13,9 @@ import { DaruPartnerCopilot } from './components/DaruPartnerCopilot';
 import { DecisionAnchorBox } from './components/DecisionAnchorBox';
 import { QuickFinanceInputModal } from './components/QuickFinanceInputModal';
 import { InvoiceGeneratorModal } from './components/InvoiceGeneratorModal';
-import { loadState, saveState } from './utils/storage';
-import { apiService } from './services/api';
+import { loadState } from './utils/storage';
+import { applyTransaction, deriveState, projectIdFor, updateProject, validateTransaction } from '../shared/domain.js';
+import { apiService, ServerSyncStatus } from './services/api';
 import { DaruWorkOSState, TodayBlock, ProjectCard, WaitingItem, TransactionRecord, AssetAccount, InvoiceRecord, ActiveTabType } from './types';
 import { soundManager } from './utils/audio';
 import { ChevronRight, Sparkles, MessageSquare, Bot, Plus, Receipt, Lock } from 'lucide-react';
@@ -29,17 +30,27 @@ export function App() {
     }
   });
 
-  const [state, setState] = useState<DaruWorkOSState>(loadState);
+  const [state, setStateValue] = useState<DaruWorkOSState>(loadState);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<ServerSyncStatus | null>(null);
+  const editedDuringLoad = useRef(false);
+  const setState = (updater: (previous: DaruWorkOSState) => DaruWorkOSState) => {
+    editedDuringLoad.current = true;
+    setStateValue(previous => deriveState(updater(previous)));
+  };
+  useEffect(() => apiService.subscribeStatus(setSyncStatus), []);
   const [activeTab, setActiveTab] = useState<ActiveTabType>('today');
   const [activeFocusBlock, setActiveFocusBlock] = useState<TodayBlock | null>(null);
+  const [focusQueue, setFocusQueue] = useState<TodayBlock[]>([]);
 
-  // Load from server if available on mount
   useEffect(() => {
+    let cancelled = false;
     apiService.loadInitialState().then((serverState) => {
-      if (serverState) {
-        setState(serverState);
-      }
+      if (cancelled) return;
+      if (!editedDuringLoad.current) setStateValue(serverState);
+      setIsLoaded(true);
     });
+    return () => { cancelled = true; };
   }, []);
 
   // Modals state
@@ -51,10 +62,9 @@ export function App() {
   const [targetFollowUpProject, setTargetFollowUpProject] = useState<ProjectCard | WaitingItem | null>(null);
   const [targetInvoiceProject, setTargetInvoiceProject] = useState<ProjectCard | null>(null);
 
-  // Autosave via apiService (LocalStorage + Backend SQLite + Obsidian)
   useEffect(() => {
-    apiService.saveState(state);
-  }, [state]);
+    if (isLoaded && editedDuringLoad.current) apiService.saveState(state);
+  }, [state, isLoaded]);
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -86,7 +96,7 @@ export function App() {
   const handleTogglePursuit = (id: string) => {
     setState((prev) => ({
       ...prev,
-      todayPursuit: prev.todayPursuit.map((p) => (p.id === id ? { ...p, isDone: !p.isDone } : p)),
+      todayPursuit: prev.todayPursuit.map((p) => (p.id === id ? { ...p, isDone: !p.isDone, isCompleted: !p.isDone } : p)),
     }));
   };
 
@@ -99,142 +109,31 @@ export function App() {
   };
 
   const handleStartFocus = (block: TodayBlock) => {
+    if (!block) return;
+    setFocusQueue([]);
+    if (!state.todayBlocks.some(item => item.id === block.id)) setState(prev => ({ ...prev, todayBlocks: prev.todayBlocks.some(item => item.id === block.id) ? prev.todayBlocks : [...prev.todayBlocks, block] }));
     setActiveFocusBlock(block);
     setActiveTab('deepwork');
   };
 
   const handleStartFocusOnProject = (project: ProjectCard) => {
-    const projName = (project?.name || '').toLowerCase().trim();
-    const existing = (state.todayBlocks || []).find((b) => {
-      if (!b || !b.projectName || !projName) return false;
-      const bName = b.projectName.toLowerCase().trim();
-      return bName.includes(projName) || projName.includes(bName);
-    });
-    if (existing) {
-      setActiveFocusBlock(existing);
-    } else {
-      const tempBlock: TodayBlock = {
-        id: `tb-${Date.now()}`,
-        blockType: project.lane === 'maintenance' ? 'Admin/Maintenance' : 'Deep Work 1',
-        projectName: project.name || 'Project Focus',
-        action: project.nextAction || 'Eksekusi sprint tugas project',
-        timeboxMinutes: 50,
-        isDone: false,
-        rule: project.rule || 'Fokus eksekusi next action konkrit.'
-      };
-      setActiveFocusBlock(tempBlock);
-    }
-    setActiveTab('deepwork');
-  };
-
-  // Handlers for Projects with Full Cross-System Auto-Sync
-  const handleUpdateProject = (updatedProject: ProjectCard) => {
-    setState((prev) => {
-      const currentProjects = Array.isArray(prev.projects) ? prev.projects : [];
-      const updatedProjects = currentProjects.map((p) => (p.id === updatedProject.id ? updatedProject : p));
-
-      // 1. Recalculate QuickStats automatically
-      const paidClientActive = updatedProjects.filter(p => p.boardColumn === 'DOING' && p.lane === 'client_delivery').length;
-      const waitingPaymentKickoff = updatedProjects.filter(p => p.boardColumn === 'WAITING').length;
-      const maintenanceOpen = updatedProjects.filter(p => p.boardColumn === 'DOING' && p.lane === 'maintenance').length;
-      const salesAndProductActive = updatedProjects.filter(p => p.boardColumn === 'DOING' && (p.lane === 'own_product' || p.lane === 'bizdev')).length;
-
-      // 2. Automatically sync waitingItems list
-      let updatedWaitingItems = [...(Array.isArray(prev.waitingItems) ? prev.waitingItems : [])];
-      const targetNameLower = (updatedProject.name || '').toLowerCase().trim();
-
-      if (updatedProject.boardColumn === 'WAITING') {
-        const existingWaitingIdx = updatedWaitingItems.findIndex(w => {
-          if (!w) return false;
-          if (w.id === `w-${updatedProject.id}`) return true;
-          if (!w.name || !targetNameLower) return false;
-          const wNameLower = w.name.toLowerCase().trim();
-          return wNameLower.includes(targetNameLower) || targetNameLower.includes(wNameLower);
-        });
-
-        const waitingEntry: WaitingItem = {
-          id: existingWaitingIdx >= 0 ? updatedWaitingItems[existingWaitingIdx].id : `w-${updatedProject.id}`,
-          name: updatedProject.name || 'Project',
-          reason: updatedProject.nextAction || 'Menunggu respon atau pembayaran klien',
-          value: updatedProject.valueText || 'Pending',
-          nextTrigger: 'Konfirmasi dari klien / transfer pembayaran',
-          actionToUnblock: updatedProject.nextAction || 'Follow-up via WhatsApp',
-          followUpDate: 'Hari ini',
-          status: ((updatedProject.paidNumeric || 0) > 0 ? 'Waiting Approval' : 'Waiting Payment') as any
-        };
-
-        if (existingWaitingIdx >= 0) {
-          updatedWaitingItems[existingWaitingIdx] = waitingEntry;
-        } else {
-          updatedWaitingItems.unshift(waitingEntry);
-        }
-      } else {
-        // If project moved out of WAITING (to DOING, QUEUE, DONE, etc), remove from waiting radar
-        updatedWaitingItems = updatedWaitingItems.filter(w => {
-          if (!w) return false;
-          if (w.id === `w-${updatedProject.id}`) return false;
-          if (w.name && targetNameLower) {
-            const wNameLower = w.name.toLowerCase().trim();
-            if (wNameLower === targetNameLower || (wNameLower.length > 3 && targetNameLower.includes(wNameLower))) {
-              return false;
-            }
-          }
-          return true;
-        });
-      }
-
-      // 3. Automatically sync TodayPursuit status if completed
-      const rawPursuit = Array.isArray(prev.todayPursuit) ? prev.todayPursuit : [];
-      const updatedTodayPursuit = rawPursuit.map(tp => {
-        if (!tp) return tp;
-        const tpProjectName = (tp.project || tp.title || '').toLowerCase().trim();
-        const isTargetMatch = targetNameLower && tpProjectName && (
-          targetNameLower.includes(tpProjectName) || tpProjectName.includes(targetNameLower)
-        );
-
-        if (isTargetMatch) {
-          return {
-            ...tp,
-            project: tp.project || tp.title || updatedProject.name,
-            title: tp.title || tp.project || updatedProject.name,
-            isDone: updatedProject.boardColumn === 'DONE',
-            isCompleted: updatedProject.boardColumn === 'DONE'
-          };
-        }
-
-        return {
-          ...tp,
-          project: tp.project || tp.title || 'General Task',
-          title: tp.title || tp.project || 'General Task',
-          isDone: tp.isDone ?? tp.isCompleted ?? false,
-          isCompleted: tp.isCompleted ?? tp.isDone ?? false
-        };
-      });
-
-      return {
-        ...prev,
-        projects: updatedProjects,
-        waitingItems: updatedWaitingItems,
-        todayPursuit: updatedTodayPursuit,
-        quickStats: {
-          paidClientActive,
-          waitingPaymentKickoff,
-          maintenanceOpen,
-          salesAndProductActive
-        }
-      };
-    });
-  };
-
-  const handleAddProject = (newProject: Omit<ProjectCard, 'id'>) => {
-    const project: ProjectCard = {
-      ...newProject,
-      id: `p-${Date.now()}`
+    const existing = state.todayBlocks.find((block) => projectIdFor(block, state.projects) === project.id && !block.isDone);
+    const block: TodayBlock = existing || {
+      id: crypto.randomUUID(), projectId: project.id,
+      blockType: project.lane === 'maintenance' ? 'Admin/Maintenance' : 'Deep Work 1',
+      projectName: project.name, action: project.nextAction || 'Eksekusi next action',
+      timeboxMinutes: 50, isDone: false, rule: project.rule || 'Fokus satu next action.',
     };
-    setState((prev) => ({
-      ...prev,
-      projects: [project, ...prev.projects]
-    }));
+    if (!existing) setState(prev => ({ ...prev, todayBlocks: [...prev.todayBlocks, block] }));
+    handleStartFocus(block);
+  };
+
+  const handleUpdateProject = (project: ProjectCard) => {
+    setState(prev => updateProject(prev, project));
+  };
+
+  const handleAddProject = (project: Omit<ProjectCard, 'id'>) => {
+    setState(prev => updateProject(prev, { ...project, id: crypto.randomUUID() }));
   };
 
   // Handlers for Waiting Items
@@ -254,120 +153,32 @@ export function App() {
   };
 
   const handleResolveWaitingItem = (id: string) => {
-    setState((prev) => ({
-      ...prev,
-      waitingItems: prev.waitingItems.filter((w) => w.id !== id),
-      quickStats: {
-        ...prev.quickStats,
-        waitingPaymentKickoff: Math.max(0, prev.quickStats.waitingPaymentKickoff - 1)
-      }
-    }));
+    setState(prev => {
+      const item = prev.waitingItems.find(w => w.id === id);
+      const project = item && prev.projects.find(p => p.id === projectIdFor(item, prev.projects));
+      if (project) return updateProject(prev, { ...project, boardColumn: 'QUEUE', blocker: undefined });
+      return { ...prev, waitingItems: prev.waitingItems.filter(w => w.id !== id) };
+    });
   };
 
-  // Financial Handlers
-  const handleSaveTransaction = (
-    txData: Omit<TransactionRecord, 'id' | 'createdAt'>,
-    linkedProjectUpdates?: { projectId: string; amountAdded: number }
-  ) => {
-    const newTx: TransactionRecord = {
-      ...txData,
-      id: `tx-${Date.now()}`,
-      createdAt: new Date().toISOString()
-    };
+  const handleSaveTransaction = (txData: Omit<TransactionRecord, 'id' | 'createdAt'>) => {
+    validateTransaction(state, txData);
+    const transaction: TransactionRecord = { ...txData, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+    setState(prev => applyTransaction(prev, transaction));
+  };
 
-    setState((prev) => {
-      const currentReport = prev.financialReport;
-      
-      const updatedAccounts = currentReport.accounts.map((acc) => {
-        if (acc.name === txData.accountName) {
-          let newBal = acc.balance;
-          if (txData.type === 'income') newBal += txData.amount;
-          else if (txData.type === 'expense') newBal -= txData.amount;
-          else if (txData.type === 'transfer') newBal -= txData.amount;
-          else if (txData.type === 'balance_update') newBal = txData.amount;
-          return { ...acc, balance: newBal, isLatest: true, lastUpdated: 'Live Just Now' };
-        }
-        if (txData.type === 'transfer' && acc.name === txData.toAccountName) {
-          return { ...acc, balance: acc.balance + txData.amount, isLatest: true, lastUpdated: 'Live Just Now' };
-        }
-        return acc;
+  const handleUpdateAllBalances = (accounts: AssetAccount[]) => {
+    if (accounts.some(account => !Number.isSafeInteger(account.balance) || account.balance < 0)) throw new Error('Saldo harus berupa rupiah bulat, minimal nol.');
+    const ids = new Map(accounts.map(account => [account.name, crypto.randomUUID()]));
+    const now = new Date();
+    setState(prev => accounts.reduce((next, account) => {
+      if (next.financialReport.accounts.find(a => a.name === account.name)?.balance === account.balance) return next;
+      return applyTransaction(next, {
+        id: ids.get(account.name)!, type: 'balance_update', amount: account.balance,
+        accountName: account.name, date: now.toISOString().slice(0, 10), createdAt: now.toISOString(),
+        category: 'Koreksi saldo', description: 'Penyesuaian saldo rekening',
       });
-
-      const newTotal = updatedAccounts.reduce((sum, a) => sum + a.balance, 0);
-      const newMode = newTotal < 4000000 
-        ? 'RED MODE — CASH DEFENSE' 
-        : newTotal < 10000000 
-        ? 'YELLOW MODE — CAUTION' 
-        : 'GREEN MODE — GROWTH';
-
-      let updatedProjects = prev.projects;
-      if (linkedProjectUpdates) {
-        updatedProjects = prev.projects.map((p) => {
-          if (p.id === linkedProjectUpdates.projectId) {
-            const newPaid = (p.paidNumeric || 0) + linkedProjectUpdates.amountAdded;
-            const newUnpaid = Math.max(0, (p.nominalNumeric || 0) - newPaid);
-            const isFull = newPaid >= (p.nominalNumeric || 0);
-            return {
-              ...p,
-              paidNumeric: newPaid,
-              unpaidNumeric: newUnpaid,
-              paymentStatus: isFull ? 'Paid' : 'Expected',
-              status: p.status.includes('Waiting') ? 'Doing' : p.status,
-              boardColumn: p.boardColumn === 'WAITING' ? 'DOING' : p.boardColumn
-            };
-          }
-          return p;
-        });
-      }
-
-      const todayStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-      const newTrajectory = [
-        ...currentReport.trajectory,
-        { date: todayStr, balance: newTotal, note: txData.description }
-      ];
-
-      return {
-        ...prev,
-        projects: updatedProjects,
-        financialReport: {
-          ...currentReport,
-          accounts: updatedAccounts,
-          totalLiquidBalance: newTotal,
-          modeStatus: newMode,
-          transactions: [newTx, ...(currentReport.transactions || [])],
-          trajectory: newTrajectory
-        }
-      };
-    });
-  };
-
-  const handleUpdateAllBalances = (newAccounts: AssetAccount[]) => {
-    setState((prev) => {
-      const currentReport = prev.financialReport;
-      const newTotal = newAccounts.reduce((sum, a) => sum + a.balance, 0);
-      const newMode = newTotal < 4000000 
-        ? 'RED MODE — CASH DEFENSE' 
-        : newTotal < 10000000 
-        ? 'YELLOW MODE — CAUTION' 
-        : 'GREEN MODE — GROWTH';
-
-      const todayStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-      const newTrajectory = [
-        ...currentReport.trajectory,
-        { date: todayStr, balance: newTotal, note: 'Multi-account Sync' }
-      ];
-
-      return {
-        ...prev,
-        financialReport: {
-          ...currentReport,
-          accounts: newAccounts,
-          totalLiquidBalance: newTotal,
-          modeStatus: newMode,
-          trajectory: newTrajectory
-        }
-      };
-    });
+    }, prev));
   };
 
   const handleToggleExpensePaid = (expenseId: string) => {
@@ -377,12 +188,14 @@ export function App() {
 
       const updatedExpenses = currentReport.monthlyExpenses.map((exp) => {
         if (exp.id === expenseId) {
-          const nextPaid = !exp.isPaid;
+          const month = new Date().toLocaleDateString('sv-SE').slice(0, 7);
+          const nextPaid = !(exp.isPaid && exp.paidMonth === month);
           const todayFormatted = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
           return {
             ...exp,
             isPaid: nextPaid,
-            paidDate: nextPaid ? todayFormatted : undefined
+            paidDate: nextPaid ? todayFormatted : undefined,
+            paidMonth: nextPaid ? month : undefined
           };
         }
         return exp;
@@ -409,6 +222,10 @@ export function App() {
     deepwork: 'Focus Engine // Deep Work Pomodoro'
   };
 
+  if (!isLoaded && isAuthenticated) {
+    return <div className="p-8" role="status">Memuat workspace…</div>;
+  }
+
   if (!isAuthenticated) {
     return <PinLockScreen onUnlock={() => setIsAuthenticated(true)} />;
   }
@@ -432,6 +249,8 @@ export function App() {
           setIsInvoiceOpen(true);
         }}
         todayCompletedCount={completedCount}
+        todayTotalCount={state.todayBlocks.length}
+        syncLabel={syncStatus?.cloudRedisConnected ? 'Cloud tersinkron' : syncStatus?.isOnline ? 'Server lokal' : 'Offline'}
         waitingCount={state.waitingItems.length}
         financialReport={state.financialReport}
       />
@@ -450,7 +269,7 @@ export function App() {
             <span className="text-zinc-300">/</span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-mono font-bold border border-blue-200">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
-              Cloud Sync ☁️
+              {syncStatus?.cloudRedisConnected ? 'Cloud tersinkron' : syncStatus?.isOnline ? 'Server lokal' : 'Mode offline'}
             </span>
           </div>
 
@@ -516,6 +335,7 @@ export function App() {
         </header>
 
         {/* Content Container */}
+        {syncStatus?.error && <div role="alert" className="px-6 py-3 bg-amber-50 text-amber-900 text-sm">{syncStatus.error}</div>}
         <main className="flex-1 max-w-6xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
           
           {/* Top Quick Status (Only show on Today & Board tabs) */}
@@ -524,6 +344,7 @@ export function App() {
               todayPursuit={state.todayPursuit}
               onTogglePursuit={handleTogglePursuit}
               quickStats={state.quickStats}
+              projects={state.projects}
               onSelectTab={(tab) => setActiveTab(tab as any)}
               financialReport={state.financialReport}
             />
@@ -536,23 +357,14 @@ export function App() {
                 todayBlocks={state.todayBlocks}
                 onToggleBlock={handleToggleBlock}
                 onStartFocus={handleStartFocus}
-              />
-
-              <DecisionAnchorBox
-                onSelectAction={(target) => {
-                  const targetLower = (target || '').toLowerCase().trim();
-                  const matched = (state.todayBlocks || []).find((b) => {
-                    if (!b || !b.projectName || !targetLower) return false;
-                    const bLower = b.projectName.toLowerCase().trim();
-                    return targetLower.includes(bLower) || bLower.includes(targetLower);
-                  });
-                  if (matched) {
-                    handleStartFocus(matched);
-                  } else {
-                    setActiveTab('lanes');
-                  }
+                onStartMultiFocus={(blocks) => {
+                  if (!blocks.length) return;
+                  handleStartFocus(blocks[0]);
+                  setFocusQueue(blocks.slice(1));
                 }}
               />
+
+              <DecisionAnchorBox projects={state.projects} onSelectAction={handleStartFocusOnProject} />
             </div>
           )}
 
@@ -599,6 +411,7 @@ export function App() {
               onOpenFollowUp={handleOpenFollowUpForItem}
               onOpenFinanceInput={() => setIsFinanceInputOpen(true)}
               onToggleExpensePaid={handleToggleExpensePaid}
+              onUpdateMonthlyTarget={(target) => setState(prev => ({ ...prev, financialReport: { ...prev.financialReport, monthlyIncomeTarget: target } }))}
             />
           )}
 
@@ -609,9 +422,13 @@ export function App() {
               activeBlock={activeFocusBlock}
               setActiveBlock={setActiveFocusBlock}
               onCompleteBlock={(id) => {
-                handleToggleBlock(id);
-                soundManager.playCompletionChime();
+                setState(prev => ({ ...prev, todayBlocks: prev.todayBlocks.map(block => block.id === id ? { ...block, isDone: true } : block) }));
+                if (focusQueue.length) {
+                  setActiveFocusBlock(focusQueue[0]);
+                  setFocusQueue(focusQueue.slice(1));
+                }
               }}
+              queuedCount={focusQueue.length}
             />
           )}
 
@@ -622,32 +439,13 @@ export function App() {
             <div className="absolute -top-24 -left-24 w-96 h-96 bg-zinc-800/30 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-zinc-800/20 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Floating Playful Pastel Sticker Tags */}
-            <div className="flex flex-wrap items-center justify-center gap-3 mb-6 relative z-10">
-              <span className="sticker-pill sticker-pink transform -rotate-2 text-xs">
-                Sprint Modul 1 LMS
-              </span>
-              <span className="sticker-pill sticker-lime transform rotate-3 text-xs">
-                DreamMecca Handover
-              </span>
-              <span className="sticker-pill sticker-yellow transform -rotate-1 text-xs">
-                KAEL POS Multi-Tenant
-              </span>
-              <span className="sticker-pill sticker-blue transform rotate-2 text-xs">
-                Barber Kasir Lunas
-              </span>
-              <span className="sticker-pill sticker-apricot transform -rotate-3 text-xs">
-                Mandiri Live Rp9,78M
-              </span>
-            </div>
-
             {/* Giant Bold Headline with Italic Accent */}
             <div className="space-y-3 relative z-10 max-w-2xl mx-auto">
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight uppercase font-sans">
                 YUK <span className="lead-italic font-normal normal-case text-amber-300">Tuntasin</span> TARGET BULAN INI!
               </h2>
               <p className="text-xs sm:text-sm text-zinc-200 font-medium max-w-lg mx-auto leading-relaxed">
-                Udah jalan mantap banget bro! Sisa Rp3,5 Juta lagi buat tembus target Rp10 Juta September. Gaskeun tuntaskan satu-satu!
+                Masih ada {state.todayBlocks.filter(block => !block.isDone).length} blok fokus dan {state.waitingItems.length} item radar. Pilih satu langkah yang bisa dibereskan sekarang.
               </p>
             </div>
 
@@ -689,10 +487,11 @@ export function App() {
         onClose={() => setIsInvoiceOpen(false)}
         projects={state.projects}
         initialProject={targetInvoiceProject}
+        invoices={state.invoices}
         onSaveInvoice={(newInv) => {
           setState((prev) => ({
             ...prev,
-            invoices: [newInv, ...(prev.invoices || [])]
+            invoices: [newInv, ...(prev.invoices || []).filter(invoice => invoice.id !== newInv.id)]
           }));
         }}
       />
@@ -718,6 +517,7 @@ export function App() {
 
       {/* Partner Copilot Sidebar */}
       <DaruPartnerCopilot
+        projects={state.projects}
         isOpen={isCopilotOpen}
         onClose={() => setIsCopilotOpen(false)}
         financialReport={state.financialReport}
@@ -731,6 +531,7 @@ export function App() {
         isOpen={isExportOpen}
         onClose={() => setIsExportOpen(false)}
         state={state}
+        onUseServerState={(serverState) => { editedDuringLoad.current = false; setStateValue(serverState); }}
       />
 
     </div>

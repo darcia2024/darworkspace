@@ -27,7 +27,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
       setIsSuccess(true);
       setError(false);
       soundManager.playLevelUp();
-      localStorage.setItem(AUTH_STORAGE_KEY, 'AUTHENTICATED_120426');
+      try { localStorage.setItem(AUTH_STORAGE_KEY, 'AUTHENTICATED_120426'); } catch { /* Unlock still works for this session when storage is unavailable. */ }
       setTimeout(() => {
         onUnlock();
       }, 600);

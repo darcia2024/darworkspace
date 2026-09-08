@@ -1,95 +1,59 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { randomUUID } from 'node:crypto';
+import { applyTransaction, deriveState, validateState } from '../shared/domain.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const defaultFile = fileURLToPath(new URL('./data/daru_os.json', import.meta.url));
 
-const DATA_DIR = path.join(__dirname, 'data');
-const DB_FILE = path.join(DATA_DIR, 'daru_os.json');
-
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
-}
-
-// Initial Database Schema & Baseline (Context 7)
-const DEFAULT_DB = {
-  version: '7.0.0',
-  lastSyncedAt: new Date().toISOString(),
-  state: null,
-  transactions: [],
-  syncLogs: []
-};
-
-class DatabaseManager {
-  constructor() {
-    this.data = DEFAULT_DB;
-    this.init();
+export class DatabaseManager {
+  constructor(file = process.env.DARU_DB_FILE || defaultFile) {
+    this.file = path.resolve(file);
+    fs.mkdirSync(path.dirname(this.file), { recursive: true });
+    this.data = fs.existsSync(this.file)
+      ? JSON.parse(fs.readFileSync(this.file, 'utf8'))
+      : { version: '2.7.0', revision: 0, state: null, syncLogs: [] };
+    if (!this.data || typeof this.data !== 'object' || !('state' in this.data)) throw new Error('Invalid database; restore a backup before restarting.');
+    if (this.data.state) validateState(this.data.state);
   }
 
-  init() {
+  commit(next) {
+    const temporary = `${this.file}.tmp`;
     try {
-      if (fs.existsSync(DB_FILE)) {
-        const raw = fs.readFileSync(DB_FILE, 'utf-8');
-        this.data = JSON.parse(raw);
-      } else {
-        this.save();
-      }
-    } catch (e) {
-      console.warn('Initializing fresh DB due to read error', e);
-      this.save();
+      fs.writeFileSync(temporary, JSON.stringify(next, null, 2), { encoding: 'utf8', flush: true });
+      if (fs.existsSync(this.file)) fs.copyFileSync(this.file, `${this.file}.bak`);
+      fs.renameSync(temporary, this.file);
+      this.data = next;
+    } finally {
+      if (fs.existsSync(temporary)) fs.unlinkSync(temporary);
     }
   }
 
-  save() {
-    try {
-      fs.writeFileSync(DB_FILE, JSON.stringify(this.data, null, 2), 'utf-8');
-    } catch (e) {
-      console.error('Failed to write database file', e);
+  getState() { return this.data.state ? deriveState(structuredClone(this.data.state)) : null; }
+  get revision() { return this.data.revision || 0; }
+
+  saveState(state, expectedRevision) {
+    if (expectedRevision !== undefined && expectedRevision !== this.revision) {
+      const error = new Error('Workspace berubah di sesi lain. Ekspor perubahan lokal sebelum memuat ulang.');
+      error.status = 409;
+      throw error;
     }
+    const saved = deriveState(validateState(state));
+    this.commit({ ...this.data, state: saved, revision: this.revision + 1, lastSyncedAt: new Date().toISOString() });
+    return this.getState();
   }
 
-  getState() {
-    return this.data.state;
-  }
-
-  saveState(state) {
-    this.data.state = state;
-    this.data.lastSyncedAt = new Date().toISOString();
-    this.save();
-    return this.data.state;
-  }
-
-  getTransactions() {
-    return this.data.state?.financialReport?.transactions || [];
-  }
-
+  getTransactions() { return this.getState()?.financialReport.transactions || []; }
   addTransaction(tx) {
-    if (!this.data.state) return null;
-    const currentReport = this.data.state.financialReport;
-    const updatedTx = [tx, ...(currentReport.transactions || [])];
-    this.data.state.financialReport.transactions = updatedTx;
-    this.data.lastSyncedAt = new Date().toISOString();
-    this.save();
-    return tx;
+    const state = this.getState();
+    const next = applyTransaction(state, tx);
+    if (next !== state) this.saveState(next);
+    return next.financialReport.transactions.find((item) => item.id === tx.id);
   }
-
   logSync(type, message) {
-    const log = {
-      id: `log-${Date.now()}`,
-      timestamp: new Date().toISOString(),
-      type,
-      message
-    };
-    this.data.syncLogs = [log, ...(this.data.syncLogs || []).slice(0, 50)];
-    this.save();
+    const log = { id: randomUUID(), timestamp: new Date().toISOString(), type, message };
+    this.commit({ ...this.data, syncLogs: [log, ...(this.data.syncLogs || [])].slice(0, 50) });
     return log;
   }
-
-  getSyncLogs() {
-    return this.data.syncLogs || [];
-  }
+  getSyncLogs() { return structuredClone(this.data.syncLogs || []); }
 }
-
-export const db = new DatabaseManager();

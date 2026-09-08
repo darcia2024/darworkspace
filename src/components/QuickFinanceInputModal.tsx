@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   X, 
   Upload, 
@@ -62,11 +62,23 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    setAccountBalances(Object.fromEntries(financialReport.accounts.map(account => [account.name, String(account.balance)])));
+    setSelectedAccount(financialReport.accounts[0]?.name || '');
+    setToAccount(financialReport.accounts[1]?.name || '');
+    setSelectedProject('');
+  }, [isOpen, financialReport.accounts]);
+
   if (!isOpen) return null;
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!file.type.startsWith('image/') || file.size > 1024 * 1024) {
+      alert('Pilih foto bukti maksimal 1 MB supaya penyimpanan browser tetap cukup.');
+      return;
+    }
 
     setPhotoName(file.name);
     const reader = new FileReader();
@@ -93,7 +105,7 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
     soundManager.playClick();
 
     const newTx: Omit<TransactionRecord, 'id' | 'createdAt'> = {
-      date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+      date: new Date().toLocaleDateString('sv-SE'),
       type: txType,
       amount: cleanAmount,
       accountName: selectedAccount,
@@ -101,7 +113,7 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
       category: category || (txType === 'income' ? 'Pemasukan' : 'Pengeluaran'),
       description: description.trim() || (selectedProject ? `Pembayaran untuk ${selectedProject}` : 'Transaksi kas'),
       photoUrl: photoBase64 || undefined,
-      linkedProjectId: selectedProject || undefined
+      linkedProjectId: txType === 'income' ? (projects.find(project => project.id === selectedProject || project.name === selectedProject)?.id || undefined) : undefined
     };
 
     let linkedProjectUpdate;
@@ -115,7 +127,8 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
       }
     }
 
-    onSaveTransaction(newTx, linkedProjectUpdate);
+    try { onSaveTransaction(newTx, linkedProjectUpdate); }
+    catch (error) { alert(error instanceof Error ? error.message : 'Transaksi gagal.'); return; }
     soundManager.playCompletionChime();
     confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
     onClose();
@@ -140,7 +153,8 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
       };
     });
 
-    onUpdateAllBalances(updatedAccounts);
+    try { onUpdateAllBalances(updatedAccounts); }
+    catch (error) { alert(error instanceof Error ? error.message : 'Koreksi saldo gagal.'); return; }
     soundManager.playCompletionChime();
     confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
     onClose();

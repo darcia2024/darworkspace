@@ -3,12 +3,14 @@
   "private": true,
   "version": "2.7.0",
   "type": "module",
+  "engines": { "node": ">=22.13.0" },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "server": "node server/index.js",
-    "dev:all": "concurrently \"vite --port 3000\" \"node server/index.js\"",
+    "dev:all": "concurrently --kill-others \"vite\" \"node server/index.js\"",
+    "test": "node --test tests/*.test.js",
     "start": "node server/index.js",
     "desktop": "start http://localhost:3000"
   },

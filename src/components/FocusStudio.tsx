@@ -19,13 +19,15 @@ interface FocusStudioProps {
   activeBlock: TodayBlock | null;
   setActiveBlock: (block: TodayBlock | null) => void;
   onCompleteBlock: (id: string) => void;
+  queuedCount?: number;
 }
 
 export const FocusStudio: React.FC<FocusStudioProps> = ({
   todayBlocks,
   activeBlock,
   setActiveBlock,
-  onCompleteBlock
+  onCompleteBlock,
+  queuedCount = 0
 }) => {
   const [sessionDurationMinutes, setSessionDurationMinutes] = useState(50);
   const [timeLeftSeconds, setTimeLeftSeconds] = useState(50 * 60);
@@ -35,8 +37,15 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
   const [showTaskPicker, setShowTaskPicker] = useState(!activeBlock);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const deadlineRef = useRef(0);
+  const completionRef = useRef(onCompleteBlock);
+  completionRef.current = onCompleteBlock;
+
+  useEffect(() => () => soundManager.stopNoise(), []);
 
   useEffect(() => {
+    setIsRunning(false);
+    soundManager.stopNoise();
     if (activeBlock && activeBlock.timeboxMinutes) {
       setSessionDurationMinutes(activeBlock.timeboxMinutes);
       setTimeLeftSeconds(activeBlock.timeboxMinutes * 60);
@@ -47,12 +56,15 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
   const selectDuration = (mins: number) => {
     soundManager.playClick();
     setIsRunning(false);
+    soundManager.stopNoise();
     setSessionDurationMinutes(mins);
     setTimeLeftSeconds(mins * 60);
   };
 
   const handleSelectBlock = (block: TodayBlock) => {
     soundManager.playClick();
+    setIsRunning(false);
+    soundManager.stopNoise();
     setActiveBlock(block);
     setSessionDurationMinutes(block.timeboxMinutes || 50);
     setTimeLeftSeconds((block.timeboxMinutes || 50) * 60);
@@ -62,8 +74,9 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
   useEffect(() => {
     if (isRunning) {
       timerRef.current = setInterval(() => {
-        setTimeLeftSeconds((prev) => {
-          if (prev <= 1) {
+          const remaining = Math.max(0, Math.ceil((deadlineRef.current - Date.now()) / 1000));
+          setTimeLeftSeconds(remaining);
+          if (remaining === 0) {
             clearInterval(timerRef.current!);
             setIsRunning(false);
             soundManager.playCompletionChime();
@@ -78,13 +91,10 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
             });
 
             if (activeBlock) {
-              onCompleteBlock(activeBlock.id);
+              completionRef.current(activeBlock.id);
             }
-            return 0;
           }
-          return prev - 1;
-        });
-      }, 1000);
+      }, 250);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
     }
@@ -97,6 +107,8 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
   const toggleRunning = () => {
     soundManager.playClick();
     if (!isRunning) {
+      if (!activeBlock || timeLeftSeconds <= 0) return;
+      deadlineRef.current = Date.now() + timeLeftSeconds * 1000;
       if (soundMode === 'gamma40') soundManager.startGammaFocus();
       else if (soundMode === 'brown') soundManager.startBrownNoise();
     } else {
@@ -134,6 +146,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
 
   return (
     <div className="max-w-4xl mx-auto space-y-6 font-sans select-none animate-fade-in pb-12">
+      {queuedCount > 0 && <p role="status" className="text-sm">{queuedCount} sesi berikutnya dalam antrean. Selesaikan sesi ini untuk memilih tugas berikutnya otomatis.</p>}
       
       {/* 1. STEP 1: TASK SELECTION STAGE */}
       <div className="bento-card p-6 space-y-4 border border-zinc-200/90 shadow-sm">
@@ -303,6 +316,8 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
             {activeBlock && (
               <button
                 onClick={() => {
+                  setIsRunning(false);
+                  soundManager.stopNoise();
                   soundManager.playCompletionChime();
                   onCompleteBlock(activeBlock.id);
                   confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });

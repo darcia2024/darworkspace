@@ -30,95 +30,40 @@ export const FollowUpModal: React.FC<FollowUpModalProps> = ({
   allProjects,
   allWaitingItems
 }) => {
-  const [activeItemName, setActiveItemName] = useState<string>(selectedProject?.name || 'Barber POS / Membership System');
+  const [activeItemName, setActiveItemName] = useState<string>(selectedProject?.name || allProjects[0]?.name || allWaitingItems[0]?.name || '');
   const [tone, setTone] = useState<ToneType>('santai');
   const [customClientName, setCustomClientName] = useState<string>('');
   const [copied, setCopied] = useState(false);
 
   // Sync selected project if opened from a specific card
   React.useEffect(() => {
-    if (selectedProject) {
-      setActiveItemName(selectedProject.name);
+    if (isOpen) {
+      setActiveItemName(selectedProject?.name || allProjects[0]?.name || allWaitingItems[0]?.name || '');
+      setCopied(false);
     }
-  }, [selectedProject]);
+  }, [selectedProject, isOpen]);
 
   if (!isOpen) return null;
 
-  // Preset smart message templates for each of Daru's real clients
   const getFollowUpTemplate = (targetName: string, selectedTone: ToneType, clientNameInput: string) => {
-    const client = clientNameInput.trim() || 'Pak/Mas/Mba';
-
-    // 1. Barber Underrated POS & Membership
-    if (targetName.toLowerCase().includes('barber')) {
-      if (selectedTone === 'formal') {
-        return `Selamat pagi/siang ${client},\n\nIzin menyampaikan progress report pengerjaan sistem POS Kasir & Membership Barber Underrated.\n\nModul transaksi kasir multi-metode bayar (Tunai/QRIS/EDC) dan kirim struk WhatsApp cepat sudah siap untuk mendukung Opening outlet besok Minggu, 30 Agustus 2026.\n\nKira-kira apakah ada penyesuaian daftar layanan atau harga sebelum kita live? Terima kasih banyak.`;
-      }
-      if (selectedTone === 'payment_reminder') {
-        return `Halo ${client},\n\nIzin update bahwa Fase 2 (Aplikasi Member PWA 5 Tab) Barber Underrated sudah selesai dan siap digunakan pelanggan.\n\nSesuai kesepakatan termin kontrak kita, ini kami lampirkan invoice untuk Termin ke-2 (30% / Rp 1.800.000) ya. Terima kasih banyak atas kerjasamanya!`;
-      }
-      return `Halo Mas ${clientNameInput.trim() || 'Bro'},\n\nUpdate progress Barber Underrated ya: Sistem kasir POS, rekap omzet, dan kirim struk WA cepat udah siap buat persiapan Opening Minggu besok 30 Agustus 2026.\n\nBoleh dicek previewnya ya Mas, kalau ada yang mau disesuaikan tinggal kabari aja! 💈🚀`;
-    }
-
-    // 2. Umi Elly — LMS Peradaban Islam Azhariyah
-    if (targetName.toLowerCase().includes('elly') || targetName.toLowerCase().includes('azhariyah')) {
-      if (selectedTone === 'islamic' || selectedTone === 'formal') {
-        return `Assalamu'alaikum warahmatullah Umi Elly,\n\nSemoga Umi dan keluarga senantiasa dalam keadaan sehat dan berkah.\n\nIzin menanyakan perihal kelanjutan rencana pengembangan platform LMS Peradaban Islam Azhariyah. Sesuai skema kesepakatan termin (Rp3jt → Rp2jt → Rp2jt), begitu transfer termin pertama Rp3.000.000 diterima, tim kami akan langsung mulai pengerjaan teknis tahap awal.\n\nMohon informasi kabar baiknya ya Umi. Jazakillahu khairan katsiran.`;
-      }
-      return `Assalamu'alaikum Umi Elly,\n\nIzin konfirmasi terkait rencana kick-off pembuatan website LMS Azhariyah ya Umi. Jika transfer termin pertama (Rp3jt) sudah siap, kami langsung jadwalkan mulai pengerjaan minggu ini. Terima kasih Umi.`;
-    }
-
-    // 3. Bedug.net
-    if (targetName.toLowerCase().includes('bedug')) {
-      if (selectedTone === 'formal') {
-        return `Selamat pagi/siang tim Bedug.net / ${client},\n\nIzin menanyakan kelanjutan hasil diskusi internal redaksi/manajemen terkait rencana redesign media website dan fitur paywall/advertising kemarin.\n\nKira-kira apakah ada hal atau rincian proposal yang perlu kami perjelas kembali? Ditunggu kabar baiknya ya. Terima kasih.`;
-      }
-      return `Halo Mas ${clientNameInput.trim() || ''},\n\nIzin follow-up hasil obrolan internal tim Bedug.net kemarin ya. Kira-kira udah ada update terkait rencana redesign media dan kolom paywall-nya? Kabari ya Mas kalau ada yang mau didiskusikan lagi.`;
-    }
-
-    // 4. Teh Umi — E-reader Basic
-    if (targetName.toLowerCase().includes('teh umi') || targetName.toLowerCase().includes('reader')) {
-      return `Assalamu'alaikum Teh Umi,\n\nSemoga sehat selalu ya Teh. Izin reminder santai terkait pelunasan cicilan ke-2 untuk project e-reader basic (total Rp300.000).\n\nBegitu pelunasan selesai, aplikasinya langsung kami proses build dan deploy ya Teh. Nuhun pisan.`;
-    }
-
-    // 5. El Massa
-    if (targetName.toLowerCase().includes('massa')) {
-      return `Selamat pagi/siang ${client},\n\nIzin menanyakan status proses pembayaran invoice untuk deliverables pekerjaan yang sudah selesai kami serahkan kemarin ya.\n\nMohon informasinya agar status administrasi project di sistem kami bisa di-update ke status selesai. Terima kasih banyak.`;
-    }
-
-    // 6. Ar-Ruwad Logo
-    if (targetName.toLowerCase().includes('ruwad')) {
-      return `Assalamu'alaikum ${client},\n\nIzin menanyakan apakah sudah ada pilihan konsep logo yang paling cocok dari opsi yang kemarin kami kirimkan? Jika ada masukan atau arahan revisi, kabari saja ya agar bisa segera kami siapkan master filenya. Terima kasih.`;
-    }
-
-    // 7. Al Madroj / Watra
-    if (targetName.toLowerCase().includes('watra') || targetName.toLowerCase().includes('madroj')) {
-      return `Assalamu'alaikum ${client},\n\nIzin follow-up terkait rencana pembuatan platform kelas/LMS yang kemarin sempat kita bicarakan. Kira-kira kapan waktu yang pas untuk kita ngobrol singkat gali scope kebutuhannya lebih detail? Terima kasih.`;
-    }
-
-    // 8. Zalvice Logo (Bang Edo)
-    if (targetName.toLowerCase().includes('zalvice')) {
-      return `Halo Bang Edo,\n\nIni draft 2 arah konsep logo awal untuk Zalvice beserta preview mockup penerapannya ya Bang.\n\nBoleh dicek santai dan kasih feedback kira-kira arah visual mana yang paling cocok dan representatif. Thank you Bang!`;
-    }
-
-    // 9. Laptopbisnis Logo
-    if (targetName.toLowerCase().includes('laptopbisnis')) {
-      return `Halo ${client},\n\nDraft 2 opsi konsep logo baru (simbol + wordmark) untuk Laptopbisnis sudah siap kami presentasikan. Kapan waktu yang pas untuk kami kirimkan preview lengkapnya? Terima kasih.`;
-    }
-
-    // 10. KAEL Offline Marketing (Demo ke Calon UMKM)
-    if (targetName.toLowerCase().includes('kael')) {
-      return `Halo Mas/Pak ${clientNameInput.trim() || '[Nama Pemilik Toko]'},\n\nTerima kasih banyak kemarin sudah luangkan waktu lihat demo KAEL POS & Review.\n\nKira-kira dari demo kemarin, fitur apa yang paling pas dan mendesak buat bantu operasional toko saat ini? Kebetulan minggu ini kami ada program pendampingan khusus untuk 3 UMKM pilot pertama. Kalau Mas tertarik mau langsung coba di toko, kabari ya Mas!`;
-    }
-
-    // Generic Fallback
-    return `Halo ${client},\n\nIzin menindaklanjuti progress terkait project ${targetName} kemarin. Kira-kira apakah ada update atau hal yang perlu kami bantu sesuaikan? Ditunggu kabar baiknya ya. Terima kasih!`;
+    const client = clientNameInput.trim() || 'Bapak/Ibu';
+    const project = allProjects.find(item => item.name === targetName);
+    const waiting = allWaitingItems.find(item => item.name === targetName);
+    const greeting = selectedTone === 'islamic' ? "Assalamu'alaikum" : selectedTone === 'formal' ? 'Selamat pagi/siang' : 'Halo';
+    if (!targetName) return 'Pilih project atau tambahkan item radar dahulu.';
+    const request = selectedTone === 'payment_reminder'
+      ? project ? (project.unpaidNumeric > 0 ? `Menurut catatan kami, sisa tagihan project ${targetName} adalah Rp${project.unpaidNumeric.toLocaleString('id-ID')}. Mohon konfirmasi jadwal pembayaran atau kabari jika sudah ditransfer.` : `Pembayaran project ${targetName} sudah tercatat lunas. Terima kasih atas kerja samanya.`)
+        : `Izin konfirmasi status pembayaran untuk ${targetName}. Mohon kabari perkembangan terakhirnya.`
+      : `Izin menindaklanjuti project ${targetName}. ${waiting?.actionToUnblock || project?.nextAction || 'Apakah ada perkembangan yang bisa dikonfirmasi?'}`;
+    return `${greeting} ${client},\n\n${request}\n\nTerima kasih.`;
   };
 
   const messageText = getFollowUpTemplate(activeItemName, tone, customClientName);
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     soundManager.playClick();
-    navigator.clipboard.writeText(messageText);
+    try { await navigator.clipboard.writeText(messageText); }
+    catch { alert('Clipboard tidak tersedia. Salin teks pesan secara manual.'); return; }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -126,24 +71,10 @@ export const FollowUpModal: React.FC<FollowUpModalProps> = ({
   const handleOpenWhatsApp = () => {
     soundManager.playClick();
     const encoded = encodeURIComponent(messageText);
-    window.open(`https://wa.me/?text=${encoded}`, '_blank');
+    window.open(`https://wa.me/?text=${encoded}`, '_blank', 'noopener,noreferrer');
   };
 
-  // Combine unique project names for quick dropdown
-  const uniqueNames = Array.from(new Set([
-    'Barber POS / Membership System',
-    'Umi Elly — LMS Peradaban Islam Azhariyah',
-    'Bedug.net',
-    'KAEL — Offline Marketing',
-    'El Massa',
-    'Ar-Ruwad Logo',
-    'Teh Umi — E-reader Basic',
-    'Al Madroj / Watra',
-    'Zalvice Logo',
-    'Laptopbisnis Logo',
-    ...allProjects.map(p => p.name),
-    ...allWaitingItems.map(w => w.name)
-  ]));
+  const uniqueNames = Array.from(new Set([...allProjects.map(p => p.name), ...allWaitingItems.map(w => w.name)]));
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in font-sans">
