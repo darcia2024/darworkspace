@@ -17,7 +17,8 @@ import {
   Receipt,
   ArrowUpRight,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  Edit3
 } from 'lucide-react';
 import { ActiveTabType, FinancialReport } from '../types';
 import { soundManager } from '../utils/audio';
@@ -85,6 +86,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { label: '6 Jalur Kerja', activeTab: 'lanes' },
         { label: `Radar Tagihan (${waitingCount})`, activeTab: 'waiting', count: waitingCount }
       ]
+    },
+    { 
+      id: 'updates', 
+      label: 'Update Project', 
+      icon: Edit3, 
     },
     { 
       id: 'money', 

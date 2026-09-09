@@ -13,6 +13,7 @@ import { DaruPartnerCopilot } from './components/DaruPartnerCopilot';
 import { DecisionAnchorBox } from './components/DecisionAnchorBox';
 import { QuickFinanceInputModal } from './components/QuickFinanceInputModal';
 import { InvoiceGeneratorModal } from './components/InvoiceGeneratorModal';
+import { ProjectUpdateView } from './components/ProjectUpdateView';
 import { loadState } from './utils/storage';
 import { applyTransaction, deriveState, projectIdFor, updateProject, validateTransaction } from '../shared/domain.js';
 import { apiService, ServerSyncStatus } from './services/api';
@@ -231,10 +232,11 @@ export function App() {
 
   const completedCount = state.todayBlocks.filter((b) => b.isDone).length;
 
-  const tabLabels = {
+  const tabLabels: Record<ActiveTabType, string> = {
     today: 'Sikat Hari Ini',
     nextgo: 'Abis Ini Ngapain?',
     lanes: 'Markas Project',
+    updates: 'Update Project',
     waiting: 'Radar Tagihan',
     money: 'Cek Dompet & Cuan',
     deepwork: 'Kamar Fokus'
@@ -430,6 +432,16 @@ export function App() {
                 setTargetInvoiceProject(proj);
                 setIsInvoiceOpen(true);
               }}
+            />
+          )}
+
+          {/* TAB: PROJECT UPDATE & EDITOR */}
+          {activeTab === 'updates' && (
+            <ProjectUpdateView
+              projects={state.projects}
+              onUpdateProject={handleUpdateProject}
+              onAddProject={handleAddProject}
+              onSelectTab={(tab) => setActiveTab(tab as any)}
             />
           )}
 

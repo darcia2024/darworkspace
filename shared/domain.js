@@ -56,8 +56,15 @@ export function deriveState(state) {
 export function updateProject(state, project) {
   const previous = state.projects.find((p) => p.id === project.id);
   const completionChanged = previous && (previous.boardColumn === 'DONE') !== (project.boardColumn === 'DONE');
+  const actionChanged = previous && previous.nextAction !== project.nextAction && project.nextAction;
   const updateTask = (task) => projectIdFor(task, state.projects) === project.id
-    ? { ...task, projectId: project.id, ...(task.projectName !== undefined ? { projectName: project.name } : { project: project.name }), ...(completionChanged ? { isDone: project.boardColumn === 'DONE', isCompleted: project.boardColumn === 'DONE' } : {}) }
+    ? {
+        ...task,
+        projectId: project.id,
+        ...(task.projectName !== undefined ? { projectName: project.name } : { project: project.name }),
+        ...(actionChanged ? { action: project.nextAction } : {}),
+        ...(completionChanged ? { isDone: project.boardColumn === 'DONE', isCompleted: project.boardColumn === 'DONE' } : {})
+      }
     : task;
   return deriveState({
     ...state,

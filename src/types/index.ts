@@ -180,4 +180,4 @@ export interface DaruWorkOSState {
   currentFocusTaskId?: string;
 }
 
-export type ActiveTabType = 'today' | 'nextgo' | 'lanes' | 'waiting' | 'money' | 'deepwork';
+export type ActiveTabType = 'today' | 'nextgo' | 'lanes' | 'waiting' | 'money' | 'deepwork' | 'updates';
