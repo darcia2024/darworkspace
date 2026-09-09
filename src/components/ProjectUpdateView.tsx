@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import {
   Newspaper,
   ArrowUpRight,
@@ -13,10 +13,12 @@ import {
   CheckCircle2,
   Eye,
   Clock,
-  Layers
+  Layers,
+  X
 } from 'lucide-react';
 import { DaruWorkOSState, ProjectCard } from '../types';
 import { generateSingleProjectReport } from '../../shared/projectReport.js';
+import { soundManager } from '../utils/audio';
 
 interface ProjectUpdateViewProps {
   state: DaruWorkOSState;
@@ -429,13 +431,59 @@ const renderFormattedBody = (content: string) => {
 export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onSelectTab }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
   const [copiedNotice, setCopiedNotice] = useState<string>('');
   const [savedBookmark, setSavedBookmark] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setIsSearchOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Filter projects with content or meaningful update
   const allProjects = useMemo(() => {
     return state.projects || [];
   }, [state.projects]);
+
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return allProjects.filter((p) => {
+      return (
+        p.name.toLowerCase().includes(q) ||
+        (p.currentGoal && p.currentGoal.toLowerCase().includes(q)) ||
+        (p.nextAction && p.nextAction.toLowerCase().includes(q)) ||
+        (p.newsHeadline && p.newsHeadline.toLowerCase().includes(q)) ||
+        (p.lane && p.lane.toLowerCase().includes(q)) ||
+        (p.status && p.status.toLowerCase().includes(q))
+      );
+    });
+  }, [allProjects, searchQuery]);
+
+  const handleSelectSearchResult = (projId: string) => {
+    soundManager.playClick();
+    setActiveProjectId(projId);
+    setIsSearchOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (searchResults.length > 0) {
+        handleSelectSearchResult(searchResults[0].id);
+      }
+    } else if (e.key === 'Escape') {
+      setIsSearchOpen(false);
+      e.currentTarget.blur();
+    }
+  };
 
   // Active selected project
   const [activeProjectId, setActiveProjectId] = useState<string>(() => {
@@ -543,24 +591,106 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
           </div>
 
           {/* Search Box & Board Jump Button */}
-          <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-            <div className="relative flex-1 md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+          <div className="flex items-center gap-2.5 w-full md:w-auto justify-end relative">
+            <div ref={searchContainerRef} className="relative flex-1 md:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Cari berita atau project..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 text-xs rounded-full border border-zinc-200 bg-zinc-50 text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:bg-white transition-all font-normal"
+                onFocus={() => {
+                  if (searchQuery.trim()) setIsSearchOpen(true);
+                }}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsSearchOpen(Boolean(e.target.value.trim()));
+                }}
+                onKeyDown={handleSearchKeyDown}
+                className="w-full pl-9 pr-8 py-1.5 text-xs rounded-full border border-zinc-200 bg-zinc-50 text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-500 focus:bg-white transition-all font-medium"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundManager.playClick();
+                    setSearchQuery('');
+                    setIsSearchOpen(false);
+                  }}
+                  aria-label="Bersihkan pencarian"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-zinc-200/60 text-zinc-400 hover:text-zinc-700 transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+
+              {/* Autocomplete / Search Results Dropdown */}
+              {isSearchOpen && searchQuery.trim() && (
+                <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-zinc-200 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fade-in font-sans">
+                  <div className="px-3.5 py-2.5 bg-zinc-50 border-b border-zinc-100 flex items-center justify-between text-[11px] font-mono text-zinc-500">
+                    <span>
+                      {searchResults.length > 0 ? `HASIL PENCARIAN (${searchResults.length})` : 'TIDAK DITEMUKAN'}
+                    </span>
+                    <span className="text-[10px] text-zinc-400">ENTER UNTUK MEMILIH</span>
+                  </div>
+
+                  <div className="max-h-72 overflow-y-auto divide-y divide-zinc-100">
+                    {searchResults.length > 0 ? (
+                      searchResults.map((p) => {
+                        const bInfo = columnBadgeMap[p.boardColumn] || columnBadgeMap.DOING;
+                        const isCurrent = p.id === activeProjectId;
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => handleSelectSearchResult(p.id)}
+                            className={`w-full text-left p-3 hover:bg-rose-50/40 transition-colors flex items-start gap-3 group ${
+                              isCurrent ? 'bg-zinc-50/80 border-l-2 border-rose-500' : ''
+                            }`}
+                          >
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className={`text-[9px] font-semibold px-2 py-0.5 rounded-full border ${bInfo.bg} ${bInfo.text} ${bInfo.border}`}>
+                                  {bInfo.label}
+                                </span>
+                                <span className="text-[10px] text-zinc-600 font-mono">
+                                  {laneLabelMap[p.lane] || p.lane}
+                                </span>
+                              </div>
+                              <h4 className="text-xs font-bold text-zinc-900 group-hover:text-rose-600 truncate transition-colors">
+                                {p.name}
+                              </h4>
+                              {p.currentGoal && (
+                                <p className="text-[11px] text-zinc-500 line-clamp-1 mt-0.5 font-normal">
+                                  {p.currentGoal}
+                                </p>
+                              )}
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-rose-500 shrink-0 mt-2 transition-colors" />
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <div className="p-6 text-center text-xs text-zinc-500 space-y-1">
+                        <p className="font-semibold text-zinc-700">Tidak ada berita atau project yang cocok</p>
+                        <p className="text-[11px] text-zinc-400">Coba kata kunci lain atau periksa ejaan nama project.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
+            {/* Board Jump Button with Feedback */}
             <button
-              onClick={() => onSelectTab('lanes')}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 transition-colors border border-zinc-200 shrink-0"
-              title="Buka Board Penuh"
+              onClick={() => {
+                soundManager.playClick();
+                onSelectTab('lanes');
+              }}
+              aria-label="Buka Markas Kanban Board"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold text-zinc-800 hover:text-black hover:bg-zinc-100 transition-all border border-zinc-200 active:scale-95 shadow-2xs shrink-0"
+              title="Buka Board Penuh (Kanban)"
             >
-              <Layers className="w-3.5 h-3.5" />
+              <Layers className="w-3.5 h-3.5 text-zinc-700" />
               <span>Board</span>
             </button>
           </div>
