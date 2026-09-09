@@ -25,6 +25,8 @@ export interface ProjectCard {
   scopeDetails?: string;
   billingMilestone?: string;
   followUpDeadline?: string;
+  newsArticle?: string;
+  newsCritique?: string;
 }
 
 export interface TodayBlock {
