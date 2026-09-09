@@ -35,22 +35,58 @@ const laneLabelMap: Record<string, string> = {
 };
 
 const columnBadgeMap: Record<string, { label: string; bg: string; text: string; border: string }> = {
-  DOING: { label: 'In Production', bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-rose-100' },
+  DOING: { label: 'In Production', bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-100' },
   QUEUE: { label: 'Upcoming Sprint', bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-100' },
   WAITING: { label: 'Radar Wait', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-100' },
-  DONE: { label: 'Mission Accomplished', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100' },
+  DONE: { label: 'Mission Accomplished', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-100' },
   PARKED: { label: 'Parked Idea', bg: 'bg-zinc-100', text: 'text-zinc-600', border: 'border-zinc-200' },
 };
 
-// Fallback high-res editorial poster images per category / lane type
-const categoryVisuals: Record<string, string> = {
-  client_delivery: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop',
-  own_product: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1400&auto=format&fit=crop',
-  maintenance: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1400&auto=format&fit=crop',
-  bizdev: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1400&auto=format&fit=crop',
-  operations: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1400&auto=format&fit=crop',
-  default: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1400&auto=format&fit=crop',
+// Fallback cover art per lane. These used to hotlink Unsplash, which meant this was
+// the one view that broke without internet while the rest of the app worked offline.
+// Inline SVG keeps the editorial look and ships with the bundle.
+const laneCoverPalette: Record<string, [string, string, string]> = {
+  client_delivery: ['#0f2f24', '#2f6b52', '#a7e3c6'],
+  own_product: ['#1d1a3a', '#4a3f8f', '#c9c2ff'],
+  maintenance: ['#12283a', '#2d5f80', '#a9d8f0'],
+  bizdev: ['#3a2a0c', '#8a6520', '#f3d79a'],
+  operations: ['#241f1c', '#5c524a', '#ded4c8'],
+  parking_lot: ['#331f14', '#7a4a2c', '#f0c3a1'],
+  default: ['#17181c', '#3f434d', '#c9ced9'],
 };
+
+const buildLaneCover = (lane: string) => {
+  const [deep, mid, light] = laneCoverPalette[lane] || laneCoverPalette.default;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="788" viewBox="0 0 1400 788">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${deep}"/>
+        <stop offset="62%" stop-color="${mid}"/>
+        <stop offset="100%" stop-color="${deep}"/>
+      </linearGradient>
+      <radialGradient id="h" cx="0.24" cy="0.2" r="0.75">
+        <stop offset="0%" stop-color="${light}" stop-opacity="0.42"/>
+        <stop offset="100%" stop-color="${light}" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <rect width="1400" height="788" fill="url(#g)"/>
+    <rect width="1400" height="788" fill="url(#h)"/>
+    <g fill="none" stroke="${light}" stroke-opacity="0.16" stroke-width="1.5">
+      <circle cx="1120" cy="215" r="150"/>
+      <circle cx="1120" cy="215" r="248"/>
+      <circle cx="1120" cy="215" r="352"/>
+    </g>
+    <g fill="${light}" fill-opacity="0.1">
+      <rect x="96" y="612" width="196" height="8" rx="4"/>
+      <rect x="96" y="640" width="118" height="8" rx="4"/>
+    </g>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg.replace(/\s+/g, ' '))}`;
+};
+
+const categoryVisuals: Record<string, string> = Object.fromEntries(
+  Object.keys(laneCoverPalette).map(lane => [lane, buildLaneCover(lane)]),
+);
 
 const getProjectVisual = (project: ProjectCard) => {
   return project.coverImage || categoryVisuals[project.lane] || categoryVisuals.default;
@@ -487,7 +523,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
           <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-start">
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold tracking-tight text-zinc-950">NEWS</span>
-              <span className="text-[11px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100">
+              <span className="text-[11px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-100">
                 Dispatch
               </span>
             </div>
@@ -523,7 +559,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
           {/* Search Box & Board Jump Button */}
           <div className="flex items-center gap-3 w-full md:w-auto justify-end">
             <div className="relative flex-1 md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
               <input
                 type="text"
                 placeholder="Cari berita atau project..."
@@ -565,7 +601,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
               </div>
               <div className="min-w-0">
                 <h4 className="text-xs font-semibold text-zinc-900 tracking-tight truncate">Daru Redaksi</h4>
-                <p className="text-[11px] text-zinc-400 font-normal truncate">Lead OS Engine</p>
+                <p className="text-[11px] text-zinc-500 font-normal truncate">Lead OS Engine</p>
               </div>
             </div>
             <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
@@ -588,7 +624,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-xl transition-all text-left font-normal ${
                       isActive
-                        ? 'bg-rose-50 text-rose-600 font-medium'
+                        ? 'bg-rose-50 text-rose-700 font-medium'
                         : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
                     }`}
                   >
@@ -597,7 +633,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
                       className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                         isActive
                           ? 'bg-rose-500 text-white font-semibold'
-                          : 'text-zinc-400 bg-zinc-100'
+                          : 'text-zinc-500 bg-zinc-100'
                       }`}
                     >
                       {cat.count}
@@ -623,21 +659,21 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
                 className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
               >
                 <span>Markas Project</span>
-                <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
               </button>
               <button
                 onClick={() => onSelectTab('waiting')}
                 className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
               >
                 <span>Radar Tagihan</span>
-                <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
               </button>
               <button
                 onClick={() => onSelectTab('money')}
                 className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
               >
                 <span>Cek Dompet & Kas</span>
-                <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
               </button>
             </div>
           </div>
@@ -650,10 +686,10 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
         <div className="flex-1 min-w-0 w-full space-y-6">
           {/* Category Breadcrumb Kicker */}
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-rose-600">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-rose-700">
               <span>{laneLabelMap[currentProject.lane] || currentProject.lane}</span>
               <span className="text-zinc-300">·</span>
-              <span className="text-zinc-400 normal-case font-normal">Liputan Khusus Lapangan</span>
+              <span className="text-zinc-500 normal-case font-normal">Liputan Khusus Lapangan</span>
             </div>
             <div className="flex items-center gap-2">
               <span
@@ -661,7 +697,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
               >
                 {badgeInfo.label}
               </span>
-              <span className="text-[11px] text-zinc-400 font-normal">
+              <span className="text-[11px] text-zinc-500 font-normal">
                 Prioritas {currentProject.priority}
               </span>
             </div>
@@ -698,13 +734,13 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
           {/* Editorial Metadata Strip & Actions (Matching Screenshot) */}
           <div className="flex flex-wrap items-center justify-between gap-4 pt-1 border-b border-zinc-100 pb-4">
             {/* Stats badges */}
-            <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-400 font-normal">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500 font-normal">
               <span className="inline-flex items-center gap-1 text-zinc-600">
-                <Eye className="w-3.5 h-3.5 text-zinc-400" />
+                <Eye className="w-3.5 h-3.5 text-zinc-500" />
                 100% Siap
               </span>
               <span className="inline-flex items-center gap-1 text-zinc-600">
-                <Clock className="w-3.5 h-3.5 text-zinc-400" />
+                <Clock className="w-3.5 h-3.5 text-zinc-500" />
                 {currentProject.followUpDeadline || 'Jadwal Hari Ini'}
               </span>
               <span className="inline-flex items-center gap-1 text-zinc-600">
@@ -759,7 +795,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
             </h1>
             
             {/* Author byline */}
-            <div className="flex items-center gap-2 text-xs text-zinc-400 font-normal">
+            <div className="flex items-center gap-2 text-xs text-zinc-500 font-normal">
               <span>Oleh <strong className="font-medium text-zinc-700">Tim Redaksi Daru Work OS</strong></span>
               <span>·</span>
               <span>Diperbarui 10 September 2026</span>
@@ -807,7 +843,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
             <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
               <button
                 onClick={() => onSelectTab('lanes')}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition-colors shadow-xs"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-medium transition-colors shadow-xs"
               >
                 <span>Buka di Board & Eksekusi</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
@@ -846,7 +882,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
                 {renderFormattedBody(getStorytellingCritique(currentProject))}
               </div>
               {currentProject.unpaidNumeric > 0 && !currentProject.newsCritique && (
-                <p className="mt-2.5 pt-2 border-t border-zinc-100 text-xs text-rose-600 font-medium">
+                <p className="mt-2.5 pt-2 border-t border-zinc-100 text-xs text-rose-700 font-medium">
                   ⚠️ Tagihan belum tertagih: Rp{currentProject.unpaidNumeric.toLocaleString('id-ID')} (Jaga arus kas nyata sebelum menganggap ini sebagai pendapatan masuk).
                 </p>
               )}
@@ -897,7 +933,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
                 setSelectedCategory('all');
                 setSearchQuery('');
               }}
-              className="text-xs text-zinc-400 hover:text-zinc-900 font-normal transition-colors"
+              className="text-xs text-zinc-500 hover:text-zinc-900 font-normal transition-colors"
             >
               See all
             </button>
@@ -937,7 +973,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
                   </div>
 
                   {/* Metadata & Tag */}
-                  <div className="flex items-center justify-between text-[10px] text-zinc-400 mb-1.5">
+                  <div className="flex items-center justify-between text-[10px] text-zinc-500 mb-1.5">
                     <span
                       className={`px-2 py-0.5 rounded-full font-medium ${pBadge.bg} ${pBadge.text}`}
                     >
@@ -950,7 +986,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
                   </div>
 
                   {/* Title */}
-                  <h4 className="text-xs font-medium text-zinc-900 leading-snug group-hover:text-rose-600 transition-colors line-clamp-2">
+                  <h4 className="text-xs font-medium text-zinc-900 leading-snug group-hover:text-rose-700 transition-colors line-clamp-2">
                     {getEditorialHeadline(project)}
                   </h4>
 

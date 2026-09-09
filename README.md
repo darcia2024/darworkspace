@@ -16,8 +16,8 @@ npm install
 npm run dev:all
 
 # Atau jalankan secara terpisah:
-npm run dev      # Vite dev server (port 5173)
-npm run server   # Node.js API server (port 3000)
+npm run dev      # Vite dev server (port 3000)
+npm run server   # Node.js API server (port 3001)
 
 # Jalankan production server
 npm start
@@ -52,13 +52,39 @@ npm run backup
 ## 4. Keamanan & Privacy Lock
 
 - **Device Privacy Lock**: PIN 6-digit berfungsi sebagai screen lock lokal terhadap bahaya *shoulder-surfing*.
-- Verifikasi PIN menggunakan hash SHA-256 Web Crypto API (`DARU_OS_PIN_HASH` di `localStorage`) dan tidak menyimpan plaintext PIN di source code.
-- Endpoint sensitif di server dibatasi ke `localhost`, `127.0.0.1`, dan private LAN IP.
+- Verifikasi PIN memakai hash SHA-256 Web Crypto API (`DARU_OS_PIN_HASH` di `localStorage`); plaintext PIN tidak ada di source code.
+- Endpoint server dibatasi ke `localhost`, `127.0.0.1`, dan private LAN IP.
+
+> **PIN bukan pengaman API.** Layar PIN hanya menahan render di browser. Selama
+> `DARU_API_TOKEN` kosong, siapa pun yang bisa menjangkau port server bisa membaca
+> seluruh workspace tanpa kredensial. Itu aman selama server hanya mendengarkan di
+> `127.0.0.1`, tapi tidak lagi aman begitu diakses dari perangkat lain.
+
+### Token API (wajib kalau diakses dari HP / jaringan lokal)
+
+1. Buat token:
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(24).toString('hex'))"
+   ```
+2. Masukkan ke `.env` sebagai `DARU_API_TOKEN=<token>` lalu restart server.
+3. Di browser, buka **Laporan project → Token API perangkat ini**, tempel token yang sama, klik **Simpan token**.
+
+Setelah aktif, semua endpoint `/api/*` menolak request tanpa header `X-Daru-Token`
+yang benar (`/api/health` tetap terbuka supaya klien bisa melaporkan kenapa terkunci).
+Token dibandingkan secara constant-time dan disimpan per-browser, bukan di source code.
 
 ## 5. Testing & Build
 
 ```bash
-npm test         # Menjalankan seluruh unit & integration test
-npx tsc --noEmit # Validasi TypeScript strict
+npm run lint     # ESLint (flat config, termasuk react-hooks)
+npm test         # Unit, integration, dan component test (jsdom)
+npx tsc --noEmit # Validasi TypeScript
 npm run build    # Build bundle produksi ke dist/
 ```
+
+Keempatnya dijalankan otomatis oleh GitHub Actions (`.github/workflows/ci.yml`)
+pada setiap push dan pull request ke `main`.
+
+`tests/component.test.js` me-render komponen React sungguhan di jsdom — bukan
+simulasi — supaya bug interaksi seperti input PIN yang kehilangan digit ketahuan
+sebelum sampai ke browser.

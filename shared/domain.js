@@ -9,6 +9,26 @@ export function projectIdFor(item, projects) {
   return matches.length === 1 ? matches[0].id : undefined;
 }
 
+// Two projects sharing a name make projectIdFor ambiguous, which quietly orphans the
+// focus blocks and daily targets attached to them. Callers block the name at entry.
+export function isDuplicateProjectName(projects, name, excludeId) {
+  const key = nameKey(name);
+  if (!key) return false;
+  return projects.some((p) => p.id !== excludeId && nameKey(p.name) === key);
+}
+
+export function duplicateProjectNames(projects) {
+  const seen = new Map();
+  for (const p of projects) {
+    const key = nameKey(p.name);
+    seen.set(key, (seen.get(key) || 0) + 1);
+  }
+  return projects
+    .filter((p) => seen.get(nameKey(p.name)) > 1)
+    .map((p) => p.name)
+    .filter((name, index, all) => all.indexOf(name) === index);
+}
+
 export function deriveState(state) {
   const projects = state.projects.map((p) => ({
     ...p,
@@ -25,9 +45,12 @@ export function deriveState(state) {
     const projectId = projectIdFor(rawItem, projects);
     if (!projectId) {
       waitingItems.push(rawItem);
-    } else if (waitingProjects.has(projectId) && !handledProjectIds.has(projectId)) {
+      continue;
+    }
+    if (handledProjectIds.has(projectId)) continue;
+    const project = projects.find((p) => p.id === projectId);
+    if (waitingProjects.has(projectId)) {
       handledProjectIds.add(projectId);
-      const project = projects.find((p) => p.id === projectId);
       waitingItems.push({
         id: rawItem.id || `w-${project.id}`,
         projectId: project.id,
@@ -38,7 +61,16 @@ export function deriveState(state) {
         actionToUnblock: rawItem.actionToUnblock || project.nextAction || 'Follow-up klien',
         followUpDate: rawItem.followUpDate || project.followUpDeadline || 'Hari ini',
         status: project.status,
+        auto: rawItem.auto === true,
       });
+      continue;
+    }
+    // The project left the WAITING column. An entry this file generated carries no
+    // information of its own, so it retires with the project; anything the user typed
+    // is kept and flagged, because deleting it silently loses their input.
+    if (rawItem.auto !== true) {
+      handledProjectIds.add(projectId);
+      waitingItems.push({ ...rawItem, projectId, auto: false, staleProjectColumn: project.boardColumn });
     }
   }
 
@@ -55,6 +87,7 @@ export function deriveState(state) {
         actionToUnblock: project.nextAction || 'Follow-up klien',
         followUpDate: project.followUpDeadline || 'Hari ini',
         status: project.status,
+        auto: true,
       });
     }
   }

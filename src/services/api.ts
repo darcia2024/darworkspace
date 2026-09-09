@@ -3,6 +3,28 @@ import { loadState, normalizeState, saveState, STORAGE_KEY, SYNC_KEY } from '../
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
+// Optional shared token. The server only demands it when DARU_API_TOKEN is configured,
+// so leaving this unset keeps the previous localhost-only behaviour untouched.
+const UNAUTHORIZED_MESSAGE = 'Server minta token API. Buka Laporan project lalu isi Token API perangkat ini.';
+
+export const API_TOKEN_STORAGE_KEY = 'DARU_API_TOKEN';
+
+export function getApiToken(): string {
+  try { return localStorage.getItem(API_TOKEN_STORAGE_KEY) || ''; } catch { return ''; }
+}
+
+export function setApiToken(token: string) {
+  try {
+    if (token.trim()) localStorage.setItem(API_TOKEN_STORAGE_KEY, token.trim());
+    else localStorage.removeItem(API_TOKEN_STORAGE_KEY);
+  } catch { /* storage unavailable; token stays in memory for this tab only */ }
+}
+
+function authHeaders(extra: Record<string, string> = {}): Record<string, string> {
+  const token = getApiToken();
+  return token ? { ...extra, 'X-Daru-Token': token } : { ...extra };
+}
+
 export interface ServerSyncStatus {
   isOnline: boolean;
   vaultConnected: boolean;
@@ -46,7 +68,8 @@ export class ApiService {
 
   async checkHealth(): Promise<boolean> {
     try {
-      const res = await fetch(`${API_BASE}/health`, { signal: AbortSignal.timeout(2500), cache: 'no-store' });
+      const res = await fetch(`${API_BASE}/health`, { headers: authHeaders(), signal: AbortSignal.timeout(2500), cache: 'no-store' });
+      if (res.status === 401) { this.status({ isOnline: true, error: UNAUTHORIZED_MESSAGE }); return false; }
       if (!res.ok) throw new Error('Server offline');
       const data = await res.json();
       if (data.status !== 'ok') throw new Error('API tidak tersedia');
@@ -65,7 +88,8 @@ export class ApiService {
 
   private async load(): Promise<DaruWorkOSState> {
     const local = loadState();
-    let dirty = false;
+    // The catch below returns, so this is always assigned before it is read.
+    let dirty: boolean;
     try {
       const metadata = JSON.parse(localStorage.getItem(SYNC_KEY) || '{}');
       dirty = Boolean(metadata.dirty);
@@ -80,7 +104,8 @@ export class ApiService {
       return local;
     }
     try {
-      const res = await fetch(`${API_BASE}/state`, { signal: AbortSignal.timeout(12000), cache: 'no-store' });
+      const res = await fetch(`${API_BASE}/state`, { headers: authHeaders(), signal: AbortSignal.timeout(12000), cache: 'no-store' });
+      if (res.status === 401) throw new Error(UNAUTHORIZED_MESSAGE);
       if (!res.ok) throw new Error('State unavailable');
       const data = await res.json();
       if (!data.success || !Number.isInteger(data.revision)) throw new Error('Invalid API response');
@@ -134,7 +159,7 @@ export class ApiService {
     this.saving = true;
     try {
       if (this.revision === undefined) {
-        const res = await fetch(`${API_BASE}/state`, { signal: AbortSignal.timeout(12000), cache: 'no-store' });
+        const res = await fetch(`${API_BASE}/state`, { headers: authHeaders(), signal: AbortSignal.timeout(12000), cache: 'no-store' });
         if (!res.ok) throw new Error('Server belum tersedia.');
         const data = await res.json();
         if (!data.success || !Number.isInteger(data.revision)) throw new Error('Respons server tidak valid.');
@@ -147,7 +172,7 @@ export class ApiService {
       while (this.pending && !this.conflict) {
         const snapshot = this.pending;
         const res = await fetch(`${API_BASE}/state`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({ state: snapshot, revision: this.revision }), signal: AbortSignal.timeout(15000),
         });
         const data = await res.json();
@@ -165,7 +190,7 @@ export class ApiService {
 
   async triggerObsidianSync(state: DaruWorkOSState) {
     try {
-      const res = await fetch(`${API_BASE}/sync/obsidian`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ state }), signal: AbortSignal.timeout(10000) });
+      const res = await fetch(`${API_BASE}/sync/obsidian`, { method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify({ state }), signal: AbortSignal.timeout(10000) });
       const data = await res.json();
       return res.ok ? data : { success: false, error: data.error || data.reason || 'Ekspor vault gagal.' };
     } catch { return { success: false, error: 'Server tidak dapat dihubungi.' }; }
@@ -173,7 +198,7 @@ export class ApiService {
 
   async useServerState(): Promise<DaruWorkOSState> {
     if (this.saving) throw new Error('Tunggu penyimpanan yang sedang berjalan selesai.');
-    const response = await fetch(`${API_BASE}/state`, { signal: AbortSignal.timeout(12000), cache: 'no-store' });
+    const response = await fetch(`${API_BASE}/state`, { headers: authHeaders(), signal: AbortSignal.timeout(12000), cache: 'no-store' });
     const data = await response.json();
     if (!response.ok || !data.success || !data.state) throw new Error('Data server belum tersedia.');
     const state = normalizeState(data.state);

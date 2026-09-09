@@ -54,6 +54,10 @@ export interface WaitingItem {
   followUpDate: string;
   status: 'Waiting Kickoff' | 'Waiting Payment' | 'Waiting Approval' | 'Waiting Client' | 'Discovery';
   clientPhone?: string;
+  /** True when deriveState generated this entry from a WAITING project rather than the user typing it. */
+  auto?: boolean;
+  /** Set when a user-entered item points at a project that has left the WAITING column. */
+  staleProjectColumn?: BoardColumn;
 }
 
 export interface AssetAccount {

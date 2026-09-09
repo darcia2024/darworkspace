@@ -28,9 +28,6 @@ interface SidebarProps {
   onOpenFollowUp: () => void;
   onOpenFinanceInput: () => void;
   onOpenInvoice: () => void;
-  todayCompletedCount: number;
-  todayTotalCount: number;
-  syncLabel: string;
   waitingCount: number;
   financialReport?: FinancialReport;
   isCollapsed?: boolean;
@@ -45,9 +42,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenFollowUp,
   onOpenFinanceInput,
   onOpenInvoice,
-  todayCompletedCount,
-  todayTotalCount,
-  syncLabel,
   waitingCount,
   financialReport,
   isCollapsed = false,

@@ -13,3 +13,5 @@ server/data/*.bak
 server/data/*.tmp
 server/data/receipts/
 .test-output/
+tests/.tmp-*.mjs
+.github/

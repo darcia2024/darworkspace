@@ -1,19 +1,24 @@
 import { useState } from 'react';
 import { ProjectCard } from '../types';
+import { isDuplicateProjectName } from '../../shared/domain.js';
 
 export function ProjectEditor({
   project,
+  projects = [],
   onSave,
   onClose,
   onDelete
 }: {
   project: ProjectCard;
+  projects?: ProjectCard[];
   onSave: (project: ProjectCard) => void;
   onClose: () => void;
   onDelete?: (projectId: string) => void;
 }) {
   const [draft, setDraft] = useState(project);
+  const [nameError, setNameError] = useState('');
   const field = <K extends keyof ProjectCard>(key: K, value: ProjectCard[K]) => setDraft(previous => ({ ...previous, [key]: value }));
+  const nameTaken = isDuplicateProjectName(projects, draft.name, project.id);
 
   const handleDelete = () => {
     if (window.confirm(`Yakin ingin menghapus project "${project.name}"? Task dan referensi terkait akan dibersihkan.`)) {
@@ -26,6 +31,10 @@ export function ProjectEditor({
     <form className="w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white rounded-2xl p-6 space-y-4" onSubmit={event => {
       event.preventDefault();
       if (!draft.name.trim() || !Number.isSafeInteger(draft.nominalNumeric) || draft.nominalNumeric < 0) return;
+      if (nameTaken) {
+        setNameError(`Sudah ada project bernama "${draft.name.trim()}". Nama yang sama membuat blok fokus dan target harian kehilangan kaitannya.`);
+        return;
+      }
       onSave({ ...draft, name: draft.name.trim(), valueText: `Rp${draft.nominalNumeric.toLocaleString('id-ID')}`, paymentStatus: draft.paidNumeric > 0 ? draft.paidNumeric >= draft.nominalNumeric ? 'Paid' : 'Partial' : draft.paymentStatus });
       onClose();
     }}>
@@ -41,7 +50,8 @@ export function ProjectEditor({
           </button>
         )}
       </div>
-      <label className="block text-sm font-medium">Nama project<input autoFocus required className="block border rounded-lg p-2 w-full mt-1 text-sm" value={draft.name} onChange={event => field('name', event.target.value)} /></label>
+      <label className="block text-sm font-medium">Nama project<input autoFocus required aria-invalid={nameTaken} className={`block border rounded-lg p-2 w-full mt-1 text-sm ${nameTaken ? 'border-rose-400 bg-rose-50' : ''}`} value={draft.name} onChange={event => { setNameError(''); field('name', event.target.value); }} /></label>
+      {(nameTaken || nameError) && <p role="alert" className="text-xs text-rose-600 -mt-2">{nameError || `Sudah ada project bernama "${draft.name.trim()}". Pakai nama yang berbeda.`}</p>}
       <label className="block text-sm font-medium">Nomor WhatsApp Klien<input placeholder="Contoh: 08123456789 atau 628123456789" className="block border rounded-lg p-2 w-full mt-1 text-sm font-mono" value={draft.clientPhone || ''} onChange={event => field('clientPhone', event.target.value)} /></label>
       <label className="block text-sm font-medium">Next action<textarea className="block border rounded-lg p-2 w-full mt-1 text-sm" value={draft.nextAction} onChange={event => field('nextAction', event.target.value)} /></label>
       <label className="block text-sm font-medium">Kriteria selesai<textarea className="block border rounded-lg p-2 w-full mt-1 text-sm" value={draft.definitionOfDone || ''} onChange={event => field('definitionOfDone', event.target.value)} /></label>

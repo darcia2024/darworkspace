@@ -114,7 +114,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-100 pb-3.5">
                 <div className="flex items-center gap-2">
                   <span className="sticker-pill sticker-pink flex items-center gap-1">
-                    <Flame className="w-3 h-3 text-[#be185d]" />
+                    <Flame className="w-3 h-3 text-[#9d174d]" />
                     <span>WAKTU DIKUNCI </span>
                   </span>
                   <span className="sticker-pill sticker-blue text-[10px]">{activeSingleBlock.blockType.toUpperCase()}</span>
@@ -191,7 +191,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
               <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider font-semibold">
                 // EXPLORE TASKS • GANTI FOKUS KE KARTU LAIN:
               </span>
-              <span className="text-[11px] font-mono text-zinc-400">
+              <span className="text-[11px] font-mono text-zinc-500">
                 {todayBlocks.length} Triad Available
               </span>
             </div>
@@ -200,9 +200,9 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
               {todayBlocks.map((block, idx) => {
                 const isSelected = block.id === selectedSingleId;
                 const pastelThemes = [
-                  { bg: 'bento-apricot', border: 'border-[#fed7aa]', tag: 'sticker-apricot', accent: 'text-[#c2410c]' },
+                  { bg: 'bento-apricot', border: 'border-[#fed7aa]', tag: 'sticker-apricot', accent: 'text-[#9a3412]' },
                   { bg: 'bento-blue', border: 'border-[#bae6fd]', tag: 'sticker-blue', accent: 'text-[#0369a1]' },
-                  { bg: 'bento-pink', border: 'border-[#fbcfe8]', tag: 'sticker-pink', accent: 'text-[#be185d]' },
+                  { bg: 'bento-pink', border: 'border-[#fbcfe8]', tag: 'sticker-pink', accent: 'text-[#9d174d]' },
                   { bg: 'bento-lime', border: 'border-[#d9f99d]', tag: 'sticker-lime', accent: 'text-[#3f6212]' },
                 ];
                 const theme = pastelThemes[idx % pastelThemes.length];
@@ -369,7 +369,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
 
                       <div>
                         <h4 className={`text-base font-extrabold tracking-tight ${
-                          block.isDone ? 'line-through text-zinc-400' : 'text-[#111111]'
+                          block.isDone ? 'line-through text-zinc-500' : 'text-[#111111]'
                         }`}>
                           {block.projectName}
                         </h4>

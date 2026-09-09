@@ -1,5 +1,7 @@
 // Daru Work OS Service Worker (Network First for fresh updates)
-const CACHE_NAME = 'daru-work-os-v2.8.0';
+// Keep this in step with shared/version.js and package.json.
+// tests/version.test.js fails the build if the three ever drift apart.
+const CACHE_NAME = 'daru-work-os-v2.7.0';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

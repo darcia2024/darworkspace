@@ -2,7 +2,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { randomUUID } from 'node:crypto';
+import { randomUUID, timingSafeEqual } from 'node:crypto';
 import { DatabaseManager } from './db.js';
 import { createCloudStore } from './cloud.js';
 import { validateState, validateTransaction } from '../shared/domain.js';
@@ -13,6 +13,15 @@ const dist = path.resolve(fileURLToPath(new URL('../dist/', import.meta.url)));
 const receiptsDir = path.resolve(fileURLToPath(new URL('./data/receipts', import.meta.url)));
 const MAX_BODY_BYTES = 10 * 1024 * 1024;
 const httpError = (status, message) => Object.assign(new Error(message), { status });
+
+// Constant-time compare so a wrong token cannot be recovered by measuring responses.
+function timingSafeEqualString(received, expected) {
+  if (typeof received !== 'string' || typeof expected !== 'string') return false;
+  const a = Buffer.from(received, 'utf8');
+  const b = Buffer.from(expected, 'utf8');
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}
 
 export function isAllowedOrigin(origin, explicitAllowedSet) {
   if (!origin) return true;
@@ -44,7 +53,7 @@ async function readBody(req) {
   catch { throw httpError(400, 'JSON tidak valid.'); }
 }
 
-export function createAppServer({ db = new DatabaseManager(), cloud = createCloudStore(), vaultAvailable = isVaultAvailable, syncVault = syncToObsidianVault } = {}) {
+export function createAppServer({ db = new DatabaseManager(), cloud = createCloudStore(), vaultAvailable = isVaultAvailable, syncVault = syncToObsidianVault, apiToken = process.env.DARU_API_TOKEN || '' } = {}) {
   const allowedOrigins = new Set((process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001').split(',').map((s) => s.trim()));
   const send = (res, status, body) => {
     res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
@@ -80,13 +89,20 @@ export function createAppServer({ db = new DatabaseManager(), cloud = createClou
       }
 
       res.setHeader('Access-Control-Allow-Methods', 'GET, POST, HEAD, OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Daru-Token');
       res.setHeader('X-Content-Type-Options', 'nosniff');
       if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
       if (pathname === '/api/health' && req.method === 'GET') return send(res, 200, {
         status: 'ok', version: APP_VERSION, vaultConnected: vaultAvailable(), cloudConfigured: cloud.configured,
-        cloudRedisConnected: cloudConnected, revision: db.revision,
+        cloudRedisConnected: cloudConnected, revision: db.revision, authRequired: Boolean(apiToken),
       });
+
+      // The PIN screen only gates rendering, so it never protected this API. When the
+      // server is reachable beyond this machine (LAN access), set DARU_API_TOKEN and
+      // every endpoint below starts demanding it. Unset, behaviour is unchanged.
+      if (isApi && apiToken && !timingSafeEqualString(req.headers['x-daru-token'], apiToken)) {
+        return send(res, 401, { success: false, error: 'Token API tidak valid. Atur token perangkat ini di menu Laporan.' });
+      }
       if (pathname === '/api/state' && req.method === 'GET') {
         let state = db.getState();
         if (!state && cloud.configured) {

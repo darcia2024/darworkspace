@@ -723,7 +723,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                               <div className="grid grid-cols-2 gap-1.5">
                                 <button
                                   onClick={() => handleSwitchColumn(project, 'DOING')}
-                                  className="py-1.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
+                                  className="py-1.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
                                   title="Feedback masuk / DP cair → lanjut eksekusi"
                                 >
                                   <span> Lanjut Doing</span>
@@ -731,7 +731,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                 </button>
                                 <button
                                   onClick={() => handleSwitchColumn(project, 'DONE')}
-                                  className="py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
+                                  className="py-1.5 px-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
                                   title="Pembayaran lunas & tuntas"
                                 >
                                   <span> Pekerjaan selesai</span>
@@ -752,7 +752,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                 </button>
                                 <button
                                   onClick={() => handleSwitchColumn(project, 'DONE')}
-                                  className="py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
+                                  className="py-1.5 px-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
                                   title="Selesai tuntas & lunas"
                                 >
                                   <span> Beres 100%</span>
@@ -840,7 +840,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       {/* =========================================================================
           MODAL: ADD NEW PROJECT
           ========================================================================= */}
-      {editingProject && <ProjectEditor key={editingProject.id} project={editingProject} onSave={onUpdateProject} onClose={() => setEditingProject(null)} onDelete={onDeleteProject} />}
+      {editingProject && <ProjectEditor key={editingProject.id} project={editingProject} projects={projects} onSave={onUpdateProject} onClose={() => setEditingProject(null)} onDelete={onDeleteProject} />}
       {isAddModalOpen && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in"

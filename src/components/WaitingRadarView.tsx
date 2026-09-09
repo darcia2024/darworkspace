@@ -184,6 +184,7 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
                     onClick={() => handleQuickCopy(item)}
                     className="p-2 rounded-full bg-white text-zinc-700 hover:text-black border border-black/5 shadow-xs transition-colors"
                     title="Copas quick message"
+                    aria-label={`Salin pesan follow up untuk ${item.name}`}
                   >
                     {copiedId === item.id ? (
                       <Check className="w-3.5 h-3.5 text-[#15803d]" />

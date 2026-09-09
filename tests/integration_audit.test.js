@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import http from 'node:http';
-import { applyTransaction, deriveState, updateProject } from '../shared/domain.js';
+import { applyTransaction, deriveState } from '../shared/domain.js';
 import { workspace, transaction } from './fixtures.js';
 
 // ============================================================================
@@ -87,7 +86,6 @@ test('TEST 2: Rapid 6-digit PIN input functional update guarantees exact 6 digit
 // ============================================================================
 test('TEST 3: Cashflow recording flow updates accounts, ledger, and stores receipt reference', () => {
   const state = workspace();
-  const initialBalance = state.financialReport.totalLiquidBalance;
 
   // Expense with uploaded server receipt path
   const expenseTx = transaction({

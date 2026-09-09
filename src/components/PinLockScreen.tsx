@@ -18,18 +18,23 @@ async function computeSha256(text: string): Promise<string> {
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+const PIN_LENGTH = 6;
+
 export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
-  const [pin, setPin] = useState<string[]>(['', '', '', '', '', '']);
+  // Single source of truth. Six separate inputs with manual focus hopping used to
+  // drop digits when they arrived faster than React could re-render.
+  const [pin, setPin] = useState('');
   const [error, setError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const focusInput = () => inputRef.current?.focus();
+  const appendDigit = (digit: string) => setPin(prev => (prev + digit).slice(0, PIN_LENGTH));
 
   useEffect(() => {
-    if (inputRefs.current[0]) {
-      inputRefs.current[0].focus();
-    }
+    focusInput();
   }, []);
 
   const handleVerify = async (pinCode: string) => {
@@ -58,76 +63,35 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
     soundManager.playError();
     setErrorMessage('PIN salah! Silakan coba lagi.');
     setTimeout(() => {
-      setPin(['', '', '', '', '', '']);
+      setPin('');
       setError(false);
-      if (inputRefs.current[0]) {
-        inputRefs.current[0].focus();
-      }
+      focusInput();
     }, 1000);
   };
 
   useEffect(() => {
-    const fullPin = pin.join('');
-    if (fullPin.length === 6 && !pin.includes('') && !isVerifying && !error) {
-      void handleVerify(fullPin);
+    if (pin.length === PIN_LENGTH && !isVerifying && !error) {
+      void handleVerify(pin);
     }
   }, [pin, isVerifying, error]);
 
-  const handleInputChange = (index: number, value: string) => {
-    const digits = value.replace(/\D/g, '');
-    if (digits.length > 1) {
-      const next = [...pin];
-      digits.slice(0, 6).split('').forEach((d, i) => {
-        if (i < 6) next[i] = d;
-      });
-      setPin(next);
-      const nextIdx = Math.min(digits.length, 5);
-      inputRefs.current[nextIdx]?.focus();
-      return;
-    }
-
-    const digit = digits.slice(-1);
-    const next = [...pin];
-    next[index] = digit;
-    setPin(next);
-    if (digit && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !pin[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    }
-    if (e.key === 'Enter') {
-      const fullPin = pin.join('');
-      if (fullPin.length === 6) {
-        void handleVerify(fullPin);
-      }
-    }
+  const handleInputChange = (value: string) => {
+    setPin(value.replace(/\D/g, '').slice(0, PIN_LENGTH));
   };
 
   const handleKeypadPress = (num: string) => {
-    const emptyIndex = pin.findIndex(d => d === '');
-    if (emptyIndex !== -1) {
-      const next = [...pin];
-      next[emptyIndex] = num;
-      setPin(next);
-      if (emptyIndex < 5) {
-        inputRefs.current[emptyIndex + 1]?.focus();
-      }
-    }
+    appendDigit(num);
+    focusInput();
   };
 
   const handleBackspace = () => {
-    const lastFilledIndex = [...pin].reverse().findIndex(d => d !== '');
-    if (lastFilledIndex !== -1) {
-      const realIndex = 5 - lastFilledIndex;
-      const next = [...pin];
-      next[realIndex] = '';
-      setPin(next);
-      inputRefs.current[realIndex]?.focus();
-    }
+    setPin(prev => prev.slice(0, -1));
+    focusInput();
+  };
+
+  const handleClear = () => {
+    setPin('');
+    focusInput();
   };
 
   return (
@@ -172,31 +136,49 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
           </p>
         </div>
 
-        {/* 6 PIN Input Boxes */}
-        <div className="flex justify-center items-center gap-2.5 sm:gap-3 mb-6">
-          {pin.map((digit, idx) => (
-            <input
-              key={idx}
-              ref={el => { inputRefs.current[idx] = el; }}
-              type="password"
-              inputMode="numeric"
-              maxLength={1}
-              value={digit}
-              onChange={e => handleInputChange(idx, e.target.value)}
-              onKeyDown={e => handleKeyDown(idx, e)}
-              className={`w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-bold rounded-2xl border bg-zinc-50 transition-all duration-200 focus:outline-none font-mono ${
-                digit 
-                  ? 'border-[#111111] bg-white text-[#111111] shadow-sm' 
-                  : 'border-zinc-200 text-[#111111]'
-              } ${
-                error 
-                  ? 'border-rose-400 bg-rose-50 text-rose-700' 
-                  : isSuccess 
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700' 
-                    : 'focus:border-[#111111] focus:ring-2 focus:ring-black/10'
-              }`}
-            />
-          ))}
+        {/* PIN entry: one real input behind six display boxes, so no digit can be
+            lost to focus hopping no matter how fast it is typed or tapped. */}
+        <div
+          className="relative mb-6 group"
+          onClick={focusInput}
+        >
+          <input
+            ref={inputRef}
+            type="password"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            aria-label="Masukkan 6 digit PIN"
+            maxLength={PIN_LENGTH}
+            value={pin}
+            onChange={e => handleInputChange(e.target.value)}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+          />
+          <div className="flex justify-center items-center gap-2.5 sm:gap-3" aria-hidden="true">
+            {Array.from({ length: PIN_LENGTH }).map((_, idx) => {
+              const filled = idx < pin.length;
+              const isNext = idx === pin.length;
+              return (
+                <div
+                  key={idx}
+                  className={`w-11 h-13 sm:w-12 sm:h-14 flex items-center justify-center text-xl font-bold rounded-2xl border bg-zinc-50 transition-all duration-200 font-mono ${
+                    filled
+                      ? 'border-[#111111] bg-white text-[#111111] shadow-sm'
+                      : 'border-zinc-200 text-[#111111]'
+                  } ${
+                    error
+                      ? 'border-rose-400 bg-rose-50 text-rose-700'
+                      : isSuccess
+                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                        : isNext
+                          ? 'border-[#111111] ring-2 ring-black/10 group-focus-within:border-[#111111]'
+                          : ''
+                  }`}
+                >
+                  {filled ? '•' : ''}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Feedback Message */}
@@ -232,7 +214,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
           ))}
           <button
             type="button"
-            onClick={() => setPin(['', '', '', '', '', ''])}
+            onClick={handleClear}
             className="h-12 rounded-2xl bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-xs font-bold text-zinc-600 hover:text-black transition-all duration-150 flex items-center justify-center font-mono"
           >
             Clear

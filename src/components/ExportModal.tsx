@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { DaruWorkOSState } from '../types';
-import { apiService } from '../services/api';
+import { apiService, getApiToken, setApiToken } from '../services/api';
 import { generateProjectNewsReport } from '../../shared/projectReport.js';
 
 export const ExportModal: React.FC<{ isOpen: boolean; onClose: () => void; state: DaruWorkOSState; onUseServerState: (state: DaruWorkOSState) => void }> = ({ isOpen, onClose, state, onUseServerState }) => {
   const [message, setMessage] = useState('');
+  const [token, setToken] = useState(() => getApiToken());
   const [busy, setBusy] = useState(false);
   if (!isOpen) return null;
   const markdown = generateProjectNewsReport(state);
@@ -30,6 +31,26 @@ export const ExportModal: React.FC<{ isOpen: boolean; onClose: () => void; state
         <button className="pill-black" onClick={backup}>Unduh backup JSON</button>
         <button className="pill-white" disabled={busy} onClick={async () => { setBusy(true); const result = await apiService.triggerObsidianSync(state); setMessage(result.success ? 'Catatan tersimpan di folder Daru Work OS Exports dalam vault.' : result.error || result.reason || 'Ekspor gagal.'); setBusy(false); }}>Sinkron ke vault</button>
       </div>
+      <div className="border-t pt-4 space-y-2">
+        <h3 className="font-bold text-sm">Token API perangkat ini</h3>
+        <p className="text-sm text-zinc-600">Isi hanya jika server dijalankan dengan <code>DARU_API_TOKEN</code>, misalnya saat markas dibuka dari HP lewat jaringan lokal. Token disimpan di browser ini saja.</p>
+        <div className="flex flex-wrap gap-2">
+          <input
+            type="password"
+            aria-label="Token API perangkat ini"
+            placeholder="Kosongkan jika server tanpa token"
+            className="flex-1 min-w-[200px] border rounded-lg p-2 text-sm font-mono"
+            value={token}
+            onChange={event => setToken(event.target.value)}
+          />
+          <button className="pill-white" onClick={() => {
+            setApiToken(token);
+            setMessage(token.trim() ? 'Token tersimpan di browser ini.' : 'Token dihapus dari browser ini.');
+            void apiService.checkHealth();
+          }}>Simpan token</button>
+        </div>
+      </div>
+
       <div className="border-t pt-4 space-y-2">
         <p className="text-sm">Jika ada konflik antar-sesi, unduh backup lokal dahulu. Memuat versi server mengganti tampilan dan salinan browser dengan data server.</p>
         <button className="pill-white" disabled={busy} onClick={async () => {

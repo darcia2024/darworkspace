@@ -340,8 +340,6 @@ export function App() {
     });
   };
 
-  const completedCount = state.todayBlocks.filter((b) => b.isDone).length;
-
   const tabLabels: Record<ActiveTabType, string> = {
     today: 'Sikat Hari Ini',
     nextgo: 'Abis Ini Ngapain?',
@@ -378,9 +376,6 @@ export function App() {
           setTargetInvoiceProject(null);
           setIsInvoiceOpen(true);
         }}
-        todayCompletedCount={completedCount}
-        todayTotalCount={state.todayBlocks.length}
-        syncLabel={syncStatus?.cloudRedisConnected ? 'Cloud tersinkron' : syncStatus?.isOnline ? 'Server lokal' : 'Offline'}
         waitingCount={state.waitingItems.length}
         financialReport={state.financialReport}
         isCollapsed={isSidebarCollapsed}
@@ -398,6 +393,8 @@ export function App() {
             <button
               onClick={handleToggleSidebar}
               title={isSidebarCollapsed ? 'Buka Sidebar' : 'Tutup Sidebar'}
+              aria-label={isSidebarCollapsed ? 'Buka sidebar' : 'Tutup sidebar'}
+              aria-expanded={!isSidebarCollapsed}
               className="p-1.5 rounded-md hover:bg-zinc-100 text-zinc-400 hover:text-zinc-800 transition-colors"
             >
               <PanelLeft className="w-4 h-4" />
@@ -456,6 +453,7 @@ export function App() {
                 setIsFollowUpOpen(true);
               }}
               title="Template Follow Up WA"
+              aria-label="Buka template follow up WhatsApp"
               className="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition-colors"
             >
               <MessageSquare className="w-4 h-4" />
@@ -467,6 +465,7 @@ export function App() {
                 setIsCopilotOpen((prev) => !prev);
               }}
               title="Buka Partner AI (⌘K)"
+              aria-label="Buka Partner Copilot"
               className="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition-colors flex items-center gap-1 text-xs"
             >
               <Bot className="w-4 h-4" />
@@ -479,6 +478,7 @@ export function App() {
                 setIsAuthenticated(false);
               }}
               title="Kunci Layar (Lock Device)"
+              aria-label="Kunci layar"
               className="p-1.5 rounded-full hover:bg-rose-50 text-zinc-400 hover:text-rose-600 transition-colors"
             >
               <Lock className="w-3.5 h-3.5" />
