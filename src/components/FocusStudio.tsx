@@ -6,9 +6,7 @@ import {
   Headphones,
   Check,
   Flame,
-  Target,
-  Clock,
-  ArrowUpRight
+  Target
 } from 'lucide-react';
 import { TodayBlock } from '../types';
 import { soundManager } from '../utils/audio';
@@ -29,27 +27,75 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
   onCompleteBlock,
   queuedCount = 0
 }) => {
-  const [sessionDurationMinutes, setSessionDurationMinutes] = useState(50);
-  const [timeLeftSeconds, setTimeLeftSeconds] = useState(50 * 60);
-  const [isRunning, setIsRunning] = useState(false);
+  const [sessionDurationMinutes, setSessionDurationMinutes] = useState(() => {
+    try {
+      const saved = localStorage.getItem('DARU_FOCUS_DURATION');
+      return saved ? parseInt(saved, 10) || 50 : 50;
+    } catch {
+      return 50;
+    }
+  });
+
+  const [timeLeftSeconds, setTimeLeftSeconds] = useState(() => {
+    try {
+      const savedRunning = localStorage.getItem('DARU_FOCUS_RUNNING') === 'true';
+      const savedDeadline = localStorage.getItem('DARU_FOCUS_DEADLINE');
+      if (savedRunning && savedDeadline) {
+        const rem = Math.max(0, Math.ceil((parseInt(savedDeadline, 10) - Date.now()) / 1000));
+        return rem;
+      }
+      const savedDur = localStorage.getItem('DARU_FOCUS_DURATION');
+      return (savedDur ? parseInt(savedDur, 10) || 50 : 50) * 60;
+    } catch {
+      return 50 * 60;
+    }
+  });
+
+  const [isRunning, setIsRunning] = useState(() => {
+    try {
+      const savedRunning = localStorage.getItem('DARU_FOCUS_RUNNING') === 'true';
+      const savedDeadline = localStorage.getItem('DARU_FOCUS_DEADLINE');
+      if (savedRunning && savedDeadline) {
+        return parseInt(savedDeadline, 10) > Date.now();
+      }
+    } catch {
+      // ignore
+    }
+    return false;
+  });
+
   const [soundMode, setSoundMode] = useState<'none' | 'gamma40' | 'brown'>('none');
-  const [completedCount, setCompletedCount] = useState(0);
-  const [showTaskPicker, setShowTaskPicker] = useState(!activeBlock);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const deadlineRef = useRef(0);
+  const initialDeadline = (() => {
+    try {
+      const saved = localStorage.getItem('DARU_FOCUS_DEADLINE');
+      return saved ? parseInt(saved, 10) || 0 : 0;
+    } catch {
+      return 0;
+    }
+  })();
+  const deadlineRef = useRef<number>(initialDeadline);
   const completionRef = useRef(onCompleteBlock);
   completionRef.current = onCompleteBlock;
+  const prevBlockIdRef = useRef<string | undefined>(activeBlock?.id);
 
   useEffect(() => () => soundManager.stopNoise(), []);
 
   useEffect(() => {
-    setIsRunning(false);
-    soundManager.stopNoise();
-    if (activeBlock && activeBlock.timeboxMinutes) {
-      setSessionDurationMinutes(activeBlock.timeboxMinutes);
-      setTimeLeftSeconds(activeBlock.timeboxMinutes * 60);
-      setShowTaskPicker(false);
+    if (activeBlock?.id !== prevBlockIdRef.current) {
+      prevBlockIdRef.current = activeBlock?.id;
+      if (activeBlock && activeBlock.timeboxMinutes) {
+        setIsRunning(false);
+        soundManager.stopNoise();
+        try {
+          localStorage.setItem('DARU_FOCUS_RUNNING', 'false');
+          localStorage.removeItem('DARU_FOCUS_DEADLINE');
+          localStorage.setItem('DARU_FOCUS_DURATION', activeBlock.timeboxMinutes.toString());
+        } catch { /* storage safe */ }
+        setSessionDurationMinutes(activeBlock.timeboxMinutes);
+        setTimeLeftSeconds(activeBlock.timeboxMinutes * 60);
+      }
     }
   }, [activeBlock]);
 
@@ -57,6 +103,11 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
     soundManager.playClick();
     setIsRunning(false);
     soundManager.stopNoise();
+    try {
+      localStorage.setItem('DARU_FOCUS_RUNNING', 'false');
+      localStorage.removeItem('DARU_FOCUS_DEADLINE');
+      localStorage.setItem('DARU_FOCUS_DURATION', mins.toString());
+    } catch { /* storage safe */ }
     setSessionDurationMinutes(mins);
     setTimeLeftSeconds(mins * 60);
   };
@@ -66,34 +117,52 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
     setIsRunning(false);
     soundManager.stopNoise();
     setActiveBlock(block);
-    setSessionDurationMinutes(block.timeboxMinutes || 50);
-    setTimeLeftSeconds((block.timeboxMinutes || 50) * 60);
-    setShowTaskPicker(false);
+    const dur = block.timeboxMinutes || 50;
+    try {
+      localStorage.setItem('DARU_FOCUS_RUNNING', 'false');
+      localStorage.removeItem('DARU_FOCUS_DEADLINE');
+      localStorage.setItem('DARU_FOCUS_DURATION', dur.toString());
+    } catch { /* storage safe */ }
+    setSessionDurationMinutes(dur);
+    setTimeLeftSeconds(dur * 60);
   };
 
   useEffect(() => {
     if (isRunning) {
-      timerRef.current = setInterval(() => {
-          const remaining = Math.max(0, Math.ceil((deadlineRef.current - Date.now()) / 1000));
-          setTimeLeftSeconds(remaining);
-          if (remaining === 0) {
-            clearInterval(timerRef.current!);
-            setIsRunning(false);
-            soundManager.playCompletionChime();
-            soundManager.stopNoise();
-            setSoundMode('none');
-            setCompletedCount((c) => c + 1);
-            
-            confetti({
-              particleCount: 80,
-              spread: 70,
-              origin: { y: 0.6 }
-            });
+      // Re-establish deadline if missing
+      if (!deadlineRef.current || deadlineRef.current <= Date.now()) {
+        deadlineRef.current = Date.now() + timeLeftSeconds * 1000;
+        try {
+          localStorage.setItem('DARU_FOCUS_DEADLINE', deadlineRef.current.toString());
+          localStorage.setItem('DARU_FOCUS_RUNNING', 'true');
+        } catch { /* storage safe */ }
+      }
 
-            if (activeBlock) {
-              completionRef.current(activeBlock.id);
-            }
+      timerRef.current = setInterval(() => {
+        const target = deadlineRef.current;
+        const remaining = Math.max(0, Math.ceil((target - Date.now()) / 1000));
+        setTimeLeftSeconds(remaining);
+        if (remaining === 0) {
+          clearInterval(timerRef.current!);
+          setIsRunning(false);
+          try {
+            localStorage.setItem('DARU_FOCUS_RUNNING', 'false');
+            localStorage.removeItem('DARU_FOCUS_DEADLINE');
+          } catch { /* storage safe */ }
+          soundManager.playCompletionChime();
+          soundManager.stopNoise();
+          setSoundMode('none');
+          
+          confetti({
+            particleCount: 80,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+
+          if (activeBlock) {
+            completionRef.current(activeBlock.id);
           }
+        }
       }, 250);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -107,20 +176,34 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
   const toggleRunning = () => {
     soundManager.playClick();
     if (!isRunning) {
-      if (!activeBlock || timeLeftSeconds <= 0) return;
-      deadlineRef.current = Date.now() + timeLeftSeconds * 1000;
+      if (timeLeftSeconds <= 0) return;
+      const targetDeadline = Date.now() + timeLeftSeconds * 1000;
+      deadlineRef.current = targetDeadline;
+      try {
+        localStorage.setItem('DARU_FOCUS_DEADLINE', targetDeadline.toString());
+        localStorage.setItem('DARU_FOCUS_RUNNING', 'true');
+        localStorage.setItem('DARU_FOCUS_DURATION', sessionDurationMinutes.toString());
+      } catch { /* storage safe */ }
       if (soundMode === 'gamma40') soundManager.startGammaFocus();
       else if (soundMode === 'brown') soundManager.startBrownNoise();
+      setIsRunning(true);
     } else {
+      try {
+        localStorage.setItem('DARU_FOCUS_RUNNING', 'false');
+      } catch { /* storage safe */ }
       soundManager.stopNoise();
+      setIsRunning(false);
     }
-    setIsRunning(!isRunning);
   };
 
   const resetTimer = () => {
     soundManager.playClick();
     setIsRunning(false);
     soundManager.stopNoise();
+    try {
+      localStorage.setItem('DARU_FOCUS_RUNNING', 'false');
+      localStorage.removeItem('DARU_FOCUS_DEADLINE');
+    } catch { /* storage safe */ }
     setTimeLeftSeconds(sessionDurationMinutes * 60);
   };
 
@@ -137,15 +220,21 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
   };
 
   const formatTime = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
+    const hours = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
     const secs = totalSeconds % 60;
+    if (hours > 0) {
+      return `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const progressPercent = ((sessionDurationMinutes * 60 - timeLeftSeconds) / (sessionDurationMinutes * 60)) * 100;
+  const progressPercent = sessionDurationMinutes > 0 
+    ? Math.min(100, Math.max(0, ((sessionDurationMinutes * 60 - timeLeftSeconds) / (sessionDurationMinutes * 60)) * 100))
+    : 0;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 font-sans select-none animate-fade-in pb-12">
+    <div className="max-w-4xl mx-auto space-y-6 font-sans animate-fade-in pb-12">
       {queuedCount > 0 && <p role="status" className="text-sm">{queuedCount} sesi berikutnya dalam antrean. Selesaikan sesi ini untuk memilih tugas berikutnya otomatis.</p>}
       
       {/* 1. STEP 1: TASK SELECTION STAGE */}
@@ -229,7 +318,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
           
           {/* Active Lock Info Card */}
           {activeBlock ? (
-            <div className="bento-card bento-apricot p-5 rounded-[24px] border border-[#fed7aa] max-w-xl w-full text-left space-y-2 shadow-xs">
+            <div className="bento-card bento-apricot p-5 rounded-[24px] border border-[#fed7aa] max-w-xl w-full text-left space-y-2 shadow-sm">
               <div className="flex justify-between items-center">
                 <span className="sticker-pill sticker-apricot text-[9px]">{activeBlock.blockType}</span>
                 <span className="text-xs font-mono font-bold text-zinc-800">{activeBlock.timeboxMinutes} Menit Timebox</span>
@@ -273,7 +362,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
                 onClick={() => selectDuration(mins)}
                 className={`px-4 py-1.5 rounded-full transition-all font-semibold ${
                   sessionDurationMinutes === mins
-                    ? 'pill-black shadow-xs'
+                    ? 'pill-black shadow-sm'
                     : 'text-zinc-800 font-semibold hover:text-black'
                 }`}
               >
@@ -287,13 +376,15 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
             <button
               onClick={resetTimer}
               title="Reset Timer"
-              className="p-3.5 rounded-full pill-white transition-all shadow-xs"
+              aria-label="Reset Timer"
+              className="p-3.5 rounded-full pill-white transition-all shadow-sm"
             >
               <RotateCcw className="w-5 h-5 text-zinc-700" />
             </button>
 
             <button
               onClick={toggleRunning}
+              aria-label={isRunning ? 'Pause Sesi' : 'Mulai Fokus'}
               className={`px-8 py-4 rounded-full font-bold font-mono text-sm flex items-center gap-3 transition-all shadow-md active:scale-95 ${
                 isRunning
                   ? 'pill-white text-[#111111]'
@@ -323,7 +414,8 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
                   confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
                 }}
                 title="Tandai Selesai Sekarang"
-                className="p-3.5 rounded-full bg-[#ecfccb] hover:bg-[#d9f99d] text-[#15803d] border border-[#d9f99d] transition-all shadow-xs"
+                aria-label="Tandai Selesai Sekarang"
+                className="p-3.5 rounded-full bg-[#ecfccb] hover:bg-[#d9f99d] text-[#15803d] border border-[#d9f99d] transition-all shadow-sm"
               >
                 <Check className="w-5 h-5" />
               </button>
@@ -348,7 +440,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
                   onClick={() => handleSoundChange(s.id as any)}
                   className={`px-3.5 py-1.5 rounded-full transition-all font-semibold ${
                     soundMode === s.id
-                      ? 'pill-black shadow-xs'
+                      ? 'pill-black shadow-sm'
                       : 'pill-white text-zinc-800 font-semibold hover:text-black'
                   }`}
                 >

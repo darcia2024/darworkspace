@@ -9,30 +9,10 @@ export function normalizeState(raw: Partial<DaruWorkOSState>): DaruWorkOSState {
   const base = structuredClone(INITIAL_STATE);
   const report = raw.financialReport;
 
-  // If raw has projects, keep raw's projects order and overrides, but inject missing base projects (e.g. p-el-massa)
-  let mergedProjects = raw.projects;
-  if (mergedProjects) {
-    const rawIds = new Set(mergedProjects.map(p => p.id));
-    const missingBase = base.projects.filter(bp => !rawIds.has(bp.id));
-    if (missingBase.length > 0) {
-      mergedProjects = [...mergedProjects, ...missingBase];
-    }
-    mergedProjects = mergedProjects.map(p => {
-      const bp = base.projects.find(b => b.id === p.id);
-      if (bp) {
-        return {
-          ...p,
-          currentGoal: bp.currentGoal || p.currentGoal,
-          nextAction: bp.nextAction || p.nextAction,
-          newsArticle: bp.newsArticle || p.newsArticle,
-          newsCritique: bp.newsCritique || p.newsCritique,
-        };
-      }
-      return p;
-    });
-  } else {
-    mergedProjects = base.projects;
-  }
+  // If raw has projects, keep raw's projects intact without injecting template projects
+  const mergedProjects = (raw.projects && raw.projects.length > 0)
+    ? raw.projects
+    : base.projects;
 
   const state = {
     ...base, ...raw,

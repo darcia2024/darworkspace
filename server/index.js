@@ -7,10 +7,29 @@ import { DatabaseManager } from './db.js';
 import { createCloudStore } from './cloud.js';
 import { validateState, validateTransaction } from '../shared/domain.js';
 import { syncToObsidianVault, isVaultAvailable } from './obsidianSync.js';
+import { APP_VERSION } from '../shared/version.js';
 
 const dist = path.resolve(fileURLToPath(new URL('../dist/', import.meta.url)));
+const receiptsDir = path.resolve(fileURLToPath(new URL('./data/receipts', import.meta.url)));
 const MAX_BODY_BYTES = 10 * 1024 * 1024;
 const httpError = (status, message) => Object.assign(new Error(message), { status });
+
+export function isAllowedOrigin(origin, explicitAllowedSet) {
+  if (!origin) return true;
+  if (explicitAllowedSet && explicitAllowedSet.has(origin)) return true;
+  try {
+    const parsed = new URL(origin);
+    const host = parsed.hostname;
+    if (host === 'localhost' || host === '127.0.0.1' || host === '::1') return true;
+    if (/^192\.168\.\d{1,3}\.\d{1,3}$/.test(host)) return true;
+    if (/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host)) return true;
+    if (/^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host)) return true;
+    if (/^100\.(6[4-9]|[7-9]\d|1[0-1]\d|12[0-7])\.\d{1,3}\.\d{1,3}$/.test(host)) return true;
+  } catch {
+    return false;
+  }
+  return false;
+}
 
 async function readBody(req) {
   if (!req.headers['content-type']?.startsWith('application/json')) throw httpError(415, 'Gunakan Content-Type application/json.');
@@ -46,15 +65,26 @@ export function createAppServer({ db = new DatabaseManager(), cloud = createClou
   return http.createServer(async (req, res) => {
     try {
       const origin = req.headers.origin;
-      if (origin && !allowedOrigins.has(origin)) return send(res, 403, { success: false, error: 'Origin tidak diizinkan.' });
-      if (origin) { res.setHeader('Access-Control-Allow-Origin', origin); res.setHeader('Vary', 'Origin'); }
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+      const pathname = new URL(req.url, 'http://localhost').pathname;
+      const isApi = pathname.startsWith('/api/');
+
+      if (isApi && origin && !isAllowedOrigin(origin, allowedOrigins)) {
+        return send(res, 403, { success: false, error: 'Origin tidak diizinkan.' });
+      }
+
+      if (origin && isAllowedOrigin(origin, allowedOrigins)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Vary', 'Origin');
+      } else if (!isApi) {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+      }
+
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, HEAD, OPTIONS');
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
       res.setHeader('X-Content-Type-Options', 'nosniff');
       if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
-      const pathname = new URL(req.url, 'http://localhost').pathname;
       if (pathname === '/api/health' && req.method === 'GET') return send(res, 200, {
-        status: 'ok', version: '2.7.0', vaultConnected: vaultAvailable(), cloudConfigured: cloud.configured,
+        status: 'ok', version: APP_VERSION, vaultConnected: vaultAvailable(), cloudConfigured: cloud.configured,
         cloudRedisConnected: cloudConnected, revision: db.revision,
       });
       if (pathname === '/api/state' && req.method === 'GET') {
@@ -96,6 +126,38 @@ export function createAppServer({ db = new DatabaseManager(), cloud = createClou
         const result = syncVault(state);
         return send(res, result.success ? 200 : 503, result);
       }
+      if (pathname === '/api/receipts' && req.method === 'POST') {
+        const body = await readBody(req);
+        const dataUrl = body?.data;
+        if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
+          throw httpError(400, 'Format gambar tidak valid. Kirimkan data URL gambar.');
+        }
+        const match = dataUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+        if (!match) throw httpError(400, 'Data base64 tidak valid.');
+        const rawExt = match[1].toLowerCase();
+        const ext = rawExt === 'jpeg' ? 'jpg' : rawExt.replace(/[^a-z0-9]/g, '');
+        const buffer = Buffer.from(match[2], 'base64');
+        if (buffer.length > 5 * 1024 * 1024) throw httpError(413, 'Ukuran gambar maksimal 5 MB.');
+        fs.mkdirSync(receiptsDir, { recursive: true });
+        const filename = `receipt-${Date.now()}-${randomUUID().slice(0, 8)}.${ext}`;
+        const filePath = path.join(receiptsDir, filename);
+        fs.writeFileSync(filePath, buffer);
+        return send(res, 201, { success: true, url: `/api/receipts/${filename}` });
+      }
+      if (pathname.startsWith('/api/receipts/') && (req.method === 'GET' || req.method === 'HEAD')) {
+        const filename = path.basename(pathname);
+        const filePath = path.join(receiptsDir, filename);
+        if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) throw httpError(404, 'Foto struk tidak ditemukan.');
+        const ext = path.extname(filePath).toLowerCase();
+        const types = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp' };
+        res.writeHead(200, {
+          'Content-Type': types[ext] || 'application/octet-stream',
+          'Cache-Control': 'public, max-age=86400',
+        });
+        if (req.method === 'HEAD') res.end();
+        else fs.createReadStream(filePath).pipe(res);
+        return;
+      }
       if (pathname.startsWith('/api/')) return send(res, 404, { success: false, error: 'Endpoint tidak ditemukan.' });
       if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, { success: false, error: 'Method tidak diizinkan.' });
       const relative = decodeURIComponent(pathname).replace(/^\/+/, '');
@@ -120,5 +182,6 @@ export function createAppServer({ db = new DatabaseManager(), cloud = createClou
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   if (fs.existsSync('.env')) process.loadEnvFile('.env');
   const port = Number(process.env.PORT || 3001);
-  createAppServer().listen(port, '127.0.0.1', () => console.log(`Daru Work OS: http://localhost:${port}`));
+  const host = process.env.HOST || '0.0.0.0';
+  createAppServer().listen(port, host, () => console.log(`Daru Work OS: http://localhost:${port} (listening on ${host})`));
 }

@@ -27,6 +27,9 @@ export interface ProjectCard {
   followUpDeadline?: string;
   newsArticle?: string;
   newsCritique?: string;
+  newsHeadline?: string;
+  coverImage?: string;
+  clientPhone?: string;
 }
 
 export interface TodayBlock {
@@ -50,6 +53,7 @@ export interface WaitingItem {
   actionToUnblock: string;
   followUpDate: string;
   status: 'Waiting Kickoff' | 'Waiting Payment' | 'Waiting Approval' | 'Waiting Client' | 'Discovery';
+  clientPhone?: string;
 }
 
 export interface AssetAccount {

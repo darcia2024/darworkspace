@@ -57,7 +57,7 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 font-sans animate-fade-in select-none">
+    <div className="space-y-6 font-sans animate-fade-in">
       
       {/* Header */}
       <div className="bento-card p-5 sm:p-6 bg-white border border-zinc-200/90 shadow-sm flex flex-wrap items-center justify-between gap-4">
@@ -92,7 +92,7 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
               <label className="block text-[11px] text-zinc-800 font-medium mb-1">Client / Project</label>
               <input
                 type="text"
-                placeholder="Contoh: Barber POS"
+                placeholder="Contoh: Website Redesign"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-3.5 py-2.5 text-xs text-[#111111] focus:outline-none focus:border-black font-sans"

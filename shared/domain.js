@@ -17,21 +17,46 @@ export function deriveState(state) {
       ? (waitingStatuses.has(p.status) ? p.status : 'Waiting Client')
       : ({ DOING: 'Doing', QUEUE: 'Queue', PARKED: 'Parked', DONE: 'Done' }[p.boardColumn] || p.status),
   }));
-  const waitingItems = state.waitingItems.map((item) => ({ ...item, projectId: projectIdFor(item, projects) }))
-    .filter((item) => !item.projectId);
+  const waitingProjects = new Set(projects.filter((p) => p.boardColumn === 'WAITING').map((p) => p.id));
+  const waitingItems = [];
+  const handledProjectIds = new Set();
+
+  for (const rawItem of state.waitingItems) {
+    const projectId = projectIdFor(rawItem, projects);
+    if (!projectId) {
+      waitingItems.push(rawItem);
+    } else if (waitingProjects.has(projectId) && !handledProjectIds.has(projectId)) {
+      handledProjectIds.add(projectId);
+      const project = projects.find((p) => p.id === projectId);
+      waitingItems.push({
+        id: rawItem.id || `w-${project.id}`,
+        projectId: project.id,
+        name: project.name,
+        reason: rawItem.reason || project.blocker || project.nextAction || 'Menunggu respons',
+        value: rawItem.value || project.valueText,
+        nextTrigger: rawItem.nextTrigger || 'Konfirmasi dari klien',
+        actionToUnblock: rawItem.actionToUnblock || project.nextAction || 'Follow-up klien',
+        followUpDate: rawItem.followUpDate || project.followUpDeadline || 'Hari ini',
+        status: project.status,
+      });
+    }
+  }
+
   for (const project of projects.filter((p) => p.boardColumn === 'WAITING')) {
-    const existing = state.waitingItems.find((item) => projectIdFor(item, projects) === project.id);
-    waitingItems.push({
-      id: existing?.id || `w-${project.id}`,
-      projectId: project.id,
-      name: project.name,
-      reason: project.blocker || existing?.reason || project.nextAction || 'Menunggu respons',
-      value: project.valueText,
-      nextTrigger: existing?.nextTrigger || 'Konfirmasi dari klien',
-      actionToUnblock: project.nextAction || existing?.actionToUnblock || 'Follow-up klien',
-      followUpDate: project.followUpDeadline || existing?.followUpDate || 'Hari ini',
-      status: project.status,
-    });
+    if (!handledProjectIds.has(project.id)) {
+      handledProjectIds.add(project.id);
+      waitingItems.push({
+        id: `w-${project.id}`,
+        projectId: project.id,
+        name: project.name,
+        reason: project.blocker || project.nextAction || 'Menunggu respons',
+        value: project.valueText,
+        nextTrigger: 'Konfirmasi dari klien',
+        actionToUnblock: project.nextAction || 'Follow-up klien',
+        followUpDate: project.followUpDeadline || 'Hari ini',
+        status: project.status,
+      });
+    }
   }
   const report = state.financialReport;
   const totalLiquidBalance = report.accounts.reduce((sum, account) => sum + account.balance, 0);
@@ -115,6 +140,45 @@ export function applyTransaction(state, tx) {
   }
   next = deriveState(next);
   return { ...next, financialReport: { ...next.financialReport, trajectory: [...next.financialReport.trajectory, { date: tx.date, balance: next.financialReport.totalLiquidBalance, note: tx.description }] } };
+}
+
+export function deleteTransaction(state, txId) {
+  const tx = state.financialReport?.transactions?.find((t) => t.id === txId);
+  if (!tx) return state;
+  let next = {
+    ...state,
+    financialReport: {
+      ...state.financialReport,
+      accounts: state.financialReport.accounts.map((account) => {
+        let balance = account.balance;
+        if (account.name === tx.accountName) {
+          balance = tx.type === 'income' ? balance - tx.amount : tx.type === 'expense' ? balance + tx.amount : tx.type === 'transfer' ? balance + tx.amount : balance;
+        } else if (tx.type === 'transfer' && account.name === tx.toAccountName) {
+          balance -= tx.amount;
+        }
+        return balance === account.balance ? account : { ...account, balance, isLatest: true, lastUpdated: new Date().toISOString().slice(0, 10) };
+      }),
+      transactions: state.financialReport.transactions.filter((t) => t.id !== txId),
+    },
+  };
+  if (tx.linkedProjectId) {
+    const project = state.projects.find((p) => p.id === tx.linkedProjectId);
+    if (project) {
+      const paidNumeric = Math.max(0, project.paidNumeric - tx.amount);
+      next = updateProject(next, {
+        ...project,
+        paidNumeric,
+        paymentStatus: paidNumeric >= project.nominalNumeric ? 'Paid' : paidNumeric > 0 ? 'Partial' : 'Waiting Payment',
+      });
+    }
+  }
+  return deriveState(next);
+}
+
+export function editTransaction(state, updatedTx) {
+  validateTransaction(state, updatedTx);
+  const withoutOld = deleteTransaction(state, updatedTx.id);
+  return applyTransaction(withoutOld, updatedTx);
 }
 
 export function validateState(state) {

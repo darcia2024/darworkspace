@@ -4,11 +4,7 @@ import {
   X, 
   Copy, 
   Check, 
-  Send, 
-  Sparkles,
-  ExternalLink,
-  Phone,
-  RefreshCw
+  ExternalLink
 } from 'lucide-react';
 import { ProjectCard, WaitingItem } from '../types';
 import { soundManager } from '../utils/audio';
@@ -33,15 +29,27 @@ export const FollowUpModal: React.FC<FollowUpModalProps> = ({
   const [activeItemName, setActiveItemName] = useState<string>(selectedProject?.name || allProjects[0]?.name || allWaitingItems[0]?.name || '');
   const [tone, setTone] = useState<ToneType>('santai');
   const [customClientName, setCustomClientName] = useState<string>('');
+  const [clientPhone, setClientPhone] = useState<string>('');
   const [copied, setCopied] = useState(false);
 
   // Sync selected project if opened from a specific card
   React.useEffect(() => {
     if (isOpen) {
-      setActiveItemName(selectedProject?.name || allProjects[0]?.name || allWaitingItems[0]?.name || '');
+      const initialName = selectedProject?.name || allProjects[0]?.name || allWaitingItems[0]?.name || '';
+      setActiveItemName(initialName);
       setCopied(false);
+      const proj = allProjects.find(p => p.name === initialName);
+      const wait = allWaitingItems.find(w => w.name === initialName);
+      setClientPhone(proj?.clientPhone || wait?.clientPhone || '');
     }
-  }, [selectedProject, isOpen]);
+  }, [selectedProject, isOpen, allProjects, allWaitingItems]);
+
+  const handleProjectChange = (name: string) => {
+    setActiveItemName(name);
+    const proj = allProjects.find(p => p.name === name);
+    const wait = allWaitingItems.find(w => w.name === name);
+    setClientPhone(proj?.clientPhone || wait?.clientPhone || '');
+  };
 
   if (!isOpen) return null;
 
@@ -71,7 +79,10 @@ export const FollowUpModal: React.FC<FollowUpModalProps> = ({
   const handleOpenWhatsApp = () => {
     soundManager.playClick();
     const encoded = encodeURIComponent(messageText);
-    window.open(`https://wa.me/?text=${encoded}`, '_blank', 'noopener,noreferrer');
+    const digits = clientPhone.replace(/\D/g, '');
+    const cleanPhone = digits.startsWith('0') ? '62' + digits.slice(1) : digits;
+    const url = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encoded}` : `https://wa.me/?text=${encoded}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const uniqueNames = Array.from(new Set([...allProjects.map(p => p.name), ...allWaitingItems.map(w => w.name)]));
@@ -94,22 +105,22 @@ export const FollowUpModal: React.FC<FollowUpModalProps> = ({
               <p className="text-[11px] text-zinc-400 font-mono">// Siap kirim ke WhatsApp / Chat Client</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1 text-zinc-400 hover:text-white transition-colors">
+          <button onClick={onClose} aria-label="Tutup modal follow up" className="p-1 text-zinc-400 hover:text-white transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Settings: Target Project & Tone */}
+        {/* Settings: Target Project, Panggilan, & Phone */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           
           {/* Target Client Dropdown */}
-          <div className="sm:col-span-2">
+          <div>
             <label className="block text-[11px] text-zinc-400 font-mono mb-1">
               // Pilih Client / Project:
             </label>
             <select
               value={activeItemName}
-              onChange={(e) => setActiveItemName(e.target.value)}
+              onChange={(e) => handleProjectChange(e.target.value)}
               className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white font-mono"
             >
               {uniqueNames.map(name => (
@@ -127,9 +138,23 @@ export const FollowUpModal: React.FC<FollowUpModalProps> = ({
             </label>
             <input
               type="text"
-              placeholder="Contoh: Bang Edo / Umi Elly"
+              placeholder="Contoh: Mas / Bapak / Ibu"
               value={customClientName}
               onChange={(e) => setCustomClientName(e.target.value)}
+              className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white font-mono placeholder-zinc-600"
+            />
+          </div>
+
+          {/* Client Phone Number */}
+          <div>
+            <label className="block text-[11px] text-zinc-400 font-mono mb-1">
+              // No. WhatsApp (Opsional):
+            </label>
+            <input
+              type="tel"
+              placeholder="0812xxxx / 62812xxxx"
+              value={clientPhone}
+              onChange={(e) => setClientPhone(e.target.value)}
               className="w-full bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-white font-mono placeholder-zinc-600"
             />
           </div>
@@ -196,7 +221,7 @@ export const FollowUpModal: React.FC<FollowUpModalProps> = ({
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 text-xs font-mono transition-all"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              <span>Buka WA Web</span>
+              <span>{clientPhone.trim() ? 'Chat WA Langsung' : 'Buka WA Web'}</span>
             </button>
 
             <button

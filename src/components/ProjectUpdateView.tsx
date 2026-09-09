@@ -1,29 +1,23 @@
 import React, { useMemo, useState } from 'react';
 import {
   Newspaper,
-  Compass,
   ArrowUpRight,
   Clipboard,
   Download,
   Share2,
   Bookmark,
-  ExternalLink,
   Search,
   ChevronRight,
-  TrendingUp,
   AlertTriangle,
   Lightbulb,
   CheckCircle2,
   Eye,
-  MessageCircle,
-  FileText,
-  SlidersHorizontal,
   Clock,
-  Send,
   Layers,
   Sparkles
 } from 'lucide-react';
 import { DaruWorkOSState, ProjectCard } from '../types';
+import { generateSingleProjectReport } from '../../shared/projectReport.js';
 
 interface ProjectUpdateViewProps {
   state: DaruWorkOSState;
@@ -43,58 +37,29 @@ const laneLabelMap: Record<string, string> = {
 const columnBadgeMap: Record<string, { label: string; bg: string; text: string; border: string }> = {
   DOING: { label: 'In Production', bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-rose-100' },
   QUEUE: { label: 'Upcoming Sprint', bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-100' },
-  WAITING: { label: 'Waiting Client', bg: 'bg-sky-50', text: 'text-sky-600', border: 'border-sky-100' },
-  DONE: { label: '100% Deployed', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100' },
-  PARKED: { label: 'Parked', bg: 'bg-zinc-100', text: 'text-zinc-600', border: 'border-zinc-200' },
+  WAITING: { label: 'Radar Wait', bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-100' },
+  DONE: { label: 'Mission Accomplished', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100' },
+  PARKED: { label: 'Parked Idea', bg: 'bg-zinc-100', text: 'text-zinc-600', border: 'border-zinc-200' },
 };
 
-// Fallback high-res editorial poster images per category / project type
-const projectVisuals: Record<string, string> = {
-  'p-el-massa': 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1400&auto=format&fit=crop', // Kaaba / Pilgrimage
-  'p-pgs-tour': 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', // Luxury Travel / Airplane
-  'p-umi-elly': 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1400&auto=format&fit=crop', // Education / LMS
-  'p-barber': 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1400&auto=format&fit=crop', // Barber / Grooming
-  'p-hamasah-ai': 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1400&auto=format&fit=crop', // Abstract AI Tech
-  'p-kael-product': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1400&auto=format&fit=crop', // Dashboard / SaaS
-  'p-ifdony-azharuna': 'https://images.unsplash.com/photo-1600132806370-bf17e65e942f?q=80&w=1400&auto=format&fit=crop', // Calligraphy / Brand
-  default: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1400&auto=format&fit=crop', // Modern architecture
+// Fallback high-res editorial poster images per category / lane type
+const categoryVisuals: Record<string, string> = {
+  client_delivery: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop',
+  own_product: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1400&auto=format&fit=crop',
+  maintenance: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1400&auto=format&fit=crop',
+  bizdev: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1400&auto=format&fit=crop',
+  operations: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1400&auto=format&fit=crop',
+  default: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1400&auto=format&fit=crop',
 };
 
 const getProjectVisual = (project: ProjectCard) => {
-  return projectVisuals[project.id] || projectVisuals.default;
+  return project.coverImage || categoryVisuals[project.lane] || categoryVisuals.default;
 };
 
 // Generates an editorial headline with storytelling flair
 const getEditorialHeadline = (project: ProjectCard) => {
-  if (project.id === 'p-pgs-tour') {
-    return 'Website PGS Tour & Travel 100% Siap Tayang: Dari Redesign Elegan Sampai Sistem Booking yang Lebih Meyakinkan!';
-  }
-  if (project.id === 'p-el-massa') {
-    return 'Katalog Web El Massa 100% Siap Tempur: Dari 12 Paket Ibadah Live Sampai Mesin Konversi Otomatis!';
-  }
-  if (project.id === 'p-umi-elly') {
-    return 'Sprint Modul LMS Azhariyah Bareng Umi Elly: Saatnya Kurikulum Digital Mengudara!';
-  }
-  if (project.id === 'p-barber') {
-    return 'Sistem POS Kasir & Loyalty Barber Sukses Berlayar: Full Deployed & 100% Lunas Tanpa Drama';
-  }
-  if (project.id === 'p-kael-product') {
-    return 'Bongkar Dapur KAEL SaaS: Setting Kasir, QRIS Static, & Jalur Demo Biar Cepat Closing';
-  }
-  if (project.id === 'p-ifdony-azharuna') {
-    return 'Eksplorasi Identitas Visual Azharuna: Meramu Simbol Peradaban & Tipografi Modern';
-  }
-  if (project.id === 'p-dreammecca') {
-    return 'DreamMecca Platform Beres Tuntas: Bebas Utang Deliverable & Pikiran Plong';
-  }
-  if (project.id === 'p-ibrahim-visa') {
-    return 'Radar Visa Entry Student Kairo: Berkas Lengkap, Kawal Pembayaran Sampai Cair';
-  }
-  if (project.id === 'p-laptopbisnis') {
-    return 'Branding Laptopbisnis Rampung: Desain Lunas, Handover Master Asset Tanpa Cela';
-  }
-  if (project.id === 'p-zalvice') {
-    return 'Evolusi Identitas Zalvice: Visual Tuntas, Siap Meluncur ke Fase Produksi';
+  if (project.newsHeadline && project.newsHeadline.trim().length > 10) {
+    return project.newsHeadline;
   }
   if (project.boardColumn === 'DONE') {
     return `Kisah Sukses ${project.name}: Tuntas di Garis Finis & Siap Buka Babak Baru`;
@@ -103,7 +68,7 @@ const getEditorialHeadline = (project: ProjectCard) => {
     return `Gaspol Dapur Produksi ${project.name}: Menembus Sasaran Utama & Kunci Kualitas`;
   }
   if (project.boardColumn === 'WAITING') {
-    return `Kawal Radar ${project.name}: Menanti Respons Klien Sambil Jaga Ritme Kas`;
+    return `Kawal Radar ${project.name}: Menanti Respons Sambil Jaga Ritme Kas`;
   }
   if (project.currentGoal && project.currentGoal.length > 15) {
     return `${project.name}: ${project.currentGoal.split('.')[0]}`;
@@ -439,9 +404,6 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
 
   // Active selected project
   const [activeProjectId, setActiveProjectId] = useState<string>(() => {
-    // Prefer p-el-massa or first doing project
-    const elMassa = allProjects.find((p) => p.id === 'p-el-massa');
-    if (elMassa) return elMassa.id;
     const doing = allProjects.find((p) => p.boardColumn === 'DOING');
     return doing ? doing.id : allProjects[0]?.id || '';
   });
@@ -479,8 +441,8 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
 
   // Related projects list (excluding current project)
   const relatedProjects = useMemo(() => {
-    return allProjects.filter((p) => p.id !== currentProject?.id).slice(0, 6);
-  }, [allProjects, currentProject]);
+    return filteredProjects.filter((p) => p.id !== currentProject?.id).slice(0, 6);
+  }, [filteredProjects, currentProject]);
 
   // Copy handler
   const handleCopySummary = async () => {
@@ -494,20 +456,7 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
   // Download handler
   const handleDownloadReport = () => {
     if (!currentProject) return;
-    const content = `# ${getEditorialHeadline(currentProject)}
-Tanggal: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-Kategori: ${laneLabelMap[currentProject.lane] || currentProject.lane}
-Status: ${currentProject.boardColumn} (${currentProject.status})
-
-## Rangkuman Laporan & Storytelling
-${getStorytellingBody(currentProject)}
-
-## Rekomendasi Langkah Nyata (Next Step)
-${currentProject.nextAction || 'Tentukan langkah konkret eksekusi di board.'}
-
-## Kritik & Evaluasi Redaksi
-${getStorytellingCritique(currentProject)}
-`;
+    const content = generateSingleProjectReport(currentProject);
     const link = document.createElement('a');
     link.href = URL.createObjectURL(new Blob([content], { type: 'text/markdown;charset=utf-8' }));
     link.download = `editorial-${currentProject.id}-${new Date().toISOString().slice(0, 10)}.md`;
@@ -596,13 +545,15 @@ ${getStorytellingCritique(currentProject)}
         </div>
       </div>
 
-      {/* 2. MAIN EDITORIAL THREE-COLUMN FLEXBOX LAYOUT (Resilient, No Collapsing) */}
-      <div className="w-full flex flex-col lg:flex-row gap-6 xl:gap-8 items-start">
+      {/* 2. MAIN EDITORIAL RESPONSIVE LAYOUT (2-column on lg, 3-column on xl+) */}
+      <div className="w-full flex flex-col xl:flex-row gap-6 xl:gap-8 items-start">
         
-        {/* =========================================================================
-            LEFT COLUMN (~220px): USER CAPSULE & CATEGORIES (Matches Reference Left)
-            ========================================================================= */}
-        <aside className="w-full lg:w-52 xl:w-56 shrink-0 space-y-4">
+        {/* Left & Center Content Group */}
+        <div className="w-full flex-1 flex flex-col lg:flex-row gap-6 items-start min-w-0">
+          {/* =========================================================================
+              LEFT COLUMN (~220px): USER CAPSULE & CATEGORIES (Matches Reference Left)
+              ========================================================================= */}
+          <aside className="w-full lg:w-52 xl:w-56 shrink-0 space-y-4">
           {/* Author / Editorial Profile Capsule Card */}
           <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs">
             <div className="flex items-center gap-3">
@@ -930,12 +881,12 @@ ${getStorytellingCritique(currentProject)}
             </button>
           </div>
         </div>
+      </div>
 
         {/* =========================================================================
             RIGHT COLUMN (~280-320px): "RELATED NEWS" (Matches Reference Right)
-            shrink-0 ensures no squishing
             ========================================================================= */}
-        <aside className="w-full lg:w-72 xl:w-80 shrink-0 space-y-4">
+        <aside className="w-full xl:w-80 shrink-0 space-y-4">
           {/* Column Header matching reference screenshot */}
           <div className="flex items-center justify-between pb-2 border-b border-zinc-200">
             <h2 className="text-base font-bold tracking-tight text-zinc-950">

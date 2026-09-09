@@ -1,19 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Lock, ShieldCheck, KeyRound, AlertCircle, Sparkles, Delete, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Lock, ShieldCheck, AlertCircle, Sparkles, Delete, CheckCircle2 } from 'lucide-react';
 import { soundManager } from '../utils/audio';
 
 interface PinLockScreenProps {
   onUnlock: () => void;
 }
 
-const CORRECT_PIN = '120426';
+// Local Device Privacy Lock (Screen Lock for shoulder-surfing protection)
+// Stored as SHA-256 hash in localStorage or falls back to standard hashed default.
+// Plaintext PIN is never bundled in source code or production JS.
+const DEFAULT_PIN_HASH = '1180ce3297aa01f51c304d058afca783cb8dc2735f11ca4ae995450ce013cff3';
 export const AUTH_STORAGE_KEY = 'DARU_WORK_OS_AUTH_V1';
+
+async function computeSha256(text: string): Promise<string> {
+  const enc = new TextEncoder().encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
   const [pin, setPin] = useState<string[]>(['', '', '', '', '', '']);
   const [error, setError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -22,58 +32,66 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
     }
   }, []);
 
-  const handleVerify = (pinCode: string) => {
-    if (pinCode === CORRECT_PIN) {
-      setIsSuccess(true);
-      setError(false);
-      soundManager.playLevelUp();
-      try { localStorage.setItem(AUTH_STORAGE_KEY, 'AUTHENTICATED_120426'); } catch { /* Unlock still works for this session when storage is unavailable. */ }
-      setTimeout(() => {
-        onUnlock();
-      }, 600);
-    } else {
-      setError(true);
-      soundManager.playError();
-      setErrorMessage('PIN salah! Silakan coba lagi.');
-      setTimeout(() => {
-        setPin(['', '', '', '', '', '']);
+  const handleVerify = async (pinCode: string) => {
+    if (isVerifying) return;
+    setIsVerifying(true);
+    try {
+      const hash = await computeSha256(pinCode);
+      const expectedHash = localStorage.getItem('DARU_OS_PIN_HASH') || DEFAULT_PIN_HASH;
+      if (hash === expectedHash) {
+        setIsSuccess(true);
         setError(false);
-        if (inputRefs.current[0]) {
-          inputRefs.current[0].focus();
-        }
-      }, 1000);
+        soundManager.playLevelUp();
+        try { localStorage.setItem(AUTH_STORAGE_KEY, 'UNLOCKED'); } catch { /* Session unlock works */ }
+        setTimeout(() => {
+          onUnlock();
+        }, 500);
+        return;
+      }
+    } catch {
+      // Fall through to error
+    } finally {
+      setIsVerifying(false);
     }
+
+    setError(true);
+    soundManager.playError();
+    setErrorMessage('PIN salah! Silakan coba lagi.');
+    setTimeout(() => {
+      setPin(['', '', '', '', '', '']);
+      setError(false);
+      if (inputRefs.current[0]) {
+        inputRefs.current[0].focus();
+      }
+    }, 1000);
   };
 
+  useEffect(() => {
+    const fullPin = pin.join('');
+    if (fullPin.length === 6 && !pin.includes('') && !isVerifying && !error) {
+      void handleVerify(fullPin);
+    }
+  }, [pin, isVerifying, error]);
+
   const handleInputChange = (index: number, value: string) => {
-    if (value.length > 1) {
-      const digits = value.replace(/\D/g, '').slice(0, 6).split('');
-      const newPin = [...pin];
-      digits.forEach((d, i) => {
-        if (i < 6) newPin[i] = d;
+    const digits = value.replace(/\D/g, '');
+    if (digits.length > 1) {
+      const next = [...pin];
+      digits.slice(0, 6).split('').forEach((d, i) => {
+        if (i < 6) next[i] = d;
       });
-      setPin(newPin);
-      if (digits.length === 6) {
-        handleVerify(newPin.join(''));
-      } else {
-        const nextIdx = Math.min(digits.length, 5);
-        inputRefs.current[nextIdx]?.focus();
-      }
+      setPin(next);
+      const nextIdx = Math.min(digits.length, 5);
+      inputRefs.current[nextIdx]?.focus();
       return;
     }
 
-    const digit = value.replace(/\D/g, '');
-    const newPin = [...pin];
-    newPin[index] = digit;
-    setPin(newPin);
-
+    const digit = digits.slice(-1);
+    const next = [...pin];
+    next[index] = digit;
+    setPin(next);
     if (digit && index < 5) {
       inputRefs.current[index + 1]?.focus();
-    }
-
-    const fullPin = newPin.join('');
-    if (fullPin.length === 6 && !newPin.includes('')) {
-      handleVerify(fullPin);
     }
   };
 
@@ -84,7 +102,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
     if (e.key === 'Enter') {
       const fullPin = pin.join('');
       if (fullPin.length === 6) {
-        handleVerify(fullPin);
+        void handleVerify(fullPin);
       }
     }
   };
@@ -92,14 +110,11 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
   const handleKeypadPress = (num: string) => {
     const emptyIndex = pin.findIndex(d => d === '');
     if (emptyIndex !== -1) {
-      const newPin = [...pin];
-      newPin[emptyIndex] = num;
-      setPin(newPin);
+      const next = [...pin];
+      next[emptyIndex] = num;
+      setPin(next);
       if (emptyIndex < 5) {
         inputRefs.current[emptyIndex + 1]?.focus();
-      }
-      if (emptyIndex === 5) {
-        handleVerify(newPin.join(''));
       }
     }
   };
@@ -108,9 +123,9 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
     const lastFilledIndex = [...pin].reverse().findIndex(d => d !== '');
     if (lastFilledIndex !== -1) {
       const realIndex = 5 - lastFilledIndex;
-      const newPin = [...pin];
-      newPin[realIndex] = '';
-      setPin(newPin);
+      const next = [...pin];
+      next[realIndex] = '';
+      setPin(next);
       inputRefs.current[realIndex]?.focus();
     }
   };
@@ -146,14 +161,14 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
           </div>
           
           <span className="sticker-pill sticker-lime text-[10px] uppercase font-bold tracking-wider mb-2">
-            SECURITY CHECKPOINT
+            PRIVACY LOCK
           </span>
           
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111111]">
             <span className="lead-italic font-normal">Daru</span>.OS
           </h1>
           <p className="text-xs text-zinc-500 mt-1 max-w-xs font-normal">
-            Akses Terproteksi. Masukkan 6 Digit PIN Otorisasi Anda.
+            Kunci Privasi Perangkat. Masukkan 6 Digit PIN untuk membuka layar.
           </p>
         </div>
 

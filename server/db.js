@@ -3,16 +3,25 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { applyTransaction, deriveState, validateState } from '../shared/domain.js';
+import { APP_VERSION } from '../shared/version.js';
 
 const defaultFile = fileURLToPath(new URL('./data/daru_os.json', import.meta.url));
+const exampleFile = fileURLToPath(new URL('./data/daru_os.example.json', import.meta.url));
 
 export class DatabaseManager {
   constructor(file = process.env.DARU_DB_FILE || defaultFile) {
     this.file = path.resolve(file);
     fs.mkdirSync(path.dirname(this.file), { recursive: true });
+    if (this.file === path.resolve(defaultFile) && !fs.existsSync(this.file) && fs.existsSync(exampleFile)) {
+      try {
+        fs.copyFileSync(exampleFile, this.file);
+      } catch {
+        // Continue if copy fails
+      }
+    }
     this.data = fs.existsSync(this.file)
       ? JSON.parse(fs.readFileSync(this.file, 'utf8'))
-      : { version: '2.7.0', revision: 0, state: null, syncLogs: [] };
+      : { version: APP_VERSION, revision: 0, state: null, syncLogs: [] };
     if (!this.data || typeof this.data !== 'object' || !('state' in this.data)) throw new Error('Invalid database; restore a backup before restarting.');
     if (this.data.state) validateState(this.data.state);
   }

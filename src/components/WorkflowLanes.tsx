@@ -7,18 +7,12 @@ import {
   Activity, 
   Archive,
   ArrowRight,
-  ArrowLeft,
   Filter,
   Columns,
   MessageSquare,
   GripVertical,
   Plus,
   X,
-  Sparkles,
-  Layers,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
   Receipt,
   ChevronRight,
   Check
@@ -32,6 +26,7 @@ interface WorkflowLanesProps {
   projects: ProjectCard[];
   onUpdateProject: (project: ProjectCard) => void;
   onAddProject?: (project: Omit<ProjectCard, 'id'>) => void;
+  onDeleteProject?: (projectId: string) => void;
   onStartFocusOnProject: (project: ProjectCard) => void;
   onOpenFollowUpForProject?: (project: ProjectCard) => void;
   onOpenInvoiceForProject?: (project: ProjectCard) => void;
@@ -41,6 +36,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
   projects,
   onUpdateProject,
   onAddProject,
+  onDeleteProject,
   onStartFocusOnProject,
   onOpenFollowUpForProject,
   onOpenInvoiceForProject
@@ -66,7 +62,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
   const laneConfigs: Record<LaneType, { title: string; subtitle: string; icon: any; tag: string; rule: string; color: string }> = {
     client_delivery: {
       title: 'Lane 1 - Client Delivery',
-      subtitle: 'Sudah Deal / Sudah Ada Kewajiban (Umi Elly, Barber POS, DreamMecca, Zalvice, dll.)',
+      subtitle: 'Sudah Deal / Sudah Ada Kewajiban Deliverable Aktif',
       icon: Briefcase,
       tag: 'LANE_01',
       rule: 'PRIORITAS #1: Lunasin kewajiban & amankan DP sebelum buka scope baru.',
@@ -74,7 +70,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     },
     maintenance: {
       title: 'Lane 2 - Maintenance',
-      subtitle: 'Timebox Ketat: Max 1-2 Jam Per Sesi (Markaz Fiqih)',
+      subtitle: 'Timebox Ketat: Max 1-2 Jam Per Sesi Support & Retainer',
       icon: Wrench,
       tag: 'LANE_02',
       rule: 'TIMEBOX ONLY: Jangan biarkan maintenance makan jatah deep work berbayar.',
@@ -82,7 +78,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     },
     bizdev: {
       title: 'Lane 3 - Business Development / Sales',
-      subtitle: 'KAEL Offline Marketing, Upwork Global, Lead Pipeline, Watra',
+      subtitle: 'Outreach Prospek, Portfolio Showcase, Lead Pipeline',
       icon: TrendingUp,
       tag: 'LANE_03',
       rule: 'GROWTH ENGINE: Sisihkan 30-45 menit/hari untuk kontak prospek.',
@@ -90,7 +86,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
     },
     own_product: {
       title: 'Lane 4 - Core Product (SaaS & Assets)',
-      subtitle: 'KAEL POS, Engine Kasir, Template High-Ticket',
+      subtitle: 'Internal Products, Platform Engine, Template High-Ticket',
       icon: Package,
       tag: 'LANE_04',
       rule: 'EQUITY BUILDING: Bangun recurring asset yang bisa dijual berulang.',
@@ -257,6 +253,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
   const handleCreateProject = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newProjectName.trim()) return;
+    const normalized = newProjectName.trim().toLowerCase();
+    if (projects.some(p => p.name.trim().toLowerCase() === normalized)) {
+      alert(`Project "${newProjectName.trim()}" sudah ada. Gunakan nama yang berbeda atau buka kartu project yang sudah ada.`);
+      return;
+    }
     const nominal = Number(newProjectValue || 0);
     if (!Number.isSafeInteger(nominal) || nominal < 0) { alert('Isi nilai kontrak sebagai nominal rupiah bulat, minimal nol.'); return; }
 
@@ -291,7 +292,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
   };
 
   return (
-    <div className="space-y-6 font-sans select-none animate-fade-in pb-12">
+    <div className="space-y-6 font-sans animate-fade-in pb-12">
       
       {/* Header with Switcher */}
       <div className="bento-card p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 border border-zinc-200/90 shadow-sm">
@@ -303,8 +304,8 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
             </h3>
             <span className="sticker-pill sticker-lime text-[9px]">{viewMode === 'lanes' ? '6_LANES_MODE' : 'KANBAN_BOARD'}</span>
           </div>
-          <p className="text-xs text-zinc-500 font-normal mt-1">
-            Kelola beban kerja per Lane strategis • Drag & Drop antar Lane/Kolom • Direct Focus & WhatsApp Trigger
+          <p className="text-xs text-zinc-600 font-normal mt-1">
+            Kelola beban kerja per Lane strategis • Pindahkan atau atur kolom • Direct Focus & WhatsApp Trigger
           </p>
         </div>
 
@@ -610,7 +611,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
           VIEW 2: KANBAN BOARD VIEW WITH DRAG & DROP
           ========================================================================= */}
       {viewMode === 'board' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+        <div className="flex gap-4 items-start overflow-x-auto pb-6">
           {boardColumns.map((col, idx) => {
             const colProjects = projects.filter(p => p.boardColumn === col.id);
             const isColumnHovered = dragOverColumn === col.id;
@@ -626,7 +627,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
             return (
               <div 
                 key={col.id} 
-                className={`bento-card ${theme.bg} border ${theme.border} p-4 space-y-3 min-h-[500px] flex flex-col justify-start transition-all duration-200 shadow-sm ${
+                className={`bento-card ${theme.bg} border ${theme.border} p-4 space-y-3 min-w-[260px] flex-1 min-h-[500px] flex flex-col justify-start transition-all duration-200 shadow-sm ${
                   isColumnHovered 
                     ? 'ring-2 ring-[#111111] scale-[1.01]' 
                     : ''
@@ -839,7 +840,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       {/* =========================================================================
           MODAL: ADD NEW PROJECT
           ========================================================================= */}
-      {editingProject && <ProjectEditor key={editingProject.id} project={editingProject} onSave={onUpdateProject} onClose={() => setEditingProject(null)} />}
+      {editingProject && <ProjectEditor key={editingProject.id} project={editingProject} onSave={onUpdateProject} onClose={() => setEditingProject(null)} onDelete={onDeleteProject} />}
       {isAddModalOpen && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in"
@@ -884,7 +885,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Kasir Barber Underrated / Logo Baru"
+                  placeholder="e.g. Website Redesign / Logo Baru"
                   value={newProjectName}
                   onChange={(e) => setNewProjectName(e.target.value)}
                   className="w-full bg-white border border-zinc-200 rounded-xl p-2.5 text-[#111111] focus:border-[#292a24] focus:outline-none font-sans"

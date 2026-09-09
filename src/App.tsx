@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { TopQuickStats } from './components/TopQuickStats';
 import { TodaySuperSmallView } from './components/TodaySuperSmallView';
@@ -10,22 +10,24 @@ import { FocusStudio } from './components/FocusStudio';
 import { ExportModal } from './components/ExportModal';
 import { FollowUpModal } from './components/FollowUpModal';
 import { DaruPartnerCopilot } from './components/DaruPartnerCopilot';
+import { BottomFloatingDock } from './components/BottomFloatingDock';
 import { DecisionAnchorBox } from './components/DecisionAnchorBox';
 import { QuickFinanceInputModal } from './components/QuickFinanceInputModal';
 import { InvoiceGeneratorModal } from './components/InvoiceGeneratorModal';
 import { ProjectUpdateView } from './components/ProjectUpdateView';
 import { loadState } from './utils/storage';
-import { applyTransaction, deriveState, projectIdFor, updateProject, validateTransaction } from '../shared/domain.js';
+import { applyTransaction, deleteTransaction, editTransaction, deriveState, projectIdFor, updateProject, validateTransaction } from '../shared/domain.js';
 import { apiService, ServerSyncStatus } from './services/api';
-import { DaruWorkOSState, TodayBlock, ProjectCard, WaitingItem, TransactionRecord, AssetAccount, InvoiceRecord, ActiveTabType } from './types';
+import { DaruWorkOSState, TodayBlock, ProjectCard, WaitingItem, TransactionRecord, AssetAccount, ActiveTabType } from './types';
 import { soundManager } from './utils/audio';
-import { ChevronRight, Sparkles, MessageSquare, Bot, Plus, Receipt, Lock, PanelLeft } from 'lucide-react';
+import { ChevronRight, Lock, PanelLeft, Plus, Receipt, MessageSquare, Bot } from 'lucide-react';
 import { PinLockScreen, AUTH_STORAGE_KEY } from './components/PinLockScreen';
 
 export function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     try {
-      return localStorage.getItem(AUTH_STORAGE_KEY) === 'AUTHENTICATED_120426';
+      const auth = localStorage.getItem(AUTH_STORAGE_KEY);
+      return Boolean(auth && (auth === 'UNLOCKED' || auth.startsWith('AUTHENTICATED_')));
     } catch {
       return false;
     }
@@ -40,7 +42,50 @@ export function App() {
     setStateValue(previous => deriveState(updater(previous)));
   };
   useEffect(() => apiService.subscribeStatus(setSyncStatus), []);
-  const [activeTab, setActiveTab] = useState<ActiveTabType>('today');
+
+  const [activeTab, setActiveTabState] = useState<ActiveTabType>(() => {
+    if (typeof window === 'undefined') return 'today';
+    const hash = window.location.hash.toLowerCase();
+    const map: Record<string, ActiveTabType> = {
+      '#/today': 'today',
+      '#/nextgo': 'nextgo',
+      '#/lanes': 'lanes',
+      '#/waiting': 'waiting',
+      '#/money': 'money',
+      '#/deepwork': 'deepwork',
+      '#/updates': 'updates',
+    };
+    return map[hash] || 'today';
+  });
+
+  const setActiveTab = (tab: ActiveTabType) => {
+    setActiveTabState(tab);
+    if (typeof window !== 'undefined' && window.location.hash !== `#/${tab}`) {
+      window.location.hash = `#/${tab}`;
+    }
+  };
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.toLowerCase();
+      const map: Record<string, ActiveTabType> = {
+        '#/today': 'today',
+        '#/nextgo': 'nextgo',
+        '#/lanes': 'lanes',
+        '#/waiting': 'waiting',
+        '#/money': 'money',
+        '#/deepwork': 'deepwork',
+        '#/updates': 'updates',
+      };
+      setActiveTabState(map[hash] || 'today');
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    if (!window.location.hash) {
+      window.history.replaceState(null, '', '#/today');
+    }
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   const [activeFocusBlock, setActiveFocusBlock] = useState<TodayBlock | null>(null);
   const [focusQueue, setFocusQueue] = useState<TodayBlock[]>([]);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
@@ -119,6 +164,28 @@ export function App() {
     }));
   };
 
+  const handleAddPursuit = (pursuit: { project: string; action: string; timeEstimate?: string }) => {
+    const newPursuit = {
+      id: `tp-${Date.now()}`,
+      project: pursuit.project.trim(),
+      action: pursuit.action.trim(),
+      timeEstimate: pursuit.timeEstimate?.trim() || '30m',
+      isDone: false,
+      isCompleted: false,
+    };
+    setState((prev) => ({
+      ...prev,
+      todayPursuit: [newPursuit, ...prev.todayPursuit],
+    }));
+  };
+
+  const handleDeletePursuit = (id: string) => {
+    setState((prev) => ({
+      ...prev,
+      todayPursuit: prev.todayPursuit.filter((p) => p.id !== id),
+    }));
+  };
+
   // Handlers for Today Blocks
   const handleToggleBlock = (id: string) => {
     setState((prev) => ({
@@ -152,23 +219,58 @@ export function App() {
   };
 
   const handleAddProject = (project: Omit<ProjectCard, 'id'>) => {
+    const normalized = project.name.trim().toLowerCase();
+    if (state.projects.some(p => p.name.trim().toLowerCase() === normalized)) {
+      alert(`Project "${project.name}" sudah ada. Gunakan nama yang berbeda.`);
+      return;
+    }
     setState(prev => updateProject(prev, { ...project, id: crypto.randomUUID() }));
+  };
+
+  const handleDeleteProject = (projectId: string) => {
+    setState(prev => {
+      const remainingProjects = prev.projects.filter(p => p.id !== projectId);
+      const remainingBlocks = prev.todayBlocks.filter(b => projectIdFor(b, prev.projects) !== projectId && b.projectId !== projectId);
+      const remainingPursuits = prev.todayPursuit.filter(p => projectIdFor(p, prev.projects) !== projectId && p.projectId !== projectId);
+      const remainingWaiting = prev.waitingItems.filter(w => projectIdFor(w, prev.projects) !== projectId && w.projectId !== projectId);
+      return deriveState({
+        ...prev,
+        projects: remainingProjects,
+        todayBlocks: remainingBlocks,
+        todayPursuit: remainingPursuits,
+        waitingItems: remainingWaiting,
+      });
+    });
   };
 
   // Handlers for Waiting Items
   const handleAddWaitingItem = (newItem: Omit<WaitingItem, 'id'>) => {
-    const item: WaitingItem = {
-      ...newItem,
-      id: `w-${Date.now()}`,
-    };
-    setState((prev) => ({
-      ...prev,
-      waitingItems: [item, ...prev.waitingItems],
-      quickStats: {
-        ...prev.quickStats,
-        waitingPaymentKickoff: prev.quickStats.waitingPaymentKickoff + 1
+    setState((prev) => {
+      const pId = projectIdFor({ ...newItem, id: '' }, prev.projects);
+      const existingProject = pId ? prev.projects.find(p => p.id === pId) : undefined;
+      let nextProjects = prev.projects;
+      if (existingProject) {
+        nextProjects = prev.projects.map(p => p.id === existingProject.id ? {
+          ...p,
+          boardColumn: 'WAITING',
+          blocker: newItem.reason,
+          nextAction: newItem.actionToUnblock || p.nextAction,
+          status: (newItem.status as any) || 'Waiting Client',
+        } : p);
       }
-    }));
+      const item: WaitingItem = {
+        ...newItem,
+        id: existingProject ? `w-${existingProject.id}` : `w-${Date.now()}`,
+        projectId: existingProject?.id,
+      };
+      const filteredExisting = prev.waitingItems.filter(w => w.id !== item.id && (!existingProject || w.projectId !== existingProject.id));
+      const nextState = {
+        ...prev,
+        projects: nextProjects,
+        waitingItems: [item, ...filteredExisting],
+      };
+      return deriveState(nextState);
+    });
   };
 
   const handleResolveWaitingItem = (id: string) => {
@@ -184,6 +286,14 @@ export function App() {
     validateTransaction(state, txData);
     const transaction: TransactionRecord = { ...txData, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
     setState(prev => applyTransaction(prev, transaction));
+  };
+
+  const handleDeleteTransaction = (txId: string) => {
+    setState(prev => deleteTransaction(prev, txId));
+  };
+
+  const handleEditTransaction = (tx: TransactionRecord) => {
+    setState(prev => editTransaction(prev, tx));
   };
 
   const handleUpdateAllBalances = (accounts: AssetAccount[]) => {
@@ -378,13 +488,15 @@ export function App() {
 
         {/* Content Container */}
         {syncStatus?.error && <div role="alert" className="px-6 py-3 bg-amber-50 text-amber-900 text-sm">{syncStatus.error}</div>}
-        <main className={`flex-1 w-full mx-auto ${activeTab === 'updates' ? 'max-w-[1440px] px-3 sm:px-6 lg:px-8 py-4' : 'max-w-6xl px-4 lg:px-8 py-6'} space-y-6`}>
+        <main className={`flex-1 w-full mx-auto ${(activeTab === 'updates' || activeTab === 'lanes') ? 'max-w-none px-3 sm:px-6 lg:px-8 py-4' : 'max-w-6xl px-4 lg:px-8 py-6'} space-y-6 pb-20 lg:pb-6`}>
           
           {/* Top Quick Status (Only show on Today & Board tabs) */}
           {(activeTab === 'today' || activeTab === 'lanes') && (
             <TopQuickStats
               todayPursuit={state.todayPursuit}
               onTogglePursuit={handleTogglePursuit}
+              onAddPursuit={handleAddPursuit}
+              onDeletePursuit={handleDeletePursuit}
               quickStats={state.quickStats}
               projects={state.projects}
               onSelectTab={(tab) => setActiveTab(tab as any)}
@@ -426,6 +538,7 @@ export function App() {
               projects={state.projects}
               onUpdateProject={handleUpdateProject}
               onAddProject={handleAddProject}
+              onDeleteProject={handleDeleteProject}
               onStartFocusOnProject={handleStartFocusOnProject}
               onOpenFollowUpForProject={handleOpenFollowUpForItem}
               onOpenInvoiceForProject={(proj) => {
@@ -462,11 +575,13 @@ export function App() {
               onOpenFinanceInput={() => setIsFinanceInputOpen(true)}
               onToggleExpensePaid={handleToggleExpensePaid}
               onUpdateMonthlyTarget={(target) => setState(prev => ({ ...prev, financialReport: { ...prev.financialReport, monthlyIncomeTarget: target } }))}
+              onDeleteTransaction={handleDeleteTransaction}
+              onEditTransaction={handleEditTransaction}
             />
           )}
 
           {/* TAB 5: FOCUS STUDIO POMODORO */}
-          {activeTab === 'deepwork' && (
+          <div className={activeTab === 'deepwork' ? 'block' : 'hidden'}>
             <FocusStudio
               todayBlocks={state.todayBlocks}
               activeBlock={activeFocusBlock}
@@ -480,12 +595,12 @@ export function App() {
               }}
               queuedCount={focusQueue.length}
             />
-          )}
+          </div>
 
         
-          {/* HIGH-CONTRAST BLACK FOOTER BANNER (Exact Jobforge Signature Footer!) */}
-          {activeTab !== 'updates' && (
-            <section className="bg-[#0c0c0e] text-white rounded-[32px] p-8 sm:p-14 mt-12 mb-8 border border-zinc-800 text-center relative overflow-hidden shadow-2xl select-none">
+          {/* HIGH-CONTRAST BLACK FOOTER BANNER (Today Tab Anchor) */}
+          {activeTab === 'today' && (
+            <section className="bg-[#0c0c0e] text-white rounded-[32px] p-8 sm:p-14 mt-12 mb-8 border border-zinc-800 text-center relative overflow-hidden shadow-2xl">
             {/* Ambient subtle glow */}
             <div className="absolute -top-24 -left-24 w-96 h-96 bg-zinc-800/30 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-zinc-800/20 rounded-full blur-3xl pointer-events-none" />
@@ -567,15 +682,17 @@ export function App() {
         allWaitingItems={state.waitingItems}
       />
 
-      {/* Partner Copilot Sidebar */}
+      {/* Partner Copilot / Command Palette */}
       <DaruPartnerCopilot
         projects={state.projects}
         isOpen={isCopilotOpen}
         onClose={() => setIsCopilotOpen(false)}
         financialReport={state.financialReport}
-        onSelectAction={() => {
-          setActiveTab('today');
-        }}
+        onSelectTab={setActiveTab}
+        onOpenFinanceInput={() => setIsFinanceInputOpen(true)}
+        onOpenInvoice={() => setIsInvoiceOpen(true)}
+        onOpenFollowUp={() => setIsFollowUpOpen(true)}
+        onOpenExport={() => setIsExportOpen(true)}
       />
 
       {/* Obsidian Export Modal */}
@@ -584,6 +701,12 @@ export function App() {
         onClose={() => setIsExportOpen(false)}
         state={state}
         onUseServerState={(serverState) => { editedDuringLoad.current = false; setStateValue(serverState); }}
+      />
+
+      {/* Mobile Floating Bottom Dock for 4 Main Navigations */}
+      <BottomFloatingDock
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
       />
 
     </div>

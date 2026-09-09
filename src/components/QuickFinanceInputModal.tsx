@@ -1,18 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   X, 
-  Upload, 
   Camera, 
   DollarSign, 
   ArrowUpRight, 
   ArrowDownLeft, 
   RefreshCw, 
-  Image as ImageIcon, 
   Trash2, 
   Check, 
-  Building2,
-  Receipt,
-  FileText
+  Receipt
 } from 'lucide-react';
 import { ProjectCard, AssetAccount, TransactionRecord, FinancialReport } from '../types';
 import { soundManager } from '../utils/audio';
@@ -24,10 +20,44 @@ interface QuickFinanceInputModalProps {
   projects: ProjectCard[];
   financialReport: FinancialReport;
   onSaveTransaction: (
-    tx: Omit<TransactionRecord, 'id' | 'createdAt'>,
-    linkedProjectUpdates?: { projectId: string; amountAdded: number }
+    tx: Omit<TransactionRecord, 'id' | 'createdAt'>
   ) => void;
   onUpdateAllBalances: (newAccounts: AssetAccount[]) => void;
+}
+
+async function compressImageFile(file: File, maxDimension = 1200, quality = 0.75): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > maxDimension || height > maxDimension) {
+        if (width > height) {
+          height = Math.round((height * maxDimension) / width);
+          width = maxDimension;
+        } else {
+          width = Math.round((width * maxDimension) / height);
+          height = maxDimension;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Canvas context not available'));
+        return;
+      }
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('Gagal membaca gambar.'));
+    };
+    img.src = url;
+  });
 }
 
 export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
@@ -42,14 +72,17 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
   
   // Single Transaction Form
   const [txType, setTxType] = useState<'income' | 'expense' | 'transfer' | 'balance_update'>('income');
+  const [txDate, setTxDate] = useState(() => new Date().toLocaleDateString('sv-SE'));
   const [amountStr, setAmountStr] = useState('');
   const [selectedAccount, setSelectedAccount] = useState('Mandiri');
   const [toAccount, setToAccount] = useState('Bank Jago');
   const [selectedProject, setSelectedProject] = useState('');
-  const [category, setCategory] = useState('DP Project');
+  const [selectedCategory, setSelectedCategory] = useState('Project / Klien');
+  const [customCategory, setCustomCategory] = useState('');
   const [description, setDescription] = useState('');
-  const [photoBase64, setPhotoBase64] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoName, setPhotoName] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   // Quick Balances Form
   const [accountBalances, setAccountBalances] = useState<{ [key: string]: string }>(() => {
@@ -72,24 +105,51 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith('image/') || file.size > 1024 * 1024) {
-      alert('Pilih foto bukti maksimal 1 MB supaya penyimpanan browser tetap cukup.');
+    if (!file.type.startsWith('image/')) {
+      alert('Pilih file gambar struk yang valid.');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Ukuran gambar terlalu besar (maksimal 10 MB).');
       return;
     }
 
     setPhotoName(file.name);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPhotoBase64(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    setIsUploading(true);
+
+    try {
+      const compressed = await compressImageFile(file);
+      try {
+        const res = await fetch('/api/receipts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: compressed }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.url) {
+            setPhotoUrl(data.url);
+            setIsUploading(false);
+            return;
+          }
+        }
+      } catch {
+        // Fallback for offline usage
+      }
+      setPhotoUrl(compressed);
+    } catch (err) {
+      alert('Gagal memproses foto: ' + (err instanceof Error ? err.message : 'Unknown error'));
+      setPhotoName('');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleRemovePhoto = () => {
-    setPhotoBase64(null);
+    setPhotoUrl(null);
     setPhotoName('');
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -104,30 +164,25 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
 
     soundManager.playClick();
 
+    const finalCategory = txType === 'transfer'
+      ? 'Transfer Antar Rekening'
+      : selectedCategory === 'Lainnya'
+        ? (customCategory.trim() || 'Lainnya')
+        : selectedCategory;
+
     const newTx: Omit<TransactionRecord, 'id' | 'createdAt'> = {
-      date: new Date().toLocaleDateString('sv-SE'),
+      date: txDate || new Date().toLocaleDateString('sv-SE'),
       type: txType,
       amount: cleanAmount,
       accountName: selectedAccount,
       toAccountName: txType === 'transfer' ? toAccount : undefined,
-      category: category || (txType === 'income' ? 'Pemasukan' : 'Pengeluaran'),
+      category: finalCategory,
       description: description.trim() || (selectedProject ? `Pembayaran untuk ${selectedProject}` : 'Transaksi kas'),
-      photoUrl: photoBase64 || undefined,
+      photoUrl: photoUrl || undefined,
       linkedProjectId: txType === 'income' ? (projects.find(project => project.id === selectedProject || project.name === selectedProject)?.id || undefined) : undefined
     };
 
-    let linkedProjectUpdate;
-    if (selectedProject && txType === 'income') {
-      const p = projects.find(proj => proj.name === selectedProject || proj.id === selectedProject);
-      if (p) {
-        linkedProjectUpdate = {
-          projectId: p.id,
-          amountAdded: cleanAmount
-        };
-      }
-    }
-
-    try { onSaveTransaction(newTx, linkedProjectUpdate); }
+    try { onSaveTransaction(newTx); }
     catch (error) { alert(error instanceof Error ? error.message : 'Transaksi gagal.'); return; }
     soundManager.playCompletionChime();
     confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
@@ -136,7 +191,7 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
     // Reset
     setAmountStr('');
     setDescription('');
-    setPhotoBase64(null);
+    setPhotoUrl(null);
     setPhotoName('');
   };
 
@@ -222,7 +277,7 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
-                    onClick={() => { soundManager.playClick(); setTxType('income'); setCategory('DP Project'); }}
+                    onClick={() => { soundManager.playClick(); setTxType('income'); setSelectedCategory('Project / Klien'); }}
                     className={`py-2 px-3 rounded-xl border flex items-center justify-center gap-1.5 transition-all ${
                       txType === 'income'
                         ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 font-semibold'
@@ -235,7 +290,7 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
 
                   <button
                     type="button"
-                    onClick={() => { soundManager.playClick(); setTxType('expense'); setCategory('Operasional'); }}
+                    onClick={() => { soundManager.playClick(); setTxType('expense'); setSelectedCategory('Operasional'); }}
                     className={`py-2 px-3 rounded-xl border flex items-center justify-center gap-1.5 transition-all ${
                       txType === 'expense'
                         ? 'bg-rose-500/15 border-rose-500/40 text-rose-300 font-semibold'
@@ -248,7 +303,7 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
 
                   <button
                     type="button"
-                    onClick={() => { soundManager.playClick(); setTxType('transfer'); setCategory('Pindah Dana'); }}
+                    onClick={() => { soundManager.playClick(); setTxType('transfer'); setSelectedCategory('Transfer Antar Rekening'); }}
                     className={`py-2 px-3 rounded-xl border flex items-center justify-center gap-1.5 transition-all ${
                       txType === 'transfer'
                         ? 'bg-amber-500/15 border-amber-500/40 text-amber-300 font-semibold'
@@ -333,12 +388,55 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
                 )}
               </div>
 
+              {/* Date and Category */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Tanggal Transaksi:</label>
+                  <input
+                    type="date"
+                    required
+                    value={txDate}
+                    onChange={(e) => setTxDate(e.target.value)}
+                    className="w-full bg-[#14141a] border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-white/30"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Kategori Transaksi:</label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full bg-[#14141a] border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none"
+                  >
+                    <option value="Project / Klien">Project / Klien</option>
+                    <option value="Operasional">Operasional</option>
+                    <option value="Software / Tools">Software / Tools</option>
+                    <option value="Gaji / Pribadi">Gaji / Pribadi</option>
+                    <option value="Pajak / Admin">Pajak / Admin</option>
+                    <option value="Lainnya">Lainnya / Custom...</option>
+                  </select>
+                </div>
+              </div>
+
+              {selectedCategory === 'Lainnya' && (
+                <div>
+                  <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Tulis Kategori Kustom:</label>
+                  <input
+                    type="text"
+                    placeholder="Contoh: Belanja Kantor, Konsumsi, dsb."
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    className="w-full bg-[#14141a] border border-white/10 rounded-xl px-3 py-2 text-white font-sans text-xs focus:outline-none"
+                  />
+                </div>
+              )}
+
               {/* Description */}
               <div>
                 <label className="block text-[11px] text-zinc-400 font-mono mb-1">// Keterangan / Catatan:</label>
                 <input
                   type="text"
-                  placeholder="Contoh: DP 50% Kasir Barber Underrated / Pembayaran Hosting"
+                  placeholder="Contoh: DP 50% Project Website / Pembayaran Hosting"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full bg-[#14141a] border border-white/10 rounded-xl px-3 py-2 text-white font-sans text-xs focus:outline-none"
@@ -349,16 +447,20 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
               <div className="space-y-2">
                 <label className="block text-[11px] text-zinc-400 font-mono">// Foto Bukti Transfer / Nota Fisik:</label>
                 
-                {photoBase64 ? (
+                {photoUrl ? (
                   <div className="relative rounded-xl border border-white/15 overflow-hidden bg-black/40 p-2 flex items-center gap-3">
                     <img
-                      src={photoBase64}
+                      src={photoUrl}
                       alt="Bukti Transfer"
                       className="w-16 h-16 object-cover rounded-lg border border-white/10"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-white truncate">{photoName || 'bukti_transfer.png'}</p>
-                      <span className="text-[10px] text-emerald-400 font-mono"> Foto terlampir</span>
+                      <p className="text-xs font-semibold text-white truncate">{photoName || 'bukti_transfer.jpg'}</p>
+                      {isUploading ? (
+                        <span className="text-[10px] text-amber-400 font-mono animate-pulse">Mengompres & mengunggah...</span>
+                      ) : (
+                        <span className="text-[10px] text-emerald-400 font-mono"> Foto tersimpan</span>
+                      )}
                     </div>
                     <button
                       type="button"
@@ -378,7 +480,7 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
                       <Camera className="w-5 h-5 text-zinc-400" />
                     </div>
                     <p className="text-xs text-zinc-300 font-medium">Klik untuk upload atau ambil foto bukti transfer</p>
-                    <p className="text-[10px] text-zinc-500 font-mono mt-0.5">PNG, JPG, screenshot m-banking</p>
+                    <p className="text-[10px] text-zinc-500 font-mono mt-0.5">PNG, JPG, dikompresi otomatis &lt; 200 KB</p>
                   </div>
                 )}
 

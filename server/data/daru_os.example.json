@@ -1,0 +1,106 @@
+{
+  "version": "2.7.0",
+  "lastSyncedAt": "2026-09-01T00:00:00.000Z",
+  "revision": 0,
+  "state": {
+    "projects": [
+      {
+        "id": "p-sample-template",
+        "name": "Template Project",
+        "lane": "client_delivery",
+        "boardColumn": "DOING",
+        "status": "Doing",
+        "paymentStatus": "DP Paid",
+        "nominalNumeric": 5000000,
+        "paidNumeric": 2500000,
+        "unpaidNumeric": 2500000,
+        "valueText": "Rp5.000.000",
+        "priority": "P1",
+        "currentGoal": "Selesaikan deliverable utama",
+        "nextAction": "Review bersama stakeholder",
+        "billingMilestone": "Pelunasan setelah serah terima",
+        "newsArticle": "Project percontohan untuk alur kerja dan pencatatan.",
+        "newsCritique": "Pastikan deliverable selesai tepat waktu."
+      }
+    ],
+    "todayBlocks": [
+      {
+        "id": "b-sample-1",
+        "projectId": "p-sample-template",
+        "projectName": "Template Project",
+        "action": "Review milestone proyek",
+        "blockType": "Deep Work 1",
+        "timeboxMinutes": 25,
+        "isDone": false,
+        "rule": "Fokus satu task tanpa distraksi"
+      }
+    ],
+    "todayPursuit": [
+      {
+        "id": "tp-sample-1",
+        "projectId": "p-sample-template",
+        "project": "Template Project",
+        "action": "Selesaikan review milestone",
+        "isDone": false
+      }
+    ],
+    "waitingItems": [],
+    "quickStats": {
+      "paidClientActive": 1,
+      "waitingPaymentKickoff": 0,
+      "maintenanceOpen": 0,
+      "salesAndProductActive": 0
+    },
+    "financialReport": {
+      "accounts": [
+        {
+          "name": "Rekening Operasional",
+          "balance": 10000000,
+          "type": "bank",
+          "isLatest": true
+        },
+        {
+          "name": "Kas Tunai",
+          "balance": 500000,
+          "type": "cash",
+          "isLatest": true
+        }
+      ],
+      "transactions": [
+        {
+          "id": "tx-sample-1",
+          "type": "income",
+          "amount": 2500000,
+          "accountName": "Rekening Operasional",
+          "date": "2026-09-01",
+          "createdAt": "2026-09-01T08:00:00.000Z",
+          "category": "Project DP",
+          "description": "Pembayaran DP Template Project",
+          "linkedProjectId": "p-sample-template"
+        }
+      ],
+      "trajectory": [
+        {
+          "date": "2026-09-01",
+          "balance": 10500000,
+          "note": "Saldo awal template"
+        }
+      ],
+      "monthlyExpenses": [
+        {
+          "id": "exp-sample-1",
+          "name": "Server & Domain",
+          "amount": 350000,
+          "isPaid": false
+        }
+      ],
+      "hardFloor": 4000000,
+      "estimatedRealBurn": 2000000,
+      "fixedMonthlyBurn": 1500000,
+      "monthlyIncomeTarget": 10000000
+    },
+    "invoices": []
+  },
+  "transactions": [],
+  "syncLogs": []
+}

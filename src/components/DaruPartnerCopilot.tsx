@@ -1,145 +1,290 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
-  Sparkles, 
   X, 
-  Send
+  Search, 
+  Target, 
+  Layers, 
+  Edit3, 
+  DollarSign, 
+  Flame, 
+  Compass, 
+  Clock, 
+  Receipt, 
+  Plus, 
+  MessageSquare, 
+  FileDown,
+  ArrowRight,
+  Sparkles
 } from 'lucide-react';
 import { soundManager } from '../utils/audio';
-import { FinancialReport, ProjectCard } from '../types';
-import { actionableProjects } from '../utils/selectors';
+import { ActiveTabType, FinancialReport, ProjectCard } from '../types';
 
 interface DaruPartnerCopilotProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectAction?: (action: string) => void;
+  onSelectTab?: (tab: ActiveTabType) => void;
+  onOpenFinanceInput?: () => void;
+  onOpenInvoice?: () => void;
+  onOpenFollowUp?: () => void;
+  onOpenExport?: () => void;
   financialReport?: FinancialReport;
   projects: ProjectCard[];
-}
-
-interface Message {
-  id: string;
-  sender: 'partner' | 'user';
-  text: string;
-  timestamp: string;
-  ruleTag?: string;
 }
 
 export const DaruPartnerCopilot: React.FC<DaruPartnerCopilotProps> = ({
   isOpen,
   onClose,
-  financialReport,
-  projects
+  onSelectAction,
+  onSelectTab,
+  onOpenFinanceInput,
+  onOpenInvoice,
+  onOpenFollowUp,
+  onOpenExport,
+  projects,
 }) => {
-  const totalBal = financialReport?.totalLiquidBalance ?? 0;
-  const isRed = totalBal < (financialReport?.hardFloor ?? 4000000);
-  const runwayDays = financialReport?.runwayDays ?? 0;
-  const [messages, setMessages] = useState<Message[]>([{
-    id: 'welcome', sender: 'partner',
-    text: 'Partner ini memakai aturan lokal dan data workspace, tanpa model AI. Tanyakan saldo atau urutan project untuk melihat ringkasan terbaru.',
-    timestamp: 'now', ruleTag: 'LOCAL_RULES',
-  }]);
-  const [inputText, setInputText] = useState('');
+  const [query, setQuery] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setQuery('');
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  const quickActions = [
+    {
+      id: 'action-finance',
+      title: 'Catat Kas & Transaksi Baru',
+      category: 'Tindakan Cepat',
+      icon: Plus,
+      badge: '+ Kas',
+      run: () => { onOpenFinanceInput?.(); onClose(); }
+    },
+    {
+      id: 'action-invoice',
+      title: 'Buat Invoice Tagihan Klien',
+      category: 'Tindakan Cepat',
+      icon: Receipt,
+      badge: '+ Invoice',
+      run: () => { onOpenInvoice?.(); onClose(); }
+    },
+    {
+      id: 'action-followup',
+      title: 'Salin Template Follow-up WhatsApp',
+      category: 'Tindakan Cepat',
+      icon: MessageSquare,
+      badge: 'Copas WA',
+      run: () => { onOpenFollowUp?.(); onClose(); }
+    },
+    {
+      id: 'action-export',
+      title: 'Ekspor Dokumen Laporan Project',
+      category: 'Tindakan Cepat',
+      icon: FileDown,
+      badge: 'Laporan',
+      run: () => { onOpenExport?.(); onClose(); }
+    },
+  ];
+
+  const navigations: { id: string; title: string; tab: ActiveTabType; icon: React.ComponentType<{ className?: string }> }[] = [
+    { id: 'nav-today', title: 'Sikat Hari Ini (Daily Focus)', tab: 'today', icon: Target },
+    { id: 'nav-nextgo', title: 'Abis Ini Ngapain? (Next Step Navigator)', tab: 'nextgo', icon: Compass },
+    { id: 'nav-lanes', title: 'Markas Project & Kanban Board', tab: 'lanes', icon: Layers },
+    { id: 'nav-waiting', title: 'Radar Tagihan & Piutang Menunggu', tab: 'waiting', icon: Clock },
+    { id: 'nav-updates', title: 'Laporan Redaksi Project', tab: 'updates', icon: Edit3 },
+    { id: 'nav-money', title: 'Cek Dompet, Kas, & Arus Uang', tab: 'money', icon: DollarSign },
+    { id: 'nav-deepwork', title: 'Kamar Fokus Audio 40Hz', tab: 'deepwork', icon: Flame },
+  ];
+
+  const filteredActions = useMemo(() => {
+    if (!query.trim()) return quickActions;
+    return quickActions.filter(a => 
+      a.title.toLowerCase().includes(query.toLowerCase()) || 
+      a.badge.toLowerCase().includes(query.toLowerCase())
+    );
+  }, [query]);
+
+  const filteredNavigations = useMemo(() => {
+    if (!query.trim()) return navigations;
+    return navigations.filter(n => 
+      n.title.toLowerCase().includes(query.toLowerCase()) ||
+      n.tab.toLowerCase().includes(query.toLowerCase())
+    );
+  }, [query]);
+
+  const filteredProjects = useMemo(() => {
+    if (!query.trim()) return [];
+    return (projects || [])
+      .filter(p => 
+        p.name.toLowerCase().includes(query.toLowerCase()) ||
+        (p.currentGoal && p.currentGoal.toLowerCase().includes(query.toLowerCase())) ||
+        (p.nextAction && p.nextAction.toLowerCase().includes(query.toLowerCase()))
+      )
+      .slice(0, 5);
+  }, [query, projects]);
 
   if (!isOpen) return null;
 
-  const quickPrompts = [
-    { label: 'Status keuangan', query: 'Berapa saldo dan runway sekarang?' },
-    { label: 'Urutan project', query: 'Project mana yang perlu dikerjakan?' },
-  ];
-
-  const handleSendMessage = (textToSend?: string) => {
-    const query = (textToSend || inputText).trim();
-    if (!query) return;
-    const financial = /saldo|uang|runway|kas|finansial|burn/i.test(query);
-    const candidates = actionableProjects(projects);
-    const reply = financial
-      ? `Saldo likuid: Rp${totalBal.toLocaleString('id-ID')}.\nStatus: ${financialReport?.modeStatus || 'Belum tersedia'}.\nBeban bulanan estimasi: Rp${(financialReport?.estimatedRealBurn ?? 0).toLocaleString('id-ID')}.\nRunway berdasarkan estimasi pengeluaran: ${financialReport?.estimatedRealBurn ? `${runwayDays} hari` : 'Belum bisa dihitung'}.`
-      : candidates.length ? candidates.slice(0, 5).map((project, index) => `${index + 1}. ${project.name} [${project.priority}, ${project.status}]\n   ${project.nextAction || 'Tentukan next action di board.'}`).join('\n\n') : 'Tidak ada project dalam Doing atau Queue. Cek Waiting Radar untuk membuka blocker.';
-    setMessages(previous => [...previous, { id: crypto.randomUUID(), sender: 'user', text: query, timestamp: 'now' }, { id: crypto.randomUUID(), sender: 'partner', text: reply, timestamp: 'now', ruleTag: 'WORKSPACE_SNAPSHOT' }]);
-    setInputText('');
-  };
-
   return (
-    <aside className="fixed inset-y-0 right-0 z-50 w-full sm:w-[400px] bg-[#0c0c0f] border-l border-white/10 shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-200 font-sans">
-      
-      {/* Header */}
-      <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#121216]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-zinc-800 border border-white/10 flex items-center justify-center text-white font-mono text-xs">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-white tracking-tight">Partner Copilot</h3>
-            <p className="text-[11px] text-zinc-400 font-mono">// Active Triad Support</p>
-          </div>
-        </div>
-        <button onClick={onClose} className="p-1.5 rounded-lg text-zinc-400 hover:text-white">
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* Messages */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs">
-        {messages.map((m) => (
-          <div
-            key={m.id}
-            className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'} space-y-1`}
+    <div 
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command Palette Workspace"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-black/60 backdrop-blur-sm animate-fade-in"
+      onClick={onClose}
+    >
+      <div 
+        className="w-full max-w-xl bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden flex flex-col font-sans"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Search Header */}
+        <div className="p-3.5 border-b border-zinc-100 flex items-center gap-3 bg-zinc-50/70">
+          <Search className="w-4 h-4 text-zinc-400 shrink-0" />
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Cari menu, tindakan cepat, atau project..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex-1 bg-transparent text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none font-medium"
+          />
+          <button 
+            onClick={onClose}
+            aria-label="Tutup Command Palette"
+            className="p-1 rounded-lg text-zinc-400 hover:text-zinc-700 hover:bg-zinc-200/60 transition-colors"
           >
-            {m.ruleTag && (
-              <span className="mono-tag text-[9px]">
-                {m.ruleTag}
-              </span>
-            )}
-            <div
-              className={`p-3.5 rounded-2xl max-w-[90%] leading-relaxed ${
-                m.sender === 'user'
-                  ? 'bg-white text-zinc-950 rounded-br-none font-medium shadow-sm'
-                  : 'bg-[#18181e] text-zinc-200 rounded-bl-none border border-white/10 font-normal'
-              }`}
-            >
-              <div className="whitespace-pre-line">{m.text}</div>
-            </div>
-            <span className="text-[10px] text-zinc-500 px-1 font-mono">{m.timestamp}</span>
-          </div>
-        ))}
-      </div>
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
-      {/* Quick Questions */}
-      <div className="p-3 border-t border-white/5 bg-[#121216] space-y-2 font-mono">
-        <span className="text-[10px] text-zinc-400 uppercase tracking-wider block">
-          // Quick Triad Query:
-        </span>
-        <div className="flex flex-wrap gap-1.5">
-          {quickPrompts.map((p, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleSendMessage(p.query)}
-              className="text-[11px] font-sans px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 hover:text-white text-zinc-400 border border-white/5 transition-all text-left"
-            >
-              {p.label}
-            </button>
-          ))}
+        {/* Results Container */}
+        <div className="max-h-[60vh] overflow-y-auto p-2 space-y-4 text-xs">
+          
+          {/* Section 1: Quick Actions */}
+          {filteredActions.length > 0 && (
+            <div>
+              <div className="px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-600">
+                Tindakan Cepat
+              </div>
+              <div className="space-y-0.5 mt-1">
+                {filteredActions.map((action) => {
+                  const Icon = action.icon;
+                  return (
+                    <button
+                      key={action.id}
+                      onClick={() => {
+                        soundManager.playClick();
+                        action.run();
+                      }}
+                      className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left hover:bg-zinc-100 transition-colors group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-6 h-6 rounded-lg bg-zinc-100 group-hover:bg-white text-zinc-700 flex items-center justify-center border border-zinc-200">
+                          <Icon className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="font-medium text-zinc-900">{action.title}</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-zinc-600 px-2 py-0.5 rounded-md bg-zinc-100 group-hover:bg-white border border-zinc-200">
+                        {action.badge}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Section 2: Navigation Tabs */}
+          {filteredNavigations.length > 0 && (
+            <div>
+              <div className="px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-600">
+                Navigasi Workspace
+              </div>
+              <div className="space-y-0.5 mt-1">
+                {filteredNavigations.map((nav) => {
+                  const Icon = nav.icon;
+                  return (
+                    <button
+                      key={nav.id}
+                      onClick={() => {
+                        soundManager.playClick();
+                        onSelectTab?.(nav.tab);
+                        onSelectAction?.(nav.tab);
+                        onClose();
+                      }}
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left hover:bg-zinc-100 transition-colors group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <Icon className="w-4 h-4 text-zinc-600 group-hover:text-zinc-900" />
+                        <span className="font-medium text-zinc-800 group-hover:text-zinc-950">{nav.title}</span>
+                      </div>
+                      <ArrowRight className="w-3 h-3 text-zinc-300 group-hover:text-zinc-600 transition-transform group-hover:translate-x-0.5" />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Section 3: Matching Projects */}
+          {filteredProjects.length > 0 && (
+            <div>
+              <div className="px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-600">
+                Project Sesuai Pencarian
+              </div>
+              <div className="space-y-0.5 mt-1">
+                {filteredProjects.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      soundManager.playClick();
+                      onSelectTab?.('lanes');
+                      onClose();
+                    }}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left hover:bg-zinc-100 transition-colors"
+                  >
+                    <div className="min-w-0 pr-2">
+                      <div className="font-semibold text-zinc-900 truncate">{p.name}</div>
+                      <div className="text-[11px] text-zinc-500 truncate">{p.currentGoal || p.nextAction || p.status}</div>
+                    </div>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-700 border border-zinc-200 shrink-0">
+                      {p.boardColumn}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {filteredActions.length === 0 && filteredNavigations.length === 0 && filteredProjects.length === 0 && (
+            <div className="p-8 text-center text-zinc-600 font-medium">
+              Tidak ada perintah atau project yang cocok dengan &quot;{query}&quot;.
+            </div>
+          )}
+
+        </div>
+
+        {/* Footer info strip */}
+        <div className="p-2.5 border-t border-zinc-100 bg-zinc-50 flex items-center justify-between text-[11px] text-zinc-600 font-mono">
+          <span className="flex items-center gap-1.5">
+            <Sparkles className="w-3 h-3 text-zinc-600" />
+            Command Palette
+          </span>
+          <span className="text-zinc-600">ESC untuk tutup</span>
         </div>
       </div>
-
-      {/* Input Box */}
-      <div className="p-3.5 border-t border-white/10 bg-[#09090b] flex items-center gap-2">
-        <input
-          type="text"
-          placeholder="Tanya strategi Zalvice, Barber, atau KAEL..."
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-          className="flex-1 bg-black/60 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-white font-mono"
-        />
-        <button
-          onClick={() => handleSendMessage()}
-          className="p-2 rounded-xl mono-btn-primary"
-        >
-          <Send className="w-4 h-4 stroke-[2]" />
-        </button>
-      </div>
-
-    </aside>
+    </div>
   );
 };

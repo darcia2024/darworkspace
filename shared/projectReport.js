@@ -117,3 +117,33 @@ export function generateProjectNewsReport(state, now = new Date()) {
   ];
   return lines.join('\n');
 }
+
+export function generateSingleProjectReport(project, now = new Date()) {
+  const date = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  const lines = [
+    `# ${title(project.name)}`,
+    '',
+    `*Edisi ${date} · disusun dari workspace Daru Work OS*`,
+    '',
+    `**Status:** ${statusLabel(project)} · Prioritas ${project.priority || 'P2'}`,
+    project.currentGoal ? `\n**Sasaran utama:** ${sentence(project.currentGoal, '')}` : '',
+    project.definitionOfDone ? `\n**Kriteria selesai (DoD):** ${sentence(project.definitionOfDone, '')}` : '',
+    project.rule ? `\n**Aturan main:** ${sentence(project.rule, '')}` : '',
+    '',
+    '## Catatan Lapangan & Status Produksi',
+    sentence(project.newsArticle || projectParagraph(project), 'Sedang dalam eksekusi sesuai prioritas.'),
+    '',
+    '## Saran Langkah Nyata Berikutnya',
+    sentence(project.nextAction, 'Tentukan langkah konkret di board project.'),
+    project.billingMilestone ? `\n**Milestone pembayaran:** ${project.billingMilestone}` : '',
+    '',
+    '## Kritik & Evaluasi Redaksi',
+    sentence(
+      project.newsCritique || (project.unpaidNumeric > 0
+        ? `Terdapat sisa piutang/tagihan ${rupiah(project.unpaidNumeric)}. Amankan pembayaran ke kas nyata.`
+        : 'Pertahankan fokus eksekusi satu arah dan tuntaskan langkah berikutnya.'),
+      ''
+    ),
+  ];
+  return lines.filter(Boolean).join('\n');
+}

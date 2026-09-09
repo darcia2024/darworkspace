@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   Target, 
   Layers, 
-  Clock, 
   DollarSign, 
   Flame, 
   Compass, 
@@ -15,13 +14,11 @@ import {
   ChevronLeft,
   ChevronRight as ChevronRightIcon,
   Receipt,
-  ArrowUpRight,
-  ShieldCheck,
-  CheckCircle2,
   Edit3
 } from 'lucide-react';
 import { ActiveTabType, FinancialReport } from '../types';
 import { soundManager } from '../utils/audio';
+import { APP_VERSION } from '../../shared/version.js';
 
 interface SidebarProps {
   activeTab: ActiveTabType;
@@ -105,7 +102,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const formatShortRupiah = (num: number) => {
-    return `Rp${(num / 1000000).toFixed(2)}M`;
+    if (Math.abs(num) >= 1_000_000_000) {
+      return `Rp${(num / 1_000_000_000).toFixed(2)} M`;
+    }
+    if (Math.abs(num) >= 1_000_000) {
+      return `Rp${(num / 1_000_000).toFixed(2)} jt`;
+    }
+    if (Math.abs(num) >= 1_000) {
+      return `Rp${(num / 1_000).toFixed(0)} rb`;
+    }
+    return `Rp${num.toLocaleString('id-ID')}`;
   };
 
   const sidebarContent = (
@@ -134,6 +140,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
                 <div className="flex items-center gap-1.5">
                   <p className="text-[11px] text-zinc-500 font-medium">Markas Tempur Daru</p>
+                  <span className="mono-tag text-[9px]">v{APP_VERSION}</span>
                 </div>
               </div>
             )}
@@ -147,6 +154,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onToggleCollapse?.();
               }}
               title="Tutup Sidebar"
+              aria-label="Tutup sidebar"
               className="hidden lg:flex w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-600 hover:text-black items-center justify-center transition-all border border-zinc-200"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -156,6 +164,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Mobile close button */}
           <button 
             onClick={() => setIsMobileOpen(false)}
+            aria-label="Tutup menu navigasi"
             className="lg:hidden p-2 rounded-full hover:bg-zinc-100 text-zinc-600"
           >
             <X className="w-5 h-5" />
@@ -170,6 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onToggleCollapse?.();
             }}
             title="Buka Sidebar"
+            aria-label="Buka sidebar"
             className="hidden lg:flex w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 hover:text-black items-center justify-center transition-all border border-zinc-200"
           >
             <ChevronRightIcon className="w-4 h-4" />
@@ -197,6 +207,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       setIsMobileOpen(false);
                     }}
                     title={isCollapsed ? item.label : undefined}
+                    aria-label={item.label}
                     className={`w-full flex items-center transition-all text-xs font-semibold ${
                       isCollapsed 
                         ? 'justify-center p-2.5 rounded-2xl' 
@@ -292,6 +303,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               onClick={() => { soundManager.playClick(); onOpenFinanceInput(); }}
               title="+ Catat Kas"
+              aria-label="Catat kas baru"
               className="p-2.5 rounded-2xl bg-[#ecfccb] text-[#14532d] hover:scale-105 transition-all"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
@@ -299,6 +311,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               onClick={() => { soundManager.playClick(); onOpenInvoice(); }}
               title="+ Invoice"
+              aria-label="Buat invoice baru"
               className="p-2.5 rounded-2xl bg-[#e0f2fe] text-[#075985] hover:scale-105 transition-all"
             >
               <Receipt className="w-4 h-4" />
@@ -340,6 +353,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => { soundManager.playClick(); setActiveTab('money'); }}
             title={`Saldo Kas: ${formatShortRupiah(totalLiquid)}`}
+            aria-label={`Lihat saldo kas: ${formatShortRupiah(totalLiquid)}`}
             className="w-10 h-10 rounded-2xl bg-[#fafafa] border border-zinc-200 flex items-center justify-center text-xs font-mono font-black text-black hover:border-zinc-400"
           >
             Rp
@@ -354,7 +368,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <>
       {/* Desktop Persistent Sidebar (Expandable & Collapsible) */}
       <aside className={`hidden lg:block h-screen shrink-0 sticky top-0 z-30 transition-all duration-300 ${
-        isCollapsed ? 'w-18' : 'w-72'
+        isCollapsed ? 'w-18 min-w-[4.5rem]' : 'w-72 min-w-[18rem]'
       }`}>
         {sidebarContent}
       </aside>
@@ -373,12 +387,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => { soundManager.playClick(); onOpenFinanceInput(); }}
+            aria-label="Catat kas baru"
             className="p-2 rounded-full bg-[#111111] text-white text-xs font-semibold"
           >
             <Plus className="w-4 h-4" />
           </button>
           <button
             onClick={() => setIsMobileOpen(true)}
+            aria-label="Buka menu navigasi"
             className="p-2 rounded-xl bg-zinc-100 text-zinc-800"
           >
             <Menu className="w-5 h-5" />

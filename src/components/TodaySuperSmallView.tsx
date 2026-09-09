@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import { 
-  Play, 
   Check, 
   Clock, 
   Flame, 
   ArrowUpRight, 
-  Sparkles, 
   Target, 
   Layers, 
   Zap, 
-  ArrowRight, 
-  CheckCircle2, 
-  Circle
+  ArrowRight
 } from 'lucide-react';
 import { TodayBlock } from '../types';
 import { soundManager } from '../utils/audio';
@@ -34,9 +30,6 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
   const [selectedSingleId, setSelectedSingleId] = useState<string>(todayBlocks[0]?.id || 'tb-1');
   const [selectedMultiIds, setSelectedMultiIds] = useState<string[]>(todayBlocks.filter(block => !block.isDone).slice(0, 2).map(block => block.id));
 
-  const completedCount = todayBlocks.filter(b => b.isDone).length;
-  const progressPercent = Math.round((completedCount / (todayBlocks.length || 4)) * 100);
-
   const activeSingleBlock = todayBlocks.find(b => b.id === selectedSingleId) || todayBlocks[0];
   const activeMultiBlocks = todayBlocks.filter(b => selectedMultiIds.includes(b.id));
   const totalMultiMinutes = activeMultiBlocks.reduce((sum, b) => sum + (b.timeboxMinutes || 50), 0);
@@ -56,7 +49,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
   };
 
   return (
-    <div className="space-y-5 font-sans select-none animate-fade-in">
+    <div className="space-y-5 font-sans animate-fade-in">
       
       {/* 1. STRATEGY MODE SWITCHER BANNER */}
       <div className="bento-card p-5 flex flex-wrap items-center justify-between gap-4">

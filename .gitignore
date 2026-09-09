@@ -8,6 +8,8 @@ dist-ssr
 *.log
 .DS_Store
 Thumbs.db
+server/data/daru_os.json
 server/data/*.bak
 server/data/*.tmp
+server/data/receipts/
 .test-output/
