@@ -17,6 +17,17 @@ export function normalizeState(raw: Partial<DaruWorkOSState>): DaruWorkOSState {
     if (missingBase.length > 0) {
       mergedProjects = [...mergedProjects, ...missingBase];
     }
+    mergedProjects = mergedProjects.map(p => {
+      const bp = base.projects.find(b => b.id === p.id);
+      if (bp) {
+        return {
+          ...p,
+          newsArticle: bp.newsArticle || p.newsArticle,
+          newsCritique: bp.newsCritique || p.newsCritique,
+        };
+      }
+      return p;
+    });
   } else {
     mergedProjects = base.projects;
   }

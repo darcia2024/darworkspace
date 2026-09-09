@@ -64,21 +64,100 @@ const getProjectVisual = (project: ProjectCard) => {
   return projectVisuals[project.id] || projectVisuals.default;
 };
 
-// Generates an editorial headline if missing
+// Generates an editorial headline with storytelling flair
 const getEditorialHeadline = (project: ProjectCard) => {
   if (project.id === 'p-el-massa') {
-    return 'Katalog Web El Massa Tour & Travel Capai Kesiapan 100% dengan 12 Paket Ibadah Live';
-  }
-  if (project.id === 'p-pgs-tour') {
-    return 'Showcase Website PGS Tour Sukses Rilis 15 Halaman Statis di Jalur Produksi';
+    return 'Katalog Web El Massa 100% Siap Tempur: Dari 12 Paket Ibadah Live Sampai Mesin Konversi Otomatis!';
   }
   if (project.id === 'p-umi-elly') {
-    return 'LMS Peradaban Islam Azhariyah Masuki Tahap Kurikulum & Integrasi Modul';
+    return 'Sprint Modul LMS Azhariyah Bareng Umi Elly: Saatnya Kurikulum Digital Mengudara!';
   }
-  if (project.currentGoal && project.currentGoal.length > 20) {
+  if (project.id === 'p-barber') {
+    return 'Sistem POS Kasir & Loyalty Barber Sukses Berlayar: Full Deployed & 100% Lunas Tanpa Drama';
+  }
+  if (project.id === 'p-kael-product') {
+    return 'Bongkar Dapur KAEL SaaS: Setting Kasir, QRIS Static, & Jalur Demo Biar Cepat Closing';
+  }
+  if (project.id === 'p-ifdony-azharuna') {
+    return 'Eksplorasi Identitas Visual Azharuna: Meramu Simbol Peradaban & Tipografi Modern';
+  }
+  if (project.id === 'p-dreammecca') {
+    return 'DreamMecca Platform Beres Tuntas: Bebas Utang Deliverable & Pikiran Plong';
+  }
+  if (project.id === 'p-ibrahim-visa') {
+    return 'Radar Visa Entry Student Kairo: Berkas Lengkap, Kawal Pembayaran Sampai Cair';
+  }
+  if (project.id === 'p-laptopbisnis') {
+    return 'Branding Laptopbisnis Rampung: Desain Lunas, Handover Master Asset Tanpa Cela';
+  }
+  if (project.id === 'p-zalvice') {
+    return 'Evolusi Identitas Zalvice: Visual Tuntas, Siap Meluncur ke Fase Produksi';
+  }
+  if (project.boardColumn === 'DONE') {
+    return `Kisah Sukses ${project.name}: Tuntas di Garis Finis & Siap Buka Babak Baru`;
+  }
+  if (project.boardColumn === 'DOING') {
+    return `Gaspol Dapur Produksi ${project.name}: Menembus Sasaran Utama & Kunci Kualitas`;
+  }
+  if (project.boardColumn === 'WAITING') {
+    return `Kawal Radar ${project.name}: Menanti Respons Klien Sambil Jaga Ritme Kas`;
+  }
+  if (project.currentGoal && project.currentGoal.length > 15) {
     return `${project.name}: ${project.currentGoal.split('.')[0]}`;
   }
-  return `Laporan Strategis & Progres Lapangan Terkini: ${project.name}`;
+  return `Laporan Eksklusif & Catatan Lapangan: ${project.name}`;
+};
+
+// Generates dynamic storytelling body for any project
+const getStorytellingBody = (project: ProjectCard): string => {
+  if (project.newsArticle && project.newsArticle.trim().length > 30) {
+    return project.newsArticle;
+  }
+
+  const laneName = laneLabelMap[project.lane] || project.lane;
+  const isDone = project.boardColumn === 'DONE';
+  const isDoing = project.boardColumn === 'DOING';
+  const isWaiting = project.boardColumn === 'WAITING';
+  const nominal = project.nominalNumeric > 0 ? `Rp${project.nominalNumeric.toLocaleString('id-ID')}` : null;
+  const paid = project.paidNumeric > 0 ? `Rp${project.paidNumeric.toLocaleString('id-ID')}` : null;
+  const unpaid = project.unpaidNumeric > 0 ? `Rp${project.unpaidNumeric.toLocaleString('id-ID')}` : null;
+
+  return `Setiap proyek di workspace ini punya kisah perjuangannya sendiri, dan saat ini **${project.name}** lagi jadi sorotan utama di jalur **${laneName}**. Bukan sekadar tugas checklist biasa, ini adalah salah satu tumpuan strategis yang nentuin laju cashflow dan reputasi kerja nyata tim kita di mata klien.
+
+### 1. Misi Utama & Tantangan yang Mau Ditaklukkan
+Latar belakang kenapa proyek ini digarap bukan cuma buat kelihatan sibuk, tapi buat menyelesaikan problem nyata di lapangan:
+- **Sasaran Utama**: ${project.currentGoal || 'Mengeksekusi deliverable utama dengan standar visual dan fungsi yang presisi.'}
+${project.definitionOfDone ? `- **Kriteria Selesai (DoD)**: ${project.definitionOfDone}` : '- **Kriteria Selesai (DoD)**: Menyelesaikan seluruh checkpoint kerjaan tanpa ada bug atau komplain susulan.'}
+${project.rule ? `- **Aturan Main Eksekusi**: "${project.rule}"` : ''}
+
+### 2. Dapur Lapangan & Status Produksi Terkini
+Saat ini proyek resmi berstatus **${project.status}** (${project.boardColumn}) dengan tingkat prioritas **${project.priority}**.
+${isDone ? 'Kabar gembira! Semua tahapan pengerjaan utama sudah berhasil diselesaikan dengan hasil ciamik. Tim berhasil melewati fase revisi dan kini proyek sudah berada di garis finis dengan deliverable yang solid.' : isDoing ? 'Mesin produksi lagi dipacu kencang! Tim fokus membereskan deliverable inti dan memastikan setiap detail teknis maupun visual berjalan mulus tanpa membuang waktu.' : isWaiting ? 'Proyek lagi berada di fase radar penantian (waiting line). Bola saat ini ada di pihak eksternal, jadi kunci utamanya adalah menjaga ritme follow-up yang santun tapi tegas biar antrean gak membeku.' : 'Proyek tercatat rapi di antrean sprint dan siap disikat begitu slot kerja utama terbuka.'}
+
+### 3. Radar Finansial & Garis Finis
+${nominal ? `Secara komersial, proyek ini bernilai kontrak **${nominal}**${paid ? `, dengan dana yang sudah berhasil mendarat di kas sebesar **${paid}**` : ''}${unpaid ? `, dan sisa piutang yang wajib dikawal sebesar **${unpaid}**` : ''}.` : 'Proyek ini berperan sebagai aset strategis internal yang memperkuat pondasi ekosistem operasional tim.'}
+${project.billingMilestone ? `Target pencapaian pembayaran berikutnya terkunci pada: **${project.billingMilestone}**.` : ''}`;
+};
+
+// Generates dynamic storytelling critique for any project
+const getStorytellingCritique = (project: ProjectCard): string => {
+  if (project.newsCritique && project.newsCritique.trim().length > 20) {
+    return project.newsCritique;
+  }
+
+  if (project.unpaidNumeric > 0) {
+    return `🔥 **Reality Check Redaksi**: Ada tagihan menggantung sebesar Rp${project.unpaidNumeric.toLocaleString('id-ID')}! Jangan pernah anggap pekerjaan ini beres cuma karena kodingan atau desain udah diserahkan. Cuan nyata adalah yang sudah mendarat di mutasi rekening. Kirim invoice resmi dan kunci tanggal komitmen transfer dari klien hari ini juga!`;
+  }
+  if (project.boardColumn === 'WAITING') {
+    return `⚠️ **Peringatan Radar Redaksi**: Proyek ini lagi nunggu respons pihak luar. Hati-hati jebakan 'nunggu pasif'! Kalau dalam 2x24 jam gak ada kabar, segera layangkan follow-up santai via WhatsApp biar proyek gak mangkrak dan slot kerjaan lu gak terhambat.`;
+  }
+  if (!project.definitionOfDone) {
+    return `⚠️ **Titik Buta Operasional**: Proyek ini belum punya Kriteria Selesai (DoD) yang eksplisit! Ini bahaya banget karena bisa memicu scope creep (klien nambah-nambah permintaan tanpa bayar ekstra). Tulis batasan selesai sekarang juga!`;
+  }
+  if (project.boardColumn === 'DONE') {
+    return `✨ **Catatan Redaksi**: Proyek sudah berstatus tuntas dan aman. Jangan biarkan begitu saja—segera dokumentasikan hasil kerja ini ke format portofolio atau studi kasus buat amankan deal-deal berikutnya yang nilainya lebih gede!`;
+  }
+  return `Pertahankan fokus eksekusi satu arah. Hindari multitasking liar yang bikin energi terpecah, dan tuntaskan langkah berikutnya sebelum berpindah ke proyek lain.`;
 };
 
 // Formats content paragraphs and headers cleanly
@@ -233,14 +312,14 @@ Tanggal: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long
 Kategori: ${laneLabelMap[currentProject.lane] || currentProject.lane}
 Status: ${currentProject.boardColumn} (${currentProject.status})
 
-## Rangkuman Laporan
-${currentProject.newsArticle || currentProject.currentGoal || 'Tidak ada detail laporan.'}
+## Rangkuman Laporan & Storytelling
+${getStorytellingBody(currentProject)}
 
 ## Rekomendasi Langkah Nyata (Next Step)
-${currentProject.nextAction}
+${currentProject.nextAction || 'Tentukan langkah konkret eksekusi di board.'}
 
 ## Kritik & Evaluasi Redaksi
-${currentProject.newsCritique || 'Pertahankan ritme eksekusi dan validasi pembayaran tepat waktu.'}
+${getStorytellingCritique(currentProject)}
 `;
     const link = document.createElement('a');
     link.href = URL.createObjectURL(new Blob([content], { type: 'text/markdown;charset=utf-8' }));
@@ -551,35 +630,7 @@ ${currentProject.newsCritique || 'Pertahankan ritme eksekusi dan validasi pembay
 
           {/* Article Prose Body */}
           <div className="prose prose-zinc max-w-none pt-2">
-            {currentProject.newsArticle ? (
-              renderFormattedBody(currentProject.newsArticle)
-            ) : (
-              <div className="space-y-4 text-sm sm:text-[15px] font-normal leading-[1.8] text-zinc-600">
-                <p className="text-zinc-800">
-                  Proyek <strong>{currentProject.name}</strong> saat ini berada pada tahap{' '}
-                  <strong>{currentProject.status}</strong> dalam jalur eksekusi{' '}
-                  <em>{laneLabelMap[currentProject.lane] || currentProject.lane}</em>.
-                </p>
-                {currentProject.currentGoal && (
-                  <div className="my-4 p-4 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-700">
-                    <p className="font-medium text-zinc-900 mb-1 text-xs uppercase tracking-wider">
-                      Fokus Sasaran Utama:
-                    </p>
-                    <p>{currentProject.currentGoal}</p>
-                  </div>
-                )}
-                {currentProject.definitionOfDone && (
-                  <p>
-                    <strong>Kriteria Selesai (DoD):</strong> {currentProject.definitionOfDone}
-                  </p>
-                )}
-                {currentProject.rule && (
-                  <p className="border-l-2 border-amber-400 pl-3 italic text-zinc-600">
-                    Aturan Eksekusi: "{currentProject.rule}"
-                  </p>
-                )}
-              </div>
-            )}
+            {renderFormattedBody(getStorytellingBody(currentProject))}
           </div>
 
           {/* =======================================================================
@@ -651,11 +702,10 @@ ${currentProject.newsCritique || 'Pertahankan ritme eksekusi dan validasi pembay
             </div>
 
             <div className="p-4 rounded-xl bg-white border border-rose-100 shadow-2xs">
-              <p className="text-sm text-zinc-700 font-normal leading-relaxed">
-                {currentProject.newsCritique ||
-                  'Evaluasi kritis: Pastikan serah terima hasil kerja diikat dengan dokumen atau konfirmasi pembayaran tertulis. Jangan serahkan akses penuh/master asset sebelum komitmen pembayaran jelas agar posisi tawar tetap aman.'}
+              <p className="text-sm text-zinc-700 font-normal leading-relaxed whitespace-pre-line">
+                {getStorytellingCritique(currentProject)}
               </p>
-              {currentProject.unpaidNumeric > 0 && (
+              {currentProject.unpaidNumeric > 0 && !currentProject.newsCritique && (
                 <p className="mt-2.5 pt-2 border-t border-zinc-100 text-xs text-rose-600 font-medium">
                   ⚠️ Tagihan belum tertagih: Rp{currentProject.unpaidNumeric.toLocaleString('id-ID')} (Jaga arus kas nyata sebelum menganggap ini sebagai pendapatan masuk).
                 </p>
