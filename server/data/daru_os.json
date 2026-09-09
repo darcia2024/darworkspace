@@ -1097,5 +1097,6 @@
       "type": "STATE_SAVE",
       "message": "State saved to SQLite/JSON store"
     }
-  ]
+  ],
+  "revision": 1
 }

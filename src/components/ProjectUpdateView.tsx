@@ -126,7 +126,10 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({
   onAddProject,
   onSelectTab
 }) => {
-  const [selectedProjectId, setSelectedProjectId] = useState<string>(projects[0]?.id || '');
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(() => {
+    const elMassa = projects.find(p => p.id === 'p-el-massa');
+    return elMassa ? elMassa.id : (projects[0]?.id || '');
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [filterLane, setFilterLane] = useState<string>('all');
   const [isSavedNotice, setIsSavedNotice] = useState(false);

@@ -8,6 +8,19 @@ export const SYNC_KEY = `${STORAGE_KEY}_SYNC`;
 export function normalizeState(raw: Partial<DaruWorkOSState>): DaruWorkOSState {
   const base = structuredClone(INITIAL_STATE);
   const report = raw.financialReport;
+
+  // If raw has projects, keep raw's projects order and overrides, but inject missing base projects (e.g. p-el-massa)
+  let mergedProjects = raw.projects;
+  if (mergedProjects) {
+    const rawIds = new Set(mergedProjects.map(p => p.id));
+    const missingBase = base.projects.filter(bp => !rawIds.has(bp.id));
+    if (missingBase.length > 0) {
+      mergedProjects = [...mergedProjects, ...missingBase];
+    }
+  } else {
+    mergedProjects = base.projects;
+  }
+
   const state = {
     ...base, ...raw,
     financialReport: {
@@ -21,7 +34,7 @@ export function normalizeState(raw: Partial<DaruWorkOSState>): DaruWorkOSState {
       ...p, project: p.project || p.title || 'General Pursuit', action: p.action || p.title || '',
       isDone: p.isDone ?? p.isCompleted ?? false, isCompleted: p.isDone ?? p.isCompleted ?? false,
     })),
-    projects: raw.projects ?? base.projects,
+    projects: mergedProjects,
     todayBlocks: raw.todayBlocks ?? base.todayBlocks,
     waitingItems: raw.waitingItems ?? base.waitingItems,
     invoices: raw.invoices ?? [],
