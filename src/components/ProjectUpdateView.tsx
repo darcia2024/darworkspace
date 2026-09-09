@@ -75,7 +75,7 @@ function getProjectMediaInfo(project: ProjectCard) {
       headline: 'Peluncuran Penuh Galeri & Katalog Web El Massa Tour & Travel (12 Paket Ibadah Live)',
       url: 'https://github.com/darcia2024/elmassa-katalog',
       image: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1200&q=80',
-      article: 'Platform Galeri & Katalog Web El Massa Tour & Travel telah resmi mencapai kesiapan operasional 100% dengan status live sempurna. Sebanyak 12 paket ibadah unggulan (mulai dari Umrah Reguler November 2026, paket akbar bersama Ustadz Hanan Attaki dengan flyer ganda interaktif JKT/PGK, Special Landing Madinah, Nisfu Sya\'ban, Awal Ramadan, paket Syawal 0 KM, hingga paket Liburan Sekolah Juni 2027) telah sepenuhnya unlocked dilengkapi brosur HD resmi, rincian jadwal, dan itinerary harian berstandar profesional.\n\nSistem telah dipersenjatai kapabilitas komersial mutakhir: live seat tracker terintegrasi, simulator kalkulator tabungan baitullah siap ekspor ke WhatsApp resmi (+62 811-7171-5125), sistem multi-filter e-commerce (kota keberangkatan, maskapai, kategori, bulan), serta dashboard admin pengelola mandiri (manajemen CRUD paket, bulk seat manager, master data kota & maskapai). Seluruh basis kode telah tersinkronisasi 100% pada branch main repository darcia2024/elmassa-katalog dengan penguncian versi cache EL_MASSA_APP_DATA_V36 guna menjamin stabilitas data pengunjung.',
+      article: 'Platform digital Galeri & Katalog Web El Massa Tour & Travel secara resmi mencapai kesiapan operasional 100% dengan status live penuh di lini produksi. Tonggak pencapaian ini menandai transformasi menyeluruh dari etalase travel konvensional menjadi ekosistem digital interaktif yang siap melayani calon jemaah secara mandiri.\n\n### 1. Kesiapan Penuh 12 Paket Ibadah Unggulan\nSeluruh 12 paket ibadah kini telah sepenuhnya unlocked, memiliki brosur grafis HD resmi, rincian jadwal penerbangan, serta itinerary harian mendalam:\n- Umrah Special November Reguler (03 - 13 Nov 2026) · Saudia Landing Madinah · Rp34,7 Jt\n- Umrah Bersama Ust. Hanan Attaki (16/17 - 26/27 Nov 2026) · Direct SV821 · Dual Flyer JKT (Rp35 Jt) & PGK (Rp37,6 Jt)\n- Umrah Akhir Tahun Landing Madinah (12 - 23 Des 2026) · Saudia · Rp32,9 Jt\n- Umrah Nisfu Sya\'ban di Mekkah (20 - 30 Jan 2027) · Garuda Indonesia · Rp34,7 Jt\n- Umrah Istimewa Awal Ramadan (05 - 15 Feb 2027) · Saudia Airlines · Rp35,7 Jt\n- Umrah Sayang Orang Tua Bersama IMB (16 - 27 Mar 2027 Syawal) · Olayan Ajyad 0 KM · Rp35,7 Jt\n- Umrah Bersama Ust. Dr. H. Muhammad Kurnia (16 - 27 Mar 2027) · Olayan Ajyad 0 KM · Rp35,7 Jt\n- Umrah Lebih Nyaman Syawal Program 9H & 12H (Maret 2027) · Garuda/Saudia · Rp31,7 Jt & Rp34,7 Jt\n- Umrah Muharram Awal Musim (Juni 2027) · Saudia · Rp31,7 Jt\n- Umrah Liburan Sekolah Program 9H & 12H (Akhir Juni 2027) · Qatar/Etihad · Rp30,9 Jt & Rp33,7 Jt\n\n### 2. Fitur E-Commerce & Konversi Calon Jemaah\nPlatform tidak sekadar menyajikan brosur statis, melainkan dilengkapi serangkaian modul cerdas yang dirancang untuk mempercepat konversi penjualan:\n- Card Interaktif Ustadz Hanan Attaki dengan Dual Price Badge dan modal komparasi visual flyer keberangkatan Jakarta vs Pangkal Pinang.\n- Live Seat Tracker per paket (Tersedia, Terbatas, Hampir Penuh, Penuh) untuk memicu urgensi pemesanan jemaah.\n- Simulator Tabungan Baitullah (Kalkulator Umrah interaktif) yang mampu menghitung tabungan per bulan jemaah dan menghasilkan ringkasan rapi siap kirim ke WhatsApp resmi (+62 811-7171-5125).\n- Multi-Filter E-Commerce lengkap di sidebar (filter kota, kategori, maskapai, bulan) dan sub-navbar quick pills.\n\n### 3. Kemandirian Dashboard Pengelola & Stabilitas Sistem\nBeban operasional tim manajemen diminimalkan lewat Dashboard Admin terintegrasi yang mencakup CRUD paket, Bulk Seat Manager, serta master data kota dan maskapai. Seluruh kode telah tersinkronisasi 100% ke repository GitHub darcia2024/elmassa-katalog pada branch main dengan penguncian versi cache browser EL_MASSA_APP_DATA_V36 guna memastikan data pengunjung selalu mutakhir tanpa resiko kendala cache usang.',
       nextStep: 'Kirimkan laporan komprehensif serah terima 12 paket ibadah dan akses dashboard admin ke manajemen El Massa Tour & Travel via WA resmi, lalu terbitkan invoice pembayaran final.',
       critique: 'Pencapaian teknis dan kelengkapan 12 paket serta fitur admin sangat impresif melampaui rata-rata web katalog travel. Namun ada risiko operasional dan komersial nyata: sistem yang sudah 100% beroperasi di production tanpa invoice dan termin pelunasan yang terkunci membuat posisi tawar developer melemah. Evaluasi kritis: hindari penyerahan kredensial admin dan source code penuh sebelum dokumen invoice resmi terbit dan komitmen pembayaran termin pelunasan disepakati secara tertulis hari ini.'
     };
@@ -445,14 +445,44 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({
               </div>
 
               {/* The News Article Prose */}
-              <div className="space-y-2">
-                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
-                  Liputan & Ulasan Perkembangan Proyek
-                </h3>
-                <div className="p-4 rounded-xl bg-zinc-50/70 border border-zinc-200/80 text-sm leading-relaxed text-zinc-800 font-serif space-y-3">
-                  <p className="first-letter:text-2xl first-letter:font-bold first-letter:float-left first-letter:mr-2 first-letter:text-zinc-950">
-                    {draft.newsArticle || mediaInfo.article}
-                  </p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
+                    Laporan Editorial & Investigasi Proyek
+                  </h3>
+                  <span className="text-[11px] text-zinc-400 font-mono">Diterbitkan oleh Tim Daru.OS</span>
+                </div>
+                <div className="p-5 sm:p-6 rounded-2xl bg-zinc-50/70 border border-zinc-200/80 text-[13.5px] leading-relaxed text-zinc-800 font-serif space-y-4 shadow-2xs">
+                  {(draft.newsArticle || mediaInfo.article).split('\n\n').map((paragraph, pIdx) => {
+                    // Cek apakah paragraf adalah poin bullet atau subheader
+                    if (paragraph.startsWith('- ') || paragraph.startsWith('• ') || paragraph.startsWith('* ')) {
+                      const items = paragraph.split('\n');
+                      return (
+                        <ul key={pIdx} className="space-y-1.5 pl-4 list-disc text-zinc-700 font-sans text-xs sm:text-[13px] leading-relaxed">
+                          {items.map((it, itIdx) => (
+                            <li key={itIdx}>{it.replace(/^[-•*]\s*/, '')}</li>
+                          ))}
+                        </ul>
+                      );
+                    }
+
+                    if (paragraph.startsWith('### ') || paragraph.startsWith('## ')) {
+                      return (
+                        <h4 key={pIdx} className="text-sm font-bold font-sans text-zinc-900 pt-2 border-t border-zinc-200/60">
+                          {paragraph.replace(/^#{2,3}\s*/, '')}
+                        </h4>
+                      );
+                    }
+
+                    return (
+                      <p 
+                        key={pIdx} 
+                        className={pIdx === 0 ? "first-letter:text-3xl first-letter:font-bold first-letter:float-left first-letter:mr-2.5 first-letter:text-zinc-950 first-letter:leading-none" : "text-zinc-700"}
+                      >
+                        {paragraph}
+                      </p>
+                    );
+                  })}
                 </div>
               </div>
 
