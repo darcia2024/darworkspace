@@ -18,7 +18,7 @@ import { applyTransaction, deriveState, projectIdFor, updateProject, validateTra
 import { apiService, ServerSyncStatus } from './services/api';
 import { DaruWorkOSState, TodayBlock, ProjectCard, WaitingItem, TransactionRecord, AssetAccount, InvoiceRecord, ActiveTabType } from './types';
 import { soundManager } from './utils/audio';
-import { ChevronRight, Sparkles, MessageSquare, Bot, Plus, Receipt, Lock } from 'lucide-react';
+import { ChevronRight, Sparkles, MessageSquare, Bot, Plus, Receipt, Lock, PanelLeft } from 'lucide-react';
 import { PinLockScreen, AUTH_STORAGE_KEY } from './components/PinLockScreen';
 
 export function App() {
@@ -42,6 +42,24 @@ export function App() {
   const [activeTab, setActiveTab] = useState<ActiveTabType>('today');
   const [activeFocusBlock, setActiveFocusBlock] = useState<TodayBlock | null>(null);
   const [focusQueue, setFocusQueue] = useState<TodayBlock[]>([]);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('daru_sidebar_collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleToggleSidebar = () => {
+    soundManager.playClick();
+    setIsSidebarCollapsed(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('daru_sidebar_collapsed', String(next));
+      } catch {}
+      return next;
+    });
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -253,6 +271,8 @@ export function App() {
         syncLabel={syncStatus?.cloudRedisConnected ? 'Cloud tersinkron' : syncStatus?.isOnline ? 'Server lokal' : 'Offline'}
         waitingCount={state.waitingItems.length}
         financialReport={state.financialReport}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={handleToggleSidebar}
       />
 
       {/* 2. Main Dashboard Content View */}
@@ -260,7 +280,15 @@ export function App() {
         
         {/* Top Agency Editorial Breadcrumb Bar */}
         <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-zinc-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-20">
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+          <div className="flex items-center gap-2.5 text-xs font-mono text-zinc-500">
+            {/* Quick toggle sidebar button in top bar */}
+            <button
+              onClick={handleToggleSidebar}
+              title={isSidebarCollapsed ? 'Buka Sidebar (Expand)' : 'Tutup Sidebar (Collapse)'}
+              className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-600 hover:text-black transition-colors border border-transparent hover:border-zinc-200"
+            >
+              <PanelLeft className="w-4 h-4" />
+            </button>
             <span className="text-[#111111] font-bold">Daru.OS</span>
             <span className="text-zinc-300">/</span>
             <span className="text-zinc-800 font-medium">{tabLabels[activeTab]}</span>
