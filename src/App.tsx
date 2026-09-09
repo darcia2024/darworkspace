@@ -378,7 +378,7 @@ export function App() {
 
         {/* Content Container */}
         {syncStatus?.error && <div role="alert" className="px-6 py-3 bg-amber-50 text-amber-900 text-sm">{syncStatus.error}</div>}
-        <main className="flex-1 max-w-6xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+        <main className={`flex-1 w-full mx-auto ${activeTab === 'updates' ? 'max-w-[1440px] px-3 sm:px-6 lg:px-8 py-4' : 'max-w-6xl px-4 lg:px-8 py-6'} space-y-6`}>
           
           {/* Top Quick Status (Only show on Today & Board tabs) */}
           {(activeTab === 'today' || activeTab === 'lanes') && (
@@ -484,7 +484,8 @@ export function App() {
 
         
           {/* HIGH-CONTRAST BLACK FOOTER BANNER (Exact Jobforge Signature Footer!) */}
-          <section className="bg-[#0c0c0e] text-white rounded-[32px] p-8 sm:p-14 mt-12 mb-8 border border-zinc-800 text-center relative overflow-hidden shadow-2xl select-none">
+          {activeTab !== 'updates' && (
+            <section className="bg-[#0c0c0e] text-white rounded-[32px] p-8 sm:p-14 mt-12 mb-8 border border-zinc-800 text-center relative overflow-hidden shadow-2xl select-none">
             {/* Ambient subtle glow */}
             <div className="absolute -top-24 -left-24 w-96 h-96 bg-zinc-800/30 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-zinc-800/20 rounded-full blur-3xl pointer-events-none" />
@@ -528,6 +529,7 @@ export function App() {
               <span>EST. 2026 • SOLO MULTITASK ARCHITECTURE</span>
             </div>
           </section>
+          )}
         </main>
       </div>
 

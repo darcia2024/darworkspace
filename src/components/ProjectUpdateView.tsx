@@ -264,21 +264,21 @@ ${currentProject.newsCritique || 'Pertahankan ritme eksekusi dan validasi pembay
   const projectImg = getProjectVisual(currentProject);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] font-['Plus_Jakarta_Sans'] font-normal text-zinc-800 antialiased">
-      {/* 1. TOP EDITORIAL BAR (Matching Screenshot Header) */}
-      <header className="sticky top-0 z-30 border-b border-zinc-200/80 bg-white/95 backdrop-blur-md px-6 py-3.5 sm:px-10">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
+    <div className="w-full font-['Plus_Jakarta_Sans'] font-normal text-zinc-800 antialiased">
+      {/* 1. TOP EDITORIAL BAR (Matching Reference Screenshot) */}
+      <div className="w-full rounded-2xl border border-zinc-200/80 bg-white p-4 sm:px-6 sm:py-3.5 shadow-xs mb-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Brand Logo & Editorial Section */}
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-start">
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold tracking-tight text-zinc-950">NEWS</span>
-              <span className="hidden sm:inline-block text-[11px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100">
+              <span className="text-[11px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100">
                 Dispatch
               </span>
             </div>
 
-            {/* Quick Top Navigation */}
-            <nav className="hidden md:flex items-center gap-6 text-xs text-zinc-500">
+            {/* Quick Top Navigation Links */}
+            <nav className="hidden md:flex items-center gap-5 text-xs text-zinc-500">
               <button
                 onClick={() => setSelectedCategory('all')}
                 className={`transition-colors hover:text-zinc-900 ${
@@ -296,14 +296,6 @@ ${currentProject.newsCritique || 'Pertahankan ritme eksekusi dan validasi pembay
                 Client Delivery
               </button>
               <button
-                onClick={() => setSelectedCategory('own_product')}
-                className={`transition-colors hover:text-zinc-900 ${
-                  selectedCategory === 'own_product' ? 'font-semibold text-zinc-950' : ''
-                }`}
-              >
-                SaaS & Produk
-              </button>
-              <button
                 onClick={() => onSelectTab('lanes')}
                 className="transition-colors hover:text-zinc-900 flex items-center gap-1 text-zinc-500"
               >
@@ -313,9 +305,9 @@ ${currentProject.newsCritique || 'Pertahankan ritme eksekusi dan validasi pembay
             </nav>
           </div>
 
-          {/* Search Box & Quick Action */}
-          <div className="flex items-center gap-3">
-            <div className="relative w-48 sm:w-64">
+          {/* Search Box & Board Jump Button */}
+          <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+            <div className="relative flex-1 md:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
               <input
                 type="text"
@@ -328,469 +320,468 @@ ${currentProject.newsCritique || 'Pertahankan ritme eksekusi dan validasi pembay
 
             <button
               onClick={() => onSelectTab('lanes')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 transition-colors border border-zinc-200"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 transition-colors border border-zinc-200 shrink-0"
               title="Buka Board Penuh"
             >
               <Layers className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Board</span>
+              <span>Board</span>
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
-      {/* 2. MAIN EDITORIAL THREE-COLUMN GRID */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-          
-          {/* =========================================================================
-              LEFT COLUMN (~2.5 COLS): USER CAPSULE & CATEGORIES
-              ========================================================================= */}
-          <aside className="lg:col-span-2 space-y-6">
-            {/* Author / Editorial Capsule Card */}
-            <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-zinc-800 to-zinc-950 flex items-center justify-center text-white font-medium text-sm shadow-xs">
-                    DW
-                  </div>
-                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white" />
+      {/* 2. MAIN EDITORIAL THREE-COLUMN FLEXBOX LAYOUT (Resilient, No Collapsing) */}
+      <div className="w-full flex flex-col lg:flex-row gap-6 xl:gap-8 items-start">
+        
+        {/* =========================================================================
+            LEFT COLUMN (~220px): USER CAPSULE & CATEGORIES (Matches Reference Left)
+            ========================================================================= */}
+        <aside className="w-full lg:w-52 xl:w-56 shrink-0 space-y-4">
+          {/* Author / Editorial Profile Capsule Card */}
+          <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-white font-medium text-xs shadow-xs">
+                  DW
                 </div>
-                <div>
-                  <h4 className="text-xs font-semibold text-zinc-900 tracking-tight">Daru Redaksi</h4>
-                  <p className="text-[11px] text-zinc-400 font-normal">Lead OS Engine</p>
-                </div>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
               </div>
-              <div className="mt-3.5 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
-                <span>Total Liputan</span>
-                <span className="font-semibold text-zinc-900">{allProjects.length} Proyek</span>
+              <div className="min-w-0">
+                <h4 className="text-xs font-semibold text-zinc-900 tracking-tight truncate">Daru Redaksi</h4>
+                <p className="text-[11px] text-zinc-400 font-normal truncate">Lead OS Engine</p>
               </div>
             </div>
-
-            {/* Category Navigation List */}
-            <div className="space-y-1">
-              <h3 className="px-2 mb-2.5 text-[11px] font-semibold tracking-wider text-zinc-400 uppercase">
-                Kategori Proyek
-              </h3>
-              <nav className="space-y-0.5">
-                {categories.map((cat) => {
-                  const isActive = selectedCategory === cat.id;
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => setSelectedCategory(cat.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-xl transition-all text-left font-normal ${
-                        isActive
-                          ? 'bg-rose-500/10 text-rose-600 font-medium'
-                          : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100/70'
-                      }`}
-                    >
-                      <span className="truncate">{cat.label}</span>
-                      <span
-                        className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                          isActive
-                            ? 'bg-rose-500 text-white font-semibold'
-                            : 'text-zinc-400 bg-zinc-100'
-                        }`}
-                      >
-                        {cat.count}
-                      </span>
-                    </button>
-                  );
-                })}
-              </nav>
+            <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
+              <span>Total Liputan</span>
+              <span className="font-semibold text-zinc-900">{allProjects.length} Proyek</span>
             </div>
+          </div>
 
-            {/* Quick Context & Board Jump */}
-            <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 space-y-3">
-              <div className="flex items-center gap-2 text-zinc-900">
-                <Sparkles className="w-4 h-4 text-amber-500" />
-                <h4 className="text-xs font-medium">Navigasi Workspace</h4>
-              </div>
-              <p className="text-[11px] leading-relaxed text-zinc-500 font-normal">
-                Liputan berita ini dihasilkan secara langsung dari database proyek dan radar keuangan aktif.
-              </p>
-              <div className="pt-2 border-t border-zinc-100 flex flex-col gap-1.5 text-xs">
-                <button
-                  onClick={() => onSelectTab('lanes')}
-                  className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
-                >
-                  <span>Markas Project</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
-                </button>
-                <button
-                  onClick={() => onSelectTab('waiting')}
-                  className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
-                >
-                  <span>Radar Tagihan</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
-                </button>
-                <button
-                  onClick={() => onSelectTab('money')}
-                  className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
-                >
-                  <span>Cek Dompet & Kas</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
-                </button>
-              </div>
-            </div>
-          </aside>
-
-          {/* =========================================================================
-              CENTER COLUMN (~6.5 COLS): MAIN ARTICLE & EDITORIAL CARDS
-              ========================================================================= */}
-          <main className="lg:col-span-7 space-y-7">
-            {/* Category Breadcrumb Kicker */}
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-rose-600">
-                <span>{laneLabelMap[currentProject.lane] || currentProject.lane}</span>
-                <span className="text-zinc-300">·</span>
-                <span className="text-zinc-400 normal-case font-normal">Liputan Khusus Lapangan</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${badgeInfo.bg} ${badgeInfo.text} ${badgeInfo.border}`}
-                >
-                  {badgeInfo.label}
-                </span>
-                <span className="text-[11px] text-zinc-400 font-normal">
-                  Prioritas {currentProject.priority}
-                </span>
-              </div>
-            </div>
-
-            {/* Hero Visual Card (16:9 ratio like media_1788974908577.png) */}
-            <div className="relative overflow-hidden rounded-2xl bg-zinc-950 aspect-video shadow-md border border-zinc-200/60 group">
-              <img
-                src={projectImg}
-                alt={currentProject.name}
-                className="w-full h-full object-cover object-center opacity-90 transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
-
-              {/* Media floating tag */}
-              <div className="absolute top-4 left-4 flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-black/60 backdrop-blur-md text-white border border-white/10">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                  Live Operational
-                </span>
-              </div>
-
-              {/* Bottom media title strip */}
-              <div className="absolute bottom-4 left-4 right-4 text-white">
-                <p className="text-xs uppercase tracking-wider text-zinc-300 font-medium">
-                  {currentProject.valueText || 'Production Asset'}
-                </p>
-                <h3 className="text-lg font-medium text-white line-clamp-1">
-                  {currentProject.name}
-                </h3>
-              </div>
-            </div>
-
-            {/* Editorial Metadata Strip & Actions (Matching Screenshot) */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-1 border-b border-zinc-100 pb-4">
-              {/* Stats badges */}
-              <div className="flex items-center gap-4 text-xs text-zinc-400 font-normal">
-                <span className="inline-flex items-center gap-1 text-zinc-600">
-                  <Eye className="w-3.5 h-3.5 text-zinc-400" />
-                  100% Siap
-                </span>
-                <span className="inline-flex items-center gap-1 text-zinc-600">
-                  <Clock className="w-3.5 h-3.5 text-zinc-400" />
-                  {currentProject.followUpDeadline || 'Jadwal Hari Ini'}
-                </span>
-                <span className="inline-flex items-center gap-1 text-zinc-600">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                  Tersinkronisasi Git
-                </span>
-              </div>
-
-              {/* Article Action Buttons */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setSavedBookmark(!savedBookmark)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-normal border transition-colors ${
-                    savedBookmark
-                      ? 'bg-zinc-900 text-white border-zinc-900'
-                      : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
-                  }`}
-                  title="Simpan Catatan Berita"
-                >
-                  <Bookmark className="w-3.5 h-3.5" />
-                  <span>{savedBookmark ? 'Tersimpan' : 'Simpan'}</span>
-                </button>
-
-                <button
-                  onClick={handleCopySummary}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-normal bg-white text-zinc-700 border border-zinc-200 hover:bg-zinc-50 transition-colors"
-                  title="Bagikan Ringkasan"
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>Bagikan</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Copied Notice Banner */}
-            {copiedNotice && (
-              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center justify-between">
-                <span>{copiedNotice}</span>
-                <button
-                  onClick={() => setCopiedNotice('')}
-                  className="text-emerald-500 hover:text-emerald-900 font-medium text-xs"
-                >
-                  Tutup
-                </button>
-              </div>
-            )}
-
-            {/* Editorial Main Headline (Light / Regular Plus Jakarta Sans) */}
-            <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-normal leading-[1.25] tracking-[-0.04em] text-zinc-950">
-                {getEditorialHeadline(currentProject)}
-              </h1>
-              
-              {/* Author byline */}
-              <div className="mt-3 flex items-center gap-2 text-xs text-zinc-400 font-normal">
-                <span>Oleh <strong className="font-medium text-zinc-700">Tim Redaksi Daru Work OS</strong></span>
-                <span>·</span>
-                <span>Diperbarui 10 September 2026</span>
-              </div>
-            </div>
-
-            {/* Article Prose Body */}
-            <article className="prose prose-zinc max-w-none pt-2">
-              {currentProject.newsArticle ? (
-                renderFormattedBody(currentProject.newsArticle)
-              ) : (
-                <div className="space-y-4 text-sm sm:text-[15px] font-normal leading-[1.8] text-zinc-600">
-                  <p className="text-zinc-800">
-                    Proyek <strong>{currentProject.name}</strong> saat ini berada pada tahap{' '}
-                    <strong>{currentProject.status}</strong> dalam jalur eksekusi{' '}
-                    <em>{laneLabelMap[currentProject.lane] || currentProject.lane}</em>.
-                  </p>
-                  {currentProject.currentGoal && (
-                    <div className="my-4 p-4 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-700">
-                      <p className="font-medium text-zinc-900 mb-1 text-xs uppercase tracking-wider">
-                        Fokus Sasaran Utama:
-                      </p>
-                      <p>{currentProject.currentGoal}</p>
-                    </div>
-                  )}
-                  {currentProject.definitionOfDone && (
-                    <p>
-                      <strong>Kriteria Selesai (DoD):</strong> {currentProject.definitionOfDone}
-                    </p>
-                  )}
-                  {currentProject.rule && (
-                    <p className="border-l-2 border-amber-400 pl-3 italic text-zinc-600">
-                      Aturan Eksekusi: "{currentProject.rule}"
-                    </p>
-                  )}
-                </div>
-              )}
-            </article>
-
-            {/* =======================================================================
-                CRITICAL SECTION 1: SARAN LANGKAH NYATA BERIKUTNYA (NEXT STEP)
-                ======================================================================= */}
-            <section className="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-5 sm:p-6 space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-xs">
-                  <Lightbulb className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold tracking-tight text-emerald-950">
-                    Saran Langkah Nyata Berikutnya (Next Step)
-                  </h3>
-                  <p className="text-xs text-emerald-700 font-normal">
-                    Aksi konkret prioritas yang wajib dieksekusi selanjutnya
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-white border border-emerald-100 shadow-2xs space-y-2">
-                <p className="text-sm text-zinc-800 font-normal leading-relaxed">
-                  {currentProject.nextAction ||
-                    'Tentukan satu aksi konkret follow-up atau serah terima di board proyek.'}
-                </p>
-                {currentProject.billingMilestone && (
-                  <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
-                    <span className="font-medium text-zinc-700">Target Milestone:</span>
-                    <span className="text-emerald-700 font-semibold">{currentProject.billingMilestone}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-                <button
-                  onClick={() => onSelectTab('lanes')}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition-colors shadow-xs"
-                >
-                  <span>Buka di Board & Eksekusi</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-                {currentProject.boardColumn === 'WAITING' && (
-                  <button
-                    onClick={() => onSelectTab('waiting')}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white border border-emerald-200 text-emerald-800 hover:bg-emerald-50 font-normal transition-colors"
-                  >
-                    <span>Cek Radar Tagihan</span>
-                  </button>
-                )}
-              </div>
-            </section>
-
-            {/* =======================================================================
-                CRITICAL SECTION 2: KRITIK & EVALUASI REDAKSI (EDITORIAL CRITIQUE)
-                ======================================================================= */}
-            <section className="rounded-2xl border border-rose-200/80 bg-rose-50/40 p-5 sm:p-6 space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-rose-500 text-white flex items-center justify-center shadow-xs">
-                  <AlertTriangle className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold tracking-tight text-rose-950">
-                    Kritik & Evaluasi Redaksi
-                  </h3>
-                  <p className="text-xs text-rose-700 font-normal">
-                    Peringatan risiko, titik buta operasional, dan acuan evaluasi
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-white border border-rose-100 shadow-2xs">
-                <p className="text-sm text-zinc-700 font-normal leading-relaxed">
-                  {currentProject.newsCritique ||
-                    'Evaluasi kritis: Pastikan serah terima hasil kerja diikat dengan dokumen atau konfirmasi pembayaran tertulis. Jangan serahkan akses penuh/master asset sebelum komitmen pembayaran jelas agar posisi tawar tetap aman.'}
-                </p>
-                {currentProject.unpaidNumeric > 0 && (
-                  <p className="mt-2.5 pt-2 border-t border-zinc-100 text-xs text-rose-600 font-medium">
-                    ⚠️ Tagihan belum tertagih: Rp{currentProject.unpaidNumeric.toLocaleString('id-ID')} (Jaga arus kas nyata sebelum menganggap ini sebagai pendapatan masuk).
-                  </p>
-                )}
-              </div>
-            </section>
-
-            {/* Action Bar Footer */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-zinc-200">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={handleDownloadReport}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-950 text-white text-xs font-medium hover:bg-zinc-800 transition-colors shadow-xs"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Unduh Dokumen Berita (.md)</span>
-                </button>
-                <button
-                  onClick={handleCopySummary}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-zinc-200 text-zinc-700 text-xs font-normal hover:bg-zinc-50 transition-colors"
-                >
-                  <Clipboard className="w-3.5 h-3.5" />
-                  <span>Salin Teks Berita</span>
-                </button>
-              </div>
-
-              <button
-                onClick={() => onSelectTab('lanes')}
-                className="text-xs text-zinc-500 hover:text-zinc-900 flex items-center gap-1 font-normal"
-              >
-                <span>Kelola Status di Markas Proyek</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </main>
-
-          {/* =========================================================================
-              RIGHT COLUMN (~3 COLS): "RELATED NEWS" (PROYEK LAINNYA)
-              ========================================================================= */}
-          <aside className="lg:col-span-3 space-y-6">
-            {/* Column Header matching screenshot */}
-            <div className="flex items-center justify-between pb-2 border-b border-zinc-200">
-              <h2 className="text-base font-semibold tracking-tight text-zinc-950">
-                Related <span className="font-light text-zinc-500">News</span>
-              </h2>
-              <button
-                onClick={() => {
-                  setSelectedCategory('all');
-                  setSearchQuery('');
-                }}
-                className="text-xs text-zinc-400 hover:text-zinc-900 font-normal transition-colors"
-              >
-                See all
-              </button>
-            </div>
-
-            {/* List of Other Projects (Card format matching screenshot) */}
-            <div className="space-y-4">
-              {relatedProjects.map((project) => {
-                const pBadge = columnBadgeMap[project.boardColumn] || columnBadgeMap.DOING;
-                const pThumb = getProjectVisual(project);
-                const isSelected = project.id === activeProjectId;
-
+          {/* Category Navigation List */}
+          <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs space-y-3">
+            <h3 className="text-xs font-bold tracking-tight text-zinc-900 uppercase">
+              Category
+            </h3>
+            <nav className="space-y-1">
+              {categories.map((cat) => {
+                const isActive = selectedCategory === cat.id;
                 return (
-                  <div
-                    key={project.id}
-                    onClick={() => {
-                      setActiveProjectId(project.id);
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className={`group cursor-pointer rounded-2xl border transition-all duration-200 p-3 bg-white hover:shadow-md ${
-                      isSelected
-                        ? 'border-rose-300 ring-2 ring-rose-100'
-                        : 'border-zinc-200/80 hover:border-zinc-300'
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-xl transition-all text-left font-normal ${
+                      isActive
+                        ? 'bg-rose-50 text-rose-600 font-medium'
+                        : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
                     }`}
                   >
-                    {/* Thumbnail banner */}
-                    <div className="relative overflow-hidden rounded-xl bg-zinc-900 aspect-[16/9] mb-3">
-                      <img
-                        src={pThumb}
-                        alt={project.name}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 opacity-90"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <span className="absolute bottom-2 left-2 text-[10px] font-medium text-white line-clamp-1">
-                        {laneLabelMap[project.lane] || project.lane}
-                      </span>
-                    </div>
-
-                    {/* Metadata & Tag */}
-                    <div className="flex items-center justify-between text-[10px] text-zinc-400 mb-1.5">
-                      <span
-                        className={`px-2 py-0.5 rounded-full font-medium ${pBadge.bg} ${pBadge.text}`}
-                      >
-                        {pBadge.label}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Eye className="w-3 h-3" />
-                        P{project.priority.replace('P', '')}
-                      </span>
-                    </div>
-
-                    {/* Title */}
-                    <h4 className="text-xs font-medium text-zinc-900 leading-snug group-hover:text-rose-600 transition-colors line-clamp-2">
-                      {getEditorialHeadline(project)}
-                    </h4>
-
-                    {/* Action sneak peek */}
-                    <p className="mt-1.5 text-[11px] text-zinc-500 line-clamp-1 font-normal">
-                      Next: {project.nextAction || 'Tinjau progres'}
-                    </p>
-                  </div>
+                    <span className="truncate">{cat.label}</span>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                        isActive
+                          ? 'bg-rose-500 text-white font-semibold'
+                          : 'text-zinc-400 bg-zinc-100'
+                      }`}
+                    >
+                      {cat.count}
+                    </span>
+                  </button>
                 );
               })}
+            </nav>
+          </div>
+
+          {/* Quick Context & Board Jump */}
+          <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 space-y-3 shadow-xs">
+            <div className="flex items-center gap-2 text-zinc-900">
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              <h4 className="text-xs font-medium">Navigasi Workspace</h4>
+            </div>
+            <p className="text-[11px] leading-relaxed text-zinc-500 font-normal">
+              Liputan berita dipetakan otomatis dari database proyek dan radar keuangan aktif.
+            </p>
+            <div className="pt-2 border-t border-zinc-100 flex flex-col gap-1 text-xs">
+              <button
+                onClick={() => onSelectTab('lanes')}
+                className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
+              >
+                <span>Markas Project</span>
+                <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+              </button>
+              <button
+                onClick={() => onSelectTab('waiting')}
+                className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
+              >
+                <span>Radar Tagihan</span>
+                <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+              </button>
+              <button
+                onClick={() => onSelectTab('money')}
+                className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
+              >
+                <span>Cek Dompet & Kas</span>
+                <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* =========================================================================
+            CENTER COLUMN: MAIN ARTICLE & EDITORIAL PROSE (Matches Reference Center)
+            flex-1 min-w-0 ensures no horizontal squishing
+            ========================================================================= */}
+        <div className="flex-1 min-w-0 w-full space-y-6">
+          {/* Category Breadcrumb Kicker */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-rose-600">
+              <span>{laneLabelMap[currentProject.lane] || currentProject.lane}</span>
+              <span className="text-zinc-300">·</span>
+              <span className="text-zinc-400 normal-case font-normal">Liputan Khusus Lapangan</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${badgeInfo.bg} ${badgeInfo.text} ${badgeInfo.border}`}
+              >
+                {badgeInfo.label}
+              </span>
+              <span className="text-[11px] text-zinc-400 font-normal">
+                Prioritas {currentProject.priority}
+              </span>
+            </div>
+          </div>
+
+          {/* Hero Visual Card (16:9 ratio like reference) */}
+          <div className="relative overflow-hidden rounded-2xl bg-zinc-950 aspect-video shadow-md border border-zinc-200/60 group">
+            <img
+              src={projectImg}
+              alt={currentProject.name}
+              className="w-full h-full object-cover object-center opacity-90 transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
+
+            {/* Media floating tag */}
+            <div className="absolute top-4 left-4 flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-black/60 backdrop-blur-md text-white border border-white/10">
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                Live Operational
+              </span>
             </div>
 
-            {/* Quick Summary Widget */}
-            <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50 p-4 space-y-2">
-              <h4 className="text-xs font-semibold text-zinc-900">Tentang Redaksi Proyek</h4>
-              <p className="text-[11px] leading-relaxed text-zinc-500 font-normal">
-                Setiap proyek dipetakan menjadi format berita dengan narasi mendalam, saran aksi nyata berikutnya, dan catatan kritik redaksi agar tidak ada deliverable yang terbengkalai.
+            {/* Bottom media title strip */}
+            <div className="absolute bottom-4 left-4 right-4 text-white">
+              <p className="text-xs uppercase tracking-wider text-zinc-300 font-medium">
+                {currentProject.valueText || 'Production Asset'}
               </p>
+              <h3 className="text-base sm:text-lg font-medium text-white line-clamp-1">
+                {currentProject.name}
+              </h3>
             </div>
-          </aside>
+          </div>
+
+          {/* Editorial Metadata Strip & Actions (Matching Screenshot) */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-1 border-b border-zinc-100 pb-4">
+            {/* Stats badges */}
+            <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-400 font-normal">
+              <span className="inline-flex items-center gap-1 text-zinc-600">
+                <Eye className="w-3.5 h-3.5 text-zinc-400" />
+                100% Siap
+              </span>
+              <span className="inline-flex items-center gap-1 text-zinc-600">
+                <Clock className="w-3.5 h-3.5 text-zinc-400" />
+                {currentProject.followUpDeadline || 'Jadwal Hari Ini'}
+              </span>
+              <span className="inline-flex items-center gap-1 text-zinc-600">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                Tersinkronisasi Git
+              </span>
+            </div>
+
+            {/* Article Action Buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setSavedBookmark(!savedBookmark)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-normal border transition-colors ${
+                  savedBookmark
+                    ? 'bg-zinc-900 text-white border-zinc-900'
+                    : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
+                }`}
+                title="Simpan Catatan Berita"
+              >
+                <Bookmark className="w-3.5 h-3.5" />
+                <span>{savedBookmark ? 'Tersimpan' : 'Simpan'}</span>
+              </button>
+
+              <button
+                onClick={handleCopySummary}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-normal bg-white text-zinc-700 border border-zinc-200 hover:bg-zinc-50 transition-colors"
+                title="Bagikan Ringkasan"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>Bagikan</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Copied Notice Banner */}
+          {copiedNotice && (
+            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center justify-between">
+              <span>{copiedNotice}</span>
+              <button
+                onClick={() => setCopiedNotice('')}
+                className="text-emerald-500 hover:text-emerald-900 font-medium text-xs"
+              >
+                Tutup
+              </button>
+            </div>
+          )}
+
+          {/* Editorial Main Headline (Light / Regular Plus Jakarta Sans) */}
+          <div className="space-y-2">
+            <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-normal leading-[1.3] tracking-[-0.03em] text-zinc-950">
+              {getEditorialHeadline(currentProject)}
+            </h1>
+            
+            {/* Author byline */}
+            <div className="flex items-center gap-2 text-xs text-zinc-400 font-normal">
+              <span>Oleh <strong className="font-medium text-zinc-700">Tim Redaksi Daru Work OS</strong></span>
+              <span>·</span>
+              <span>Diperbarui 10 September 2026</span>
+            </div>
+          </div>
+
+          {/* Article Prose Body */}
+          <div className="prose prose-zinc max-w-none pt-2">
+            {currentProject.newsArticle ? (
+              renderFormattedBody(currentProject.newsArticle)
+            ) : (
+              <div className="space-y-4 text-sm sm:text-[15px] font-normal leading-[1.8] text-zinc-600">
+                <p className="text-zinc-800">
+                  Proyek <strong>{currentProject.name}</strong> saat ini berada pada tahap{' '}
+                  <strong>{currentProject.status}</strong> dalam jalur eksekusi{' '}
+                  <em>{laneLabelMap[currentProject.lane] || currentProject.lane}</em>.
+                </p>
+                {currentProject.currentGoal && (
+                  <div className="my-4 p-4 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-700">
+                    <p className="font-medium text-zinc-900 mb-1 text-xs uppercase tracking-wider">
+                      Fokus Sasaran Utama:
+                    </p>
+                    <p>{currentProject.currentGoal}</p>
+                  </div>
+                )}
+                {currentProject.definitionOfDone && (
+                  <p>
+                    <strong>Kriteria Selesai (DoD):</strong> {currentProject.definitionOfDone}
+                  </p>
+                )}
+                {currentProject.rule && (
+                  <p className="border-l-2 border-amber-400 pl-3 italic text-zinc-600">
+                    Aturan Eksekusi: "{currentProject.rule}"
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* =======================================================================
+              CRITICAL SECTION 1: SARAN LANGKAH NYATA BERIKUTNYA (NEXT STEP)
+              ======================================================================= */}
+          <section className="rounded-2xl border border-emerald-200/90 bg-emerald-50/50 p-5 sm:p-6 space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+                <Lightbulb className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold tracking-tight text-emerald-950">
+                  Saran Langkah Nyata Berikutnya (Next Step)
+                </h3>
+                <p className="text-xs text-emerald-700 font-normal">
+                  Aksi konkret prioritas yang wajib dieksekusi selanjutnya
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-white border border-emerald-100 shadow-2xs space-y-2">
+              <p className="text-sm text-zinc-800 font-normal leading-relaxed">
+                {currentProject.nextAction ||
+                  'Tentukan satu aksi konkret follow-up atau serah terima di board proyek.'}
+              </p>
+              {currentProject.billingMilestone && (
+                <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
+                  <span className="font-medium text-zinc-700">Target Milestone:</span>
+                  <span className="text-emerald-700 font-semibold">{currentProject.billingMilestone}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+              <button
+                onClick={() => onSelectTab('lanes')}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition-colors shadow-xs"
+              >
+                <span>Buka di Board & Eksekusi</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </button>
+              {currentProject.boardColumn === 'WAITING' && (
+                <button
+                  onClick={() => onSelectTab('waiting')}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white border border-emerald-200 text-emerald-800 hover:bg-emerald-50 font-normal transition-colors"
+                >
+                  <span>Cek Radar Tagihan</span>
+                </button>
+              )}
+            </div>
+          </section>
+
+          {/* =======================================================================
+              CRITICAL SECTION 2: KRITIK & EVALUASI REDAKSI (EDITORIAL CRITIQUE)
+              ======================================================================= */}
+          <section className="rounded-2xl border border-rose-200/90 bg-rose-50/50 p-5 sm:p-6 space-y-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-rose-500 text-white flex items-center justify-center shadow-xs">
+                <AlertTriangle className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold tracking-tight text-rose-950">
+                  Kritik & Evaluasi Redaksi
+                </h3>
+                <p className="text-xs text-rose-700 font-normal">
+                  Peringatan risiko, titik buta operasional, dan acuan evaluasi
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-xl bg-white border border-rose-100 shadow-2xs">
+              <p className="text-sm text-zinc-700 font-normal leading-relaxed">
+                {currentProject.newsCritique ||
+                  'Evaluasi kritis: Pastikan serah terima hasil kerja diikat dengan dokumen atau konfirmasi pembayaran tertulis. Jangan serahkan akses penuh/master asset sebelum komitmen pembayaran jelas agar posisi tawar tetap aman.'}
+              </p>
+              {currentProject.unpaidNumeric > 0 && (
+                <p className="mt-2.5 pt-2 border-t border-zinc-100 text-xs text-rose-600 font-medium">
+                  ⚠️ Tagihan belum tertagih: Rp{currentProject.unpaidNumeric.toLocaleString('id-ID')} (Jaga arus kas nyata sebelum menganggap ini sebagai pendapatan masuk).
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* Action Bar Footer */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-zinc-200">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleDownloadReport}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-950 text-white text-xs font-medium hover:bg-zinc-800 transition-colors shadow-xs"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Unduh Dokumen Berita (.md)</span>
+              </button>
+              <button
+                onClick={handleCopySummary}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-zinc-200 text-zinc-700 text-xs font-normal hover:bg-zinc-50 transition-colors"
+              >
+                <Clipboard className="w-3.5 h-3.5" />
+                <span>Salin Teks Berita</span>
+              </button>
+            </div>
+
+            <button
+              onClick={() => onSelectTab('lanes')}
+              className="text-xs text-zinc-500 hover:text-zinc-900 flex items-center gap-1 font-normal"
+            >
+              <span>Kelola Status di Markas Proyek</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
+
+        {/* =========================================================================
+            RIGHT COLUMN (~280-320px): "RELATED NEWS" (Matches Reference Right)
+            shrink-0 ensures no squishing
+            ========================================================================= */}
+        <aside className="w-full lg:w-72 xl:w-80 shrink-0 space-y-4">
+          {/* Column Header matching reference screenshot */}
+          <div className="flex items-center justify-between pb-2 border-b border-zinc-200">
+            <h2 className="text-base font-bold tracking-tight text-zinc-950">
+              Related <span className="font-light text-zinc-500">News</span>
+            </h2>
+            <button
+              onClick={() => {
+                setSelectedCategory('all');
+                setSearchQuery('');
+              }}
+              className="text-xs text-zinc-400 hover:text-zinc-900 font-normal transition-colors"
+            >
+              See all
+            </button>
+          </div>
+
+          {/* List of Other Projects (Card format matching reference screenshot) */}
+          <div className="space-y-3.5">
+            {relatedProjects.map((project) => {
+              const pBadge = columnBadgeMap[project.boardColumn] || columnBadgeMap.DOING;
+              const pThumb = getProjectVisual(project);
+              const isSelected = project.id === activeProjectId;
+
+              return (
+                <div
+                  key={project.id}
+                  onClick={() => {
+                    setActiveProjectId(project.id);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className={`group cursor-pointer rounded-2xl border transition-all duration-200 p-3 bg-white hover:shadow-md ${
+                    isSelected
+                      ? 'border-rose-300 ring-2 ring-rose-100'
+                      : 'border-zinc-200/80 hover:border-zinc-300'
+                  }`}
+                >
+                  {/* Thumbnail banner */}
+                  <div className="relative overflow-hidden rounded-xl bg-zinc-900 aspect-[16/9] mb-2.5">
+                    <img
+                      src={pThumb}
+                      alt={project.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 opacity-90"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <span className="absolute bottom-2 left-2 text-[10px] font-medium text-white line-clamp-1">
+                      {laneLabelMap[project.lane] || project.lane}
+                    </span>
+                  </div>
+
+                  {/* Metadata & Tag */}
+                  <div className="flex items-center justify-between text-[10px] text-zinc-400 mb-1.5">
+                    <span
+                      className={`px-2 py-0.5 rounded-full font-medium ${pBadge.bg} ${pBadge.text}`}
+                    >
+                      {pBadge.label}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Eye className="w-3 h-3" />
+                      P{project.priority.replace('P', '')}
+                    </span>
+                  </div>
+
+                  {/* Title */}
+                  <h4 className="text-xs font-medium text-zinc-900 leading-snug group-hover:text-rose-600 transition-colors line-clamp-2">
+                    {getEditorialHeadline(project)}
+                  </h4>
+
+                  {/* Action sneak peek */}
+                  <p className="mt-1.5 text-[11px] text-zinc-500 line-clamp-1 font-normal">
+                    Next: {project.nextAction || 'Tinjau progres'}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Quick Summary Widget */}
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/70 p-4 space-y-2">
+            <h4 className="text-xs font-semibold text-zinc-900">Tentang Redaksi Proyek</h4>
+            <p className="text-[11px] leading-relaxed text-zinc-500 font-normal">
+              Setiap proyek dipetakan menjadi format berita dengan narasi mendalam, saran aksi nyata berikutnya, dan catatan kritik redaksi agar tidak ada deliverable yang terbengkalai.
+            </p>
+          </div>
+        </aside>
       </div>
     </div>
   );
 };
-
