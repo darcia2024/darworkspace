@@ -66,6 +66,9 @@ const getProjectVisual = (project: ProjectCard) => {
 
 // Generates an editorial headline with storytelling flair
 const getEditorialHeadline = (project: ProjectCard) => {
+  if (project.id === 'p-pgs-tour') {
+    return 'Website PGS Tour & Travel 100% Siap Tayang: Dari Redesign Elegan Sampai Sistem Booking yang Lebih Meyakinkan!';
+  }
   if (project.id === 'p-el-massa') {
     return 'Katalog Web El Massa 100% Siap Tempur: Dari 12 Paket Ibadah Live Sampai Mesin Konversi Otomatis!';
   }

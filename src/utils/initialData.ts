@@ -605,6 +605,27 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "newsCritique": "Kodingan beres, 12 paket live, fitur interaktif jalan mulus—secara teknis eksekusi lu emang gokil no debat bro! TAPI, sebagai sesama founder yang paham dinamika bisnis software & agensi, redaksi wajib kasih reality check yang pedas tapi menyelamatkan bisnis lu:\n\n1. **Jebakan 'Terlalu Baik Hati' (Scope Creep vs Cash Flow)**: Sistem ini sekarang sudah 100% beroperasi di lini produksi publik, tapi invoice pelunasan belum lu tagih secara tegas. Posisi tawar lu saat ini lagi rawan! Begitu klien merasa semua fitur impian mereka sudah live dan bisa dipakai jemaah, urgensi mereka untuk melunasi pembayaran bakal melambat drastis. Kunci komitmen pembayaran hari ini juga!\n2. **Kunci Akses Master & Jangan Lepas Server**: Jangan pernah serahkan master credentials admin, akses hosting/domain, atau akses repository GitHub sebelum uang termin pelunasan sah mendarat di mutasi rekening. Sekali akses penuh dilepas tanpa jaminan tertulis, urusan pelunasan bisa berubah jadi drama follow-up berbulan-bulan.\n3. **Validasi Funnel Konversi Nyata**: Jangan puas cuma karena websitenya kelihatan cakep. Pantau metrik konversi aslinya: berapa banyak jemaah yang masuk lewat fitur *Simulator Tabungan Baitullah* sampai beneran klik tombol WhatsApp CS? Kalau angka klik CS masih rendah, berarti teks CTA (Call-to-Action) di flyer card butuh sedikit dipoles lagi."
     },
     {
+      "id": "p-pgs-tour",
+      "name": "Website PGS Tour & Travel",
+      "lane": "client_delivery",
+      "boardColumn": "DONE",
+      "status": "Done",
+      "paymentStatus": "Expected",
+      "valueText": "100% Live Production (pgstour.vercel.app)",
+      "nominalNumeric": 0,
+      "paidNumeric": 0,
+      "unpaidNumeric": 0,
+      "priority": "P2",
+      "currentGoal": "Website resmi PGS Tour & Travel 100% siap tayang di production (pgstour.vercel.app)! Redesign clean & premium, legalitas PPIU Kemenag RI, foto asli jamaah di Quba, perbaikan bug galeri mobile (WebP+JPEG HD), dan 15/15 static pages live.",
+      "nextAction": "1. Lakukan final handover dan serah terima link live pgstour.vercel.app ke manajemen PT Permana Group Sejahtera via WhatsApp admin.\n2. Terbitkan dan kirimkan Invoice Pelunasan Final proyek website hari ini juga sebelum menyerahkan akses penuh domain dan hosting production.\n3. Siapkan panduan singkat operasional link WhatsApp booking dan formulir konsultasi untuk admin customer service PGS Tour.",
+      "definitionOfDone": "Website PGS Tour 100% live di Vercel, seluruh 15 halaman aktif, bug galeri HP terselesaikan, dan serah terima diterima klien",
+      "rule": "Website sudah live di production. Prioritaskan serah terima resmi ke manajemen PGS dan kawal invoice pelunasan.",
+      "billingMilestone": "Serah Terima Website Production & Invoice Final",
+      "followUpDeadline": "Hari ini",
+      "newsArticle": "Bikin website travel Umroh itu tantangannya bukan cuma soal pasang foto Ka'bah terus selesai. Kalau tampilan websitenya berantakan, navigasi di HP lemot, galeri fotonya error gak kebuka, dan legalitasnya samar-samar, calon jamaah bakal langsung ragu dan batal daftar. Apalagi ibadah Umroh itu urusan amanah besar dengan nilai puluhan juta rupiah—calon jamaah butuh rasa percaya 100% sebelum klik tombol booking!\n\nProblem itulah yang kita beresin tuntas di proyek **PGS Tour & Travel (PT Permana Group Sejahtera)**. Kita gak cuma sekadar moles kosmetik tampilan biar kelihatan keren, tapi merombak total arsitektur digitalnya jadi **mesin konversi travel modern yang super meyakinkan, elegan, dan sat-set diakses jamaah dari HP apapun!**\n\nDan hari ini, kabar gembira dari lini produksi: **Website resmi PGS Tour & Travel kini sudah resmi rampung, lolos uji render 15 halaman statis, dan 100% LIVE mengudara di production!** Simak laporan lengkap pencapaian di lapangan berikut ini:\n\n## 1. Redesign Website: Lebih Simpel, Elegan & Terpercaya\n\nTampilan website diperbarui secara menyeluruh dengan pendekatan visual yang lebih **clean, premium, dan modern**, namun tetap menjaga karakter travel Umroh yang hangat dan terpercaya.\n\nPerubahan utama meliputi:\n- Navigasi mobile dibuat lebih sederhana dan nyaman digunakan.\n- Tombol WhatsApp Booking dijadikan CTA utama agar calon jamaah tidak bingung.\n- Trust Strip legalitas dan jaminan layanan dibuat lebih rapi serta mudah dibaca.\n- Informasi hotel diperjelas menjadi **“Jarak Hotel dekat ke Masjid”**.\n- Halaman Visa Umroh didesain ulang dari tabel kaku menjadi **kartu paket modern**.\n- Elemen visual yang terlalu ramai dikurangi agar website terasa lebih premium.\n\nHasil akhirnya adalah tampilan yang tidak lagi terasa seperti website company profile biasa, tetapi lebih mendekati **high-converting travel website** yang memiliki daya jual.\n\n---\n\n## 2. Konten Asli, Legalitas & Kredibilitas Brand Diperkuat\n\nWebsite kini tidak lagi bergantung pada visual placeholder.\n\nPada halaman **Tentang Kami**, gambar lama diganti dengan **foto asli dokumentasi jamaah PGS Tour**, termasuk dokumentasi rombongan di Masjid Quba.\n\nInformasi perusahaan juga ditata lebih jelas, mencakup:\n- Profil **PT Permana Group Sejahtera**\n- Legalitas dan izin **PPIU Kemenag RI**\n- Nilai amanah dan pelayanan travel\n- Dokumentasi perjalanan jamaah\n- Informasi layanan Umroh secara transparan\n\nHal ini membuat website memiliki unsur **social proof dan trust** yang jauh lebih kuat dibanding sebelumnya.\n\n---\n\n## 3. Bug Mobile & Galeri Jamaah Berhasil Distabilkan\n\nSalah satu masalah penting sebelumnya adalah adanya foto galeri yang tidak muncul pada beberapa perangkat HP.\n\nMasalah tersebut berhasil ditelusuri hingga ke konflik CSS pada sistem animasi galeri.\n\nPerbaikannya meliputi:\n- Perbaikan sistem opacity dan scroll animation.\n- Penambahan fallback format gambar **WebP + JPEG HD**.\n- Optimalisasi agar galeri tampil stabil di Android maupun iOS.\n- Lightbox galeri tetap dapat dibuka secara fullscreen.\n\nSekarang seluruh dokumentasi jamaah dapat tampil dengan lebih stabil tanpa ada foto yang hilang.\n\n---\n\n## 4. Seluruh Halaman Utama Sudah Aktif\n\n| Halaman | Fungsi |\n| --- | --- |\n| **Beranda** | Hero Ka'bah, legalitas, paket pilihan, galeri, keunggulan dan testimoni |\n| **Tentang Kami** | Profil perusahaan, legalitas PPIU dan dokumentasi asli |\n| **Perjalanan** | Katalog paket Umroh dan detail perjalanan |\n| **Visa Umroh** | Pilihan layanan Visa Saudi dan Visa Umroh |\n| **Galeri** | Dokumentasi asli jamaah dengan lightbox fullscreen |\n| **Kemitraan** | Informasi peluang kerja sama dan agen |\n| **Konsultasi** | Jalur konsultasi langsung ke WhatsApp admin |\n\nSeluruh halaman sudah dapat diakses secara normal melalui website production.\n\n---\n\n## 5. Production & Repository Sudah Aman\n\n| Komponen | Status / Spesifikasi |\n| --- | --- |\n| **Production Website** | `pgstour.vercel.app` |\n| **GitHub Repository** | `darcia2024/pgstour` |\n| **Status Build** | ✅ Clean / sukses |\n| **Static Pages** | ✅ 15/15 halaman berhasil prerender |\n| **Sinkronisasi Git** | Branch `master` dan `main` sudah tersinkronisasi 100% |\n\nBranch **master** dan **main** juga sudah tersinkronisasi sehingga source code project tersimpan rapi dan siap dikembangkan kembali jika dibutuhkan.\n\n---\n\n## Kesimpulan\n\nWebsite PGS Tour sekarang sudah berada pada tahap **production-ready** dan dapat digunakan sebagai website resmi perusahaan.\n\nFungsinya bukan lagi hanya sebagai tempat melihat profil perusahaan, tetapi sudah menjadi jalur digital lengkap:\n\n> **Kenal PGS** → **Bangun Kepercayaan** → **Lihat Paket** → **Cek Layanan** → **Konsultasi** → **Booking**\n\nWebsite ini sudah siap digunakan untuk mendukung marketing, branding, dan proses konversi calon jamaah PGS Tour & Travel.",
+      "newsCritique": "Secara eksekusi teknis dan visual, hasil pengerjaan website PGS Tour ini jempolan banget bro—desainnya clean, visual kartu modern menggantikan tabel kaku, dan bug galeri di HP Android/iOS terselesaikan tuntas. TAPI, sebagai sesama founder, redaksi punya beberapa catatan kritis yang wajib lu kawal:\n\n1. **Jaga Momentum Pelunasan Sebelum Lepas Domain/Akses**: Website `pgstour.vercel.app` sekarang sudah live di production dan siap tayang publik. Posisi tawar lu sekarang ada di puncaknya! Segera kirim invoice pelunasan final hari ini juga. Jangan sampai akses domain custom atau master credential diserahkan sebelum pembayaran 100% mendarat di rekening.\n2. **Uji Jalur WhatsApp Booking di Berbagai Jam**: Tombol WhatsApp Booking sudah jadi CTA utama. Pastikan admin CS PGS Tour fast response saat menerima pesan dari jemaah. Kalau respon CS lebih dari 15-30 menit, bounce rate calon jemaah bakal tinggi meski websitenya sudah sekeren ini. Rekomendasikan CS pasang template auto-reply di luar jam kerja.\n3. **Optimasi SEO Lokal & Domain Custom**: Web saat ini masih di subdomain `pgstour.vercel.app`. Tahap berikutnya dorong klien untuk pairing domain utama resmi (`pgstour.com` / `pgstour.co.id`) agar branding PT Permana Group Sejahtera terlihat makin bonafide di mata calon jamaah dan mesin pencari Google."
+    },
+    {
       "id": "p-ar-ruwad",
       "name": "Ar-Ruwad Logo",
       "lane": "client_delivery",
@@ -868,24 +889,6 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "nextAction": "Follow up pelunasan Rp200.000 ke Umi Atiyah",
       "definitionOfDone": "Pelunasan Rp200.000 masuk & serah terima tuntas",
       "billingMilestone": "Pelunasan Akhir Rp200.000",
-      "followUpDeadline": "Hari ini"
-    },
-    {
-      "id": "p-pgs-tour",
-      "name": "Website PGS Tour",
-      "lane": "client_delivery",
-      "boardColumn": "DOING",
-      "status": "Doing",
-      "paymentStatus": "Expected",
-      "valueText": "Website Tour & Travel (Live pgstour.vercel.app)",
-      "nominalNumeric": 0,
-      "paidNumeric": 0,
-      "unpaidNumeric": 0,
-      "priority": "P2",
-      "currentGoal": "Website live di pgstour.vercel.app! 15/15 static pages prerendered, mobile menu clean, trust strip PPIU rapi, & galeri jamaah fix.",
-      "nextAction": "Showcase ke owner PGS Tour & konfirmasi penawaran / invoice pengerjaan website",
-      "definitionOfDone": "Website pgstour.vercel.app diserahkan & deal kesepakatan harga tuntas",
-      "billingMilestone": "Penawaran / Invoice Pengerjaan Website",
       "followUpDeadline": "Hari ini"
     },
     {
