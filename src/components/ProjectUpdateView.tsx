@@ -71,13 +71,13 @@ function getProjectMediaInfo(project: ProjectCard) {
   if (project.id === 'p-el-massa') {
     return {
       category: 'Digital Catalog & Interactive Booking',
-      duration: '12 Paket Ibadah Unlocked',
-      headline: 'Rilis Penuh Katalog 12 Paket Ibadah El Massa Tour & Travel',
+      duration: '12 Paket Ibadah 100% Live',
+      headline: 'Peluncuran Penuh Galeri & Katalog Web El Massa Tour & Travel (12 Paket Ibadah Live)',
       url: 'https://github.com/darcia2024/elmassa-katalog',
       image: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1200&q=80',
-      article: 'Katalog digital El Massa Tour & Travel telah resmi mencapai status operasional penuh dengan 12 paket ibadah yang seluruhnya terbuka dan siap diakses publik. Setiap paket kini dilengkapi brosur visual beresolusi tinggi, timeline itinerary perjalanan harian terperinci, pelacak kursi real-time, hingga simulator tabungan umrah mandiri bagi calon jamaah. Seluruh kode tersinkronisasi stabil pada branch main.',
-      nextStep: 'Kirim laporan komprehensif serah terima 12 paket ibadah ke manajemen El Massa Tour & Travel dan lampirkan invoice pelunasan akhir.',
-      critique: 'Fitur katalog sangat kaya dan melebihi ekspektasi standar web travel. Namun status penyelesaian 100% ini harus segera diiringi dengan penagihan. Begitu diserahkan penuh, daya tawar developer akan berkurang jika tagihan tidak dikirimkan serentak. Evaluasi: kirim invoice final hari ini juga.'
+      article: 'Platform Galeri & Katalog Web El Massa Tour & Travel telah resmi mencapai kesiapan operasional 100% dengan status live sempurna. Sebanyak 12 paket ibadah unggulan (mulai dari Umrah Reguler November 2026, paket akbar bersama Ustadz Hanan Attaki dengan flyer ganda interaktif JKT/PGK, Special Landing Madinah, Nisfu Sya\'ban, Awal Ramadan, paket Syawal 0 KM, hingga paket Liburan Sekolah Juni 2027) telah sepenuhnya unlocked dilengkapi brosur HD resmi, rincian jadwal, dan itinerary harian berstandar profesional.\n\nSistem telah dipersenjatai kapabilitas komersial mutakhir: live seat tracker terintegrasi, simulator kalkulator tabungan baitullah siap ekspor ke WhatsApp resmi (+62 811-7171-5125), sistem multi-filter e-commerce (kota keberangkatan, maskapai, kategori, bulan), serta dashboard admin pengelola mandiri (manajemen CRUD paket, bulk seat manager, master data kota & maskapai). Seluruh basis kode telah tersinkronisasi 100% pada branch main repository darcia2024/elmassa-katalog dengan penguncian versi cache EL_MASSA_APP_DATA_V36 guna menjamin stabilitas data pengunjung.',
+      nextStep: 'Kirimkan laporan komprehensif serah terima 12 paket ibadah dan akses dashboard admin ke manajemen El Massa Tour & Travel via WA resmi, lalu terbitkan invoice pembayaran final.',
+      critique: 'Pencapaian teknis dan kelengkapan 12 paket serta fitur admin sangat impresif melampaui rata-rata web katalog travel. Namun ada risiko operasional dan komersial nyata: sistem yang sudah 100% beroperasi di production tanpa invoice dan termin pelunasan yang terkunci membuat posisi tawar developer melemah. Evaluasi kritis: hindari penyerahan kredensial admin dan source code penuh sebelum dokumen invoice resmi terbit dan komitmen pembayaran termin pelunasan disepakati secara tertulis hari ini.'
     };
   }
 

@@ -589,12 +589,14 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "paidNumeric": 0,
       "unpaidNumeric": 0,
       "priority": "P2",
-      "currentGoal": "Proyek Galeri & Katalog Web El Massa 100% siap & aktif! 12 paket unlocked ber-flyer HD, itinerary harian, live seat tracker, simulator tabungan, dashboard admin, terhubung WA resmi +62 811-7171-5125, tersinkronisasi branch main.",
-      "nextAction": "Kirim laporan komprehensif & serah terima final ke manajemen El Massa Tour & Travel",
+      "currentGoal": "Proyek Galeri & Katalog Web El Massa 100% siap & aktif! 12 paket unlocked ber-flyer HD, itinerary harian, live seat tracker, simulator tabungan baitullah, dashboard admin, terhubung WA resmi +62 811-7171-5125, tersinkronisasi branch main (cache V36).",
+      "nextAction": "Kirim laporan komprehensif serah terima 12 paket ibadah dan akses dashboard admin ke manajemen El Massa Tour & Travel via WA resmi, lalu terbitkan invoice pembayaran final.",
       "definitionOfDone": "12 paket ibadah live, sistem operasional penuh, dan laporan tuntas diterima klien",
       "rule": "Semua fitur katalog & admin sudah beroperasi penuh. Fokus ke serah terima dan tindak lanjut pembayaran.",
       "billingMilestone": "Serah Terima Proyek Web & Invoice Final",
-      "followUpDeadline": "Hari ini"
+      "followUpDeadline": "Hari ini",
+      "newsArticle": "Platform Galeri & Katalog Web El Massa Tour & Travel telah resmi mencapai kesiapan operasional 100% dengan status live sempurna. Sebanyak 12 paket ibadah unggulan (mulai dari Umrah Reguler November 2026, paket akbar bersama Ustadz Hanan Attaki dengan flyer ganda interaktif JKT/PGK, Special Landing Madinah, Nisfu Sya'ban, Awal Ramadan, paket Syawal 0 KM, hingga paket Liburan Sekolah Juni 2027) telah sepenuhnya unlocked dilengkapi brosur HD resmi, rincian jadwal, dan itinerary harian berstandar profesional.\n\nSistem telah dipersenjatai kapabilitas komersial mutakhir: live seat tracker terintegrasi, simulator kalkulator tabungan baitullah siap ekspor ke WhatsApp resmi (+62 811-7171-5125), sistem multi-filter e-commerce (kota keberangkatan, maskapai, kategori, bulan), serta dashboard admin pengelola mandiri (manajemen CRUD paket, bulk seat manager, master data kota & maskapai). Seluruh basis kode telah tersinkronisasi 100% pada branch main repository darcia2024/elmassa-katalog dengan penguncian versi cache EL_MASSA_APP_DATA_V36 guna menjamin stabilitas data pengunjung.",
+      "newsCritique": "Pencapaian teknis dan kelengkapan 12 paket serta fitur admin sangat impresif melampaui rata-rata web katalog travel. Namun ada risiko operasional dan komersial nyata: sistem yang sudah 100% beroperasi di production tanpa invoice dan termin pelunasan yang terkunci membuat posisi tawar developer melemah. Evaluasi kritis: hindari penyerahan kredensial admin dan source code penuh sebelum dokumen invoice resmi terbit dan komitmen pembayaran termin pelunasan disepakati secara tertulis hari ini."
     },
     {
       "id": "p-ar-ruwad",
