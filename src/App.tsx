@@ -232,12 +232,12 @@ export function App() {
   const completedCount = state.todayBlocks.filter((b) => b.isDone).length;
 
   const tabLabels = {
-    today: 'Command Hub // Today Execution',
-    nextgo: 'Next Should Be Go // Strategic Directive Matrix',
-    lanes: 'Board & Lanes // Project Workspace',
-    waiting: 'Radar Pipeline // Pending Deals & Kickoffs',
-    money: 'Cashflow Matrix // Financial Telemetry',
-    deepwork: 'Focus Engine // Deep Work Pomodoro'
+    today: 'Sikat Hari Ini',
+    nextgo: 'Abis Ini Ngapain?',
+    lanes: 'Markas Project',
+    waiting: 'Radar Tagihan',
+    money: 'Cek Dompet & Cuan',
+    deepwork: 'Kamar Fokus'
   };
 
   if (!isLoaded && isAuthenticated) {
@@ -279,62 +279,74 @@ export function App() {
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-[#fafafa]">
         
         {/* Top Agency Editorial Breadcrumb Bar */}
-        <header className="hidden lg:flex items-center justify-between px-8 py-3.5 border-b border-zinc-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-20">
-          <div className="flex items-center gap-2.5 text-xs font-mono text-zinc-500">
-            {/* Quick toggle sidebar button in top bar */}
+        {/* Clean & Elegant Minimalist Header */}
+        <header className="hidden lg:flex items-center justify-between px-6 py-3 border-b border-zinc-200/70 bg-white/90 backdrop-blur-md sticky top-0 z-20 transition-all">
+          {/* Left: Sidebar Toggle, Brand, Breadcrumb & Subtle Live Dot */}
+          <div className="flex items-center gap-3">
             <button
               onClick={handleToggleSidebar}
-              title={isSidebarCollapsed ? 'Buka Sidebar (Expand)' : 'Tutup Sidebar (Collapse)'}
-              className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-600 hover:text-black transition-colors border border-transparent hover:border-zinc-200"
+              title={isSidebarCollapsed ? 'Buka Sidebar' : 'Tutup Sidebar'}
+              className="p-1.5 rounded-md hover:bg-zinc-100 text-zinc-400 hover:text-zinc-800 transition-colors"
             >
               <PanelLeft className="w-4 h-4" />
             </button>
-            <span className="text-[#111111] font-bold">Daru.OS</span>
-            <span className="text-zinc-300">/</span>
-            <span className="text-zinc-800 font-medium">{tabLabels[activeTab]}</span>
-            <span className="text-zinc-300">/</span>
-            <span className="px-2.5 py-0.5 rounded-full bg-[#ecfccb] text-[#3f6212] text-[10px] font-mono font-bold border border-[#d9f99d]">LIVE ACTIVE</span>
-            <span className="text-zinc-300">/</span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-mono font-bold border border-blue-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
-              {syncStatus?.cloudRedisConnected ? 'Cloud tersinkron' : syncStatus?.isOnline ? 'Server lokal' : 'Mode offline'}
-            </span>
+
+            <div className="h-3.5 w-px bg-zinc-200" />
+
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-semibold text-zinc-900 tracking-tight">Daru.OS</span>
+              <span className="text-zinc-300 font-normal">/</span>
+              <span className="font-medium text-zinc-600">{tabLabels[activeTab]}</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 pl-1.5" title={syncStatus?.cloudRedisConnected ? 'Cloud Online' : syncStatus?.isOnline ? 'Server Lokal' : 'Mode Offline'}>
+              <span className={`w-1.5 h-1.5 rounded-full ${syncStatus?.cloudRedisConnected ? 'bg-emerald-500 ring-2 ring-emerald-100' : syncStatus?.isOnline ? 'bg-blue-500 ring-2 ring-blue-100' : 'bg-zinc-400'}`} />
+              <span className="text-[11px] text-zinc-400 font-sans hidden xl:inline">
+                {syncStatus?.cloudRedisConnected ? 'Online' : syncStatus?.isOnline ? 'Lokal' : 'Offline'}
+              </span>
+            </div>
           </div>
 
+          {/* Right: Focused & Elegant Action Bar */}
           <div className="flex items-center gap-2">
+            {/* Primary Action: Catat Kas */}
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                setIsFinanceInputOpen(true);
+              }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-black text-white text-xs font-medium shadow-xs transition-all active:scale-98"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Catat Kas</span>
+            </button>
+
+            {/* Secondary Action: Buat Invoice */}
             <button
               onClick={() => {
                 soundManager.playClick();
                 setTargetInvoiceProject(null);
                 setIsInvoiceOpen(true);
               }}
-              className="pill-white text-xs font-mono flex items-center gap-1.5"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100/80 hover:bg-zinc-100 text-zinc-700 text-xs font-medium border border-zinc-200/60 transition-all active:scale-98"
             >
-              <Receipt className="w-3.5 h-3.5 text-zinc-700" />
-              <span>+ Buat Invoice ⌘I</span>
+              <Receipt className="w-3.5 h-3.5 text-zinc-500" />
+              <span>Invoice</span>
             </button>
 
-            <button
-              onClick={() => {
-                soundManager.playClick();
-                setIsFinanceInputOpen(true);
-              }}
-              className="pill-black text-xs font-mono flex items-center gap-1.5"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>+ Catat Kas</span>
-            </button>
+            <div className="h-3.5 w-px bg-zinc-200 mx-0.5" />
 
+            {/* Subtle Utility Actions */}
             <button
               onClick={() => {
                 soundManager.playClick();
                 setTargetFollowUpProject(null);
                 setIsFollowUpOpen(true);
               }}
-              className="pill-white text-xs font-mono flex items-center gap-1.5"
+              title="Template Follow Up WA"
+              className="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition-colors"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-zinc-500" />
-              <span>Copas WA</span>
+              <MessageSquare className="w-4 h-4" />
             </button>
 
             <button
@@ -342,10 +354,10 @@ export function App() {
                 soundManager.playClick();
                 setIsCopilotOpen((prev) => !prev);
               }}
-              className="px-3.5 py-1.5 rounded-full bg-[#fce7f3] hover:bg-[#fbcfe8] text-[#be185d] border border-[#fbcfe8] text-xs font-mono font-semibold transition-all flex items-center gap-1.5 shadow-sm"
+              title="Buka Partner AI (⌘K)"
+              className="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition-colors flex items-center gap-1 text-xs"
             >
-              <Bot className="w-3.5 h-3.5" />
-              <span>Partner ⌘K</span>
+              <Bot className="w-4 h-4" />
             </button>
 
             <button
@@ -355,7 +367,7 @@ export function App() {
                 setIsAuthenticated(false);
               }}
               title="Kunci Layar (Lock Device)"
-              className="p-2 rounded-full bg-white hover:bg-rose-50 text-zinc-400 hover:text-rose-600 border border-zinc-200 text-xs transition-all flex items-center justify-center shadow-sm"
+              className="p-1.5 rounded-full hover:bg-rose-50 text-zinc-400 hover:text-rose-600 transition-colors"
             >
               <Lock className="w-3.5 h-3.5" />
             </button>
