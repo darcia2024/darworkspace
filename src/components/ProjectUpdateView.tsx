@@ -13,8 +13,7 @@ import {
   CheckCircle2,
   Eye,
   Clock,
-  Layers,
-  Sparkles
+  Layers
 } from 'lucide-react';
 import { DaruWorkOSState, ProjectCard } from '../types';
 import { generateSingleProjectReport } from '../../shared/projectReport.js';
@@ -449,19 +448,6 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
     return allProjects.find((p) => p.id === activeProjectId) || allProjects[0];
   }, [allProjects, activeProjectId]);
 
-  // Filter categories
-  const categories = useMemo(() => {
-    const list = [
-      { id: 'all', label: 'Semua Liputan', count: allProjects.length },
-      { id: 'client_delivery', label: 'Client Delivery', count: allProjects.filter((p) => p.lane === 'client_delivery').length },
-      { id: 'own_product', label: 'Core Product (SaaS)', count: allProjects.filter((p) => p.lane === 'own_product').length },
-      { id: 'maintenance', label: 'Maintenance', count: allProjects.filter((p) => p.lane === 'maintenance').length },
-      { id: 'bizdev', label: 'Business Dev', count: allProjects.filter((p) => p.lane === 'bizdev').length },
-      { id: 'operations', label: 'Operations', count: allProjects.filter((p) => p.lane === 'operations').length },
-    ];
-    return list.filter((c) => c.count > 0 || c.id === 'all');
-  }, [allProjects]);
-
   // Filter projects by category and search
   const filteredProjects = useMemo(() => {
     return allProjects.filter((p) => {
@@ -581,107 +567,11 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
         </div>
       </div>
 
-      {/* 2. MAIN EDITORIAL RESPONSIVE LAYOUT (2-column on lg, 3-column on xl+) */}
+      {/* 2. MAIN EDITORIAL RESPONSIVE LAYOUT (Main Article + Related News) */}
       <div className="w-full flex flex-col xl:flex-row gap-6 xl:gap-8 items-start">
         
-        {/* Left & Center Content Group */}
-        <div className="w-full flex-1 flex flex-col lg:flex-row gap-6 items-start min-w-0">
-          {/* =========================================================================
-              LEFT COLUMN (~220px): USER CAPSULE & CATEGORIES (Matches Reference Left)
-              ========================================================================= */}
-          <aside className="w-full lg:w-52 xl:w-56 shrink-0 space-y-4">
-          {/* Author / Editorial Profile Capsule Card */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-white font-medium text-xs shadow-xs">
-                  DW
-                </div>
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
-              </div>
-              <div className="min-w-0">
-                <h4 className="text-xs font-semibold text-zinc-900 tracking-tight truncate">Daru Redaksi</h4>
-                <p className="text-[11px] text-zinc-500 font-normal truncate">Lead OS Engine</p>
-              </div>
-            </div>
-            <div className="mt-3 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
-              <span>Total Liputan</span>
-              <span className="font-semibold text-zinc-900">{allProjects.length} Proyek</span>
-            </div>
-          </div>
-
-          {/* Category Navigation List */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs space-y-3">
-            <h3 className="text-xs font-bold tracking-tight text-zinc-900 uppercase">
-              Category
-            </h3>
-            <nav className="space-y-1">
-              {categories.map((cat) => {
-                const isActive = selectedCategory === cat.id;
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-xl transition-all text-left font-normal ${
-                      isActive
-                        ? 'bg-rose-50 text-rose-700 font-medium'
-                        : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50'
-                    }`}
-                  >
-                    <span className="truncate">{cat.label}</span>
-                    <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                        isActive
-                          ? 'bg-rose-500 text-white font-semibold'
-                          : 'text-zinc-500 bg-zinc-100'
-                      }`}
-                    >
-                      {cat.count}
-                    </span>
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          {/* Quick Context & Board Jump */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 space-y-3 shadow-xs">
-            <div className="flex items-center gap-2 text-zinc-900">
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <h4 className="text-xs font-medium">Navigasi Workspace</h4>
-            </div>
-            <p className="text-[11px] leading-relaxed text-zinc-500 font-normal">
-              Liputan berita dipetakan otomatis dari database proyek dan radar keuangan aktif.
-            </p>
-            <div className="pt-2 border-t border-zinc-100 flex flex-col gap-1 text-xs">
-              <button
-                onClick={() => onSelectTab('lanes')}
-                className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
-              >
-                <span>Markas Project</span>
-                <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-              </button>
-              <button
-                onClick={() => onSelectTab('waiting')}
-                className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
-              >
-                <span>Radar Tagihan</span>
-                <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-              </button>
-              <button
-                onClick={() => onSelectTab('money')}
-                className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
-              >
-                <span>Cek Dompet & Kas</span>
-                <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-              </button>
-            </div>
-          </div>
-        </aside>
-
         {/* =========================================================================
-            CENTER COLUMN: MAIN ARTICLE & EDITORIAL PROSE (Matches Reference Center)
-            flex-1 min-w-0 ensures no horizontal squishing
+            MAIN COLUMN: ARTICLE & EDITORIAL PROSE
             ========================================================================= */}
         <div className="flex-1 min-w-0 w-full space-y-6">
           {/* Category Breadcrumb Kicker */}
@@ -917,7 +807,6 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
             </button>
           </div>
         </div>
-      </div>
 
         {/* =========================================================================
             RIGHT COLUMN (~280-320px): "RELATED NEWS" (Matches Reference Right)
