@@ -22,6 +22,8 @@ export function normalizeState(raw: Partial<DaruWorkOSState>): DaruWorkOSState {
       if (bp) {
         return {
           ...p,
+          currentGoal: bp.currentGoal || p.currentGoal,
+          nextAction: bp.nextAction || p.nextAction,
           newsArticle: bp.newsArticle || p.newsArticle,
           newsCritique: bp.newsCritique || p.newsCritique,
         };

@@ -160,58 +160,251 @@ const getStorytellingCritique = (project: ProjectCard): string => {
   return `Pertahankan fokus eksekusi satu arah. Hindari multitasking liar yang bikin energi terpecah, dan tuntaskan langkah berikutnya sebelum berpindah ke proyek lain.`;
 };
 
-// Formats content paragraphs and headers cleanly
+// Inline formatting helper (supports **bold**, *italic*, `code`)
+const renderInlineFormattedText = (text: string) => {
+  if (!text) return null;
+  const regex = /(\*\*[^*]+?\*\*|`[^`]+?`|\*[^*]+?\*)/g;
+  const parts = text.split(regex);
+
+  return parts.map((part, idx) => {
+    if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
+      return (
+        <strong key={idx} className="font-semibold text-zinc-900">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (part.startsWith('`') && part.endsWith('`') && part.length >= 2) {
+      return (
+        <code
+          key={idx}
+          className="px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-800 text-[12px] sm:text-[13px] font-mono border border-zinc-200/70"
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    if (part.startsWith('*') && part.endsWith('*') && part.length >= 2) {
+      return (
+        <em key={idx} className="italic text-zinc-700">
+          {part.slice(1, -1)}
+        </em>
+      );
+    }
+    return part;
+  });
+};
+
+const parseTableRow = (line: string): string[] => {
+  let cleaned = line.trim();
+  if (cleaned.startsWith('|')) cleaned = cleaned.slice(1);
+  if (cleaned.endsWith('|')) cleaned = cleaned.slice(0, -1);
+  return cleaned.split('|').map((cell) => cell.trim());
+};
+
+const parseAlignments = (line: string): ('text-left' | 'text-center' | 'text-right')[] => {
+  const cells = parseTableRow(line);
+  return cells.map((cell) => {
+    const trimmed = cell.trim();
+    if (trimmed.startsWith(':') && trimmed.endsWith(':')) return 'text-center';
+    if (trimmed.endsWith(':')) return 'text-right';
+    return 'text-left';
+  });
+};
+
+const isTableBlock = (text: string): boolean => {
+  const lines = text.trim().split('\n').map((l) => l.trim()).filter(Boolean);
+  return (
+    lines.length >= 2 &&
+    lines.some((l) => l.includes('|') && /\|?\s*[-:]{2,}/.test(l))
+  );
+};
+
+const renderMarkdownTable = (block: string, key: number | string) => {
+  const lines = block
+    .trim()
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0 && l.includes('|'));
+
+  if (lines.length < 2) return null;
+
+  const sepIdx = lines.findIndex(
+    (l) => l.includes('---') || /\|?\s*[-:]{2,}\s*\|/.test(l)
+  );
+  if (sepIdx <= 0) return null;
+
+  const headerLine = lines[sepIdx - 1];
+  const sepLine = lines[sepIdx];
+  const dataLines = lines.slice(sepIdx + 1);
+
+  const headers = parseTableRow(headerLine);
+  const alignments = parseAlignments(sepLine);
+
+  return (
+    <div
+      key={key}
+      className="my-5 w-full overflow-x-auto rounded-xl border border-zinc-200/90 bg-white shadow-2xs"
+    >
+      <table className="w-full min-w-[580px] text-left text-xs sm:text-sm text-zinc-700 border-collapse">
+        <thead className="bg-zinc-50/90 text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-800 border-b border-zinc-200">
+          <tr>
+            {headers.map((h, hIdx) => (
+              <th
+                key={hIdx}
+                className={`px-3.5 py-3 font-semibold ${alignments[hIdx] || 'text-left'}`}
+              >
+                {renderInlineFormattedText(h)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-zinc-100 text-xs sm:text-sm">
+          {dataLines.map((rowLine, rIdx) => {
+            const cells = parseTableRow(rowLine);
+            return (
+              <tr
+                key={rIdx}
+                className={
+                  rIdx % 2 === 0
+                    ? 'bg-white hover:bg-zinc-50/70 transition-colors'
+                    : 'bg-zinc-50/35 hover:bg-zinc-50/70 transition-colors'
+                }
+              >
+                {cells.map((cell, cIdx) => (
+                  <td
+                    key={cIdx}
+                    className={`px-3.5 py-2.5 leading-relaxed text-zinc-700 ${
+                      alignments[cIdx] || 'text-left'
+                    }`}
+                  >
+                    {renderInlineFormattedText(cell)}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+// Formats content paragraphs, markdown tables, headers, dividers, quotes, and lists cleanly
 const renderFormattedBody = (content: string) => {
   if (!content) return null;
 
-  const sections = content.split('\n\n');
+  // Normalize newlines and ensure headers and dividers stand as separate sections
+  const normalized = content
+    .replace(/\r\n/g, '\n')
+    .replace(/(^|\n)(#{2,3}\s+[^\n]+)/g, '$1\n$2\n')
+    .replace(/(^|\n)(---|\*\*\*)(\n|$)/g, '$1\n$2\n$3');
+
+  const sections = normalized
+    .split(/\n\s*\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   return (
     <div className="space-y-5 text-sm sm:text-[15px] font-normal leading-[1.8] text-zinc-600 tracking-[-0.01em]">
       {sections.map((section, idx) => {
-        const trimmed = section.trim();
-        if (!trimmed) return null;
+        const trimmed = section;
+
+        // Divider --- or ***
+        if (trimmed === '---' || trimmed === '***') {
+          return <hr key={idx} className="my-7 border-t border-zinc-200" />;
+        }
+
+        // Heading 2 ##
+        if (trimmed.startsWith('## ')) {
+          return (
+            <h2
+              key={idx}
+              className="mt-8 mb-4 text-base sm:text-lg font-medium tracking-tight text-zinc-900 border-b border-zinc-100 pb-2.5 flex items-center gap-2.5"
+            >
+              <span className="inline-block w-1.5 h-4 bg-rose-500 rounded-full shrink-0" />
+              <span>{renderInlineFormattedText(trimmed.replace(/^##\s*/, ''))}</span>
+            </h2>
+          );
+        }
 
         // Subheading ###
         if (trimmed.startsWith('### ')) {
           return (
             <h3
               key={idx}
-              className="mt-8 mb-3 text-lg font-medium tracking-tight text-zinc-900 border-b border-zinc-100 pb-2 flex items-center gap-2"
+              className="mt-6 mb-3 text-sm sm:text-base font-medium tracking-tight text-zinc-900 border-b border-zinc-100 pb-2 flex items-center gap-2"
             >
-              <span className="inline-block w-1.5 h-4 bg-rose-500 rounded-full" />
-              {trimmed.replace(/^###\s*/, '')}
+              <span className="inline-block w-1.5 h-3.5 bg-rose-400 rounded-full shrink-0" />
+              <span>{renderInlineFormattedText(trimmed.replace(/^###\s*/, ''))}</span>
             </h3>
           );
         }
 
-        // Bullet lists
+        // Blockquote >
+        if (trimmed.startsWith('>')) {
+          const quoteContent = trimmed
+            .split('\n')
+            .map((line) => line.replace(/^>\s?/, ''))
+            .join(' ');
+          return (
+            <blockquote
+              key={idx}
+              className="my-5 rounded-xl border-l-4 border-rose-500 bg-rose-50/60 px-4 py-3 text-xs sm:text-sm font-medium text-zinc-800 leading-relaxed shadow-2xs"
+            >
+              {renderInlineFormattedText(quoteContent)}
+            </blockquote>
+          );
+        }
+
+        // Markdown Table
+        if (isTableBlock(trimmed)) {
+          return renderMarkdownTable(trimmed, idx);
+        }
+
+        // Numbered list (e.g. 1. , 2. )
+        if (/^\d+\.\s/.test(trimmed)) {
+          const lines = trimmed.split('\n');
+          return (
+            <ol key={idx} className="my-3 space-y-2.5 text-xs sm:text-sm leading-relaxed">
+              {lines.map((line, lIdx) => {
+                const match = line.trim().match(/^(\d+)\.\s+(.*)$/);
+                if (!match) {
+                  return line.trim() ? (
+                    <p key={lIdx} className="text-zinc-600 pl-7">
+                      {renderInlineFormattedText(line.trim())}
+                    </p>
+                  ) : null;
+                }
+                const num = match[1];
+                const text = match[2];
+                return (
+                  <li key={lIdx} className="flex items-start gap-2.5 text-zinc-600">
+                    <span className="w-5 h-5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-semibold flex items-center justify-center shrink-0 mt-0.5">
+                      {num}
+                    </span>
+                    <span className="flex-1 min-w-0">{renderInlineFormattedText(text)}</span>
+                  </li>
+                );
+              })}
+            </ol>
+          );
+        }
+
+        // Bullet lists (- )
         if (trimmed.includes('\n- ') || trimmed.startsWith('- ')) {
           const lines = trimmed.split('\n');
           return (
-            <ul key={idx} className="my-3 space-y-2.5">
+            <ul key={idx} className="my-3 space-y-2.5 text-xs sm:text-sm leading-relaxed">
               {lines.map((line, lIdx) => {
                 const isBullet = line.trim().startsWith('- ');
                 const text = isBullet ? line.trim().replace(/^-\s*/, '') : line.trim();
                 if (!text) return null;
 
-                // Split bold markers if any
-                const chunks = text.split(/(\*\*[^*]+\*\*)/g);
-
                 return (
                   <li key={lIdx} className="flex items-start gap-2.5 text-zinc-600">
                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
-                    <span>
-                      {chunks.map((chunk, cIdx) =>
-                        chunk.startsWith('**') && chunk.endsWith('**') ? (
-                          <strong key={cIdx} className="font-semibold text-zinc-900">
-                            {chunk.slice(2, -2)}
-                          </strong>
-                        ) : (
-                          chunk
-                        )
-                      )}
-                    </span>
+                    <span className="flex-1 min-w-0">{renderInlineFormattedText(text)}</span>
                   </li>
                 );
               })}
@@ -220,18 +413,9 @@ const renderFormattedBody = (content: string) => {
         }
 
         // Standard Paragraph
-        const chunks = trimmed.split(/(\*\*[^*]+\*\*)/g);
         return (
           <p key={idx} className="first-of-type:text-[15px] first-of-type:leading-relaxed text-zinc-700">
-            {chunks.map((chunk, cIdx) =>
-              chunk.startsWith('**') && chunk.endsWith('**') ? (
-                <strong key={cIdx} className="font-semibold text-zinc-900">
-                  {chunk.slice(2, -2)}
-                </strong>
-              ) : (
-                chunk
-              )
-            )}
+            {renderInlineFormattedText(trimmed)}
           </p>
         );
       })}
@@ -652,10 +836,12 @@ ${getStorytellingCritique(currentProject)}
             </div>
 
             <div className="p-4 rounded-xl bg-white border border-emerald-100 shadow-2xs space-y-2">
-              <p className="text-sm text-zinc-800 font-normal leading-relaxed">
-                {currentProject.nextAction ||
-                  'Tentukan satu aksi konkret follow-up atau serah terima di board proyek.'}
-              </p>
+              <div className="text-sm text-zinc-800 font-normal leading-relaxed">
+                {renderFormattedBody(
+                  currentProject.nextAction ||
+                    'Tentukan satu aksi konkret follow-up atau serah terima di board proyek.'
+                )}
+              </div>
               {currentProject.billingMilestone && (
                 <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
                   <span className="font-medium text-zinc-700">Target Milestone:</span>
@@ -702,9 +888,9 @@ ${getStorytellingCritique(currentProject)}
             </div>
 
             <div className="p-4 rounded-xl bg-white border border-rose-100 shadow-2xs">
-              <p className="text-sm text-zinc-700 font-normal leading-relaxed whitespace-pre-line">
-                {getStorytellingCritique(currentProject)}
-              </p>
+              <div className="text-sm text-zinc-700 font-normal leading-relaxed">
+                {renderFormattedBody(getStorytellingCritique(currentProject))}
+              </div>
               {currentProject.unpaidNumeric > 0 && !currentProject.newsCritique && (
                 <p className="mt-2.5 pt-2 border-t border-zinc-100 text-xs text-rose-600 font-medium">
                   ⚠️ Tagihan belum tertagih: Rp{currentProject.unpaidNumeric.toLocaleString('id-ID')} (Jaga arus kas nyata sebelum menganggap ini sebagai pendapatan masuk).
