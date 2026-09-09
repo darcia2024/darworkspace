@@ -1,827 +1,796 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  ProjectCard, 
-  LaneType, 
-  BoardColumn, 
-  PriorityLevel 
-} from '../types';
-import { soundManager } from '../utils/audio';
-import { 
-  Play, 
-  Check, 
-  Plus, 
-  Save, 
-  Edit3, 
-  Compass, 
-  AlertTriangle, 
-  CheckCircle2, 
-  ArrowRight, 
-  Search, 
-  Clock, 
-  DollarSign, 
-  ExternalLink,
-  Layers,
-  FolderOpen,
+import React, { useMemo, useState } from 'react';
+import {
+  Newspaper,
+  Compass,
+  ArrowUpRight,
+  Clipboard,
+  Download,
   Share2,
   Bookmark,
+  ExternalLink,
+  Search,
   ChevronRight,
-  Sparkles,
-  Maximize2,
-  Volume2
+  TrendingUp,
+  AlertTriangle,
+  Lightbulb,
+  CheckCircle2,
+  Eye,
+  MessageCircle,
+  FileText,
+  SlidersHorizontal,
+  Clock,
+  Send,
+  Layers,
+  Sparkles
 } from 'lucide-react';
+import { DaruWorkOSState, ProjectCard } from '../types';
 
 interface ProjectUpdateViewProps {
-  projects: ProjectCard[];
-  onUpdateProject: (project: ProjectCard) => void;
-  onAddProject?: (project: Omit<ProjectCard, 'id'>) => void;
+  state: DaruWorkOSState;
   onSelectTab: (tab: string) => void;
+  onUpdateProject?: (project: ProjectCard) => void;
 }
 
-const laneLabels: Record<LaneType, string> = {
+const laneLabelMap: Record<string, string> = {
   client_delivery: 'Client Delivery',
   maintenance: 'Maintenance',
-  bizdev: 'BizDev & Sales',
+  bizdev: 'Business Dev',
   own_product: 'Core Product',
-  operations: 'Daily Operations',
-  parking_lot: 'Parking Lot'
+  operations: 'Operations',
+  parking_lot: 'Archive / Parked',
 };
 
-const columnLabels: Record<BoardColumn, string> = {
-  DOING: 'Sedang Dikerjakan (Doing)',
-  QUEUE: 'Antrian Eksekusi (Queue)',
-  WAITING: 'Menunggu Klien / Bayar (Waiting)',
-  DONE: 'Selesai Tuntas (Done)',
-  PARKED: 'Diparkir Dulu (Parked)'
+const columnBadgeMap: Record<string, { label: string; bg: string; text: string; border: string }> = {
+  DOING: { label: 'In Production', bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-rose-100' },
+  QUEUE: { label: 'Upcoming Sprint', bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-100' },
+  WAITING: { label: 'Waiting Client', bg: 'bg-sky-50', text: 'text-sky-600', border: 'border-sky-100' },
+  DONE: { label: '100% Deployed', bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100' },
+  PARKED: { label: 'Parked', bg: 'bg-zinc-100', text: 'text-zinc-600', border: 'border-zinc-200' },
 };
 
-function getProjectMediaInfo(project: ProjectCard) {
-  if (project.id === 'p-pgs-tour') {
-    return {
-      category: 'Web Development & PPIU Travel',
-      duration: '15 Pages Prerendered',
-      headline: 'Peluncuran Platform Resmi PGS Tour & Travel di pgstour.vercel.app',
-      url: 'https://pgstour.vercel.app',
-      image: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1200&q=80',
-      article: 'PGS Tour & Travel resmi mencatatkan tonggak sejarah baru dalam digitalisasi layanan umrah mereka. Seluruh 15 halaman statis berhasil di-prerender dan live sempurna di pgstour.vercel.app. Navigasi mobile kini mengadopsi standar editorial modern tanpa ornamen berlebih, trust strip legalitas izin PPIU Kemenag tertata rapi dalam layout dua kolom yang kokoh, dan kendala galeri jamaah di perangkat seluler telah teratasi tuntas menggunakan multi-source WebP fallback.',
-      nextStep: 'Showcase live demo pgstour.vercel.app ke owner PGS Tour, presentasikan 15 halaman yang sudah aktif, dan kunci kesepakatan nilai kontrak pengerjaan.',
-      critique: 'Pekerjaan antarmuka dan performa teknis sudah 100% matang, namun ikatan kontrak resmi belum diformalkan sebelum serah terima. Evaluasi: jangan biarkan website live dimanfaatkan tanpa kepastian nominal invoice atau DP komitmen tertulis. Kunci invoice pengerjaan hari ini.'
-    };
-  }
+// Fallback high-res editorial poster images per category / project type
+const projectVisuals: Record<string, string> = {
+  'p-el-massa': 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1400&auto=format&fit=crop', // Kaaba / Pilgrimage
+  'p-pgs-tour': 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop', // Luxury Travel / Airplane
+  'p-umi-elly': 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1400&auto=format&fit=crop', // Education / LMS
+  'p-barber': 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1400&auto=format&fit=crop', // Barber / Grooming
+  'p-hamasah-ai': 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1400&auto=format&fit=crop', // Abstract AI Tech
+  'p-kael-product': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1400&auto=format&fit=crop', // Dashboard / SaaS
+  'p-ifdony-azharuna': 'https://images.unsplash.com/photo-1600132806370-bf17e65e942f?q=80&w=1400&auto=format&fit=crop', // Calligraphy / Brand
+  default: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1400&auto=format&fit=crop', // Modern architecture
+};
 
+const getProjectVisual = (project: ProjectCard) => {
+  return projectVisuals[project.id] || projectVisuals.default;
+};
+
+// Generates an editorial headline if missing
+const getEditorialHeadline = (project: ProjectCard) => {
   if (project.id === 'p-el-massa') {
-    return {
-      category: 'Digital Catalog & Interactive Booking',
-      duration: '12 Paket Ibadah 100% Live',
-      headline: 'Peluncuran Penuh Galeri & Katalog Web El Massa Tour & Travel (12 Paket Ibadah Live)',
-      url: 'https://github.com/darcia2024/elmassa-katalog',
-      image: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?auto=format&fit=crop&w=1200&q=80',
-      article: 'Platform digital Galeri & Katalog Web El Massa Tour & Travel secara resmi mencapai kesiapan operasional 100% dengan status live penuh di lini produksi. Tonggak pencapaian ini menandai transformasi menyeluruh dari etalase travel konvensional menjadi ekosistem digital interaktif yang siap melayani calon jemaah secara mandiri.\n\n### 1. Kesiapan Penuh 12 Paket Ibadah Unggulan\nSeluruh 12 paket ibadah kini telah sepenuhnya unlocked, memiliki brosur grafis HD resmi, rincian jadwal penerbangan, serta itinerary harian mendalam:\n- Umrah Special November Reguler (03 - 13 Nov 2026) · Saudia Landing Madinah · Rp34,7 Jt\n- Umrah Bersama Ust. Hanan Attaki (16/17 - 26/27 Nov 2026) · Direct SV821 · Dual Flyer JKT (Rp35 Jt) & PGK (Rp37,6 Jt)\n- Umrah Akhir Tahun Landing Madinah (12 - 23 Des 2026) · Saudia · Rp32,9 Jt\n- Umrah Nisfu Sya\'ban di Mekkah (20 - 30 Jan 2027) · Garuda Indonesia · Rp34,7 Jt\n- Umrah Istimewa Awal Ramadan (05 - 15 Feb 2027) · Saudia Airlines · Rp35,7 Jt\n- Umrah Sayang Orang Tua Bersama IMB (16 - 27 Mar 2027 Syawal) · Olayan Ajyad 0 KM · Rp35,7 Jt\n- Umrah Bersama Ust. Dr. H. Muhammad Kurnia (16 - 27 Mar 2027) · Olayan Ajyad 0 KM · Rp35,7 Jt\n- Umrah Lebih Nyaman Syawal Program 9H & 12H (Maret 2027) · Garuda/Saudia · Rp31,7 Jt & Rp34,7 Jt\n- Umrah Muharram Awal Musim (Juni 2027) · Saudia · Rp31,7 Jt\n- Umrah Liburan Sekolah Program 9H & 12H (Akhir Juni 2027) · Qatar/Etihad · Rp30,9 Jt & Rp33,7 Jt\n\n### 2. Fitur E-Commerce & Konversi Calon Jemaah\nPlatform tidak sekadar menyajikan brosur statis, melainkan dilengkapi serangkaian modul cerdas yang dirancang untuk mempercepat konversi penjualan:\n- Card Interaktif Ustadz Hanan Attaki dengan Dual Price Badge dan modal komparasi visual flyer keberangkatan Jakarta vs Pangkal Pinang.\n- Live Seat Tracker per paket (Tersedia, Terbatas, Hampir Penuh, Penuh) untuk memicu urgensi pemesanan jemaah.\n- Simulator Tabungan Baitullah (Kalkulator Umrah interaktif) yang mampu menghitung tabungan per bulan jemaah dan menghasilkan ringkasan rapi siap kirim ke WhatsApp resmi (+62 811-7171-5125).\n- Multi-Filter E-Commerce lengkap di sidebar (filter kota, kategori, maskapai, bulan) dan sub-navbar quick pills.\n\n### 3. Kemandirian Dashboard Pengelola & Stabilitas Sistem\nBeban operasional tim manajemen diminimalkan lewat Dashboard Admin terintegrasi yang mencakup CRUD paket, Bulk Seat Manager, serta master data kota dan maskapai. Seluruh kode telah tersinkronisasi 100% ke repository GitHub darcia2024/elmassa-katalog pada branch main dengan penguncian versi cache browser EL_MASSA_APP_DATA_V36 guna memastikan data pengunjung selalu mutakhir tanpa resiko kendala cache usang.',
-      nextStep: 'Kirimkan laporan komprehensif serah terima 12 paket ibadah dan akses dashboard admin ke manajemen El Massa Tour & Travel via WA resmi, lalu terbitkan invoice pembayaran final.',
-      critique: 'Pencapaian teknis dan kelengkapan 12 paket serta fitur admin sangat impresif melampaui rata-rata web katalog travel. Namun ada risiko operasional dan komersial nyata: sistem yang sudah 100% beroperasi di production tanpa invoice dan termin pelunasan yang terkunci membuat posisi tawar developer melemah. Evaluasi kritis: hindari penyerahan kredensial admin dan source code penuh sebelum dokumen invoice resmi terbit dan komitmen pembayaran termin pelunasan disepakati secara tertulis hari ini.'
-    };
+    return 'Katalog Web El Massa Tour & Travel Capai Kesiapan 100% dengan 12 Paket Ibadah Live';
   }
-
+  if (project.id === 'p-pgs-tour') {
+    return 'Showcase Website PGS Tour Sukses Rilis 15 Halaman Statis di Jalur Produksi';
+  }
   if (project.id === 'p-umi-elly') {
-    return {
-      category: 'EdTech & Learning Management System',
-      duration: 'Modul Inti Azhariyah',
-      headline: 'Pembangunan Platform LMS Peradaban Islam Azhariyah Bersama Umi Elly',
-      url: '#',
-      image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
-      article: 'Platform inti LMS Peradaban Islam Azhariyah telah selesai dibangun dan kini memasuki tahap peninjauan langsung bersama Umi Elly. Tim mendampingi penyusunan struktur kurikulum dan penataan modul materi digital agar ramah pengguna bagi pengajar maupun santri.',
-      nextStep: 'Review platform bersama Umi Elly dan pandu input kurikulum modul pembelajaran termin pertama.',
-      critique: 'DP Termin 1 (Rp3.000.000) sudah aman di kas. Namun risiko proyek edukasi adalah pembengkakan lingkup materi (scope creep). Evaluasi: batasi sesi review maksimal dua kali dan tetapkan batas akhir penyerahan materi sebelum masuk termin berikutnya.'
-    };
+    return 'LMS Peradaban Islam Azhariyah Masuki Tahap Kurikulum & Integrasi Modul';
   }
-
-  if (project.id === 'p-hamasah-ai') {
-    return {
-      category: 'AI Architecture & Business Discovery',
-      duration: 'Discovery & Proposal Phase',
-      headline: 'Discovery Integrasi Kecerdasan Buatan (AI) untuk Hamasah Internasional',
-      url: '#',
-      image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80',
-      article: 'Inisiatif integrasi teknologi AI pada situs web Hamasah Internasional telah dibuka melalui sesi discovery meeting langsung bersama pemilik perusahaan. Agenda berpusat pada pemetaan use-case konkret yang dapat mengotomatisasi konversi prospek dan efisiensi operasional.',
-      nextStep: 'Meeting dengan owner Hamasah Internasional: dengar kebutuhan AI, petakan use-case konkrit & rumuskan estimasi investasi.',
-      critique: 'Diskusi eksplorasi rentan menjadi obrolan tanpa ujung bila developer tidak menyajikan batasan paket. Evaluasi: segera susun proposal 1-halaman berisi 2 opsi paket AI konkret dengan harga pasti.'
-    };
+  if (project.currentGoal && project.currentGoal.length > 20) {
+    return `${project.name}: ${project.currentGoal.split('.')[0]}`;
   }
+  return `Laporan Strategis & Progres Lapangan Terkini: ${project.name}`;
+};
 
-  // Fallback
-  return {
-    category: laneLabels[project.lane] || 'Software & Operations',
-    duration: project.timebox || 'Active Sprint',
-    headline: `Laporan Operasional & Progres Proyek ${project.name}`,
-    url: '#',
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
-    article: project.newsArticle || `Inisiatif ${project.name} saat ini berada dalam fase ${columnLabels[project.boardColumn]}. Fokus diarahkan pada target: "${project.currentGoal || project.nextAction || 'Penyelesaian deliverable utama'}" dengan alokasi prioritas ${project.priority}.`,
-    nextStep: project.nextAction || 'Tentukan langkah aksi konkrit berikutnya di board.',
-    critique: project.newsCritique || 'Evaluasi: pastikan setiap tahapan kerja memiliki kriteria selesai yang terukur dan tidak menunda konfirmasi pembayaran atau feedback penting dari klien.'
-  };
-}
+// Formats content paragraphs and headers cleanly
+const renderFormattedBody = (content: string) => {
+  if (!content) return null;
 
-export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({
-  projects,
-  onUpdateProject,
-  onAddProject,
-  onSelectTab
-}) => {
-  const [selectedProjectId, setSelectedProjectId] = useState<string>(() => {
-    const elMassa = projects.find(p => p.id === 'p-el-massa');
-    return elMassa ? elMassa.id : (projects[0]?.id || '');
-  });
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterLane, setFilterLane] = useState<string>('all');
-  const [isSavedNotice, setIsSavedNotice] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [activeRightTab, setActiveRightTab] = useState<'all_projects' | 'resources' | 'notes'>('all_projects');
-
-  // New Project State
-  const [isAddingNew, setIsAddingNew] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newLane, setNewLane] = useState<LaneType>('client_delivery');
-  const [newNominal, setNewNominal] = useState(0);
-  const [newAction, setNewAction] = useState('');
-
-  const selectedProject = projects.find(p => p.id === selectedProjectId) || projects[0];
-  const [draft, setDraft] = useState<ProjectCard>(selectedProject || projects[0]);
-
-  useEffect(() => {
-    if (selectedProject) {
-      const media = getProjectMediaInfo(selectedProject);
-      setDraft({
-        ...selectedProject,
-        newsArticle: selectedProject.newsArticle || media.article,
-        newsCritique: selectedProject.newsCritique || media.critique
-      });
-    }
-  }, [selectedProjectId, selectedProject]);
-
-  const filteredProjects = projects.filter(p => {
-    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        (p.nextAction && p.nextAction.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchLane = filterLane === 'all' || p.lane === filterLane;
-    return matchSearch && matchLane;
-  });
-
-  const handleFieldChange = <K extends keyof ProjectCard>(key: K, value: ProjectCard[K]) => {
-    setDraft(prev => ({
-      ...prev,
-      [key]: value
-    }));
-  };
-
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!draft.name.trim()) return;
-
-    soundManager.playClick();
-
-    const nominal = Number(draft.nominalNumeric || 0);
-    const paid = Number(draft.paidNumeric || 0);
-    const updatedPaymentStatus = paid > 0 
-      ? (paid >= nominal && nominal > 0 ? 'Paid' : 'Partial')
-      : (draft.paymentStatus || 'Expected');
-
-    const updated: ProjectCard = {
-      ...draft,
-      name: draft.name.trim(),
-      nominalNumeric: nominal,
-      paidNumeric: paid,
-      unpaidNumeric: Math.max(0, nominal - paid),
-      valueText: nominal > 0 ? `Rp${nominal.toLocaleString('id-ID')}` : draft.valueText,
-      paymentStatus: updatedPaymentStatus
-    };
-
-    onUpdateProject(updated);
-    setIsSavedNotice(true);
-    setIsEditMode(false);
-    setTimeout(() => setIsSavedNotice(false), 2500);
-  };
-
-  const handleCreateNewProject = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newName.trim() || !onAddProject) return;
-
-    soundManager.playClick();
-    onAddProject({
-      name: newName.trim(),
-      lane: newLane,
-      boardColumn: 'QUEUE',
-      status: 'Queue',
-      paymentStatus: newNominal > 0 ? 'Expected' : 'Free',
-      valueText: newNominal > 0 ? `Rp${newNominal.toLocaleString('id-ID')}` : 'Internal Project',
-      nominalNumeric: newNominal,
-      paidNumeric: 0,
-      unpaidNumeric: newNominal,
-      priority: 'P2',
-      currentGoal: 'Inisiasi dan kickoff pengerjaan proyek',
-      nextAction: newAction.trim() || 'Rencanakan langkah awal proyek',
-      billingMilestone: newNominal > 0 ? 'Kickoff DP' : 'Non-billable',
-      followUpDeadline: 'Hari ini',
-      newsArticle: `Inisiatif baru ${newName.trim()} telah resmi dibuka dalam pipeline kerja Daru.OS. Tim memfokuskan persiapan pada langkah konkrit awal: ${newAction.trim() || 'penyusunan requirement'}.`,
-      newsCritique: 'Evaluasi awal: pastikan komitmen pembayaran atau ruang lingkup telah terkunci tertulis sebelum pengerjaan intensif dimulai.'
-    });
-
-    setNewName('');
-    setNewAction('');
-    setNewNominal(0);
-    setIsAddingNew(false);
-  };
-
-  const rupiah = (num?: number) => {
-    if (!num) return 'Rp0';
-    return `Rp${num.toLocaleString('id-ID')}`;
-  };
-
-  const mediaInfo = draft ? getProjectMediaInfo(draft) : getProjectMediaInfo(projects[0]);
+  const sections = content.split('\n\n');
 
   return (
-    <div className="space-y-6 font-sans select-none">
-      
-      {/* Top Breadcrumb & User Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-xs text-zinc-500">
-          <span className="font-semibold text-zinc-800">Laporan Proyek</span>
-          <span className="text-zinc-300">·</span>
-          <span className="text-zinc-700 font-medium truncate max-w-xs">{draft.name}</span>
-        </div>
+    <div className="space-y-5 text-sm sm:text-[15px] font-normal leading-[1.8] text-zinc-600 tracking-[-0.01em]">
+      {sections.map((section, idx) => {
+        const trimmed = section.trim();
+        if (!trimmed) return null;
 
-        <div className="flex items-center gap-2 text-xs">
-          {isSavedNotice && (
-            <span className="text-emerald-600 font-medium flex items-center gap-1 animate-fade-in">
-              <Check className="w-3.5 h-3.5" />
-              Tersinkronisasi ke Seluruh Dashboard
-            </span>
-          )}
-          
-          <button
-            onClick={() => setIsAddingNew(prev => !prev)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-medium transition-all"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>{isAddingNew ? 'Tutup Form' : '+ Proyek Baru'}</span>
-          </button>
+        // Subheading ###
+        if (trimmed.startsWith('### ')) {
+          return (
+            <h3
+              key={idx}
+              className="mt-8 mb-3 text-lg font-medium tracking-tight text-zinc-900 border-b border-zinc-100 pb-2 flex items-center gap-2"
+            >
+              <span className="inline-block w-1.5 h-4 bg-rose-500 rounded-full" />
+              {trimmed.replace(/^###\s*/, '')}
+            </h3>
+          );
+        }
 
-          <button
-            onClick={() => onSelectTab('lanes')}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900 hover:bg-black text-white font-medium transition-all shadow-xs"
-          >
-            <span>Buka Board</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        // Bullet lists
+        if (trimmed.includes('\n- ') || trimmed.startsWith('- ')) {
+          const lines = trimmed.split('\n');
+          return (
+            <ul key={idx} className="my-3 space-y-2.5">
+              {lines.map((line, lIdx) => {
+                const isBullet = line.trim().startsWith('- ');
+                const text = isBullet ? line.trim().replace(/^-\s*/, '') : line.trim();
+                if (!text) return null;
+
+                // Split bold markers if any
+                const chunks = text.split(/(\*\*[^*]+\*\*)/g);
+
+                return (
+                  <li key={lIdx} className="flex items-start gap-2.5 text-zinc-600">
+                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
+                    <span>
+                      {chunks.map((chunk, cIdx) =>
+                        chunk.startsWith('**') && chunk.endsWith('**') ? (
+                          <strong key={cIdx} className="font-semibold text-zinc-900">
+                            {chunk.slice(2, -2)}
+                          </strong>
+                        ) : (
+                          chunk
+                        )
+                      )}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          );
+        }
+
+        // Standard Paragraph
+        const chunks = trimmed.split(/(\*\*[^*]+\*\*)/g);
+        return (
+          <p key={idx} className="first-of-type:text-[15px] first-of-type:leading-relaxed text-zinc-700">
+            {chunks.map((chunk, cIdx) =>
+              chunk.startsWith('**') && chunk.endsWith('**') ? (
+                <strong key={cIdx} className="font-semibold text-zinc-900">
+                  {chunk.slice(2, -2)}
+                </strong>
+              ) : (
+                chunk
+              )
+            )}
+          </p>
+        );
+      })}
+    </div>
+  );
+};
+
+export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onSelectTab }) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [copiedNotice, setCopiedNotice] = useState<string>('');
+  const [savedBookmark, setSavedBookmark] = useState<boolean>(false);
+
+  // Filter projects with content or meaningful update
+  const allProjects = useMemo(() => {
+    return state.projects || [];
+  }, [state.projects]);
+
+  // Active selected project
+  const [activeProjectId, setActiveProjectId] = useState<string>(() => {
+    // Prefer p-el-massa or first doing project
+    const elMassa = allProjects.find((p) => p.id === 'p-el-massa');
+    if (elMassa) return elMassa.id;
+    const doing = allProjects.find((p) => p.boardColumn === 'DOING');
+    return doing ? doing.id : allProjects[0]?.id || '';
+  });
+
+  // Active project data
+  const currentProject = useMemo(() => {
+    return allProjects.find((p) => p.id === activeProjectId) || allProjects[0];
+  }, [allProjects, activeProjectId]);
+
+  // Filter categories
+  const categories = useMemo(() => {
+    const list = [
+      { id: 'all', label: 'Semua Liputan', count: allProjects.length },
+      { id: 'client_delivery', label: 'Client Delivery', count: allProjects.filter((p) => p.lane === 'client_delivery').length },
+      { id: 'own_product', label: 'Core Product (SaaS)', count: allProjects.filter((p) => p.lane === 'own_product').length },
+      { id: 'maintenance', label: 'Maintenance', count: allProjects.filter((p) => p.lane === 'maintenance').length },
+      { id: 'bizdev', label: 'Business Dev', count: allProjects.filter((p) => p.lane === 'bizdev').length },
+      { id: 'operations', label: 'Operations', count: allProjects.filter((p) => p.lane === 'operations').length },
+    ];
+    return list.filter((c) => c.count > 0 || c.id === 'all');
+  }, [allProjects]);
+
+  // Filter projects by category and search
+  const filteredProjects = useMemo(() => {
+    return allProjects.filter((p) => {
+      const matchCat = selectedCategory === 'all' || p.lane === selectedCategory;
+      const matchQuery =
+        !searchQuery.trim() ||
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (p.currentGoal && p.currentGoal.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (p.nextAction && p.nextAction.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchCat && matchQuery;
+    });
+  }, [allProjects, selectedCategory, searchQuery]);
+
+  // Related projects list (excluding current project)
+  const relatedProjects = useMemo(() => {
+    return allProjects.filter((p) => p.id !== currentProject?.id).slice(0, 6);
+  }, [allProjects, currentProject]);
+
+  // Copy handler
+  const handleCopySummary = async () => {
+    if (!currentProject) return;
+    const shareText = `*${getEditorialHeadline(currentProject)}*\n\nStatus: ${currentProject.boardColumn} (${currentProject.status})\nTarget: ${currentProject.currentGoal}\nNext Action: ${currentProject.nextAction}\n\nVia Daru Work OS`;
+    await navigator.clipboard.writeText(shareText);
+    setCopiedNotice('Teks berita berhasil disalin ke clipboard!');
+    setTimeout(() => setCopiedNotice(''), 3000);
+  };
+
+  // Download handler
+  const handleDownloadReport = () => {
+    if (!currentProject) return;
+    const content = `# ${getEditorialHeadline(currentProject)}
+Tanggal: ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+Kategori: ${laneLabelMap[currentProject.lane] || currentProject.lane}
+Status: ${currentProject.boardColumn} (${currentProject.status})
+
+## Rangkuman Laporan
+${currentProject.newsArticle || currentProject.currentGoal || 'Tidak ada detail laporan.'}
+
+## Rekomendasi Langkah Nyata (Next Step)
+${currentProject.nextAction}
+
+## Kritik & Evaluasi Redaksi
+${currentProject.newsCritique || 'Pertahankan ritme eksekusi dan validasi pembayaran tepat waktu.'}
+`;
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([content], { type: 'text/markdown;charset=utf-8' }));
+    link.download = `editorial-${currentProject.id}-${new Date().toISOString().slice(0, 10)}.md`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+    setCopiedNotice('Dokumen editorial berhasil diunduh!');
+    setTimeout(() => setCopiedNotice(''), 3000);
+  };
+
+  if (!currentProject) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center p-8 text-center font-['Plus_Jakarta_Sans']">
+        <Newspaper className="w-12 h-12 text-zinc-300 mb-3" />
+        <p className="text-zinc-600 font-normal">Belum ada data project untuk dimuat.</p>
       </div>
+    );
+  }
 
-      {/* New Project Quick Sheet */}
-      {isAddingNew && (
-        <form onSubmit={handleCreateNewProject} className="p-5 bg-white border border-zinc-200 rounded-2xl shadow-xs space-y-3 animate-fade-in text-xs">
-          <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
-            <h4 className="font-bold text-zinc-900">Input Entri Proyek Baru</h4>
-            <span className="text-zinc-400 font-mono">Daru.OS</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div>
-              <label className="block text-zinc-600 font-medium mb-1">Nama Proyek</label>
-              <input
-                type="text"
-                required
-                placeholder="Contoh: Platform Web PGS Tour"
-                value={newName}
-                onChange={e => setNewName(e.target.value)}
-                className="w-full border border-zinc-200 rounded-xl px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-500"
-              />
+  const badgeInfo = columnBadgeMap[currentProject.boardColumn] || columnBadgeMap.DOING;
+  const projectImg = getProjectVisual(currentProject);
+
+  return (
+    <div className="min-h-screen bg-[#fafafa] font-['Plus_Jakarta_Sans'] font-normal text-zinc-800 antialiased">
+      {/* 1. TOP EDITORIAL BAR (Matching Screenshot Header) */}
+      <header className="sticky top-0 z-30 border-b border-zinc-200/80 bg-white/95 backdrop-blur-md px-6 py-3.5 sm:px-10">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
+          {/* Brand Logo & Editorial Section */}
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold tracking-tight text-zinc-950">NEWS</span>
+              <span className="hidden sm:inline-block text-[11px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100">
+                Dispatch
+              </span>
             </div>
-            <div>
-              <label className="block text-zinc-600 font-medium mb-1">Jalur / Lane</label>
-              <select
-                value={newLane}
-                onChange={e => setNewLane(e.target.value as LaneType)}
-                className="w-full border border-zinc-200 rounded-xl px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-500"
+
+            {/* Quick Top Navigation */}
+            <nav className="hidden md:flex items-center gap-6 text-xs text-zinc-500">
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className={`transition-colors hover:text-zinc-900 ${
+                  selectedCategory === 'all' ? 'font-semibold text-zinc-950' : ''
+                }`}
               >
-                {(Object.keys(laneLabels) as LaneType[]).map(lane => (
-                  <option key={lane} value={lane}>{laneLabels[lane]}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-zinc-600 font-medium mb-1">Nilai Kontrak (Rp)</label>
-              <input
-                type="number"
-                min="0"
-                step="1"
-                placeholder="0 jika internal"
-                value={newNominal || ''}
-                onChange={e => setNewNominal(Number(e.target.value))}
-                className="w-full border border-zinc-200 rounded-xl px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-500"
-              />
-            </div>
-            <div>
-              <label className="block text-zinc-600 font-medium mb-1">Langkah Nyata Awal (Next Step)</label>
+                Semua Proyek
+              </button>
+              <button
+                onClick={() => setSelectedCategory('client_delivery')}
+                className={`transition-colors hover:text-zinc-900 ${
+                  selectedCategory === 'client_delivery' ? 'font-semibold text-zinc-950' : ''
+                }`}
+              >
+                Client Delivery
+              </button>
+              <button
+                onClick={() => setSelectedCategory('own_product')}
+                className={`transition-colors hover:text-zinc-900 ${
+                  selectedCategory === 'own_product' ? 'font-semibold text-zinc-950' : ''
+                }`}
+              >
+                SaaS & Produk
+              </button>
+              <button
+                onClick={() => onSelectTab('lanes')}
+                className="transition-colors hover:text-zinc-900 flex items-center gap-1 text-zinc-500"
+              >
+                <span>Workflow Board</span>
+                <ArrowUpRight className="w-3 h-3" />
+              </button>
+            </nav>
+          </div>
+
+          {/* Search Box & Quick Action */}
+          <div className="flex items-center gap-3">
+            <div className="relative w-48 sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-400" />
               <input
                 type="text"
-                placeholder="Langkah konkrit pertama"
-                value={newAction}
-                onChange={e => setNewAction(e.target.value)}
-                className="w-full border border-zinc-200 rounded-xl px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-500"
+                placeholder="Cari berita atau project..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 text-xs rounded-full border border-zinc-200 bg-zinc-50 text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:bg-white transition-all font-normal"
               />
             </div>
-          </div>
-          <div className="flex justify-end gap-2 pt-1">
-            <button
-              type="button"
-              onClick={() => setIsAddingNew(false)}
-              className="px-3.5 py-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-medium"
-            >
-              Batal
-            </button>
-            <button
-              type="submit"
-              className="px-3.5 py-1.5 rounded-full bg-zinc-900 hover:bg-black text-white font-medium"
-            >
-              Simpan & Sinkronkan
-            </button>
-          </div>
-        </form>
-      )}
 
-      {/* Main LMS/Article Master Layout: Left Main Video/Article (8 cols) + Right Course Playlist (4 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        {/* LEFT COLUMN: Large Visual Banner, Controls, Article Body, Next Step & Critique (8 cols) */}
-        <div className="lg:col-span-8 space-y-5">
+            <button
+              onClick={() => onSelectTab('lanes')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 transition-colors border border-zinc-200"
+              title="Buka Board Penuh"
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Board</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* 2. MAIN EDITORIAL THREE-COLUMN GRID */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
           
-          {/* 1. Large Visual Player / Hero Banner Card */}
-          <div className="relative rounded-2xl overflow-hidden border border-zinc-200 bg-zinc-950 aspect-video shadow-xs group">
-            <img 
-              src={mediaInfo.image} 
-              alt={draft.name}
-              className="w-full h-full object-cover opacity-85 group-hover:opacity-95 transition-opacity"
-            />
-            
-            {/* Top Badges over banner */}
-            <div className="absolute top-4 left-4 flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[11px] font-medium border border-white/10">
-                {laneLabels[draft.lane]}
-              </span>
-              <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-emerald-300 text-[11px] font-mono font-medium border border-white/10">
-                {draft.boardColumn}
-              </span>
+          {/* =========================================================================
+              LEFT COLUMN (~2.5 COLS): USER CAPSULE & CATEGORIES
+              ========================================================================= */}
+          <aside className="lg:col-span-2 space-y-6">
+            {/* Author / Editorial Capsule Card */}
+            <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-xs">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-zinc-800 to-zinc-950 flex items-center justify-center text-white font-medium text-sm shadow-xs">
+                    DW
+                  </div>
+                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-semibold text-zinc-900 tracking-tight">Daru Redaksi</h4>
+                  <p className="text-[11px] text-zinc-400 font-normal">Lead OS Engine</p>
+                </div>
+              </div>
+              <div className="mt-3.5 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
+                <span>Total Liputan</span>
+                <span className="font-semibold text-zinc-900">{allProjects.length} Proyek</span>
+              </div>
             </div>
 
-            {/* Floating Live Web Indicator */}
-            {mediaInfo.url && mediaInfo.url !== '#' && (
-              <a 
-                href={mediaInfo.url} 
-                target="_blank" 
-                rel="noreferrer"
-                className="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 hover:bg-white text-zinc-900 text-[11px] font-semibold backdrop-blur-md transition-all shadow-sm"
-              >
-                <span>Kunjungi URL Live</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
+            {/* Category Navigation List */}
+            <div className="space-y-1">
+              <h3 className="px-2 mb-2.5 text-[11px] font-semibold tracking-wider text-zinc-400 uppercase">
+                Kategori Proyek
+              </h3>
+              <nav className="space-y-0.5">
+                {categories.map((cat) => {
+                  const isActive = selectedCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setSelectedCategory(cat.id)}
+                      className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-xl transition-all text-left font-normal ${
+                        isActive
+                          ? 'bg-rose-500/10 text-rose-600 font-medium'
+                          : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100/70'
+                      }`}
+                    >
+                      <span className="truncate">{cat.label}</span>
+                      <span
+                        className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                          isActive
+                            ? 'bg-rose-500 text-white font-semibold'
+                            : 'text-zinc-400 bg-zinc-100'
+                        }`}
+                      >
+                        {cat.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+
+            {/* Quick Context & Board Jump */}
+            <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 space-y-3">
+              <div className="flex items-center gap-2 text-zinc-900">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <h4 className="text-xs font-medium">Navigasi Workspace</h4>
+              </div>
+              <p className="text-[11px] leading-relaxed text-zinc-500 font-normal">
+                Liputan berita ini dihasilkan secara langsung dari database proyek dan radar keuangan aktif.
+              </p>
+              <div className="pt-2 border-t border-zinc-100 flex flex-col gap-1.5 text-xs">
+                <button
+                  onClick={() => onSelectTab('lanes')}
+                  className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
+                >
+                  <span>Markas Project</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                </button>
+                <button
+                  onClick={() => onSelectTab('waiting')}
+                  className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
+                >
+                  <span>Radar Tagihan</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                </button>
+                <button
+                  onClick={() => onSelectTab('money')}
+                  className="w-full text-left py-1 text-zinc-600 hover:text-zinc-950 flex items-center justify-between"
+                >
+                  <span>Cek Dompet & Kas</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          {/* =========================================================================
+              CENTER COLUMN (~6.5 COLS): MAIN ARTICLE & EDITORIAL CARDS
+              ========================================================================= */}
+          <main className="lg:col-span-7 space-y-7">
+            {/* Category Breadcrumb Kicker */}
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-rose-600">
+                <span>{laneLabelMap[currentProject.lane] || currentProject.lane}</span>
+                <span className="text-zinc-300">·</span>
+                <span className="text-zinc-400 normal-case font-normal">Liputan Khusus Lapangan</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${badgeInfo.bg} ${badgeInfo.text} ${badgeInfo.border}`}
+                >
+                  {badgeInfo.label}
+                </span>
+                <span className="text-[11px] text-zinc-400 font-normal">
+                  Prioritas {currentProject.priority}
+                </span>
+              </div>
+            </div>
+
+            {/* Hero Visual Card (16:9 ratio like media_1788974908577.png) */}
+            <div className="relative overflow-hidden rounded-2xl bg-zinc-950 aspect-video shadow-md border border-zinc-200/60 group">
+              <img
+                src={projectImg}
+                alt={currentProject.name}
+                className="w-full h-full object-cover object-center opacity-90 transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
+
+              {/* Media floating tag */}
+              <div className="absolute top-4 left-4 flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-black/60 backdrop-blur-md text-white border border-white/10">
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                  Live Operational
+                </span>
+              </div>
+
+              {/* Bottom media title strip */}
+              <div className="absolute bottom-4 left-4 right-4 text-white">
+                <p className="text-xs uppercase tracking-wider text-zinc-300 font-medium">
+                  {currentProject.valueText || 'Production Asset'}
+                </p>
+                <h3 className="text-lg font-medium text-white line-clamp-1">
+                  {currentProject.name}
+                </h3>
+              </div>
+            </div>
+
+            {/* Editorial Metadata Strip & Actions (Matching Screenshot) */}
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-1 border-b border-zinc-100 pb-4">
+              {/* Stats badges */}
+              <div className="flex items-center gap-4 text-xs text-zinc-400 font-normal">
+                <span className="inline-flex items-center gap-1 text-zinc-600">
+                  <Eye className="w-3.5 h-3.5 text-zinc-400" />
+                  100% Siap
+                </span>
+                <span className="inline-flex items-center gap-1 text-zinc-600">
+                  <Clock className="w-3.5 h-3.5 text-zinc-400" />
+                  {currentProject.followUpDeadline || 'Jadwal Hari Ini'}
+                </span>
+                <span className="inline-flex items-center gap-1 text-zinc-600">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                  Tersinkronisasi Git
+                </span>
+              </div>
+
+              {/* Article Action Buttons */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSavedBookmark(!savedBookmark)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-normal border transition-colors ${
+                    savedBookmark
+                      ? 'bg-zinc-900 text-white border-zinc-900'
+                      : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
+                  }`}
+                  title="Simpan Catatan Berita"
+                >
+                  <Bookmark className="w-3.5 h-3.5" />
+                  <span>{savedBookmark ? 'Tersimpan' : 'Simpan'}</span>
+                </button>
+
+                <button
+                  onClick={handleCopySummary}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-normal bg-white text-zinc-700 border border-zinc-200 hover:bg-zinc-50 transition-colors"
+                  title="Bagikan Ringkasan"
+                >
+                  <Share2 className="w-3.5 h-3.5" />
+                  <span>Bagikan</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Copied Notice Banner */}
+            {copiedNotice && (
+              <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center justify-between">
+                <span>{copiedNotice}</span>
+                <button
+                  onClick={() => setCopiedNotice('')}
+                  className="text-emerald-500 hover:text-emerald-900 font-medium text-xs"
+                >
+                  Tutup
+                </button>
+              </div>
             )}
 
-            {/* Bottom Media Bar Overlay */}
-            <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-between text-white text-xs">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center shadow-md">
-                  <Play className="w-3.5 h-3.5 fill-black ml-0.5" />
-                </div>
-                <div>
-                  <span className="font-semibold block text-sm leading-tight text-white drop-shadow-sm">{draft.name}</span>
-                  <span className="text-[11px] text-zinc-300 font-mono">{mediaInfo.duration} · Kontrak {rupiah(draft.nominalNumeric)}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setIsEditMode(prev => !prev)}
-                  className="px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-xs font-medium transition-all"
-                >
-                  {isEditMode ? 'Lihat Artikel' : 'Edit Proyek'}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* 2. Action Buttons & Pill Row (Exactly as in reference design) */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="px-3 py-1 rounded-full bg-zinc-100 text-zinc-700 font-semibold border border-zinc-200">
-                Prioritas {draft.priority}
-              </span>
-              <span className="px-3 py-1 rounded-full bg-zinc-100 text-zinc-700 font-semibold border border-zinc-200">
-                {draft.paymentStatus}
-              </span>
-              <span className="px-3 py-1 rounded-full bg-zinc-100 text-zinc-700 font-semibold border border-zinc-200">
-                Deadline: {draft.followUpDeadline || 'Hari ini'}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setIsEditMode(prev => !prev)}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-zinc-900 hover:bg-black text-white text-xs font-semibold shadow-xs transition-all"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>{isEditMode ? 'Mode Baca Artikel' : 'Edit Lembar Kerja'}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* 3. Headline & Main Article Card */}
-          {!isEditMode ? (
-            <div className="bg-white border border-zinc-200/90 rounded-2xl p-6 sm:p-7 space-y-6 shadow-xs">
+            {/* Editorial Main Headline (Light / Regular Plus Jakarta Sans) */}
+            <div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-normal leading-[1.25] tracking-[-0.04em] text-zinc-950">
+                {getEditorialHeadline(currentProject)}
+              </h1>
               
-              {/* Title & Pull Quote */}
-              <div className="space-y-2 border-b border-zinc-100 pb-5">
-                <h2 className="text-2xl font-bold tracking-tight text-zinc-900">
-                  {mediaInfo.headline}
-                </h2>
-                <p className="text-xs sm:text-sm text-zinc-600 font-serif italic border-l-2 border-zinc-400 pl-3 py-0.5">
-                  "{draft.currentGoal || 'Inisiatif proyek ini sedang berjalan aktif sesuai dengan arahan kerja Daru.OS.'}"
-                </p>
+              {/* Author byline */}
+              <div className="mt-3 flex items-center gap-2 text-xs text-zinc-400 font-normal">
+                <span>Oleh <strong className="font-medium text-zinc-700">Tim Redaksi Daru Work OS</strong></span>
+                <span>·</span>
+                <span>Diperbarui 10 September 2026</span>
               </div>
+            </div>
 
-              {/* The News Article Prose */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
-                    Laporan Editorial & Investigasi Proyek
-                  </h3>
-                  <span className="text-[11px] text-zinc-400 font-mono">Diterbitkan oleh Tim Daru.OS</span>
-                </div>
-                <div className="p-5 sm:p-6 rounded-2xl bg-zinc-50/70 border border-zinc-200/80 text-[13.5px] leading-relaxed text-zinc-800 font-serif space-y-4 shadow-2xs">
-                  {(draft.newsArticle || mediaInfo.article).split('\n\n').map((paragraph, pIdx) => {
-                    // Cek apakah paragraf adalah poin bullet atau subheader
-                    if (paragraph.startsWith('- ') || paragraph.startsWith('• ') || paragraph.startsWith('* ')) {
-                      const items = paragraph.split('\n');
-                      return (
-                        <ul key={pIdx} className="space-y-1.5 pl-4 list-disc text-zinc-700 font-sans text-xs sm:text-[13px] leading-relaxed">
-                          {items.map((it, itIdx) => (
-                            <li key={itIdx}>{it.replace(/^[-•*]\s*/, '')}</li>
-                          ))}
-                        </ul>
-                      );
-                    }
-
-                    if (paragraph.startsWith('### ') || paragraph.startsWith('## ')) {
-                      return (
-                        <h4 key={pIdx} className="text-sm font-bold font-sans text-zinc-900 pt-2 border-t border-zinc-200/60">
-                          {paragraph.replace(/^#{2,3}\s*/, '')}
-                        </h4>
-                      );
-                    }
-
-                    return (
-                      <p 
-                        key={pIdx} 
-                        className={pIdx === 0 ? "first-letter:text-3xl first-letter:font-bold first-letter:float-left first-letter:mr-2.5 first-letter:text-zinc-950 first-letter:leading-none" : "text-zinc-700"}
-                      >
-                        {paragraph}
+            {/* Article Prose Body */}
+            <article className="prose prose-zinc max-w-none pt-2">
+              {currentProject.newsArticle ? (
+                renderFormattedBody(currentProject.newsArticle)
+              ) : (
+                <div className="space-y-4 text-sm sm:text-[15px] font-normal leading-[1.8] text-zinc-600">
+                  <p className="text-zinc-800">
+                    Proyek <strong>{currentProject.name}</strong> saat ini berada pada tahap{' '}
+                    <strong>{currentProject.status}</strong> dalam jalur eksekusi{' '}
+                    <em>{laneLabelMap[currentProject.lane] || currentProject.lane}</em>.
+                  </p>
+                  {currentProject.currentGoal && (
+                    <div className="my-4 p-4 rounded-xl bg-zinc-50 border border-zinc-100 text-zinc-700">
+                      <p className="font-medium text-zinc-900 mb-1 text-xs uppercase tracking-wider">
+                        Fokus Sasaran Utama:
                       </p>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Next Step Section (Kotak Langkah Nyata Berikutnya) */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-                  <Compass className="w-4 h-4 text-zinc-900" />
-                  <span>Langkah Nyata Berikutnya (Next Step)</span>
-                </div>
-                <div className="p-4 rounded-xl bg-zinc-900 text-white space-y-1 shadow-xs">
-                  <p className="text-sm font-semibold leading-relaxed">
-                    {draft.nextAction || mediaInfo.nextStep}
-                  </p>
-                  <p className="text-[11px] text-zinc-400 font-mono">
-                    // Otomatis tersinkronisasi ke Target Harian (Today Pursuit) dan Kamar Fokus.
-                  </p>
-                </div>
-              </div>
-
-              {/* Critique Section (Kritik Tajam & Evaluasi Objektif) */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-amber-900">
-                  <AlertTriangle className="w-4 h-4 text-amber-600" />
-                  <span>Kritik & Evaluasi Atas Apa yang Sudah Dikerjakan</span>
-                </div>
-                <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/90 text-xs sm:text-sm text-amber-950 font-serif leading-relaxed">
-                  <p>
-                    {draft.newsCritique || mediaInfo.critique}
-                  </p>
-                </div>
-              </div>
-
-              {/* Definition of Done Footer Pod */}
-              {draft.definitionOfDone && (
-                <div className="pt-3 border-t border-zinc-100 flex items-start gap-2 text-xs text-zinc-600">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-semibold text-zinc-800">Tolok Ukur Selesai (Definition of Done):</span> {draft.definitionOfDone}
-                  </div>
+                      <p>{currentProject.currentGoal}</p>
+                    </div>
+                  )}
+                  {currentProject.definitionOfDone && (
+                    <p>
+                      <strong>Kriteria Selesai (DoD):</strong> {currentProject.definitionOfDone}
+                    </p>
+                  )}
+                  {currentProject.rule && (
+                    <p className="border-l-2 border-amber-400 pl-3 italic text-zinc-600">
+                      Aturan Eksekusi: "{currentProject.rule}"
+                    </p>
+                  )}
                 </div>
               )}
+            </article>
 
+            {/* =======================================================================
+                CRITICAL SECTION 1: SARAN LANGKAH NYATA BERIKUTNYA (NEXT STEP)
+                ======================================================================= */}
+            <section className="rounded-2xl border border-emerald-200/80 bg-emerald-50/40 p-5 sm:p-6 space-y-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+                  <Lightbulb className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold tracking-tight text-emerald-950">
+                    Saran Langkah Nyata Berikutnya (Next Step)
+                  </h3>
+                  <p className="text-xs text-emerald-700 font-normal">
+                    Aksi konkret prioritas yang wajib dieksekusi selanjutnya
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white border border-emerald-100 shadow-2xs space-y-2">
+                <p className="text-sm text-zinc-800 font-normal leading-relaxed">
+                  {currentProject.nextAction ||
+                    'Tentukan satu aksi konkret follow-up atau serah terima di board proyek.'}
+                </p>
+                {currentProject.billingMilestone && (
+                  <div className="pt-2 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
+                    <span className="font-medium text-zinc-700">Target Milestone:</span>
+                    <span className="text-emerald-700 font-semibold">{currentProject.billingMilestone}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                <button
+                  onClick={() => onSelectTab('lanes')}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition-colors shadow-xs"
+                >
+                  <span>Buka di Board & Eksekusi</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </button>
+                {currentProject.boardColumn === 'WAITING' && (
+                  <button
+                    onClick={() => onSelectTab('waiting')}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white border border-emerald-200 text-emerald-800 hover:bg-emerald-50 font-normal transition-colors"
+                  >
+                    <span>Cek Radar Tagihan</span>
+                  </button>
+                )}
+              </div>
+            </section>
+
+            {/* =======================================================================
+                CRITICAL SECTION 2: KRITIK & EVALUASI REDAKSI (EDITORIAL CRITIQUE)
+                ======================================================================= */}
+            <section className="rounded-2xl border border-rose-200/80 bg-rose-50/40 p-5 sm:p-6 space-y-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-rose-500 text-white flex items-center justify-center shadow-xs">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold tracking-tight text-rose-950">
+                    Kritik & Evaluasi Redaksi
+                  </h3>
+                  <p className="text-xs text-rose-700 font-normal">
+                    Peringatan risiko, titik buta operasional, dan acuan evaluasi
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-white border border-rose-100 shadow-2xs">
+                <p className="text-sm text-zinc-700 font-normal leading-relaxed">
+                  {currentProject.newsCritique ||
+                    'Evaluasi kritis: Pastikan serah terima hasil kerja diikat dengan dokumen atau konfirmasi pembayaran tertulis. Jangan serahkan akses penuh/master asset sebelum komitmen pembayaran jelas agar posisi tawar tetap aman.'}
+                </p>
+                {currentProject.unpaidNumeric > 0 && (
+                  <p className="mt-2.5 pt-2 border-t border-zinc-100 text-xs text-rose-600 font-medium">
+                    ⚠️ Tagihan belum tertagih: Rp{currentProject.unpaidNumeric.toLocaleString('id-ID')} (Jaga arus kas nyata sebelum menganggap ini sebagai pendapatan masuk).
+                  </p>
+                )}
+              </div>
+            </section>
+
+            {/* Action Bar Footer */}
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-zinc-200">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleDownloadReport}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-950 text-white text-xs font-medium hover:bg-zinc-800 transition-colors shadow-xs"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Unduh Dokumen Berita (.md)</span>
+                </button>
+                <button
+                  onClick={handleCopySummary}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-zinc-200 text-zinc-700 text-xs font-normal hover:bg-zinc-50 transition-colors"
+                >
+                  <Clipboard className="w-3.5 h-3.5" />
+                  <span>Salin Teks Berita</span>
+                </button>
+              </div>
+
+              <button
+                onClick={() => onSelectTab('lanes')}
+                className="text-xs text-zinc-500 hover:text-zinc-900 flex items-center gap-1 font-normal"
+              >
+                <span>Kelola Status di Markas Proyek</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
-          ) : (
-            /* EDIT MODE: Structured Form */
-            <form onSubmit={handleSave} className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-4 shadow-xs text-xs animate-fade-in">
-              <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
-                <h3 className="text-sm font-bold text-zinc-900">Sunting Naskah Berita & Data Proyek</h3>
-                <span className="text-zinc-500 font-mono">ID: {draft.id}</span>
-              </div>
+          </main>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div className="sm:col-span-2">
-                  <label className="block text-zinc-700 font-semibold mb-1">Nama Proyek</label>
-                  <input
-                    type="text"
-                    required
-                    value={draft.name}
-                    onChange={e => handleFieldChange('name', e.target.value)}
-                    className="w-full border border-zinc-300 rounded-xl px-3 py-2 text-zinc-900 font-semibold focus:outline-none focus:border-zinc-800"
-                  />
-                </div>
+          {/* =========================================================================
+              RIGHT COLUMN (~3 COLS): "RELATED NEWS" (PROYEK LAINNYA)
+              ========================================================================= */}
+          <aside className="lg:col-span-3 space-y-6">
+            {/* Column Header matching screenshot */}
+            <div className="flex items-center justify-between pb-2 border-b border-zinc-200">
+              <h2 className="text-base font-semibold tracking-tight text-zinc-950">
+                Related <span className="font-light text-zinc-500">News</span>
+              </h2>
+              <button
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setSearchQuery('');
+                }}
+                className="text-xs text-zinc-400 hover:text-zinc-900 font-normal transition-colors"
+              >
+                See all
+              </button>
+            </div>
 
-                <div className="sm:col-span-2">
-                  <label className="block text-zinc-700 font-semibold mb-1">Artikel Berita / Ulasan Progres</label>
-                  <textarea
-                    rows={4}
-                    required
-                    value={draft.newsArticle || mediaInfo.article}
-                    onChange={e => handleFieldChange('newsArticle', e.target.value)}
-                    className="w-full border border-zinc-300 rounded-xl px-3 py-2 text-zinc-900 font-serif text-sm focus:outline-none focus:border-zinc-800 leading-relaxed"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-zinc-700 font-semibold mb-1">Langkah Nyata Berikutnya (Next Step)</label>
-                  <textarea
-                    rows={2}
-                    required
-                    value={draft.nextAction}
-                    onChange={e => handleFieldChange('nextAction', e.target.value)}
-                    className="w-full border border-zinc-300 rounded-xl px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-800 font-sans"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-zinc-700 font-semibold mb-1">Kritik & Evaluasi Apa yang Sudah Dikerjakan</label>
-                  <textarea
-                    rows={3}
-                    value={draft.newsCritique || mediaInfo.critique}
-                    onChange={e => handleFieldChange('newsCritique', e.target.value)}
-                    className="w-full border border-amber-300 bg-amber-50/40 rounded-xl px-3 py-2 text-zinc-900 font-serif text-sm focus:outline-none focus:border-amber-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-zinc-700 font-semibold mb-1">Fase Status Board</label>
-                  <select
-                    value={draft.boardColumn}
-                    onChange={e => handleFieldChange('boardColumn', e.target.value as BoardColumn)}
-                    className="w-full border border-zinc-300 rounded-xl px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-800"
-                  >
-                    {(Object.keys(columnLabels) as BoardColumn[]).map(col => (
-                      <option key={col} value={col}>{columnLabels[col]}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-zinc-700 font-semibold mb-1">Jalur Kerja</label>
-                  <select
-                    value={draft.lane}
-                    onChange={e => handleFieldChange('lane', e.target.value as LaneType)}
-                    className="w-full border border-zinc-300 rounded-xl px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-800"
-                  >
-                    {(Object.keys(laneLabels) as LaneType[]).map(lane => (
-                      <option key={lane} value={lane}>{laneLabels[lane]}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-zinc-700 font-semibold mb-1">Nilai Kontrak Total (Rp)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={draft.nominalNumeric || ''}
-                    onChange={e => handleFieldChange('nominalNumeric', Number(e.target.value))}
-                    className="w-full border border-zinc-300 rounded-xl px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-800"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-zinc-700 font-semibold mb-1">Uang Sudah Masuk (Rp)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={draft.paidNumeric || ''}
-                    onChange={e => handleFieldChange('paidNumeric', Number(e.target.value))}
-                    className="w-full border border-zinc-300 rounded-xl px-3 py-2 text-zinc-900 focus:outline-none focus:border-zinc-800"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2 pt-3 border-t border-zinc-100">
-                <button
-                  type="button"
-                  onClick={() => setIsEditMode(false)}
-                  className="px-4 py-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-medium"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-1.5 px-5 py-1.5 rounded-full bg-zinc-900 hover:bg-black text-white font-medium shadow-xs"
-                >
-                  <Save className="w-3.5 h-3.5" />
-                  <span>Simpan & Sinkronkan</span>
-                </button>
-              </div>
-            </form>
-          )}
-
-        </div>
-
-        {/* RIGHT COLUMN: Interactive Course / Project Playlist (4 cols) */}
-        <div className="lg:col-span-4 space-y-4">
-          
-          {/* Top Playlist Tab Pills */}
-          <div className="bg-zinc-100 p-1 rounded-xl flex items-center text-xs font-semibold">
-            <button
-              onClick={() => setActiveRightTab('all_projects')}
-              className={`flex-1 py-1.5 rounded-lg transition-all text-center ${
-                activeRightTab === 'all_projects' 
-                  ? 'bg-white text-zinc-900 shadow-xs' 
-                  : 'text-zinc-500 hover:text-zinc-900'
-              }`}
-            >
-              Semua Proyek
-            </button>
-            <button
-              onClick={() => setActiveRightTab('resources')}
-              className={`flex-1 py-1.5 rounded-lg transition-all text-center ${
-                activeRightTab === 'resources' 
-                  ? 'bg-white text-zinc-900 shadow-xs' 
-                  : 'text-zinc-500 hover:text-zinc-900'
-              }`}
-            >
-              Finansial
-            </button>
-            <button
-              onClick={() => setActiveRightTab('notes')}
-              className={`flex-1 py-1.5 rounded-lg transition-all text-center ${
-                activeRightTab === 'notes' 
-                  ? 'bg-white text-zinc-900 shadow-xs' 
-                  : 'text-zinc-500 hover:text-zinc-900'
-              }`}
-            >
-              Catatan
-            </button>
-          </div>
-
-          {/* Search Box */}
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Cari proyek dalam daftar..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 text-xs bg-white border border-zinc-200 rounded-xl text-zinc-900 focus:outline-none focus:border-zinc-500 placeholder:text-zinc-400"
-            />
-          </div>
-
-          {/* Playlist Items List */}
-          {activeRightTab === 'all_projects' && (
-            <div className="bg-white border border-zinc-200 rounded-2xl p-2 space-y-1 max-h-[640px] overflow-y-auto shadow-xs">
-              {filteredProjects.map((project, idx) => {
-                const isSelected = project.id === (draft?.id || selectedProjectId);
-                const info = getProjectMediaInfo(project);
+            {/* List of Other Projects (Card format matching screenshot) */}
+            <div className="space-y-4">
+              {relatedProjects.map((project) => {
+                const pBadge = columnBadgeMap[project.boardColumn] || columnBadgeMap.DOING;
+                const pThumb = getProjectVisual(project);
+                const isSelected = project.id === activeProjectId;
 
                 return (
                   <div
                     key={project.id}
                     onClick={() => {
-                      soundManager.playClick();
-                      setSelectedProjectId(project.id);
-                      setIsEditMode(false);
+                      setActiveProjectId(project.id);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className={`flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-all ${
+                    className={`group cursor-pointer rounded-2xl border transition-all duration-200 p-3 bg-white hover:shadow-md ${
                       isSelected
-                        ? 'bg-zinc-900 text-white shadow-xs'
-                        : 'hover:bg-zinc-50 text-zinc-900'
+                        ? 'border-rose-300 ring-2 ring-rose-100'
+                        : 'border-zinc-200/80 hover:border-zinc-300'
                     }`}
                   >
-                    {/* Play / Icon Badge */}
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                      isSelected 
-                        ? 'bg-white text-black' 
-                        : 'bg-zinc-100 text-zinc-600'
-                    }`}>
-                      <Play className="w-3 h-3 fill-current ml-0.5" />
+                    {/* Thumbnail banner */}
+                    <div className="relative overflow-hidden rounded-xl bg-zinc-900 aspect-[16/9] mb-3">
+                      <img
+                        src={pThumb}
+                        alt={project.name}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 opacity-90"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <span className="absolute bottom-2 left-2 text-[10px] font-medium text-white line-clamp-1">
+                        {laneLabelMap[project.lane] || project.lane}
+                      </span>
                     </div>
 
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <h4 className="text-xs font-bold truncate leading-snug">
-                          {project.name}
-                        </h4>
-                        <span className={`text-[10px] font-mono shrink-0 ${
-                          isSelected ? 'text-zinc-300' : 'text-zinc-400'
-                        }`}>
-                          {project.nominalNumeric > 0 ? rupiah(project.nominalNumeric) : 'Free'}
-                        </span>
-                      </div>
-
-                      <p className={`text-[11px] mt-0.5 line-clamp-1 ${
-                        isSelected ? 'text-zinc-300' : 'text-zinc-500'
-                      }`}>
-                        {project.nextAction || info.nextStep}
-                      </p>
-
-                      <div className="flex items-center gap-2 mt-1.5 text-[10px] font-mono">
-                        <span className={`px-1.5 py-0.2 rounded ${
-                          isSelected ? 'bg-white/20 text-white' : 'bg-zinc-100 text-zinc-600'
-                        }`}>
-                          {project.boardColumn}
-                        </span>
-                        <span className={isSelected ? 'text-zinc-300' : 'text-zinc-400'}>
-                          {laneLabels[project.lane]}
-                        </span>
-                      </div>
+                    {/* Metadata & Tag */}
+                    <div className="flex items-center justify-between text-[10px] text-zinc-400 mb-1.5">
+                      <span
+                        className={`px-2 py-0.5 rounded-full font-medium ${pBadge.bg} ${pBadge.text}`}
+                      >
+                        {pBadge.label}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Eye className="w-3 h-3" />
+                        P{project.priority.replace('P', '')}
+                      </span>
                     </div>
+
+                    {/* Title */}
+                    <h4 className="text-xs font-medium text-zinc-900 leading-snug group-hover:text-rose-600 transition-colors line-clamp-2">
+                      {getEditorialHeadline(project)}
+                    </h4>
+
+                    {/* Action sneak peek */}
+                    <p className="mt-1.5 text-[11px] text-zinc-500 line-clamp-1 font-normal">
+                      Next: {project.nextAction || 'Tinjau progres'}
+                    </p>
                   </div>
                 );
               })}
             </div>
-          )}
 
-          {/* Resources / Financial Summary Tab */}
-          {activeRightTab === 'resources' && (
-            <div className="bg-white border border-zinc-200 rounded-2xl p-5 space-y-4 text-xs shadow-xs">
-              <h4 className="font-bold text-zinc-900">Rekap Finansial Proyek</h4>
-              <div className="space-y-2 font-mono">
-                <div className="flex justify-between py-1.5 border-b border-zinc-100">
-                  <span className="text-zinc-500">Nilai Kontrak</span>
-                  <span className="font-bold text-zinc-900">{rupiah(draft.nominalNumeric)}</span>
-                </div>
-                <div className="flex justify-between py-1.5 border-b border-zinc-100">
-                  <span className="text-zinc-500">Sudah Diterima</span>
-                  <span className="font-bold text-emerald-600">{rupiah(draft.paidNumeric)}</span>
-                </div>
-                <div className="flex justify-between py-1.5 border-b border-zinc-100">
-                  <span className="text-zinc-500">Sisa Tagihan</span>
-                  <span className="font-bold text-zinc-900">
-                    {rupiah(Math.max(0, (draft.nominalNumeric || 0) - (draft.paidNumeric || 0)))}
-                  </span>
-                </div>
-                <div className="flex justify-between py-1.5">
-                  <span className="text-zinc-500">Status Bayar</span>
-                  <span className="font-bold text-zinc-800">{draft.paymentStatus}</span>
-                </div>
-              </div>
-              <button
-                onClick={() => onSelectTab('money')}
-                className="w-full py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-semibold transition-all text-center"
-              >
-                Buka Matriks Keuangan Lengkap
-              </button>
+            {/* Quick Summary Widget */}
+            <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50 p-4 space-y-2">
+              <h4 className="text-xs font-semibold text-zinc-900">Tentang Redaksi Proyek</h4>
+              <p className="text-[11px] leading-relaxed text-zinc-500 font-normal">
+                Setiap proyek dipetakan menjadi format berita dengan narasi mendalam, saran aksi nyata berikutnya, dan catatan kritik redaksi agar tidak ada deliverable yang terbengkalai.
+              </p>
             </div>
-          )}
-
-          {/* Notes / Aturan Kerja Tab */}
-          {activeRightTab === 'notes' && (
-            <div className="bg-white border border-zinc-200 rounded-2xl p-5 space-y-3 text-xs shadow-xs">
-              <h4 className="font-bold text-zinc-900">Catatan & Aturan Kerja</h4>
-              <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl space-y-1">
-                <span className="font-bold text-zinc-800 block">Aturan Proyek:</span>
-                <p className="text-zinc-600 font-mono text-[11px] leading-relaxed">
-                  {draft.rule || 'Fokus selesaikan deliverable utama sebelum membuka scope baru.'}
-                </p>
-              </div>
-              {draft.blocker && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl space-y-1">
-                  <span className="font-bold text-amber-900 block">Blocker Tertahan:</span>
-                  <p className="text-amber-800 text-[11px] leading-relaxed">
-                    {draft.blocker}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
+          </aside>
         </div>
-
       </div>
-
     </div>
   );
 };
+

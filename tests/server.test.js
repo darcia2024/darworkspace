@@ -42,8 +42,9 @@ test('Obsidian export is dynamic and preserves handwritten dashboard', t => {
   fs.writeFileSync(path.join(dir, '00 Dashboard', 'Today.md'), 'Handwritten');
   const result = syncToObsidianVault(db.getState(), dir);
   assert.equal(result.success, true);
-  assert.equal(result.syncedFiles.length, 2);
+  assert.equal(result.syncedFiles.length, 3);
   assert.match(fs.readFileSync(path.join(dir, 'Daru Work OS Exports', 'Current Priorities.md'), 'utf8'), /Client/);
+  assert.match(fs.readFileSync(path.join(dir, 'Daru Work OS Exports', 'Project Update Report.md'), 'utf8'), /^# Laporan Update Project/m);
   assert.equal(fs.readFileSync(path.join(dir, '00 Dashboard', 'Today.md'), 'utf8'), 'Handwritten');
   assert.equal(syncToObsidianVault(db.getState(), path.join(dir, 'missing')).success, false);
 });

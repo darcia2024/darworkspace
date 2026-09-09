@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { generateProjectNewsReport } from '../shared/projectReport.js';
 
 export function isVaultAvailable(vault = process.env.OBSIDIAN_VAULT_PATH) {
   try { return Boolean(vault && fs.statSync(vault).isDirectory()); }
@@ -34,7 +35,7 @@ export function syncToObsidianVault(state, vault = process.env.OBSIDIAN_VAULT_PA
   const errors = [];
   try { fs.mkdirSync(directory, { recursive: true }); }
   catch { return { success: false, error: 'Folder ekspor vault tidak dapat dibuat.', syncedFiles }; }
-  for (const [name, content] of [['Today.md', today], ['Current Priorities.md', priorities]]) {
+  for (const [name, content] of [['Today.md', today], ['Current Priorities.md', priorities], ['Project Update Report.md', generateProjectNewsReport(state)]]) {
     try {
       const target = path.join(directory, name);
       fs.writeFileSync(`${target}.tmp`, content, 'utf8');

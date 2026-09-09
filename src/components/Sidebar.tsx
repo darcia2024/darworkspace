@@ -89,7 +89,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     { 
       id: 'updates', 
-      label: 'Update Project', 
+      label: 'Laporan Project',
       icon: Edit3, 
     },
     { 
@@ -332,7 +332,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className="w-full py-2 px-3 rounded-full bg-white hover:bg-zinc-100 border border-zinc-200 text-zinc-700 text-xs font-mono font-medium flex items-center justify-center gap-1.5 transition-colors"
           >
             <FileDown className="w-3.5 h-3.5" />
-            <span>Ekspor Catatan ke Obsidian</span>
+            <span>Buka laporan project</span>
           </button>
         </div>
       ) : (

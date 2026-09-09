@@ -236,7 +236,7 @@ export function App() {
     today: 'Sikat Hari Ini',
     nextgo: 'Abis Ini Ngapain?',
     lanes: 'Markas Project',
-    updates: 'Update Project',
+    updates: 'Laporan Project',
     waiting: 'Radar Tagihan',
     money: 'Cek Dompet & Cuan',
     deepwork: 'Kamar Fokus'
@@ -438,9 +438,7 @@ export function App() {
           {/* TAB: PROJECT UPDATE & EDITOR */}
           {activeTab === 'updates' && (
             <ProjectUpdateView
-              projects={state.projects}
-              onUpdateProject={handleUpdateProject}
-              onAddProject={handleAddProject}
+              state={state}
               onSelectTab={(tab) => setActiveTab(tab as any)}
             />
           )}
