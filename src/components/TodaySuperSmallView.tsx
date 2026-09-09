@@ -67,7 +67,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
               <span className="lead-italic font-normal mr-1">Gaya Kerja</span> Lo Hari Ini
             </h3>
             <span className="sticker-pill sticker-lime text-[10px]">
-              {strategyMode === 'single' ? '🎯 FOKUS 1 HAL (ANTI MUMET)' : '⚡ SIKAT BEBERAPA (MULTI-SPRINT)'}
+              {strategyMode === 'single' ? ' FOKUS 1 HAL (ANTI MUMET)' : ' SIKAT BEBERAPA (MULTI-SPRINT)'}
             </span>
           </div>
           <p className="text-xs text-zinc-700 font-medium">
@@ -122,7 +122,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
                 <div className="flex items-center gap-2">
                   <span className="sticker-pill sticker-pink flex items-center gap-1">
                     <Flame className="w-3 h-3 text-[#be185d]" />
-                    <span>WAKTU DIKUNCI 🔥</span>
+                    <span>WAKTU DIKUNCI </span>
                   </span>
                   <span className="sticker-pill sticker-blue text-[10px]">{activeSingleBlock.blockType.toUpperCase()}</span>
                 </div>
@@ -139,7 +139,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
                 </h4>
                 <div className="p-3.5 rounded-2xl bg-[#fef9c3]/60 border border-[#fef08a] text-xs font-mono text-zinc-800 space-y-1">
                   <span className="text-[#713f12] font-black block uppercase tracking-wide">
-                    ⚡ LANGKAH KONKRIT YANG HARUS LO BIKIN SEKARANG:
+                     LANGKAH KONKRIT YANG HARUS LO BIKIN SEKARANG:
                   </span>
                   <p className="text-sm font-sans font-medium text-zinc-950 font-bold leading-relaxed">
                     {activeSingleBlock.action}
@@ -148,7 +148,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
 
                 {activeSingleBlock.rule && (
                   <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200/80 text-xs font-mono text-zinc-600">
-                    <span className="text-[#14532d] font-bold">📌 ATURAN BIAR CEPET BERES:</span> {activeSingleBlock.rule}
+                    <span className="text-[#14532d] font-bold"> ATURAN BIAR CEPET BERES:</span> {activeSingleBlock.rule}
                   </div>
                 )}
               </div>
@@ -174,7 +174,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
                         : 'pill-white text-zinc-700'
                     }`}
                   >
-                    {activeSingleBlock.isDone ? '✓ Sudah Selesai' : 'Tandai Beres'}
+                    {activeSingleBlock.isDone ? ' Sudah Selesai' : 'Tandai Beres'}
                   </button>
 
                   <button
@@ -394,7 +394,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
 
                     <div className="flex items-center justify-between pt-3 border-t border-black/5 text-xs font-mono">
                       <span className={isSelected ? 'text-[#15803d] font-bold' : 'text-zinc-600'}>
-                        {isSelected ? '✓ Masuk dalam Batch Sprint' : '+ Klik untuk tambahkan'}
+                        {isSelected ? ' Masuk dalam Batch Sprint' : '+ Klik untuk tambahkan'}
                       </span>
                       <button
                         onClick={(e) => {

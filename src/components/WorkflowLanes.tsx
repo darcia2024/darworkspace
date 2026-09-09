@@ -65,7 +65,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
 
   const laneConfigs: Record<LaneType, { title: string; subtitle: string; icon: any; tag: string; rule: string; color: string }> = {
     client_delivery: {
-      title: 'Lane 1 — Client Delivery',
+      title: 'Lane 1 - Client Delivery',
       subtitle: 'Sudah Deal / Sudah Ada Kewajiban (Umi Elly, Barber POS, DreamMecca, Zalvice, dll.)',
       icon: Briefcase,
       tag: 'LANE_01',
@@ -73,7 +73,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       color: 'border-[#305d46]/30 text-[#305d46] bg-[#e2ecdc]'
     },
     maintenance: {
-      title: 'Lane 2 — Maintenance',
+      title: 'Lane 2 - Maintenance',
       subtitle: 'Timebox Ketat: Max 1-2 Jam Per Sesi (Markaz Fiqih)',
       icon: Wrench,
       tag: 'LANE_02',
@@ -81,7 +81,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       color: 'border-[#3c6b8c]/30 text-[#2b5675] bg-[#e2edf9]'
     },
     bizdev: {
-      title: 'Lane 3 — Business Development / Sales',
+      title: 'Lane 3 - Business Development / Sales',
       subtitle: 'KAEL Offline Marketing, Upwork Global, Lead Pipeline, Watra',
       icon: TrendingUp,
       tag: 'LANE_03',
@@ -89,7 +89,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       color: 'border-[#b87e2b]/30 text-[#925f18] bg-[#fdf3d8]'
     },
     own_product: {
-      title: 'Lane 4 — Core Product (SaaS & Assets)',
+      title: 'Lane 4 - Core Product (SaaS & Assets)',
       subtitle: 'KAEL POS, Engine Kasir, Template High-Ticket',
       icon: Package,
       tag: 'LANE_04',
@@ -97,7 +97,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       color: 'border-[#4e3a68]/30 text-[#4e3a68] bg-[#f0e6f9]'
     },
     operations: {
-      title: 'Lane 5 — Daily Life & Operations',
+      title: 'Lane 5 - Daily Life & Operations',
       subtitle: 'Audit Kas Harian, Backup Database, Olahraga, Rumah Tangga',
       icon: Activity,
       tag: 'LANE_05',
@@ -105,7 +105,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
       color: 'border-zinc-300 text-zinc-800 bg-zinc-100 font-bold'
     },
     parking_lot: {
-      title: 'Lane 6 — Parking Lot (Ide Disimpan)',
+      title: 'Lane 6 - Parking Lot (Ide Disimpan)',
       subtitle: 'Semua ide liar/distraksi yang belum waktunya dieksekusi',
       icon: Archive,
       tag: 'LANE_06',
@@ -117,10 +117,10 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
   const allLanes: LaneType[] = ['client_delivery', 'maintenance', 'bizdev', 'own_product', 'operations', 'parking_lot'];
 
   const boardColumns: { id: BoardColumn; label: string; desc: string; color: string }[] = [
-    { id: 'DOING', label: '⚡ SEDANG DIGARAP', desc: 'Fokus aktif lo hari ini', color: 'border-[#305d46]/40 text-[#305d46]' },
+    { id: 'DOING', label: ' SEDANG DIGARAP', desc: 'Fokus aktif lo hari ini', color: 'border-[#305d46]/40 text-[#305d46]' },
     { id: 'WAITING', label: '⏳ LAGI NUNGGU', desc: 'Menunggu respon / pembayaran klien', color: 'border-[#b87e2b]/40 text-[#925f18]' },
-    { id: 'QUEUE', label: '📋 ANTRIAN KICKOFF', desc: 'Siap dieksekusi giliran berikutnya', color: 'border-zinc-200 text-[#111111]' },
-    { id: 'DONE', label: '✅ PEKERJAAN SELESAI', desc: 'Status pembayaran dilihat terpisah', color: 'border-emerald-300 text-emerald-800' },
+    { id: 'QUEUE', label: ' ANTRIAN KICKOFF', desc: 'Siap dieksekusi giliran berikutnya', color: 'border-zinc-200 text-[#111111]' },
+    { id: 'DONE', label: ' PEKERJAAN SELESAI', desc: 'Status pembayaran dilihat terpisah', color: 'border-emerald-300 text-emerald-800' },
     { id: 'PARKED', label: 'DISIMPAN DULU', desc: 'Belum dijadwalkan untuk dikerjakan', color: 'border-zinc-300 text-zinc-700' }
   ];
 
@@ -713,7 +713,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                 onClick={() => handleSwitchColumn(project, 'DOING')}
                                 className="w-full py-1.5 px-3 rounded-xl bg-[#111111] text-white hover:bg-black font-bold flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all"
                               >
-                                <span>⚡ Lanjut Eksekusi (Mulai DOING)</span>
+                                <span> Lanjut Eksekusi (Mulai DOING)</span>
                                 <ChevronRight className="w-3.5 h-3.5" />
                               </button>
                             )}
@@ -725,7 +725,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                   className="py-1.5 px-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
                                   title="Feedback masuk / DP cair → lanjut eksekusi"
                                 >
-                                  <span>⚡ Lanjut Doing</span>
+                                  <span> Lanjut Doing</span>
                                   <ChevronRight className="w-3 h-3" />
                                 </button>
                                 <button
@@ -733,7 +733,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                   className="py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
                                   title="Pembayaran lunas & tuntas"
                                 >
-                                  <span>✓ Pekerjaan selesai</span>
+                                  <span> Pekerjaan selesai</span>
                                   <Check className="w-3 h-3" />
                                 </button>
                               </div>
@@ -754,7 +754,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                   className="py-1.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all text-[10px]"
                                   title="Selesai tuntas & lunas"
                                 >
-                                  <span>✅ Beres 100%</span>
+                                  <span> Beres 100%</span>
                                   <Check className="w-3 h-3" />
                                 </button>
                               </div>
@@ -762,7 +762,7 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
 
                             {project.boardColumn === 'DONE' && (
                               <div className="flex items-center justify-between px-1 text-[10px] text-emerald-800 font-bold">
-                                <span>✓ 100% Selesai & Bebas Tanggungan</span>
+                                <span> 100% Selesai & Bebas Tanggungan</span>
                                 <button
                                   onClick={() => handleSwitchColumn(project, 'DOING')}
                                   className="text-zinc-500 hover:text-black underline"

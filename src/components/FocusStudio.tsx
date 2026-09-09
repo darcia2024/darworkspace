@@ -212,7 +212,7 @@ export const FocusStudio: React.FC<FocusStudioProps> = ({
 
                 <div className="pt-2 border-t border-black/5 flex items-center justify-between text-[10px] font-mono">
                   <span className={isSelected ? 'text-[#15803d] font-bold' : 'text-zinc-800 font-semibold'}>
-                    {isSelected ? '✓ Terkunci di Timer' : 'Pilih Task Ini'}
+                    {isSelected ? ' Terkunci di Timer' : 'Pilih Task Ini'}
                   </span>
                 </div>
               </button>

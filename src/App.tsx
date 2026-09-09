@@ -498,7 +498,7 @@ export function App() {
                 }}
                 className="px-6 py-3 rounded-full bg-white text-black font-bold text-xs hover:bg-zinc-200 transition-all shadow-lg flex items-center gap-2"
               >
-                <span>Sikat Kerja Hari Ini 🚀</span>
+                <span>Sikat Kerja Hari Ini </span>
                 <ChevronRight className="w-4 h-4" />
               </button>
               <button
@@ -508,7 +508,7 @@ export function App() {
                 }}
                 className="px-6 py-3 rounded-full bg-zinc-900 text-white font-bold text-xs border border-zinc-700 hover:bg-zinc-800 transition-all shadow-md"
               >
-                + Catat Duit Masuk 💰
+                + Catat Duit Masuk 
               </button>
             </div>
 

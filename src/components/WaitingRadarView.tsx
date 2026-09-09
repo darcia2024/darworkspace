@@ -214,7 +214,7 @@ export const WaitingRadarView: React.FC<WaitingRadarViewProps> = ({
                   }}
                   className="px-3.5 py-1.5 rounded-full bg-[#ecfccb] hover:bg-[#d9f99d] text-[#15803d] border border-[#d9f99d] font-bold transition-colors shadow-xs"
                 >
-                  ✓ Beres
+                   Beres
                 </button>
               </div>
 

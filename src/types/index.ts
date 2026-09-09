@@ -94,7 +94,7 @@ export interface MonthlyExpenseItem {
 export interface FinancialReport {
   asOfDate: string;
   totalLiquidBalance: number;
-  modeStatus: 'RED MODE — CASH DEFENSE' | 'YELLOW MODE — CAUTION' | 'GREEN MODE — GROWTH';
+  modeStatus: 'RED MODE - CASH DEFENSE' | 'YELLOW MODE - CAUTION' | 'GREEN MODE - GROWTH';
   hardFloor: number;
   financialDebt: number;
   projectLiabilityNote: string;

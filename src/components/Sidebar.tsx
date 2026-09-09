@@ -65,30 +65,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
     id: ActiveTabType; 
     label: string; 
     icon: any; 
-    badge?: string; 
-    badgeColor?: string;
     subPills?: { label: string; activeTab: ActiveTabType; count?: number }[];
   }[] = [
     { 
       id: 'today', 
       label: 'Sikat Hari Ini', 
       icon: Target, 
-      badge: `${todayCompletedCount}/${todayTotalCount} Tuntas`,
-      badgeColor: 'bg-[#ecfccb] text-[#14532d] font-bold border-[#bef264]' 
     },
     { 
       id: 'nextgo', 
       label: 'Abis Ini Ngapain?', 
       icon: Compass, 
-      badge: 'GAS', 
-      badgeColor: 'bg-[#fce7f3] text-[#9d174d] font-bold border-[#fbcfe8]' 
     },
     { 
       id: 'lanes', 
       label: 'Markas Project & Radar', 
       icon: Layers, 
-      badge: waitingCount > 0 ? `${waitingCount} Nunggu` : '6 Jalur', 
-      badgeColor: waitingCount > 0 ? 'bg-[#e0f2fe] text-[#075985] font-bold border-[#bae6fd]' : 'bg-zinc-100 text-zinc-900 font-bold border-zinc-300',
       subPills: [
         { label: '6 Jalur Kerja', activeTab: 'lanes' },
         { label: `Radar Tagihan (${waitingCount})`, activeTab: 'waiting', count: waitingCount }
@@ -98,15 +90,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
       id: 'money', 
       label: 'Cek Dompet & Cuan', 
       icon: DollarSign, 
-      badge: syncLabel,
-      badgeColor: 'bg-[#ffedd5] text-[#9a3412] font-bold border-[#fed7aa]' 
     },
     { 
       id: 'deepwork', 
       label: 'Kamar Fokus 40Hz', 
       icon: Flame, 
-      badge: 'Zen Mode', 
-      badgeColor: 'bg-[#f3e8ff] text-[#581c87] font-bold border-[#e9d5ff]' 
     }
   ];
 
@@ -139,11 +127,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <p className="text-[11px] text-zinc-700 font-semibold font-mono">Markas Tempur Daru 🚀</p>
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[9px] font-mono font-bold border border-emerald-200">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                    {syncLabel}
-                  </span>
+                  <p className="text-[11px] text-zinc-500 font-medium">Markas Tempur Daru</p>
                 </div>
               </div>
             )}
@@ -221,14 +205,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       <Icon className={`w-4 h-4 shrink-0 ${isItemActive ? 'text-white' : 'text-zinc-700'}`} />
                       {!isCollapsed && <span>{item.label}</span>}
                     </div>
-
-                    {!isCollapsed && item.badge && (
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
-                        isItemActive ? 'bg-white/20 text-white border-white/20' : item.badgeColor
-                      }`}>
-                        {item.badge}
-                      </span>
-                    )}
                   </button>
 
                   {/* Compact Blend Sub-pills (When active and not collapsed) */}

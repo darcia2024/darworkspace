@@ -48,7 +48,7 @@ export function deriveState(state) {
     },
     financialReport: {
       ...report, totalLiquidBalance, runwayMonths, runwayDays: Math.floor(runwayMonths * 30),
-      modeStatus: totalLiquidBalance < report.hardFloor ? 'RED MODE — CASH DEFENSE' : totalLiquidBalance < Math.max(report.hardFloor, 10000000) ? 'YELLOW MODE — CAUTION' : 'GREEN MODE — GROWTH',
+      modeStatus: totalLiquidBalance < report.hardFloor ? 'RED MODE - CASH DEFENSE' : totalLiquidBalance < Math.max(report.hardFloor, 10000000) ? 'YELLOW MODE - CAUTION' : 'GREEN MODE - GROWTH',
     },
   };
 }

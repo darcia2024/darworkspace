@@ -22,13 +22,13 @@ export const legacyArchives = [
         'Zaky Fakhru Ar-Rozi: Landing Page Kampanye Rp600.000 Lunas'
       ],
       breakdown: [
-        { label: 'Tiket Saudia Airlines (3 Pax)', client: 'Temantiket Operations', category: 'Flight Tickets', amount: 39600000, profit: 906000, tag: 'TICKETING', status: 'LUNAS ✓' },
-        { label: 'VOA Mesir & EgyptAir', client: 'Abdurrahman Ja\'far M.', category: 'Visa & Flight', amount: 14550000, profit: 1460690, tag: 'TRAVEL_OPS', status: 'LUNAS ✓' },
-        { label: 'DP Kasir Barber POS (50%)', client: 'Owner Barber Underrated', category: 'DP 50%', amount: 3000000, profit: 3000000, tag: 'INFLOW_DP', status: 'LUNAS ✓' },
-        { label: 'Bundle Logo Zalvice & Laptopbisnis', client: 'Bang Ridwan Zalbina', category: 'Branding', amount: 1200000, profit: 1200000, tag: 'DESIGN_BUNDLE', status: 'LUNAS ✓' },
-        { label: 'Logo Hamasah Bakery & Laundry', client: 'Sidi Ifdony', category: 'Branding', amount: 1000000, profit: 1000000, tag: 'DESIGN', status: 'LUNAS ✓' },
-        { label: 'Brand & Logo KOLOHAGA', client: 'Ziaudin Azzam (Ajam)', category: 'Branding', amount: 700000, profit: 700000, tag: 'DESIGN', status: 'LUNAS ✓' },
-        { label: 'Landing Page Kampanye Digital', client: 'Zaky Fakhru Ar-Rozi', category: 'Web Dev', amount: 600000, profit: 600000, tag: 'LANDING', status: 'LUNAS ✓' },
+        { label: 'Tiket Saudia Airlines (3 Pax)', client: 'Temantiket Operations', category: 'Flight Tickets', amount: 39600000, profit: 906000, tag: 'TICKETING', status: 'LUNAS ' },
+        { label: 'VOA Mesir & EgyptAir', client: 'Abdurrahman Ja\'far M.', category: 'Visa & Flight', amount: 14550000, profit: 1460690, tag: 'TRAVEL_OPS', status: 'LUNAS ' },
+        { label: 'DP Kasir Barber POS (50%)', client: 'Owner Barber Underrated', category: 'DP 50%', amount: 3000000, profit: 3000000, tag: 'INFLOW_DP', status: 'LUNAS ' },
+        { label: 'Bundle Logo Zalvice & Laptopbisnis', client: 'Bang Ridwan Zalbina', category: 'Branding', amount: 1200000, profit: 1200000, tag: 'DESIGN_BUNDLE', status: 'LUNAS ' },
+        { label: 'Logo Hamasah Bakery & Laundry', client: 'Sidi Ifdony', category: 'Branding', amount: 1000000, profit: 1000000, tag: 'DESIGN', status: 'LUNAS ' },
+        { label: 'Brand & Logo KOLOHAGA', client: 'Ziaudin Azzam (Ajam)', category: 'Branding', amount: 700000, profit: 700000, tag: 'DESIGN', status: 'LUNAS ' },
+        { label: 'Landing Page Kampanye Digital', client: 'Zaky Fakhru Ar-Rozi', category: 'Web Dev', amount: 600000, profit: 600000, tag: 'LANDING', status: 'LUNAS ' },
       ],
       expensesBreakdown: [
         { label: 'Biaya Operasional Tiket & Visa (Vendor)', amount: 51783310, note: 'Tiket Saudia Rp38,69M + VOA Mesir & EgyptAir Rp13,09M' },
@@ -56,9 +56,9 @@ export const legacyArchives = [
         'Pencapaian Puncak Saldo Kas Likuid Terbesar (Rp7.810.773)'
       ],
       breakdown: [
-        { label: 'Portal Web & LMS Markaz Fiqih', client: 'Markaz Fiqih', category: 'Web & LMS', amount: 8500000, profit: 8000000, tag: 'PLATFORM_PAID', status: 'LUNAS ✓' },
-        { label: 'Platform Umrahme Landing (20 Pax)', client: 'DreamMecca Core', category: 'Full Payment', amount: 700000, profit: 700000, tag: 'WEB_DEV', status: 'LUNAS ✓' },
-        { label: 'Desain Logo Haramain Capture', client: 'H. Aris Azhari Harahap', category: 'Branding', amount: 600000, profit: 600000, tag: 'DESIGN', status: 'LUNAS ✓' },
+        { label: 'Portal Web & LMS Markaz Fiqih', client: 'Markaz Fiqih', category: 'Web & LMS', amount: 8500000, profit: 8000000, tag: 'PLATFORM_PAID', status: 'LUNAS ' },
+        { label: 'Platform Umrahme Landing (20 Pax)', client: 'DreamMecca Core', category: 'Full Payment', amount: 700000, profit: 700000, tag: 'WEB_DEV', status: 'LUNAS ' },
+        { label: 'Desain Logo Haramain Capture', client: 'H. Aris Azhari Harahap', category: 'Branding', amount: 600000, profit: 600000, tag: 'DESIGN', status: 'LUNAS ' },
       ],
       expensesBreakdown: [
         { label: 'Biaya Operasional Dev & Hosting', amount: 500000, note: 'Server & setup operasional' },

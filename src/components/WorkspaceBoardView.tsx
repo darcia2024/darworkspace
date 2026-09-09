@@ -48,7 +48,7 @@ export const WorkspaceBoardView: React.FC<WorkspaceBoardViewProps> = ({
   const pipelineDeals = [
     {
       id: 'pipe-umi-elly',
-      name: 'Umi Elly — LMS Azhariyah',
+      name: 'Umi Elly - LMS Azhariyah',
       subtitle: 'Tunggu transfer DP Termin 1 (Rp3 jt) baru coding',
       value: 'Rp7.000.000',
       status: 'Waiting Payment',

@@ -6,19 +6,19 @@
       {
         "id": "tp-1",
         "project": "Barbershop Underrated",
-        "action": "🏆 BARBERSHOP 100% LUNAS FULL PAYMENT! (+Pelunasan Rp3.000.000 Masuk Mandiri ✓)",
+        "action": " BARBERSHOP 100% LUNAS FULL PAYMENT! (+Pelunasan Rp3.000.000 Masuk Mandiri )",
         "isDone": true
       },
       {
         "id": "tp-2",
         "project": "Umi Elly LMS",
-        "action": "🚀 KICKOFF SPRINT: DP Termin 1 Rp3.000.000 LUNAS MASUK! Gaspol eksekusi modul LMS Azhariyah",
+        "action": " KICKOFF SPRINT: DP Termin 1 Rp3.000.000 LUNAS MASUK! Gaspol eksekusi modul LMS Azhariyah",
         "isDone": false
       },
       {
         "id": "tp-3",
         "project": "Zalvice & Laptopbisnis",
-        "action": "🎨 2 LOGO DESIGN KELAR! (Zalvice & Laptopbisnis 100% Selesai & Lunas ✓)",
+        "action": " 2 LOGO DESIGN KELAR! (Zalvice & Laptopbisnis 100% Selesai & Lunas )",
         "isDone": true
       },
       {
@@ -37,7 +37,7 @@
     "financialReport": {
       "asOfDate": "2 September 2026",
       "totalLiquidBalance": 9892741,
-      "modeStatus": "YELLOW MODE — CAUTION",
+      "modeStatus": "YELLOW MODE - CAUTION",
       "hardFloor": 4000000,
       "financialDebt": 0,
       "projectLiabilityNote": "SEMUA UTANG DELIVERABLE TUNTAS! (Barber POS Lunas Penuh Rp6M & Umi Elly DP Rp3M Kickoff Aktif). Nol liability design!",
@@ -119,7 +119,7 @@
         {
           "date": "31 Agu",
           "balance": 5333508,
-          "note": "Kewajiban Sep Lunas ✓"
+          "note": "Kewajiban Sep Lunas "
         },
         {
           "date": "1 Sep",
@@ -133,9 +133,9 @@
         }
       ],
       "recoveryRoadmap": {
-        "stage1": "Rp4.000.000 (Hard Floor Defense Zone — PASSED ✓)",
-        "stage2": "Rp4.130.865 (Buffer + 2 Akun Claude Pro — PASSED ✓)",
-        "stage3": "Rp7.130.865 (Pelunasan Barber Underrated Rp3M — PASSED ✓)",
+        "stage1": "Rp4.000.000 (Hard Floor Defense Zone - PASSED )",
+        "stage2": "Rp4.130.865 (Buffer + 2 Akun Claude Pro - PASSED )",
+        "stage3": "Rp7.130.865 (Pelunasan Barber Underrated Rp3M - PASSED )",
         "stage4": "Rp9.892.741 (Live Saldo Kas Aman • Surplus +Rp5,89M di atas Floor!)"
       },
       "defenseProtocolRule": "Saldo likuid Rp9,89M (Surplus masif +Rp5,89M di atas Floor Rp4M). Pemasukan September sudah tembus Rp6.000.000 (60% tercapai di tgl 2). Fokus sekarang: Eksekusi sprint modul LMS Umi Elly & scale KAEL SaaS!",
@@ -149,7 +149,7 @@
           "id": "exp-1",
           "category": "Uang istri",
           "estimatedAmount": 1200000,
-          "amountText": "Rp1.200.000 (Lunas Sep ✓)",
+          "amountText": "Rp1.200.000 (Lunas Sep )",
           "status": "Wajib",
           "isFixed": true,
           "notes": "Nafkah rutin bulanan September 2026 LUNAS terkirim"
@@ -158,10 +158,10 @@
           "id": "exp-2",
           "category": "Kewajiban rumah Mesir",
           "estimatedAmount": 500000,
-          "amountText": "Rp500.000 (Lunas Sep ✓)",
+          "amountText": "Rp500.000 (Lunas Sep )",
           "status": "Wajib",
           "isFixed": true,
-          "notes": "Kewajiban bulanan Mesir September 2026 LUNAS ✓"
+          "notes": "Kewajiban bulanan Mesir September 2026 LUNAS "
         },
         {
           "id": "exp-3",
@@ -185,7 +185,7 @@
           "id": "exp-5",
           "category": "Claude Pro (2 Akun)",
           "estimatedAmount": 720000,
-          "amountText": "±Rp720.000 (2 Akun Aktif ✓)",
+          "amountText": "±Rp720.000 (2 Akun Aktif )",
           "status": "Produktif / langganan aktif",
           "isFixed": true,
           "notes": "Claude Pro (2 Akun Aktif) untuk AI Coding & High-Volume Reasoning"
@@ -253,7 +253,7 @@
           "amount": 500000,
           "accountName": "Mandiri",
           "category": "Client Payment (Lunas)",
-          "description": "Desain Branding & Logo Azharuna (Ustadz Ifdony) (+Rp500.000 Lunas ✓)",
+          "description": "Desain Branding & Logo Azharuna (Ustadz Ifdony) (+Rp500.000 Lunas )",
           "createdAt": "2026-09-04T10:00:00.000Z"
         },
         {
@@ -263,7 +263,7 @@
           "amount": 3000000,
           "accountName": "Mandiri",
           "category": "Client Payment (Pelunasan 100%)",
-          "description": "Pelunasan 100% Barber POS & Membership System (+Rp3.000.000 Lunas Penuh ✓)",
+          "description": "Pelunasan 100% Barber POS & Membership System (+Rp3.000.000 Lunas Penuh )",
           "createdAt": "2026-09-02T15:45:00.000Z"
         },
         {
@@ -273,7 +273,7 @@
           "amount": 3000000,
           "accountName": "Mandiri",
           "category": "Client Payment (Termin 1 DP)",
-          "description": "Termin 1 DP 50% Kickoff LMS Peradaban Islam Azhariyah Umi Elly (+Rp3.000.000 Masuk ✓)",
+          "description": "Termin 1 DP 50% Kickoff LMS Peradaban Islam Azhariyah Umi Elly (+Rp3.000.000 Masuk )",
           "createdAt": "2026-09-02T15:50:00.000Z"
         },
         {
@@ -303,7 +303,7 @@
           "amount": 500000,
           "accountName": "Mandiri",
           "category": "Kewajiban Rutin",
-          "description": "Kewajiban rumah Mesir bulan September 2026 (Rp500.000 Lunas ✓)",
+          "description": "Kewajiban rumah Mesir bulan September 2026 (Rp500.000 Lunas )",
           "createdAt": "2026-08-31T10:55:00.000Z"
         },
         {
@@ -323,7 +323,7 @@
           "amount": 1200000,
           "accountName": "Mandiri",
           "category": "Nafkah Keluarga",
-          "description": "Kirim uang nafkah istri bulan September 2026 (Rp1.200.000 Lunas ✓)",
+          "description": "Kirim uang nafkah istri bulan September 2026 (Rp1.200.000 Lunas )",
           "createdAt": "2026-08-31T10:25:00.000Z"
         },
         {
@@ -352,8 +352,8 @@
       {
         "id": "tb-1",
         "blockType": "Deep Work 1",
-        "projectName": "Umi Elly — LMS Azhariyah",
-        "action": "🚀 KICKOFF SPRINT: DP Rp3M LUNAS! Setup arsitektur modular LMS Azhariyah & struktur materi pembelajaran",
+        "projectName": "Umi Elly - LMS Azhariyah",
+        "action": " KICKOFF SPRINT: DP Rp3M LUNAS! Setup arsitektur modular LMS Azhariyah & struktur materi pembelajaran",
         "timeboxMinutes": 90,
         "isDone": false,
         "rule": "KICKOFF SPRINT: Bangun pondasi LMS dengan clean UI & arsitektur cepat untuk Umi Elly."
@@ -362,10 +362,10 @@
         "id": "tb-2",
         "blockType": "Deep Work 2",
         "projectName": "Website & Kasir Barber",
-        "action": "🏆 100% LUNAS FULL PAYMENT! Pelunasan Rp3.000.000 masuk kas Mandiri & serah terima live",
+        "action": " 100% LUNAS FULL PAYMENT! Pelunasan Rp3.000.000 masuk kas Mandiri & serah terima live",
         "timeboxMinutes": 60,
         "isDone": true,
-        "rule": "BARBERSHOP 100% TUNTAS ✓: Selesai penuh dan uang lunas Rp6.000.000 di rekening!"
+        "rule": "BARBERSHOP 100% TUNTAS : Selesai penuh dan uang lunas Rp6.000.000 di rekening!"
       },
       {
         "id": "tb-3",
@@ -401,7 +401,7 @@
         "priority": "P1",
         "currentGoal": "Finishing deliverable platform & landing DreamMecca sampai tuntas",
         "nextAction": "Final touch UI/UX, konten paket umrah & handover ke klien",
-        "definitionOfDone": "Platform DreamMecca live & tuntas diserahkan ke klien ✓",
+        "definitionOfDone": "Platform DreamMecca live & tuntas diserahkan ke klien ",
         "rule": "Finishing deliverable yang sudah lunas dari lama agar bebas tanggungan.",
         "billingMilestone": "Paid in Full (Historical)",
         "followUpDeadline": "Finishing malam ini"
@@ -420,9 +420,9 @@
         "priority": "P1",
         "currentGoal": "Logo Zalvice Bang Edo SELESAI & TUNTAS! (Paket Rp1,2M Lunas)",
         "nextAction": "Handover master assets & mockup ke Bang Edo",
-        "definitionOfDone": "Logo Zalvice selesai & diterima klien ✓",
+        "definitionOfDone": "Logo Zalvice selesai & diterima klien ",
         "billingMilestone": "Paid in Full (Paket Rp1,2M)",
-        "followUpDeadline": "Done ✓"
+        "followUpDeadline": "Done "
       },
       {
         "id": "p-barber",
@@ -431,17 +431,17 @@
         "boardColumn": "DONE",
         "status": "Done",
         "paymentStatus": "Paid",
-        "valueText": "Rp6.000.000 (100% LUNAS FULL PAYMENT ✓)",
+        "valueText": "Rp6.000.000 (100% LUNAS FULL PAYMENT )",
         "nominalNumeric": 6000000,
         "paidNumeric": 6000000,
         "unpaidNumeric": 0,
         "priority": "P1",
         "currentGoal": "100% TUNTAS & LUNAS FULL PAYMENT! (DP Rp3M + Pelunasan Rp3M Masuk Kas Mandiri)",
         "nextAction": "Dampingi operasional opening & maintenance bila ada request minor",
-        "definitionOfDone": "Website & POS Kasir Barber live, serah terima tuntas, uang lunas Rp6.000.000 ✓",
+        "definitionOfDone": "Website & POS Kasir Barber live, serah terima tuntas, uang lunas Rp6.000.000 ",
         "rule": "Barbershop 100% LUNAS & tuntas.",
-        "billingMilestone": "100% Paid in Full (Rp6.000.000 Lunas ✓)",
-        "followUpDeadline": "Done ✓"
+        "billingMilestone": "100% Paid in Full (Rp6.000.000 Lunas )",
+        "followUpDeadline": "Done "
       },
       {
         "id": "p-kael-product",
@@ -476,10 +476,10 @@
         "priority": "P1",
         "currentGoal": "Logo Laptopbisnis SELESAI & TUNTAS! (Bagian dari Paket Rp1,2M Lunas)",
         "nextAction": "Handover master assets & mockup ke klien",
-        "definitionOfDone": "Logo Laptopbisnis selesai & diterima klien ✓",
+        "definitionOfDone": "Logo Laptopbisnis selesai & diterima klien ",
         "rule": "Queue: Eksekusi segera setelah Zalvice tuntas",
         "billingMilestone": "Paid in Full",
-        "followUpDeadline": "Done ✓"
+        "followUpDeadline": "Done "
       },
       {
         "id": "p-ifdony-azharuna",
@@ -488,34 +488,34 @@
         "boardColumn": "DONE",
         "status": "Done",
         "paymentStatus": "Paid",
-        "valueText": "Rp500.000 (Lunas September 2026 ✓)",
+        "valueText": "Rp500.000 (Lunas September 2026 )",
         "nominalNumeric": 500000,
         "paidNumeric": 500000,
         "unpaidNumeric": 0,
         "priority": "P2",
         "currentGoal": "Desain Branding & Logo Azharuna Tuntas & Lunas",
         "nextAction": "Handover master vector AI, EPS, SVG, PNG & PDF",
-        "definitionOfDone": "Master file logo diserahkan & pembayaran Rp500.000 lunas ✓",
+        "definitionOfDone": "Master file logo diserahkan & pembayaran Rp500.000 lunas ",
         "billingMilestone": "100% Paid in Full (Rp500.000 Lunas)",
-        "followUpDeadline": "Done ✓"
+        "followUpDeadline": "Done "
       },
       {
         "id": "p-umi-elly",
-        "name": "Umi Elly — LMS Peradaban Islam Azhariyah",
+        "name": "Umi Elly - LMS Peradaban Islam Azhariyah",
         "lane": "client_delivery",
         "boardColumn": "DOING",
         "status": "Doing",
         "paymentStatus": "Partial",
-        "valueText": "Deal Rp7.000.000 (Termin 1: DP Rp3M LUNAS ✓ • Sisa Termin 2 & 3 Rp4M)",
+        "valueText": "Deal Rp7.000.000 (Termin 1: DP Rp3M LUNAS  • Sisa Termin 2 & 3 Rp4M)",
         "nominalNumeric": 7000000,
         "paidNumeric": 3000000,
         "unpaidNumeric": 4000000,
         "priority": "P1",
-        "currentGoal": "DP Termin 1 Rp3.000.000 SUDAH MASUK! 🚀 Gaspol kickoff sprint pengerjaan modul lengkap LMS Azhariyah",
+        "currentGoal": "DP Termin 1 Rp3.000.000 SUDAH MASUK!  Gaspol kickoff sprint pengerjaan modul lengkap LMS Azhariyah",
         "nextAction": "Eksekusi modul LMS Peradaban Islam Azhariyah & struktur materi pembelajaran",
         "definitionOfDone": "Modul LMS Peradaban Islam Azhariyah live & deploy",
         "rule": "DP Rp3M sudah masuk kas: Gaspol sprint pengerjaan modul lengkap dengan standar kualitas tinggi.",
-        "billingMilestone": "Termin 1: DP Rp3.000.000 (LUNAS ✓) • Termin 2: Rp2.000.000 • Termin 3: Rp2.000.000",
+        "billingMilestone": "Termin 1: DP Rp3.000.000 (LUNAS ) • Termin 2: Rp2.000.000 • Termin 3: Rp2.000.000",
         "followUpDeadline": "Sprint Kickoff Aktif"
       },
       {
@@ -586,16 +586,16 @@
         "unpaidNumeric": 0,
         "priority": "P3",
         "currentGoal": "Cuma beresin issue yang bener-bener urgent",
-        "nextAction": "List bug → pilih maksimal 1–2 issue urgent → timebox 1–2 jam",
+        "nextAction": "List bug → pilih maksimal 1-2 issue urgent → timebox 1-2 jam",
         "definitionOfDone": "Max 2 bug urgent tuntas tanpa merembet ke modul lain",
         "rule": "Markaz nggak boleh makan deep-work slot kerjaan berbayar.",
-        "timebox": "1–2 jam per sesi",
+        "timebox": "1-2 jam per sesi",
         "billingMilestone": "Non-billable (Free)",
         "followUpDeadline": "Bila ada waktu luang setelah paid tasks"
       },
       {
         "id": "p-kael-marketing",
-        "name": "KAEL — Offline Marketing",
+        "name": "KAEL - Offline Marketing",
         "lane": "bizdev",
         "boardColumn": "DOING",
         "status": "Doing",
@@ -625,7 +625,7 @@
         "unpaidNumeric": 0,
         "priority": "P2",
         "currentGoal": "Jaga peluang cashflow baru tanpa mengganggu delivery",
-        "nextAction": "Apply 3–5 job berkualitas (Next.js, React, Supabase, dashboard, internal tools, POS, landing, bug fixing)",
+        "nextAction": "Apply 3-5 job berkualitas (Next.js, React, Supabase, dashboard, internal tools, POS, landing, bug fixing)",
         "definitionOfDone": "3 proposal spesifik terkirim",
         "rule": "Bukan spam proposal. Jangan buang Connects asal-asalan.",
         "billingMilestone": "Hourly / Fixed Price USD",
@@ -705,7 +705,7 @@
       },
       {
         "id": "p-teh-umi",
-        "name": "Teh Umi — E-reader Basic",
+        "name": "Teh Umi - E-reader Basic",
         "lane": "parking_lot",
         "boardColumn": "PARKED",
         "status": "Parked",
@@ -766,13 +766,31 @@
         "currentGoal": "Dormant",
         "nextAction": "Archived",
         "rule": "Tidak ada alokasi waktu."
+      },
+      {
+        "id": "p-pgs-tour",
+        "name": "Website PGS Tour",
+        "lane": "client_delivery",
+        "boardColumn": "DOING",
+        "status": "Doing",
+        "paymentStatus": "Expected",
+        "valueText": "Website Tour & Travel (Live pgstour.vercel.app)",
+        "nominalNumeric": 0,
+        "paidNumeric": 0,
+        "unpaidNumeric": 0,
+        "priority": "P2",
+        "currentGoal": "Website live di pgstour.vercel.app! 15/15 static pages prerendered, mobile menu clean, trust strip PPIU rapi, & galeri jamaah fix.",
+        "nextAction": "Showcase ke owner PGS Tour & konfirmasi penawaran / invoice pengerjaan website",
+        "definitionOfDone": "Website pgstour.vercel.app diserahkan & deal kesepakatan harga tuntas",
+        "billingMilestone": "Penawaran / Invoice Pengerjaan Website",
+        "followUpDeadline": "Hari ini"
       }
     ],
     "waitingItems": [
       {
         "id": "w-umi-elly",
-        "name": "Umi Elly — LMS Peradaban Islam Azhariyah",
-        "reason": "Demo prototype sudah dikirim — Menunggu feedback & transfer Termin 1 DP Rp3.000.000 (Deal Rp7M)",
+        "name": "Umi Elly - LMS Peradaban Islam Azhariyah",
+        "reason": "Demo prototype sudah dikirim - Menunggu feedback & transfer Termin 1 DP Rp3.000.000 (Deal Rp7M)",
         "value": "Deal Rp7.000.000 (DP Rp3jt OTW)",
         "nextTrigger": "Transfer termin 1 (Rp3jt) masuk",
         "actionToUnblock": "Konfirmasi feedback demo & tanggal transfer termin 1",

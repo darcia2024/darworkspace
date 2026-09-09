@@ -206,7 +206,7 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
             }`}
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>⚡ Update Saldo 7 Rekening</span>
+            <span> Update Saldo 7 Rekening</span>
           </button>
         </div>
 
@@ -358,7 +358,7 @@ export const QuickFinanceInputModal: React.FC<QuickFinanceInputModalProps> = ({
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-white truncate">{photoName || 'bukti_transfer.png'}</p>
-                      <span className="text-[10px] text-emerald-400 font-mono">✓ Foto terlampir</span>
+                      <span className="text-[10px] text-emerald-400 font-mono"> Foto terlampir</span>
                     </div>
                     <button
                       type="button"

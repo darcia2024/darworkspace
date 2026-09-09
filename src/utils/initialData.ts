@@ -6,49 +6,49 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "id": "tp-1",
       "projectId": "p-hamasah-ai",
       "project": "Hamasah Internasional",
-      "action": "🤝 Meeting owner: Discovery integrasi AI ke website & estimasi kebutuhan",
+      "action": "Meeting owner: Discovery integrasi AI ke website & estimasi kebutuhan",
       "isDone": false
     },
     {
       "id": "tp-2",
       "projectId": "p-umi-elly",
       "project": "Umi Elly LMS",
-      "action": "🖥️ Review platform bareng Umi Elly & input kurikulum serta konten modul",
+      "action": "Review platform bareng Umi Elly & input kurikulum serta konten modul",
       "isDone": false
     },
     {
       "id": "tp-3",
       "projectId": "p-pgs-tour",
       "project": "Website PGS Tour",
-      "action": "📝 Susun materi konten, paket perjalanan tour & draft layout website",
+      "action": "Showcase website PGS Tour yang sudah live di pgstour.vercel.app ke owner",
       "isDone": false
     },
     {
       "id": "tp-4",
       "projectId": "p-ifdony-azharuna",
       "project": "Logo Azharuna",
-      "action": "🎨 Eksplorasi konsep simbol logo, tipografi & mockup visual",
+      "action": "Eksplorasi konsep simbol logo, tipografi & mockup visual",
       "isDone": false
     },
     {
       "id": "tp-5",
       "projectId": "p-umi-atiyah",
       "project": "Umi Atiyah",
-      "action": "💰 Follow-up pelunasan Rp200.000 (Kerjaan sudah selesai 100%)",
+      "action": "Follow-up pelunasan Rp200.000 (Kerjaan sudah selesai 100%)",
       "isDone": false
     },
     {
       "id": "tp-6",
       "projectId": "p-komisi-interaksi",
       "project": "Rancangan Komisi Peduli Interaksi (KPI)",
-      "action": "📑 Penawaran Rp14jt terkirim — Standby konfirmasi DP untuk kickoff build",
+      "action": "Penawaran Rp14jt terkirim - Standby konfirmasi DP untuk kickoff build",
       "isDone": false
     },
     {
       "id": "tp-7",
       "projectId": "p-barber",
       "project": "DreamMecca & Barber Underrated",
-      "action": "🏆 100% Selesai & Lunas tuntas! (Bebas utang pikiran ✓)",
+      "action": "100% Selesai & Lunas tuntas! (Bebas utang pikiran )",
       "isDone": true
     }
   ],
@@ -61,7 +61,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
   "financialReport": {
     "asOfDate": "6 September 2026",
     "totalLiquidBalance": 8306524,
-    "modeStatus": "YELLOW MODE — CAUTION",
+    "modeStatus": "YELLOW MODE - CAUTION",
     "hardFloor": 4000000,
     "financialDebt": 0,
     "projectLiabilityNote": "SEMUA UTANG DELIVERABLE TUNTAS! (Barber POS Lunas Penuh Rp6M & Umi Elly DP Rp3M Kickoff Aktif). Nol liability design!",
@@ -143,7 +143,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
       {
         "date": "31 Agu",
         "balance": 5333508,
-        "note": "Kewajiban Sep Lunas ✓"
+        "note": "Kewajiban Sep Lunas "
       },
       {
         "date": "1 Sep",
@@ -162,9 +162,9 @@ export const INITIAL_STATE: DaruWorkOSState = {
       }
     ],
     "recoveryRoadmap": {
-      "stage1": "Rp4.000.000 (Hard Floor Defense Zone — PASSED ✓)",
-      "stage2": "Rp4.130.865 (Buffer + 2 Akun Claude Pro — PASSED ✓)",
-      "stage3": "Rp7.130.865 (Pelunasan Barber Underrated Rp3M — PASSED ✓)",
+      "stage1": "Rp4.000.000 (Hard Floor Defense Zone - PASSED )",
+      "stage2": "Rp4.130.865 (Buffer + 2 Akun Claude Pro - PASSED )",
+      "stage3": "Rp7.130.865 (Pelunasan Barber Underrated Rp3M - PASSED )",
       "stage4": "Rp8.306.524 (Live Saldo Kas Aman • Surplus +Rp4,30M di atas Floor!)"
     },
     "defenseProtocolRule": "Saldo likuid Rp8,30M (Surplus masif +Rp4,30M di atas Floor Rp4M). Pemasukan September sudah tembus Rp6.500.000 (65.0% tercapai). Fokus sekarang: Eksekusi sprint modul LMS Umi Elly & scale KAEL SaaS!",
@@ -178,7 +178,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
         "id": "exp-1",
         "category": "Uang istri",
         "estimatedAmount": 1200000,
-        "amountText": "Rp1.200.000 (Lunas Sep ✓)",
+        "amountText": "Rp1.200.000 (Lunas Sep )",
         "status": "Wajib",
         "isFixed": true,
         "notes": "Nafkah rutin bulanan September 2026 LUNAS terkirim",
@@ -189,10 +189,10 @@ export const INITIAL_STATE: DaruWorkOSState = {
         "id": "exp-2",
         "category": "Kewajiban rumah Mesir",
         "estimatedAmount": 500000,
-        "amountText": "Rp500.000 (Lunas Sep ✓)",
+        "amountText": "Rp500.000 (Lunas Sep )",
         "status": "Wajib",
         "isFixed": true,
-        "notes": "Kewajiban bulanan Mesir September 2026 LUNAS ✓",
+        "notes": "Kewajiban bulanan Mesir September 2026 LUNAS ",
         "isPaid": true,
         "paidDate": "31 Agu 2026"
       },
@@ -221,7 +221,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
         "id": "exp-5",
         "category": "Claude Pro (2 Akun)",
         "estimatedAmount": 720000,
-        "amountText": "±Rp720.000 (2 Akun Aktif ✓)",
+        "amountText": "±Rp720.000 (2 Akun Aktif )",
         "status": "Produktif / langganan aktif",
         "isFixed": true,
         "notes": "Claude Pro (2 Akun Aktif) untuk AI Coding & High-Volume Reasoning",
@@ -298,7 +298,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
         "amount": 500000,
         "accountName": "Mandiri",
         "category": "Client Payment (Lunas)",
-        "description": "Desain Branding & Logo Azharuna (Ustadz Ifdony) (+Rp500.000 Lunas ✓)",
+        "description": "Desain Branding & Logo Azharuna (Ustadz Ifdony) (+Rp500.000 Lunas )",
         "createdAt": "2026-09-04T10:00:00.000Z"
       },
       {
@@ -308,7 +308,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
         "amount": 3000000,
         "accountName": "Mandiri",
         "category": "Client Payment (Pelunasan 100%)",
-        "description": "Pelunasan 100% Barber POS & Membership System (+Rp3.000.000 Lunas Penuh ✓)",
+        "description": "Pelunasan 100% Barber POS & Membership System (+Rp3.000.000 Lunas Penuh )",
         "createdAt": "2026-09-02T15:45:00.000Z"
       },
       {
@@ -318,7 +318,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
         "amount": 3000000,
         "accountName": "Mandiri",
         "category": "Client Payment (Termin 1 DP)",
-        "description": "Termin 1 DP 50% Kickoff LMS Peradaban Islam Azhariyah Umi Elly (+Rp3.000.000 Masuk ✓)",
+        "description": "Termin 1 DP 50% Kickoff LMS Peradaban Islam Azhariyah Umi Elly (+Rp3.000.000 Masuk )",
         "createdAt": "2026-09-02T15:50:00.000Z"
       },
       {
@@ -348,7 +348,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
         "amount": 500000,
         "accountName": "Mandiri",
         "category": "Kewajiban Rutin",
-        "description": "Kewajiban rumah Mesir bulan September 2026 (Rp500.000 Lunas ✓)",
+        "description": "Kewajiban rumah Mesir bulan September 2026 (Rp500.000 Lunas )",
         "createdAt": "2026-08-31T10:55:00.000Z"
       },
       {
@@ -368,7 +368,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
         "amount": 1200000,
         "accountName": "Mandiri",
         "category": "Nafkah Keluarga",
-        "description": "Kirim uang nafkah istri bulan September 2026 (Rp1.200.000 Lunas ✓)",
+        "description": "Kirim uang nafkah istri bulan September 2026 (Rp1.200.000 Lunas )",
         "createdAt": "2026-08-31T10:25:00.000Z"
       },
       {
@@ -398,8 +398,8 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "id": "tb-1",
       "projectId": "p-hamasah-ai",
       "blockType": "Growth Block",
-      "projectName": "Hamasah Internasional — Integrasi AI Website",
-      "action": "🤝 Meeting dengan owner Hamasah Internasional: discovery integrasi AI ke website & petakan kebutuhan",
+      "projectName": "Hamasah Internasional - Integrasi AI Website",
+      "action": "Meeting dengan owner Hamasah Internasional: discovery integrasi AI ke website & petakan kebutuhan",
       "timeboxMinutes": 60,
       "isDone": false,
       "rule": "Gali kebutuhan use-case AI secara spesifik, pastikan value jelas sebelum kasih estimasi harga."
@@ -408,8 +408,8 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "id": "tb-2",
       "projectId": "p-umi-elly",
       "blockType": "Deep Work 1",
-      "projectName": "Umi Elly — LMS Azhariyah",
-      "action": "🖥️ Review platform yang sudah live bareng Umi Elly & input kurikulum serta konten materi",
+      "projectName": "Umi Elly - LMS Azhariyah",
+      "action": "Review platform yang sudah live bareng Umi Elly & input kurikulum serta konten materi",
       "timeboxMinutes": 60,
       "isDone": false,
       "rule": "Pastikan platform nyaman digunakan Umi Elly dan alur pengisian kurikulum tersusun rapi."
@@ -419,17 +419,17 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "projectId": "p-pgs-tour",
       "blockType": "Deep Work 2",
       "projectName": "Website PGS Tour",
-      "action": "📝 Susun struktur konten, paket perjalanan tour & draft layout halaman website",
+      "action": "Review live demo pgstour.vercel.app & siapkan materi presentasi ke owner",
       "timeboxMinutes": 50,
       "isDone": false,
-      "rule": "Fokus beresin copy paket tour dan wireframe section sebelum masuk coding."
+      "rule": "Website sudah live 15/15 static pages, fokus closing & kesepakatan harga."
     },
     {
       "id": "tb-4",
       "projectId": "p-ifdony-azharuna",
       "blockType": "Deep Work 3",
       "projectName": "Logo Azharuna (Ustadz Ifdony)",
-      "action": "🎨 Eksplorasi konsep simbol logo, tipografi arab/modern & visual mockup",
+      "action": "Eksplorasi konsep simbol logo, tipografi arab/modern & visual mockup",
       "timeboxMinutes": 60,
       "isDone": false,
       "rule": "Fokus desain logo clean & elegan sampai siap presentasi."
@@ -439,7 +439,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "projectId": "p-umi-atiyah",
       "blockType": "Admin/Maintenance",
       "projectName": "Umi Atiyah & KPI",
-      "action": "📲 Follow up pelunasan Rp200rb Umi Atiyah & pantau respon penawaran Rp14jt KPI",
+      "action": "Follow up pelunasan Rp200rb Umi Atiyah & pantau respon penawaran Rp14jt KPI",
       "timeboxMinutes": 20,
       "isDone": false,
       "rule": "Jaga cashflow: pastikan reminder santai terkirim ke Umi Atiyah."
@@ -453,14 +453,14 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "boardColumn": "DONE",
       "status": "Done",
       "paymentStatus": "Paid",
-      "valueText": "Lunas & Selesai Tuntas ✓",
+      "valueText": "Lunas & Selesai Tuntas ",
       "nominalNumeric": 0,
       "paidNumeric": 0,
       "unpaidNumeric": 0,
       "priority": "P1",
       "currentGoal": "100% SELESAI & TUNTAS! (Platform live & serah terima beres)",
-      "nextAction": "Project tuntas 100% — Bebas utang deliverable & pikiran plong ✓",
-      "definitionOfDone": "Platform DreamMecca live & tuntas diserahkan ke klien ✓",
+      "nextAction": "Project tuntas 100% - Bebas utang deliverable & pikiran plong ",
+      "definitionOfDone": "Platform DreamMecca live & tuntas diserahkan ke klien ",
       "rule": "Finishing deliverable yang sudah lunas dari lama agar bebas tanggungan.",
       "billingMilestone": "Paid in Full (Historical)",
       "followUpDeadline": "Finishing malam ini"
@@ -479,9 +479,9 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "priority": "P1",
       "currentGoal": "Logo Zalvice SELESAI & TUNTAS! (Paket Rp1,2M Lunas)",
       "nextAction": "Handover master assets & mockup ke Bang Edo",
-      "definitionOfDone": "Logo Zalvice selesai & diterima klien ✓",
+      "definitionOfDone": "Logo Zalvice selesai & diterima klien ",
       "billingMilestone": "Paid in Full (Paket Rp1,2M)",
-      "followUpDeadline": "Done ✓"
+      "followUpDeadline": "Done "
     },
     {
       "id": "p-barber",
@@ -490,17 +490,17 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "boardColumn": "DONE",
       "status": "Done",
       "paymentStatus": "Paid",
-      "valueText": "Rp6.000.000 (100% LUNAS FULL PAYMENT ✓)",
+      "valueText": "Rp6.000.000 (100% LUNAS FULL PAYMENT )",
       "nominalNumeric": 6000000,
       "paidNumeric": 6000000,
       "unpaidNumeric": 0,
       "priority": "P1",
       "currentGoal": "100% TUNTAS & LUNAS FULL PAYMENT! (DP Rp3M + Pelunasan Rp3M Masuk Kas Mandiri)",
       "nextAction": "Dampingi operasional opening & maintenance bila ada request minor",
-      "definitionOfDone": "Website & POS Kasir Barber live, serah terima tuntas, uang lunas Rp6.000.000 ✓",
+      "definitionOfDone": "Website & POS Kasir Barber live, serah terima tuntas, uang lunas Rp6.000.000 ",
       "rule": "Barbershop 100% LUNAS & tuntas.",
-      "billingMilestone": "100% Paid in Full (Rp6.000.000 Lunas ✓)",
-      "followUpDeadline": "Done ✓"
+      "billingMilestone": "100% Paid in Full (Rp6.000.000 Lunas )",
+      "followUpDeadline": "Done "
     },
     {
       "id": "p-kael-product",
@@ -535,10 +535,10 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "priority": "P1",
       "currentGoal": "Logo Laptopbisnis SELESAI & TUNTAS! (Paket Rp1,2M Lunas)",
       "nextAction": "Handover master assets & mockup ke klien",
-      "definitionOfDone": "Logo Laptopbisnis selesai & diterima klien ✓",
+      "definitionOfDone": "Logo Laptopbisnis selesai & diterima klien ",
       "rule": "Queue: Eksekusi segera setelah Zalvice tuntas",
       "billingMilestone": "Paid in Full",
-      "followUpDeadline": "Done ✓"
+      "followUpDeadline": "Done "
     },
     {
       "id": "p-ifdony-azharuna",
@@ -547,20 +547,20 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "boardColumn": "DOING",
       "status": "Doing",
       "paymentStatus": "Paid",
-      "valueText": "Rp500.000 (Lunas September 2026 ✓)",
+      "valueText": "Rp500.000 (Lunas September 2026 )",
       "nominalNumeric": 500000,
       "paidNumeric": 500000,
       "unpaidNumeric": 0,
       "priority": "P1",
       "currentGoal": "Pengerjaan Desain Branding & Eksplorasi Logo Azharuna",
       "nextAction": "Eksplorasi konsep simbol, tipografi arab/modern & visual mockup",
-      "definitionOfDone": "Master file logo diserahkan & pembayaran Rp500.000 lunas ✓",
+      "definitionOfDone": "Master file logo diserahkan & pembayaran Rp500.000 lunas ",
       "billingMilestone": "100% Paid in Full (Rp500.000 Lunas)",
-      "followUpDeadline": "Done ✓"
+      "followUpDeadline": "Done "
     },
     {
       "id": "p-umi-elly",
-      "name": "Umi Elly — LMS Peradaban Islam Azhariyah",
+      "name": "Umi Elly - LMS Peradaban Islam Azhariyah",
       "lane": "client_delivery",
       "boardColumn": "DOING",
       "status": "Doing",
@@ -574,7 +574,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "nextAction": "Review platform bareng Umi Elly dan dampingi input kurikulum serta modul materi",
       "definitionOfDone": "Modul LMS Peradaban Islam Azhariyah live & deploy",
       "rule": "DP Rp3M sudah masuk kas: Gaspol sprint pengerjaan modul lengkap dengan standar kualitas tinggi.",
-      "billingMilestone": "Termin 1: DP Rp3.000.000 (LUNAS ✓) • Termin 2: Rp2.000.000 • Termin 3: Rp2.000.000",
+      "billingMilestone": "Termin 1: DP Rp3.000.000 (LUNAS ) • Termin 2: Rp2.000.000 • Termin 3: Rp2.000.000",
       "followUpDeadline": "Sprint Kickoff Aktif"
     },
     {
@@ -645,16 +645,16 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "unpaidNumeric": 0,
       "priority": "P3",
       "currentGoal": "Cuma beresin issue yang bener-bener urgent",
-      "nextAction": "List bug → pilih maksimal 1–2 issue urgent → timebox 1–2 jam",
+      "nextAction": "List bug → pilih maksimal 1-2 issue urgent → timebox 1-2 jam",
       "definitionOfDone": "Max 2 bug urgent tuntas tanpa merembet ke modul lain",
       "rule": "Markaz nggak boleh makan deep-work slot kerjaan berbayar.",
-      "timebox": "1–2 jam per sesi",
+      "timebox": "1-2 jam per sesi",
       "billingMilestone": "Non-billable (Free)",
       "followUpDeadline": "Bila ada waktu luang setelah paid tasks"
     },
     {
       "id": "p-kael-marketing",
-      "name": "KAEL — Offline Marketing",
+      "name": "KAEL - Offline Marketing",
       "lane": "bizdev",
       "boardColumn": "DOING",
       "status": "Doing",
@@ -684,7 +684,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "unpaidNumeric": 0,
       "priority": "P2",
       "currentGoal": "Jaga peluang cashflow baru tanpa mengganggu delivery",
-      "nextAction": "Apply 3–5 job berkualitas (Next.js, React, Supabase, dashboard, internal tools, POS, landing, bug fixing)",
+      "nextAction": "Apply 3-5 job berkualitas (Next.js, React, Supabase, dashboard, internal tools, POS, landing, bug fixing)",
       "definitionOfDone": "3 proposal spesifik terkirim",
       "rule": "Bukan spam proposal. Jangan buang Connects asal-asalan.",
       "billingMilestone": "Hourly / Fixed Price USD",
@@ -764,7 +764,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
     },
     {
       "id": "p-teh-umi",
-      "name": "Teh Umi — E-reader Basic",
+      "name": "Teh Umi - E-reader Basic",
       "lane": "parking_lot",
       "boardColumn": "PARKED",
       "status": "Parked",
@@ -869,20 +869,20 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "boardColumn": "DOING",
       "status": "Doing",
       "paymentStatus": "Expected",
-      "valueText": "Website Tour & Travel (Penyusunan Konten)",
+      "valueText": "Website Tour & Travel (Live pgstour.vercel.app)",
       "nominalNumeric": 0,
       "paidNumeric": 0,
       "unpaidNumeric": 0,
       "priority": "P2",
-      "currentGoal": "Project deal diambil alih: Susun konten, paket tour, & layout struktur website",
-      "nextAction": "Susun materi konten, paket perjalanan tour, dan draft layout website PGS Tour",
-      "definitionOfDone": "Draft konten & wireframe halaman siap dipresentasikan",
-      "billingMilestone": "Drafting Content & Setup Layout",
+      "currentGoal": "Website live di pgstour.vercel.app! 15/15 static pages prerendered, mobile menu clean, trust strip PPIU rapi, & galeri jamaah fix.",
+      "nextAction": "Showcase ke owner PGS Tour & konfirmasi penawaran / invoice pengerjaan website",
+      "definitionOfDone": "Website pgstour.vercel.app diserahkan & deal kesepakatan harga tuntas",
+      "billingMilestone": "Penawaran / Invoice Pengerjaan Website",
       "followUpDeadline": "Hari ini"
     },
     {
       "id": "p-hamasah-ai",
-      "name": "Hamasah Internasional — Integrasi AI Website",
+      "name": "Hamasah Internasional - Integrasi AI Website",
       "lane": "bizdev",
       "boardColumn": "DOING",
       "status": "Discovery / Lead",
@@ -904,7 +904,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "id": "w-umi-atiyah",
       "projectId": "p-umi-atiyah",
       "name": "Umi Atiyah",
-      "reason": "Pekerjaan sudah selesai 100% — Tinggal pelunasan sisa Rp200.000",
+      "reason": "Pekerjaan sudah selesai 100% - Tinggal pelunasan sisa Rp200.000",
       "value": "Sisa Rp200.000",
       "nextTrigger": "Pelunasan transfer Rp200k masuk rekening",
       "actionToUnblock": "Follow-up santai via WA untuk pelunasan Rp200rb",
@@ -915,7 +915,7 @@ export const INITIAL_STATE: DaruWorkOSState = {
       "id": "w-kpi",
       "projectId": "p-komisi-interaksi",
       "name": "Rancangan Komisi Peduli Interaksi (KPI)",
-      "reason": "Penawaran harga Rp14.000.000 sudah terkirim — Tinggal tunggu transfer DP sebelum kickoff mulai pengerjaan",
+      "reason": "Penawaran harga Rp14.000.000 sudah terkirim - Tinggal tunggu transfer DP sebelum kickoff mulai pengerjaan",
       "value": "Rp14.000.000 (Menunggu DP)",
       "nextTrigger": "Konfirmasi deal & transfer DP dari klien",
       "actionToUnblock": "Standby konfirmasi & follow up berkala proposal Rp14jt",
