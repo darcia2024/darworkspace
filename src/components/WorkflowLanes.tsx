@@ -19,7 +19,8 @@ import {
   Search,
   Edit3,
   MoreHorizontal,
-  RotateCcw
+  RotateCcw,
+  Flame
 } from 'lucide-react';
 import { ProjectCard, LaneType, BoardColumn, PriorityLevel } from '../types';
 import { soundManager } from '../utils/audio';
@@ -720,14 +721,14 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                     soundManager.playClick();
                                     onStartFocusOnProject(p);
                                   }}
-                                  className="text-[#111111] hover:text-black font-semibold flex items-center gap-1 bg-white hover:bg-zinc-50 px-2.5 py-1.5 rounded-xl border border-zinc-200 hover:border-zinc-300 transition-all shadow-2xs active:scale-95 text-[10px]"
+                                  className="h-7 px-2.5 rounded-xl bg-[#111111] hover:bg-zinc-800 text-white font-bold flex items-center gap-1.5 transition-all shadow-2xs active:scale-95 text-[10px] shrink-0 font-sans group/focus"
                                   title="Mulai sesi focus untuk project ini"
                                 >
+                                  <Flame className="w-3 h-3 text-amber-400 fill-amber-400 group-hover/focus:scale-110 transition-transform" />
                                   <span>Focus</span>
-                                  <ArrowRight className="w-3 h-3" />
                                 </button>
 
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-1 shrink-0">
                                   {onOpenInvoiceForProject && (
                                     <button
                                       type="button"
@@ -735,11 +736,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                         soundManager.playClick();
                                         onOpenInvoiceForProject(p);
                                       }}
-                                      className="text-blue-900 hover:text-blue-950 flex items-center gap-1 bg-[#adc6ed]/40 hover:bg-[#adc6ed]/70 px-2 py-1.5 rounded-xl border border-[#adc6ed] transition-all shadow-2xs active:scale-95 text-[10px]"
+                                      className="w-7 h-7 rounded-xl bg-[#e0f2fe] hover:bg-[#bae6fd] text-[#0369a1] hover:text-[#075985] border border-[#7dd3fc]/70 flex items-center justify-center transition-all shadow-2xs active:scale-90"
                                       title="Buat invoice tagihan untuk project ini"
+                                      aria-label="Buat invoice tagihan"
                                     >
-                                      <Receipt className="w-3 h-3 text-blue-900" />
-                                      <span>Invoice</span>
+                                      <Receipt className="w-3.5 h-3.5" />
                                     </button>
                                   )}
 
@@ -750,11 +751,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                         soundManager.playClick();
                                         onOpenFollowUpForProject(p);
                                       }}
-                                      className="text-[#925f18] hover:text-amber-900 flex items-center gap-1 bg-[#ffb99f]/40 hover:bg-[#ffb99f]/70 px-2 py-1.5 rounded-xl border border-[#ffb99f] transition-all shadow-2xs active:scale-95 text-[10px]"
-                                      title="Copas follow up ke client"
+                                      className="w-7 h-7 rounded-xl bg-[#ffedd5] hover:bg-[#fed7aa] text-[#9a3412] hover:text-[#7c2d12] border border-[#fdba74]/70 flex items-center justify-center transition-all shadow-2xs active:scale-90"
+                                      title="Copas follow up ke client via WhatsApp"
+                                      aria-label="Copas follow up WhatsApp"
                                     >
-                                      <MessageSquare className="w-3 h-3" />
-                                      <span>WA</span>
+                                      <MessageSquare className="w-3.5 h-3.5" />
                                     </button>
                                   )}
 
@@ -764,11 +765,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                       soundManager.playClick();
                                       setEditingProject(p);
                                     }}
-                                    className="text-zinc-600 hover:text-black flex items-center gap-1 bg-zinc-50 hover:bg-zinc-100 px-2 py-1.5 rounded-xl border border-zinc-200 transition-all shadow-2xs active:scale-95 text-[10px]"
+                                    className="w-7 h-7 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 hover:text-black border border-zinc-200 flex items-center justify-center transition-all shadow-2xs active:scale-90"
                                     title="Buka editor detail project"
+                                    aria-label="Edit detail project"
                                   >
-                                    <Edit3 className="w-3 h-3 text-zinc-500" />
-                                    <span>Edit</span>
+                                    <Edit3 className="w-3.5 h-3.5 text-zinc-600 hover:text-black" />
                                   </button>
                                 </div>
                               </div>
@@ -1249,22 +1250,22 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                               </div>
                             )}
 
-                            {/* Unified Action Toolbar: Focus, Invoice, WA, Edit (No ugly underline link!) */}
-                            <div className="pt-2 border-t border-zinc-200/70 flex items-center justify-between gap-1 text-[11px] font-mono">
+                            {/* Unified Action Toolbar: Focus + Utility Tools */}
+                            <div className="pt-2.5 border-t border-zinc-200/70 flex items-center justify-between gap-1 text-[11px] font-mono">
                               <button
                                 type="button"
                                 onClick={() => {
                                   soundManager.playClick();
                                   onStartFocusOnProject(project);
                                 }}
-                                className="text-[#111111] hover:text-black font-semibold flex items-center gap-1 bg-white hover:bg-zinc-50 px-2.5 py-1.5 rounded-xl border border-zinc-200 hover:border-zinc-300 transition-all shadow-2xs active:scale-95 text-[10px]"
+                                className="h-7 px-2.5 rounded-xl bg-[#111111] hover:bg-zinc-800 text-white font-bold flex items-center gap-1.5 transition-all shadow-2xs active:scale-95 text-[10px] shrink-0 font-sans group/focus"
                                 title="Mulai sesi deep work timer untuk project ini"
                               >
+                                <Flame className="w-3 h-3 text-amber-400 fill-amber-400 group-hover/focus:scale-110 transition-transform" />
                                 <span>Focus</span>
-                                <ArrowRight className="w-3 h-3" />
                               </button>
 
-                              <div className="flex items-center gap-1">
+                              <div className="flex items-center gap-1 shrink-0">
                                 {onOpenInvoiceForProject && (
                                   <button
                                     type="button"
@@ -1272,11 +1273,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                       soundManager.playClick();
                                       onOpenInvoiceForProject(project);
                                     }}
-                                    className="text-blue-900 hover:text-blue-950 flex items-center gap-1 bg-[#adc6ed]/40 hover:bg-[#adc6ed]/70 px-2 py-1.5 rounded-xl border border-[#adc6ed] transition-all shadow-2xs active:scale-95 text-[10px]"
+                                    className="w-7 h-7 rounded-xl bg-[#e0f2fe] hover:bg-[#bae6fd] text-[#0369a1] hover:text-[#075985] border border-[#7dd3fc]/70 flex items-center justify-center transition-all shadow-2xs active:scale-90"
                                     title="Buat invoice tagihan untuk project ini"
+                                    aria-label="Buat invoice tagihan"
                                   >
-                                    <Receipt className="w-3 h-3 text-blue-900" />
-                                    <span>Invoice</span>
+                                    <Receipt className="w-3.5 h-3.5" />
                                   </button>
                                 )}
 
@@ -1287,11 +1288,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                       soundManager.playClick();
                                       onOpenFollowUpForProject(project);
                                     }}
-                                    className="text-[#925f18] hover:text-amber-900 flex items-center gap-1 bg-[#ffb99f]/40 hover:bg-[#ffb99f]/70 px-2 py-1.5 rounded-xl border border-[#ffb99f] transition-all shadow-2xs active:scale-95 text-[10px]"
+                                    className="w-7 h-7 rounded-xl bg-[#ffedd5] hover:bg-[#fed7aa] text-[#9a3412] hover:text-[#7c2d12] border border-[#fdba74]/70 flex items-center justify-center transition-all shadow-2xs active:scale-90"
                                     title="Copas follow up ke client via WhatsApp"
+                                    aria-label="Copas follow up WhatsApp"
                                   >
-                                    <MessageSquare className="w-3 h-3" />
-                                    <span>WA</span>
+                                    <MessageSquare className="w-3.5 h-3.5" />
                                   </button>
                                 )}
 
@@ -1301,11 +1302,11 @@ export const WorkflowLanes: React.FC<WorkflowLanesProps> = ({
                                     soundManager.playClick();
                                     setEditingProject(project);
                                   }}
-                                  className="text-zinc-600 hover:text-black flex items-center gap-1 bg-zinc-50 hover:bg-zinc-100 px-2 py-1.5 rounded-xl border border-zinc-200 transition-all shadow-2xs active:scale-95 text-[10px]"
+                                  className="w-7 h-7 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 hover:text-black border border-zinc-200 flex items-center justify-center transition-all shadow-2xs active:scale-90"
                                   title="Buka form edit detail project"
+                                  aria-label="Edit detail project"
                                 >
-                                  <Edit3 className="w-3 h-3 text-zinc-500" />
-                                  <span>Edit</span>
+                                  <Edit3 className="w-3.5 h-3.5 text-zinc-600 hover:text-black" />
                                 </button>
                               </div>
                             </div>
