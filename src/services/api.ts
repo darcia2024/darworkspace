@@ -33,6 +33,16 @@ export interface ServerSyncStatus {
   error: string | null;
 }
 
+async function safeJson<T>(res: Response): Promise<T | null> {
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) return null;
+  try {
+    return (await res.json()) as T;
+  } catch {
+    return null;
+  }
+}
+
 export class ApiService {
   private syncTimeout: ReturnType<typeof setTimeout> | null = null;
   private listeners = new Set<(status: ServerSyncStatus) => void>();
@@ -71,9 +81,9 @@ export class ApiService {
       const res = await fetch(`${API_BASE}/health`, { headers: authHeaders(), signal: AbortSignal.timeout(2500), cache: 'no-store' });
       if (res.status === 401) { this.status({ isOnline: true, error: UNAUTHORIZED_MESSAGE }); return false; }
       if (!res.ok) throw new Error('Server offline');
-      const data = await res.json();
-      if (data.status !== 'ok') throw new Error('API tidak tersedia');
-      this.status({ isOnline: true, vaultConnected: Boolean(data.vaultConnected), cloudRedisConnected: Boolean(data.cloudRedisConnected) });
+      const data = await safeJson<{ status?: string; vaultConnected?: boolean; cloudRedisConnected?: boolean }>(res);
+      if (!data || data.status !== 'ok') throw new Error('API tidak tersedia');
+      this.status({ isOnline: true, vaultConnected: Boolean(data.vaultConnected), cloudRedisConnected: Boolean(data.cloudRedisConnected), error: null });
       if (this.loaded && this.pending && !this.conflict) void this.flush();
       return true;
     } catch {
@@ -107,8 +117,8 @@ export class ApiService {
       const res = await fetch(`${API_BASE}/state`, { headers: authHeaders(), signal: AbortSignal.timeout(12000), cache: 'no-store' });
       if (res.status === 401) throw new Error(UNAUTHORIZED_MESSAGE);
       if (!res.ok) throw new Error('State unavailable');
-      const data = await res.json();
-      if (!data.success || !Number.isInteger(data.revision)) throw new Error('Invalid API response');
+      const data = await safeJson<{ success?: boolean; revision?: number; state?: DaruWorkOSState; cloudRedisConnected?: boolean }>(res);
+      if (!data || !data.success || !Number.isInteger(data.revision)) throw new Error('Invalid API response');
       if (dirty && this.revision !== undefined && this.revision !== data.revision) {
         this.conflict = true;
         this.status({ error: 'Ada perubahan lokal dan server yang berbeda. Ekspor data lokal sebelum memuat versi server.' });
@@ -118,7 +128,7 @@ export class ApiService {
       } else {
         this.revision = data.revision;
       }
-      this.status({ isOnline: true, cloudRedisConnected: Boolean(data.cloudRedisConnected) });
+      this.status({ isOnline: true, cloudRedisConnected: Boolean(data.cloudRedisConnected), error: null });
       if (!dirty && data.state) {
         const state = normalizeState(data.state);
         saveState(state);
@@ -126,8 +136,12 @@ export class ApiService {
         this.loaded = true;
         return state;
       }
-    } catch {
-      this.status({ isOnline: false, error: 'Mode lokal. Perubahan disimpan di browser sampai server tersedia.' });
+    } catch (err) {
+      if (err instanceof Error && err.message === UNAUTHORIZED_MESSAGE) {
+        this.status({ isOnline: true, error: UNAUTHORIZED_MESSAGE });
+      } else {
+        this.status({ isOnline: false, error: null });
+      }
     }
     this.loaded = true;
     if (dirty && !this.conflict) { this.pending = local; void this.flush(); }
@@ -161,8 +175,8 @@ export class ApiService {
       if (this.revision === undefined) {
         const res = await fetch(`${API_BASE}/state`, { headers: authHeaders(), signal: AbortSignal.timeout(12000), cache: 'no-store' });
         if (!res.ok) throw new Error('Server belum tersedia.');
-        const data = await res.json();
-        if (!data.success || !Number.isInteger(data.revision)) throw new Error('Respons server tidak valid.');
+        const data = await safeJson<{ success?: boolean; revision?: number; state?: DaruWorkOSState }>(res);
+        if (!data || !data.success || !Number.isInteger(data.revision)) throw new Error('Server belum tersedia.');
         if (data.state) {
           this.conflict = true;
           throw new Error('Server sudah punya data. Ekspor perubahan lokal sebelum memuat ulang.');
@@ -175,23 +189,32 @@ export class ApiService {
           method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({ state: snapshot, revision: this.revision }), signal: AbortSignal.timeout(15000),
         });
-        const data = await res.json();
+        const data = await safeJson<{ success?: boolean; revision?: number; error?: string; cloudRedisConnected?: boolean; obsidianSync?: { success?: boolean }; cloudError?: string }>(res);
         if (res.status === 409) this.conflict = true;
-        if (!res.ok || !data.success) throw new Error(data.error || 'Gagal menyimpan ke server.');
+        if (!res.ok || !data?.success) {
+          const errMsg = data?.error || (res.status >= 500 ? 'Gagal menyimpan ke server.' : 'Server belum tersedia.');
+          throw new Error(errMsg);
+        }
         this.revision = data.revision;
         if (this.pending === snapshot) this.pending = null;
         this.metadata(Boolean(this.pending));
         this.status({ isOnline: true, cloudRedisConnected: Boolean(data.cloudRedisConnected), vaultConnected: Boolean(data.obsidianSync?.success), lastSyncedAt: new Date().toLocaleTimeString('id-ID'), error: data.cloudError || (data.obsidianSync?.success === false ? 'Tersimpan; ekspor Obsidian gagal.' : null) });
       }
     } catch (error) {
-      this.status({ error: error instanceof Error ? error.message : 'Gagal sinkronisasi.', ...(!this.conflict ? { isOnline: false } : {}) });
+      const msg = error instanceof Error ? error.message : 'Gagal sinkronisasi.';
+      const isOfflineError = msg === 'Server belum tersedia.' || msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('aborted');
+      this.status({
+        error: isOfflineError ? null : msg,
+        ...(!this.conflict ? { isOnline: false } : {})
+      });
     } finally { this.saving = false; }
   }
 
   async triggerObsidianSync(state: DaruWorkOSState) {
     try {
       const res = await fetch(`${API_BASE}/sync/obsidian`, { method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify({ state }), signal: AbortSignal.timeout(10000) });
-      const data = await res.json();
+      const data = await safeJson<{ success?: boolean; error?: string; reason?: string }>(res);
+      if (!data) return { success: false, error: 'Server tidak dapat dihubungi.' };
       return res.ok ? data : { success: false, error: data.error || data.reason || 'Ekspor vault gagal.' };
     } catch { return { success: false, error: 'Server tidak dapat dihubungi.' }; }
   }
@@ -199,8 +222,8 @@ export class ApiService {
   async useServerState(): Promise<DaruWorkOSState> {
     if (this.saving) throw new Error('Tunggu penyimpanan yang sedang berjalan selesai.');
     const response = await fetch(`${API_BASE}/state`, { headers: authHeaders(), signal: AbortSignal.timeout(12000), cache: 'no-store' });
-    const data = await response.json();
-    if (!response.ok || !data.success || !data.state) throw new Error('Data server belum tersedia.');
+    const data = await safeJson<{ success?: boolean; revision?: number; state?: DaruWorkOSState }>(response);
+    if (!response.ok || !data?.success || !data.state) throw new Error('Data server belum tersedia.');
     const state = normalizeState(data.state);
     saveState(state);
     this.revision = data.revision;

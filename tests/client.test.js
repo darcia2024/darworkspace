@@ -82,3 +82,23 @@ test('zero budgets survive normalization through remote and local storage', asyn
   const service = new ApiService(false); const loaded = await service.loadInitialState();
   assert.equal(loaded.financialReport.estimatedRealBurn, 0); assert.equal(loaded.financialReport.hardFloor, 0);
 });
+
+test('html fallback response (e.g. static spa rewrite) is treated as offline without json parsing syntax error', async () => {
+  const service = new ApiService(false);
+  globalThis.fetch = async () => new Response('<!doctype html><html><body>SPA fallback</body></html>', {
+    status: 200,
+    headers: { 'content-type': 'text/html' },
+  });
+  const state = await service.loadInitialState();
+  assert.ok(state, 'local state must be loaded even when server responds with HTML');
+  let status;
+  service.subscribeStatus(value => { status = value; });
+  assert.equal(status.isOnline, false);
+  assert.equal(status.error, null);
+
+  service.saveState(workspace());
+  await service.flush();
+  assert.equal(status.isOnline, false);
+  assert.equal(status.error, null);
+});
+
