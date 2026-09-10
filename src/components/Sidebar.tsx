@@ -56,22 +56,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const navItems: { 
     id: ActiveTabType; 
     label: string; 
+    subtitle: string;
     icon: any; 
     subPills?: { label: string; activeTab: ActiveTabType; count?: number }[];
   }[] = [
     { 
       id: 'today', 
       label: 'Sikat Hari Ini', 
+      subtitle: 'Target & Agenda Harian',
       icon: Target, 
     },
     { 
       id: 'nextgo', 
       label: 'Abis Ini Ngapain?', 
+      subtitle: 'Pencari Aksi Berikutnya',
       icon: Compass, 
     },
     { 
       id: 'lanes', 
       label: 'Markas Project & Radar', 
+      subtitle: 'Kanban 6 Jalur & Blocker',
       icon: Layers, 
       subPills: [
         { label: '6 Jalur Kerja', activeTab: 'lanes' },
@@ -80,17 +84,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     { 
       id: 'updates', 
-      label: 'Laporan Project',
+      label: 'Laporan Project', 
+      subtitle: 'Export Update ke Klien',
       icon: Edit3, 
     },
     { 
       id: 'money', 
       label: 'Cek Dompet & Cuan', 
+      subtitle: 'Cashflow & Runway Kas',
       icon: DollarSign, 
     },
     { 
       id: 'deepwork', 
       label: 'Kamar Fokus 40Hz', 
+      subtitle: 'Timer & Gelombang Gamma',
       icon: Flame, 
     }
   ];
@@ -200,21 +207,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       setActiveTab(item.id);
                       setIsMobileOpen(false);
                     }}
-                    title={isCollapsed ? item.label : undefined}
+                    title={isCollapsed ? `${item.label} (${item.subtitle})` : undefined}
                     aria-label={item.label}
-                    className={`w-full flex items-center transition-all text-xs font-semibold ${
+                    className={`w-full flex items-center transition-all ${
                       isCollapsed 
                         ? 'justify-center p-2.5 rounded-2xl' 
-                        : 'justify-between px-3.5 py-2.5 rounded-full'
+                        : 'justify-between px-3 py-2 rounded-2xl'
                     } ${
                       isItemActive
                         ? 'bg-[#111111] text-white shadow-sm'
-                        : 'text-zinc-800 hover:text-black hover:bg-zinc-100'
+                        : 'text-zinc-800 hover:text-black hover:bg-zinc-100/80'
                     }`}
                   >
-                    <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-2.5'}`}>
-                      <Icon className={`w-4 h-4 shrink-0 ${isItemActive ? 'text-white' : 'text-zinc-700'}`} />
-                      {!isCollapsed && <span>{item.label}</span>}
+                    <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-2.5 w-full'}`}>
+                      <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                        isItemActive ? 'bg-white/15 text-white' : 'bg-zinc-100 text-zinc-700'
+                      }`}>
+                        <Icon className="w-3.5 h-3.5 shrink-0" />
+                      </div>
+                      {!isCollapsed && (
+                        <div className="flex flex-col text-left min-w-0 flex-1">
+                          <span className="font-bold text-[12px] leading-tight truncate">{item.label}</span>
+                          <span className={`text-[10px] font-normal leading-tight mt-0.5 truncate ${
+                            isItemActive ? 'text-zinc-400' : 'text-zinc-500'
+                          }`}>
+                            {item.subtitle}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </button>
 
