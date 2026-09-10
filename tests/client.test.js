@@ -102,3 +102,36 @@ test('html fallback response (e.g. static spa rewrite) is treated as offline wit
   assert.equal(status.error, null);
 });
 
+test('parseProjectTitle formats client prefixes and category details without truncation', async () => {
+  const compiledSel = await build({ entryPoints: ['src/utils/selectors.ts'], bundle: true, platform: 'node', format: 'esm', write: false });
+  const { parseProjectTitle } = await import(`data:text/javascript;base64,${Buffer.from(compiledSel.outputFiles[0].text).toString('base64')}`);
+
+  // 1. Client - Project
+  const r1 = parseProjectTitle('Umi Elly — LMS Azhariyah');
+  assert.equal(r1.client, 'Umi Elly');
+  assert.equal(r1.title, 'LMS Azhariyah');
+  assert.equal(r1.detail, null);
+
+  // 2. Project (Category / Detail)
+  const r2 = parseProjectTitle('Setting KAEL (Core Product)');
+  assert.equal(r2.client, null);
+  assert.equal(r2.title, 'Setting KAEL');
+  assert.equal(r2.detail, 'Core Product');
+
+  // 3. Project with person in parentheses
+  const r3 = parseProjectTitle('Logo Azharuna (Ustadz Ifdol)');
+  assert.equal(r3.client, null);
+  assert.equal(r3.title, 'Logo Azharuna');
+  assert.equal(r3.detail, 'Ustadz Ifdol');
+
+  // 4. Plain title
+  const r4 = parseProjectTitle('Rancangan LMS Al Madroj');
+  assert.equal(r4.client, null);
+  assert.equal(r4.title, 'Rancangan LMS Al Madroj');
+  assert.equal(r4.detail, null);
+
+  // 5. Empty/fallback
+  const r5 = parseProjectTitle('');
+  assert.equal(r5.title, 'Untitled Task');
+});
+

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { TodayBlock } from '../types';
 import { soundManager } from '../utils/audio';
+import { parseProjectTitle } from '../utils/selectors';
 import confetti from 'canvas-confetti';
 
 interface TodaySuperSmallViewProps {
@@ -31,6 +32,7 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
   const [selectedMultiIds, setSelectedMultiIds] = useState<string[]>(todayBlocks.filter(block => !block.isDone).slice(0, 2).map(block => block.id));
 
   const activeSingleBlock = todayBlocks.find(b => b.id === selectedSingleId) || todayBlocks[0];
+  const activeParsed = activeSingleBlock ? parseProjectTitle(activeSingleBlock.projectName) : null;
   const activeMultiBlocks = todayBlocks.filter(b => selectedMultiIds.includes(b.id));
   const totalMultiMinutes = activeMultiBlocks.reduce((sum, b) => sum + (b.timeboxMinutes || 50), 0);
 
@@ -127,9 +129,25 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
               </div>
 
               <div className="space-y-2.5">
-                <h4 className="text-2xl sm:text-3xl font-extrabold text-[#111111] tracking-tight font-sans">
-                  {activeSingleBlock.projectName}
-                </h4>
+                <div className="space-y-1.5">
+                  {activeParsed?.client && (
+                    <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
+                      <span className="w-2 h-2 rounded-full bg-zinc-400 shrink-0" />
+                      <span>{activeParsed.client}</span>
+                    </div>
+                  )}
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <h4 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight font-sans">
+                      {activeParsed?.title}
+                    </h4>
+                    {activeParsed?.detail && (
+                      <span className="text-xs font-mono px-3 py-1 rounded-full bg-black/5 text-zinc-700 font-bold border border-black/5">
+                        {activeParsed.detail}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
                 <div className="p-3.5 rounded-2xl bg-[#fef9c3]/60 border border-[#fef08a] text-xs font-mono text-zinc-800 space-y-1">
                   <span className="text-[#713f12] font-black block uppercase tracking-wide">
                      LANGKAH KONKRIT YANG HARUS LO BIKIN SEKARANG:
@@ -218,21 +236,44 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
                       isSelected ? 'ring-2 ring-[#111111] shadow-lg -translate-y-1' : 'hover:-translate-y-1 hover:shadow-md'
                     } ${block.isDone ? 'opacity-50' : ''}`}
                   >
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       <div className="flex justify-between items-center">
-                        <span className={`sticker-pill ${theme.tag} text-[9px] py-0.5 px-2`}>
+                        <span className={`sticker-pill ${theme.tag} text-[9px] py-0.5 px-2 font-mono font-bold`}>
                           {block.blockType}
                         </span>
-                        <span className="text-[10px] font-mono font-bold bg-white/70 px-2 py-0.5 rounded-full text-zinc-800">
+                        <span className="text-[10px] font-mono font-bold bg-white/80 px-2 py-0.5 rounded-full text-zinc-800 border border-black/5 shadow-2xs">
                           {block.timeboxMinutes}m
                         </span>
                       </div>
-                      <h5 className="text-sm font-extrabold text-[#111111] line-clamp-1">
-                        {block.projectName}
-                      </h5>
-                      <p className="text-[11px] text-zinc-700 line-clamp-2 leading-relaxed">
+
+                      {(() => {
+                        const parsed = parseProjectTitle(block.projectName);
+                        return (
+                          <div className="space-y-1">
+                            {parsed.client && (
+                              <div className="flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500">
+                                <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0" />
+                                <span className="truncate">{parsed.client}</span>
+                              </div>
+                            )}
+
+                            <div className="flex items-baseline gap-1.5 flex-wrap">
+                              <h5 className="text-[13px] sm:text-sm font-black tracking-tight text-[#111111] font-sans leading-snug line-clamp-2">
+                                {parsed.title}
+                              </h5>
+                              {parsed.detail && (
+                                <span className="inline-block text-[9px] font-mono font-semibold px-2 py-0.5 rounded-full bg-black/5 text-zinc-700 border border-black/5 shrink-0">
+                                  {parsed.detail}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })()}
+
+                      <div className="p-2 rounded-xl bg-white/70 border border-black/5 text-[11px] text-zinc-700 line-clamp-2 leading-relaxed font-sans shadow-2xs">
                         {block.action}
-                      </p>
+                      </div>
                     </div>
 
                     <div className="pt-3 border-t border-black/5 flex items-center justify-between mt-2">
@@ -367,16 +408,34 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
                         </span>
                       </div>
 
-                      <div>
-                        <h4 className={`text-base font-extrabold tracking-tight ${
-                          block.isDone ? 'line-through text-zinc-500' : 'text-[#111111]'
-                        }`}>
-                          {block.projectName}
-                        </h4>
-                        <p className="text-xs mt-1.5 leading-relaxed text-zinc-700 font-sans">
+                      {(() => {
+                        const parsed = parseProjectTitle(block.projectName);
+                        return (
+                          <div className="space-y-1">
+                            {parsed.client && (
+                              <div className="flex items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-500">
+                                <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 shrink-0" />
+                                <span className="truncate">{parsed.client}</span>
+                              </div>
+                            )}
+                            <div className="flex items-baseline gap-1.5 flex-wrap">
+                              <h4 className={`text-base font-black tracking-tight leading-snug ${
+                                block.isDone ? 'line-through text-zinc-500' : 'text-[#111111]'
+                              }`}>
+                                {parsed.title}
+                              </h4>
+                              {parsed.detail && (
+                                <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-black/5 text-zinc-700 border border-black/5">
+                                  {parsed.detail}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                      <p className="text-xs mt-1.5 leading-relaxed text-zinc-700 font-sans">
                           {block.action}
-                        </p>
-                      </div>
+                      </p>
 
                       {block.rule && (
                         <div className="p-2.5 rounded-2xl bg-white/60 border border-black/5 text-[11px] font-mono text-zinc-700">
