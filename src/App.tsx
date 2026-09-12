@@ -244,6 +244,52 @@ export function App() {
     });
   };
 
+  const handleCompleteTodayWork = (blockOrProjectId: string) => {
+    setState((prev) => {
+      const block = prev.todayBlocks.find(b => b.id === blockOrProjectId);
+      const project = prev.projects.find(
+        p => p.id === blockOrProjectId || (block && (block.projectId === p.id || projectIdFor(block, prev.projects) === p.id))
+      );
+
+      const updatedBlocks = prev.todayBlocks.map(b => {
+        if (b.id === blockOrProjectId || (project && (b.projectId === project.id || projectIdFor(b, prev.projects) === project.id))) {
+          return { ...b, isDone: true };
+        }
+        return b;
+      });
+
+      const updatedPursuit = prev.todayPursuit.map(p => {
+        if (project && (p.projectId === project.id || projectIdFor(p, prev.projects) === project.id)) {
+          return { ...p, isDone: true, isCompleted: true };
+        }
+        return p;
+      });
+
+      if (project) {
+        const completedProject: ProjectCard = {
+          ...project,
+          boardColumn: 'DONE',
+          status: 'Done',
+          nextAction: 'Pekerjaan telah selesai 100%! ✓',
+        };
+        return updateProject(
+          {
+            ...prev,
+            todayBlocks: updatedBlocks,
+            todayPursuit: updatedPursuit,
+          },
+          completedProject
+        );
+      }
+
+      return deriveState({
+        ...prev,
+        todayBlocks: updatedBlocks,
+        todayPursuit: updatedPursuit,
+      });
+    });
+  };
+
   const handleStartFocus = (block: TodayBlock) => {
     if (!block) return;
     setFocusQueue([]);
@@ -563,6 +609,7 @@ export function App() {
               onStartFocus={handleStartFocus}
               onUpdateProject={handleUpdateProject}
               onSetTodayBlock={handleSetTodayFocusBlock}
+              onCompleteWork={handleCompleteTodayWork}
               onAddProject={handleAddProject}
               onAddBlock={handleAddBlock}
               onDeleteBlock={handleDeleteBlock}
