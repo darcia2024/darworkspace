@@ -428,7 +428,7 @@ const renderFormattedBody = (content: string) => {
   );
 };
 
-export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onSelectTab }) => {
+export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onSelectTab, onUpdateProject }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedColumn, setSelectedColumn] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -544,6 +544,43 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
     URL.revokeObjectURL(link.href);
     setCopiedNotice('Dokumen editorial berhasil diunduh!');
     setTimeout(() => setCopiedNotice(''), 3000);
+  };
+
+  const handleMarkProjectDone = () => {
+    if (!currentProject || !onUpdateProject) return;
+    try {
+      soundManager.playCompletionChime();
+    } catch {
+      // Audio feedback optional
+    }
+    const updated: ProjectCard = {
+      ...currentProject,
+      boardColumn: 'DONE',
+      status: 'Done',
+      blocker: '',
+      nextAction: currentProject.nextAction && currentProject.nextAction.toLowerCase().includes('selesai')
+        ? currentProject.nextAction
+        : 'Project tuntas 100% — Seluruh deliverable telah rampung dan diserahterimakan.',
+      followUpDeadline: 'Selesai',
+      newsHeadline: currentProject.newsHeadline && !currentProject.newsHeadline.toLowerCase().includes('siap tahap') && !currentProject.newsHeadline.toLowerCase().includes('menunggu')
+        ? currentProject.newsHeadline
+        : `Kisah Sukses ${currentProject.name}: Tuntas di Garis Finis & Siap Buka Babak Baru`,
+    };
+    onUpdateProject(updated);
+    setCopiedNotice(`🎉 Proyek "${currentProject.name}" berhasil ditandai Selesai 100% (Mission Accomplished)!`);
+    setTimeout(() => setCopiedNotice(''), 4000);
+  };
+
+  const handleReopenProject = () => {
+    if (!currentProject || !onUpdateProject) return;
+    const updated: ProjectCard = {
+      ...currentProject,
+      boardColumn: 'DOING',
+      status: 'Doing',
+    };
+    onUpdateProject(updated);
+    setCopiedNotice(`Proyek "${currentProject.name}" dikembalikan ke kolom Sedang Digarap (DOING).`);
+    setTimeout(() => setCopiedNotice(''), 4000);
   };
 
   if (!currentProject) {
@@ -812,10 +849,32 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
 
             {/* Media floating tag */}
             <div className="absolute top-4 left-4 flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-black/60 backdrop-blur-md text-white border border-white/10">
-                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                Live Operational
-              </span>
+              {currentProject.boardColumn === 'DONE' ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 backdrop-blur-md text-emerald-200 border border-emerald-500/30 shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  Mission Accomplished · Selesai
+                </span>
+              ) : currentProject.boardColumn === 'WAITING' ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-950/80 backdrop-blur-md text-blue-200 border border-blue-500/30 shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                  Radar Wait · Menunggu Klien
+                </span>
+              ) : currentProject.boardColumn === 'QUEUE' ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-950/80 backdrop-blur-md text-amber-200 border border-amber-500/30 shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  Upcoming Sprint · Antrean
+                </span>
+              ) : currentProject.boardColumn === 'PARKED' ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900/80 backdrop-blur-md text-zinc-300 border border-zinc-700">
+                  <span className="w-2 h-2 rounded-full bg-zinc-400" />
+                  Parked Idea · Arsip
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-950/80 backdrop-blur-md text-rose-200 border border-rose-500/30 shadow-xs">
+                  <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
+                  In Production · Sedang Digarap
+                </span>
+              )}
             </div>
 
             {/* Bottom media title strip */}
@@ -835,11 +894,11 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
             <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500 font-normal">
               <span className="inline-flex items-center gap-1 text-zinc-600">
                 <Eye className="w-3.5 h-3.5 text-zinc-500" />
-                100% Siap
+                {currentProject.boardColumn === 'DONE' ? 'Tuntas 100%' : '100% Siap'}
               </span>
               <span className="inline-flex items-center gap-1 text-zinc-600">
                 <Clock className="w-3.5 h-3.5 text-zinc-500" />
-                {currentProject.followUpDeadline || 'Jadwal Hari Ini'}
+                {currentProject.boardColumn === 'DONE' ? 'Tuntas & Live' : (currentProject.followUpDeadline || 'Jadwal Hari Ini')}
               </span>
               <span className="inline-flex items-center gap-1 text-zinc-600">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -849,6 +908,24 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
 
             {/* Article Action Buttons */}
             <div className="flex items-center gap-2">
+              {onUpdateProject && (
+                currentProject.boardColumn !== 'DONE' ? (
+                  <button
+                    onClick={handleMarkProjectDone}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs active:scale-95"
+                    title="Tandai Proyek Selesai 100%"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Tandai Selesai</span>
+                  </button>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Selesai 100%</span>
+                  </span>
+                )
+              )}
+
               <button
                 onClick={() => setSavedBookmark(!savedBookmark)}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-normal border transition-colors ${
@@ -939,11 +1016,35 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
             </div>
 
             <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+              {onUpdateProject && (
+                currentProject.boardColumn !== 'DONE' ? (
+                  <button
+                    onClick={handleMarkProjectDone}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-medium transition-colors shadow-xs active:scale-95"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Tandai Proyek Selesai 100% (Done)</span>
+                  </button>
+                ) : (
+                  <div className="inline-flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-800 font-semibold border border-emerald-200">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      Proyek Resmi Selesai (Mission Accomplished)
+                    </span>
+                    <button
+                      onClick={handleReopenProject}
+                      className="px-2 py-1 text-xs text-zinc-500 hover:text-zinc-800 underline decoration-zinc-300"
+                    >
+                      Kembalikan ke Pengerjaan Aktif
+                    </button>
+                  </div>
+                )
+              )}
               <button
                 onClick={() => onSelectTab('lanes')}
                 className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-medium transition-colors shadow-xs"
               >
-                <span>Buka di Board & Eksekusi</span>
+                <span>Buka di Board</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />
               </button>
               {currentProject.boardColumn === 'WAITING' && (

@@ -25,21 +25,21 @@ import { PinLockScreen, AUTH_STORAGE_KEY } from './components/PinLockScreen';
 const PGS_PROJECT_REPORT: Partial<ProjectCard> = {
   name: 'PGS Tour & Travel (Redesign & Production Deployment)',
   lane: 'client_delivery',
-  boardColumn: 'WAITING',
-  status: 'Waiting Client',
+  boardColumn: 'DONE',
+  status: 'Done',
   priority: 'P1',
   paymentStatus: 'Expected',
   valueText: 'Redesign & Custom Domain (pgstravel.id)',
-  currentGoal: 'Mengaktifkan domain utama pgstravel.id & www.pgstravel.id menggantikan URL default staging Vercel, serta sinkronisasi link rute bot WhatsApp AI.',
-  nextAction: 'Verifikasi status DNS A record @ -> 76.76.21.21 dan CNAME www -> cname.vercel-dns.com di dashboard Hostinger DNS Zone agar SSL Vercel terbit sempurna.',
-  definitionOfDone: 'Domain https://pgstravel.id dapat diakses publik dengan status SSL/TLS aktif tanpa sertifikat warning, rute /perjalanan dan /konsultasi terhubung akurat dari bot WhatsApp, serta tidak ada inkonsistensi klaim bintang/hotel di seluruh halaman.',
-  blocker: 'Menunggu perubahan DNS di Hostinger tersimpan sepenuhnya dan terpropagasi global (masih terdeteksi IP lama Hostinger pada beberapa resolver lokal).',
-  rule: 'Kawal propagasi DNS Hostinger -> Vercel sampai SSL terbit sempurna dan bebas sertifikat warning.',
-  billingMilestone: 'Domain pgstravel.id Live & Handover Final',
-  followUpDeadline: 'Hari ini (Pantau propagasi DNS)',
-  newsHeadline: 'Konten itinerary dan narasi legalitas 100% steril di production; domain custom pgstravel.id siap tahap finalisasi propagasi DNS.',
-  newsArticle: 'Siklus pembaruan terakhir memfokuskan pada akurasi materi perjalanan dan narasi brand PGS Tour. Komponen ItinerarySection.tsx telah dibersihkan secara menyeluruh dari klaim bintang hotel yang tidak terverifikasi (menghapus frasa dekat hotel (*4) pada Day 05–07 dan (*4) pada Day 04). Sebelumnya, landing page juga telah diperkuat dengan testimoni otentik Google Maps berbadge verifikasi serta narasi filosofis "Kami Percaya Bahwa..." pada halaman Tentang Kami.\n\nDari sisi deployment, seluruh commit (bea9a45, 5cc12ab, a0050b9) telah ter-push rapi ke branch master dan main GitHub dengan build Next.js 15 yang lolos uji static generation (15/15 route). Domain kustom pgstravel.id telah didaftarkan ke Vercel project, tinggal menunggu finalisasi binding DNS Hostinger.',
-  newsCritique: 'Perlu diwaspadai kemungkinan kembalinya record ALIAS lama di Hostinger jika fitur auto-redirect Hostinger Website Builder masih aktif, yang berpotensi menimpa A record Vercel (76.76.21.21). Selain itu, integrasi alur chat bot WhatsApp perlu segera disesuaikan agar tidak lagi membagikan link Instagram sebagai pengganti katalog website.'
+  currentGoal: 'Mengaktifkan domain utama pgstravel.id & www.pgstravel.id menggantikan URL default staging Vercel, serta sinkronisasi link rute bot WhatsApp AI. (TUNTAS 100%)',
+  nextAction: 'Project tuntas 100% — domain pgstravel.id live mengudara, SSL aman, dan integrasi WhatsApp bot aktif.',
+  definitionOfDone: 'Domain https://pgstravel.id dapat diakses publik dengan status SSL/TLS aktif tanpa sertifikat warning, rute /perjalanan dan /konsultasi terhubung akurat dari bot WhatsApp, serta tidak ada inkonsistensi klaim bintang/hotel di seluruh halaman. (SELESAI 100%)',
+  blocker: '',
+  rule: 'Kawal kestabilan domain pgstravel.id di production dan monitor traffic pengguna.',
+  billingMilestone: 'Domain pgstravel.id Live & Handover Selesai',
+  followUpDeadline: 'Selesai',
+  newsHeadline: 'Kisah Sukses PGS Tour & Travel: Domain pgstravel.id Mengudara Sempurna & Siap Buka Babak Baru',
+  newsArticle: 'Pencapaian besar untuk PGS Tour & Travel! Domain utama https://pgstravel.id kini telah resmi mengudara secara global dengan sertifikat SSL/TLS aktif tanpa kendala sertifikat. Seluruh rute navigasi publik (/perjalanan dan /konsultasi), integrasi bot WhatsApp AI, konten itinerary yang steril, serta narasi legalitas telah 100% tuntas dan terverifikasi di production.\n\nDengan tuntasnya masa propagasi DNS dan pengujian menyeluruh di berbagai resolver, proyek redesign & production deployment ini resmi dinyatakan selesai 100% (Mission Accomplished). Seluruh commit telah tersinkronisasi rapi di GitHub dan di-deploy stabil di Vercel.',
+  newsCritique: 'Proyek telah tuntas 100% dan sukses mengudara di production. Seluruh kriteria selesai (DoD) telah terpenuhi tanpa celah bug maupun sertifikat warning. Langkah operasional berikutnya adalah memonitor traffic organik pengunjung dan memastikan customer service siap menyambut prospek yang masuk via website.'
 };
 
 function ensurePgsProjectInState(currentState: DaruWorkOSState): DaruWorkOSState {
@@ -53,8 +53,8 @@ function ensurePgsProjectInState(currentState: DaruWorkOSState): DaruWorkOSState
     updatedProjects.push({
       id: 'p-pgs-tour',
       lane: 'client_delivery',
-      boardColumn: 'WAITING',
-      status: 'Waiting Client',
+      boardColumn: 'DONE',
+      status: 'Done',
       paymentStatus: 'Expected',
       valueText: 'Redesign & Custom Domain (pgstravel.id)',
       nominalNumeric: 0,
@@ -66,7 +66,10 @@ function ensurePgsProjectInState(currentState: DaruWorkOSState): DaruWorkOSState
       ...PGS_PROJECT_REPORT,
     } as ProjectCard);
   }
-  return deriveState({ ...currentState, projects: updatedProjects });
+  const updatedWaiting = (currentState.waitingItems || []).filter(
+    (w) => w.id !== 'w-pgs-tour' && w.projectId !== 'p-pgs-tour' && !w.name?.toLowerCase().includes('pgs tour')
+  );
+  return deriveState({ ...currentState, projects: updatedProjects, waitingItems: updatedWaiting });
 }
 
 export function App() {
@@ -695,6 +698,7 @@ export function App() {
             <ProjectUpdateView
               state={state}
               onSelectTab={(tab) => setActiveTab(tab as any)}
+              onUpdateProject={handleUpdateProject}
             />
           )}
 
