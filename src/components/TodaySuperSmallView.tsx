@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import {
-  Check,
-  Clock,
   Flame,
-  Plus,
-  Trash2,
-  ChevronDown,
-  ChevronRight,
-  RotateCcw,
-  Zap,
+  Clock,
+  Check,
   CheckCircle2,
-  X,
-  ArrowUpRight
+  Zap,
+  ArrowRight,
+  ArrowUpRight,
+  Plus,
+  Hourglass,
+  PauseCircle,
+  Sparkles,
+  ArrowLeft
 } from 'lucide-react';
 import { TodayBlock, ProjectCard } from '../types';
 import { soundManager } from '../utils/audio';
@@ -20,36 +20,58 @@ import confetti from 'canvas-confetti';
 
 interface TodaySuperSmallViewProps {
   todayBlocks: TodayBlock[];
-  projects?: ProjectCard[];
+  projects: ProjectCard[];
   onToggleBlock: (id: string) => void;
   onStartFocus: (block: TodayBlock) => void;
+  onUpdateProject?: (project: ProjectCard) => void;
+  onSetTodayBlock?: (block: TodayBlock) => void;
+  onAddProject?: (project: Omit<ProjectCard, 'id'>) => void;
   onAddBlock?: (block: Omit<TodayBlock, 'id'>) => void;
   onDeleteBlock?: (id: string) => void;
   onPullProject?: (project: ProjectCard) => void;
-  onStartMultiFocus?: (blocks: TodayBlock[]) => void;
 }
+
+type StandupStep =
+  | 'overview'
+  | 'select_project'
+  | 'ask_status'
+  | 'ask_action'
+  | 'ask_blocker'
+  | 'completed_done'
+  | 'new_project'
+  | 'summary';
 
 export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
   todayBlocks,
   projects = [],
-  onToggleBlock,
   onStartFocus,
-  onAddBlock,
-  onDeleteBlock,
-  onPullProject,
+  onUpdateProject,
+  onSetTodayBlock,
+  onAddProject,
 }) => {
-  const [isAdding, setIsAdding] = useState(false);
+  // Find current active (unfinished) today block if available
+  const activeTodayBlock = todayBlocks.find((b) => !b.isDone) || null;
+
+  // Standup navigation state: default to 'overview' if there's already an active focus, else 'select_project'
+  const [currentStep, setCurrentStep] = useState<StandupStep>(() => {
+    return activeTodayBlock ? 'overview' : 'select_project';
+  });
+
+  // Selected project for the questionnaire
+  const [selectedProject, setSelectedProject] = useState<ProjectCard | null>(null);
+
+  // Form states for the questions
+  const [actionInput, setActionInput] = useState('');
+  const [timeboxMinutes, setTimeboxMinutes] = useState<number>(45);
+  const [ruleInput, setRuleInput] = useState('');
+  const [blockerReason, setBlockerReason] = useState('');
+
+  // Form states for adding brand-new project
   const [newProjectName, setNewProjectName] = useState('');
-  const [newAction, setNewAction] = useState('');
-  const [newTimebox, setNewTimebox] = useState<number>(45);
-  const [newRule, setNewRule] = useState('');
-  const [showCompleted, setShowCompleted] = useState(false);
+  const [newProjectAction, setNewProjectAction] = useState('');
+  const [newProjectTimebox, setNewProjectTimebox] = useState<number>(45);
 
-  // Split into unfinished & completed tasks
-  const unfinishedBlocks = todayBlocks.filter((b) => !b.isDone);
-  const completedBlocks = todayBlocks.filter((b) => b.isDone);
-
-  // Format today's date in friendly Indonesian
+  // Today's date in friendly Indonesian format
   const todayDateString = new Date().toLocaleDateString('id-ID', {
     weekday: 'long',
     day: 'numeric',
@@ -57,450 +79,812 @@ export const TodaySuperSmallView: React.FC<TodaySuperSmallViewProps> = ({
     year: 'numeric',
   });
 
-  // Find active projects from Kanban board that are NOT yet in today's unfinished list
-  const activeUnscheduledProjects = projects.filter((p) => {
-    if (p.boardColumn !== 'DOING' && p.boardColumn !== 'QUEUE') return false;
-    const alreadyInToday = unfinishedBlocks.some((b) => {
-      if (b.projectId && b.projectId === p.id) return true;
-      return b.projectName.trim().toLowerCase() === p.name.trim().toLowerCase();
-    });
-    return !alreadyInToday;
-  });
+  // Active projects in DOING or QUEUE
+  const activeProjects = projects.filter(
+    (p) => p.boardColumn === 'DOING' || p.boardColumn === 'QUEUE'
+  );
 
-  const handleCreateTask = (e: React.FormEvent) => {
+  // STEP HANDLERS
+  const handleSelectProject = (project: ProjectCard) => {
+    soundManager.playClick();
+    setSelectedProject(project);
+    setActionInput(project.nextAction || project.currentGoal || '');
+    setRuleInput(project.rule || '');
+    setCurrentStep('ask_status');
+  };
+
+  const handleChooseGaspol = () => {
+    soundManager.playClick();
+    setCurrentStep('ask_action');
+  };
+
+  const handleChooseDone = () => {
+    if (!selectedProject) return;
+    soundManager.playClick();
+    soundManager.playCompletionChime();
+    confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
+
+    // Update project in board to DONE
+    const updated: ProjectCard = {
+      ...selectedProject,
+      boardColumn: 'DONE',
+      status: 'Done',
+      nextAction: 'Project telah selesai 100%!',
+    };
+    onUpdateProject?.(updated);
+
+    setCurrentStep('completed_done');
+  };
+
+  const handleChooseWaiting = () => {
+    soundManager.playClick();
+    setBlockerReason(selectedProject?.blocker || 'Menunggu konfirmasi / respons klien');
+    setCurrentStep('ask_blocker');
+  };
+
+  const handleChooseParked = () => {
+    if (!selectedProject) return;
+    soundManager.playClick();
+
+    const updated: ProjectCard = {
+      ...selectedProject,
+      boardColumn: 'PARKED',
+      status: 'Parked',
+    };
+    onUpdateProject?.(updated);
+    setSelectedProject(null);
+    setCurrentStep('select_project');
+  };
+
+  const handleSaveBlocker = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newProjectName.trim() || !newAction.trim()) return;
+    if (!selectedProject) return;
 
     soundManager.playClick();
-    onAddBlock?.({
+    const updated: ProjectCard = {
+      ...selectedProject,
+      boardColumn: 'WAITING',
+      status: 'Waiting Client',
+      blocker: blockerReason.trim() || 'Menunggu konfirmasi klien',
+      nextAction: `Follow-up: ${blockerReason.trim() || 'Menunggu konfirmasi klien'}`,
+    };
+    onUpdateProject?.(updated);
+
+    setSelectedProject(null);
+    setCurrentStep('select_project');
+  };
+
+  const handleSaveActionAndLock = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedProject || !actionInput.trim()) return;
+
+    soundManager.playClick();
+
+    // 1. Update project nextAction & ensure boardColumn is DOING
+    const updatedProject: ProjectCard = {
+      ...selectedProject,
+      boardColumn: 'DOING',
+      status: 'Doing',
+      nextAction: actionInput.trim(),
+      rule: ruleInput.trim() || selectedProject.rule,
+    };
+    onUpdateProject?.(updatedProject);
+
+    // 2. Lock as active today block
+    const newBlock: TodayBlock = {
+      id: `tb-${Date.now()}`,
+      projectId: selectedProject.id,
+      projectName: selectedProject.name,
+      action: actionInput.trim(),
+      timeboxMinutes: timeboxMinutes || 45,
+      isDone: false,
+      blockType: selectedProject.lane === 'maintenance' ? 'Admin/Maintenance' : 'Deep Work 1',
+      rule: ruleInput.trim() || 'Fokus eksekusi tugas ini sampai selesai.',
+    };
+
+    onSetTodayBlock?.(newBlock);
+    setCurrentStep('summary');
+  };
+
+  const handleCreateNewProject = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newProjectName.trim() || !newProjectAction.trim()) return;
+
+    soundManager.playClick();
+    const newProj: Omit<ProjectCard, 'id'> = {
+      name: newProjectName.trim(),
+      lane: 'client_delivery',
+      boardColumn: 'DOING',
+      status: 'Doing',
+      paymentStatus: 'Expected',
+      valueText: 'Proyek Baru',
+      nominalNumeric: 0,
+      paidNumeric: 0,
+      unpaidNumeric: 0,
+      priority: 'P1',
+      currentGoal: newProjectAction.trim(),
+      nextAction: newProjectAction.trim(),
+    };
+
+    onAddProject?.(newProj);
+
+    const newBlock: TodayBlock = {
+      id: `tb-${Date.now()}`,
       projectName: newProjectName.trim(),
-      action: newAction.trim(),
-      timeboxMinutes: newTimebox || 45,
+      action: newProjectAction.trim(),
+      timeboxMinutes: newProjectTimebox || 45,
       isDone: false,
       blockType: 'Deep Work 1',
-      rule: newRule.trim() || 'Fokus eksekusi tugas ini sampai selesai.',
-    });
+      rule: 'Fokus tuntaskan langkah awal ini.',
+    };
 
-    setNewProjectName('');
-    setNewAction('');
-    setNewTimebox(45);
-    setNewRule('');
-    setIsAdding(false);
+    onSetTodayBlock?.(newBlock);
+    setCurrentStep('summary');
   };
 
-  const handlePullFromBoard = (project: ProjectCard) => {
-    soundManager.playClick();
-    if (onPullProject) {
-      onPullProject(project);
-    } else if (onAddBlock) {
-      onAddBlock({
-        projectId: project.id,
-        projectName: project.name,
-        action: project.nextAction || project.currentGoal || 'Eksekusi deliverable utama',
-        timeboxMinutes: 45,
-        isDone: false,
-        blockType: project.lane === 'maintenance' ? 'Admin/Maintenance' : 'Deep Work 1',
-        rule: project.rule || 'Fokus tuntaskan langkah konkrit ini.',
-      });
-    }
-  };
+  // Get active focus block for summary / overview
+  const displayedBlock = activeTodayBlock || todayBlocks[0];
+  const displayedParsed = displayedBlock ? parseProjectTitle(displayedBlock.projectName) : null;
 
   return (
-    <div className="space-y-6 font-sans max-w-4xl mx-auto animate-fade-in pb-12">
-      {/* 1. TOP HEADER: CALM, EDITORIAL, & INFORMATIVE */}
-      <header className="border-b border-zinc-200/80 pb-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
-              {todayDateString} · SIKAT HARI INI
+    <div className="w-full max-w-xl mx-auto py-4 sm:py-8 font-sans animate-fade-in">
+      {/* 1. COMPACT STANDUP BRANDING & DATE */}
+      <div className="text-center space-y-1 mb-6">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 text-zinc-600 text-[11px] font-mono font-bold uppercase tracking-wider border border-zinc-200">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>DAILY STANDUP · {todayDateString}</span>
+        </div>
+        <p className="text-xs text-zinc-500">
+          Update fokus & status kerjaan lo biar arah eksekusi hari ini jelas.
+        </p>
+      </div>
+
+      {/* =========================================================================
+          SCREEN: OVERVIEW (JIKA SUDAH ADA KERJAAN AKTIF YANG TERKUNCI)
+          ========================================================================= */}
+      {currentStep === 'overview' && displayedBlock && (
+        <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in text-center">
+          <div className="space-y-2">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/70 inline-block">
+              ⚡ FOKUS HARI INI TERKUNCI
             </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight mt-0.5">
-              Kerjaan Hari Ini
-            </h1>
-            <div className="flex items-center gap-2.5 mt-2 text-xs font-mono">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100/80 text-amber-900 font-bold border border-amber-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-                {unfinishedBlocks.length} Belum Selesai
+            <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              {displayedParsed?.title}
+            </h2>
+            {displayedParsed?.client && (
+              <span className="text-xs font-mono font-bold text-zinc-500 block uppercase">
+                // KLIEN: {displayedParsed.client}
               </span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 font-medium border border-zinc-200">
-                <Check className="w-3 h-3 text-emerald-600 stroke-[3]" />
-                {completedBlocks.length} Selesai
-              </span>
+            )}
+          </div>
+
+          <div className="p-4 rounded-2xl bg-[#fefce8]/70 border border-[#fef08a] text-left space-y-1">
+            <span className="text-[10px] font-mono font-bold text-[#854d0e] uppercase tracking-wider block">
+              HARUS NGAPAIN SEKARANG:
+            </span>
+            <p className="text-sm sm:text-base font-bold text-[#111111] leading-relaxed">
+              {displayedBlock.action}
+            </p>
+            <div className="flex items-center gap-1 text-xs font-mono text-zinc-500 pt-1">
+              <Clock className="w-3.5 h-3.5" />
+              <span>Timebox: {displayedBlock.timeboxMinutes} Menit</span>
             </div>
           </div>
 
-          {/* Quick Add Button */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="space-y-2.5 pt-2">
             <button
               type="button"
               onClick={() => {
                 soundManager.playClick();
-                setIsAdding((prev) => !prev);
+                onStartFocus(displayedBlock);
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#111111] hover:bg-zinc-800 text-white text-xs font-bold shadow-xs transition-all active:scale-95"
+              className="w-full h-12 rounded-2xl bg-[#111111] hover:bg-zinc-800 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 group"
             >
-              {isAdding ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-              <span>{isAdding ? 'Tutup Form' : 'Tambah Kerjaan'}</span>
+              <Flame className="w-4 h-4 text-amber-400 fill-amber-400 group-hover:scale-110 transition-transform" />
+              <span>Langsung Sikat di Kamar Fokus</span>
+              <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-white" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playClick();
+                setCurrentStep('select_project');
+              }}
+              className="w-full h-11 rounded-2xl bg-zinc-100 hover:bg-zinc-200/80 text-zinc-700 font-semibold text-xs transition-all active:scale-98"
+            >
+              💬 Mau Update Kerjaan Lain / Ganti Fokus?
             </button>
           </div>
         </div>
-      </header>
+      )}
 
-      {/* 2. INLINE ADD FORM (SIMPLE & INTUITIVE) */}
-      {isAdding && (
-        <form
-          onSubmit={handleCreateTask}
-          className="bg-white border border-zinc-300/90 rounded-2xl p-5 shadow-sm space-y-4 animate-fade-in"
-        >
-          <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-700">
-              // INPUT KERJAAN BARU HARI INI
-            </h3>
-            <span className="text-[11px] text-zinc-400 font-mono">Tekan Simpan setelah selesai</span>
+      {/* =========================================================================
+          QUESTION 1: PILIH PROJECT YANG MAU DI-UPDATE
+          ========================================================================= */}
+      {currentStep === 'select_project' && (
+        <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5 animate-fade-in">
+          <div className="space-y-1">
+            <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+              PERTANYAAN 1 DARI 3
+            </span>
+            <h2 className="text-xl sm:text-2xl font-black text-[#111111] tracking-tight">
+              Project mana yang mau lo update atau sikat hari ini bro?
+            </h2>
+            <p className="text-xs text-zinc-500">
+              Pilih dari project berjalan di bawah, atau ketik kerjaan baru:
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="sm:col-span-2 space-y-1">
+          {/* List of active projects */}
+          <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
+            {activeProjects.map((project) => {
+              const parsed = parseProjectTitle(project.name);
+
+              return (
+                <button
+                  key={project.id}
+                  type="button"
+                  onClick={() => handleSelectProject(project)}
+                  className="w-full text-left p-4 rounded-2xl border border-zinc-200/80 hover:border-black hover:bg-zinc-50/80 transition-all shadow-2xs group flex items-start justify-between gap-3 active:scale-98"
+                >
+                  <div className="space-y-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      {parsed.client && (
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200/60">
+                          {parsed.client}
+                        </span>
+                      )}
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/60">
+                        {project.boardColumn}
+                      </span>
+                    </div>
+
+                    <h3 className="text-sm font-bold text-zinc-900 group-hover:text-black leading-snug truncate">
+                      {parsed.title}
+                    </h3>
+
+                    <p className="text-xs text-zinc-500 line-clamp-1 font-mono">
+                      Next: {project.nextAction || 'Belum ditentukan'}
+                    </p>
+                  </div>
+
+                  <div className="w-7 h-7 rounded-full bg-zinc-100 group-hover:bg-[#111111] group-hover:text-white flex items-center justify-center text-zinc-400 shrink-0 transition-colors mt-1">
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </button>
+              );
+            })}
+
+            {activeProjects.length === 0 && (
+              <div className="p-6 text-center text-xs text-zinc-500 border border-dashed border-zinc-200 rounded-2xl">
+                Belum ada project aktif di papan. Yuk mulai dari tombol di bawah!
+              </div>
+            )}
+          </div>
+
+          {/* Button: Ketik Kerjaan Baru */}
+          <div className="pt-2 border-t border-zinc-100">
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playClick();
+                setCurrentStep('new_project');
+              }}
+              className="w-full py-3 rounded-2xl border border-dashed border-zinc-300 hover:border-black text-xs font-bold text-zinc-700 hover:text-black flex items-center justify-center gap-2 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Ketik Kerjaan / Klien Baru</span>
+            </button>
+          </div>
+
+          {activeTodayBlock && (
+            <div className="text-center pt-1">
+              <button
+                type="button"
+                onClick={() => setCurrentStep('overview')}
+                className="text-xs text-zinc-500 hover:text-black underline font-mono"
+              >
+                ← Kembali ke fokus yang sudah terkunci
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* =========================================================================
+          QUESTION 2: STATUS PROJECT INI SEKARANG
+          ========================================================================= */}
+      {currentStep === 'ask_status' && selectedProject && (
+        <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setCurrentStep('select_project')}
+              className="text-xs font-mono text-zinc-500 hover:text-black flex items-center gap-1 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Ganti Project</span>
+            </button>
+            <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+              PERTANYAAN 2 DARI 3
+            </span>
+          </div>
+
+          <div className="space-y-1">
+            <div className="text-xs font-mono font-bold uppercase text-zinc-500">
+              PROJECT: {selectedProject.name}
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-[#111111] tracking-tight">
+              Gimana status project ini sekarang bro?
+            </h2>
+            <p className="text-xs text-zinc-500">
+              Pilih kondisi teraktual agar papan project lo tetap update:
+            </p>
+          </div>
+
+          {/* 4 Status Option Cards */}
+          <div className="space-y-3">
+            {/* 1. Mau Gaspol Hari Ini */}
+            <button
+              type="button"
+              onClick={handleChooseGaspol}
+              className="w-full text-left p-4 rounded-2xl border-2 border-zinc-900 bg-zinc-900 text-white hover:bg-black transition-all flex items-center justify-between group active:scale-98 shadow-sm"
+            >
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-amber-400 fill-amber-400" />
+                  <span className="text-sm font-bold">Mau Gaspol Hari Ini!</span>
+                </div>
+                <p className="text-xs text-zinc-400">
+                  Lanjut eksekusi langkah konkrit di Kamar Fokus.
+                </p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-zinc-400 group-hover:text-white" />
+            </button>
+
+            {/* 2. Udah Selesai 100% */}
+            <button
+              type="button"
+              onClick={handleChooseDone}
+              className="w-full text-left p-4 rounded-2xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50 text-emerald-950 transition-all flex items-center justify-between group active:scale-98"
+            >
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span className="text-sm font-bold">Udah Selesai 100%! 🎉</span>
+                </div>
+                <p className="text-xs text-emerald-700">
+                  Deliverable tuntas & sudah diserahkan ke klien.
+                </p>
+              </div>
+              <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-100/70 px-2.5 py-1 rounded-full">
+                Pindah ke DONE
+              </span>
+            </button>
+
+            {/* 3. Lagi Nunggu Klien */}
+            <button
+              type="button"
+              onClick={handleChooseWaiting}
+              className="w-full text-left p-4 rounded-2xl border border-amber-200 bg-amber-50/40 hover:bg-amber-50 text-amber-950 transition-all flex items-center justify-between group active:scale-98"
+            >
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Hourglass className="w-4 h-4 text-amber-600" />
+                  <span className="text-sm font-bold">Lagi Nunggu Klien</span>
+                </div>
+                <p className="text-xs text-amber-700">
+                  Tertahan nunggu approval, DP/pelunasan, atau revisi.
+                </p>
+              </div>
+              <span className="text-xs font-mono font-bold text-amber-800 bg-amber-100/70 px-2.5 py-1 rounded-full">
+                Pindah ke Radar
+              </span>
+            </button>
+
+            {/* 4. Mau Diparkir Dulu */}
+            <button
+              type="button"
+              onClick={handleChooseParked}
+              className="w-full text-left p-4 rounded-2xl border border-zinc-200 bg-zinc-50 hover:bg-zinc-100/80 text-zinc-800 transition-all flex items-center justify-between group active:scale-98"
+            >
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <PauseCircle className="w-4 h-4 text-zinc-500" />
+                  <span className="text-sm font-semibold">Mau Diparkir Dulu</span>
+                </div>
+                <p className="text-xs text-zinc-500">
+                  Prioritas diturunkan sementara dari radar aktif.
+                </p>
+              </div>
+              <span className="text-xs font-mono text-zinc-600 bg-zinc-200/70 px-2.5 py-1 rounded-full">
+                Pindah ke Parked
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          QUESTION 3: LANGKAH KONKRIT & TIMEBOX (JIKA GASPOL)
+          ========================================================================= */}
+      {currentStep === 'ask_action' && selectedProject && (
+        <form
+          onSubmit={handleSaveActionAndLock}
+          className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5 animate-fade-in"
+        >
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setCurrentStep('ask_status')}
+              className="text-xs font-mono text-zinc-500 hover:text-black flex items-center gap-1 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Kembali</span>
+            </button>
+            <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+              LANGKAH TERAKHIR
+            </span>
+          </div>
+
+          <div className="space-y-1">
+            <div className="text-xs font-mono font-bold uppercase text-zinc-500">
+              PROJECT: {selectedProject.name}
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-[#111111] tracking-tight">
+              Langkah konkrit apa yang HARUS lo beresin hari ini?
+            </h2>
+            <p className="text-xs text-zinc-500">
+              Tulis aksi yang spesifik biar pas lo buka laptop langsung jalan tanpa mikir dua kali:
+            </p>
+          </div>
+
+          {/* Action Input Box */}
+          <div className="space-y-1.5">
+            <textarea
+              required
+              rows={3}
+              value={actionInput}
+              onChange={(e) => setActionInput(e.target.value)}
+              placeholder="Contoh: Selesaikan slicing layout checkout & integrasikan API payment..."
+              className="w-full p-3.5 text-sm bg-zinc-50 border border-zinc-200 rounded-2xl text-zinc-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all leading-relaxed"
+              autoFocus
+            />
+          </div>
+
+          {/* Timebox Selector */}
+          <div className="space-y-2">
+            <label className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-700 block">
+              Berapa lama mau kunci waktu di Kamar Fokus?
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {[
+                { mins: 25, label: '25m', desc: 'Sprint' },
+                { mins: 45, label: '45m', desc: 'Standar' },
+                { mins: 60, label: '60m', desc: 'Deep Work' },
+                { mins: 90, label: '90m', desc: 'Ultra Focus' },
+              ].map((item) => (
+                <button
+                  key={item.mins}
+                  type="button"
+                  onClick={() => {
+                    soundManager.playClick();
+                    setTimeboxMinutes(item.mins);
+                  }}
+                  className={`p-2.5 rounded-xl border text-center transition-all ${
+                    timeboxMinutes === item.mins
+                      ? 'bg-[#111111] text-white border-[#111111] shadow-xs'
+                      : 'bg-zinc-50 hover:bg-zinc-100 text-zinc-700 border-zinc-200'
+                  }`}
+                >
+                  <strong className="block text-sm font-bold font-mono">{item.label}</strong>
+                  <span className="text-[10px] block opacity-80">{item.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Optional Rule */}
+          <div className="space-y-1">
+            <label className="text-xs text-zinc-500 font-semibold block">
+              Aturan / Catatan Khusus (Opsional):
+            </label>
+            <input
+              type="text"
+              value={ruleInput}
+              onChange={(e) => setRuleInput(e.target.value)}
+              placeholder="Contoh: Matikan sosmed & tab lain selama sprint"
+              className="w-full px-3.5 py-2 text-xs bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-800 focus:bg-white focus:outline-none focus:ring-1 focus:ring-black transition-all"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div className="pt-2">
+            <button
+              type="submit"
+              className="w-full h-12 rounded-2xl bg-[#111111] hover:bg-zinc-800 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md active:scale-98"
+            >
+              <span>Kunci Kerjaan & Tampilkan Hasil</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* =========================================================================
+          SCREEN: ASK BLOCKER (JIKA LAGI NUNGGU KLIEN)
+          ========================================================================= */}
+      {currentStep === 'ask_blocker' && selectedProject && (
+        <form
+          onSubmit={handleSaveBlocker}
+          className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5 animate-fade-in"
+        >
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setCurrentStep('ask_status')}
+              className="text-xs font-mono text-zinc-500 hover:text-black flex items-center gap-1 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Kembali</span>
+            </button>
+            <span className="text-[10px] font-mono font-bold text-amber-700 uppercase tracking-wider">
+              PINDAH KE WAITING RADAR
+            </span>
+          </div>
+
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl font-black text-[#111111] tracking-tight">
+              Apa yang lagi ditunggu dari klien bro?
+            </h2>
+            <p className="text-xs text-zinc-500">
+              Project ini akan diparkir di Waiting Radar agar tidak membebani pikiran lo:
+            </p>
+          </div>
+
+          {/* Quick chips for reasons */}
+          <div className="flex flex-wrap gap-2">
+            {[
+              'Menunggu Pelunasan / DP',
+              'Menunggu Revisi Desain',
+              'Menunggu Bahan & Konten',
+              'Menunggu Jadwal Meeting / Kickoff',
+            ].map((chip) => (
+              <button
+                key={chip}
+                type="button"
+                onClick={() => setBlockerReason(chip)}
+                className="px-3 py-1 rounded-full text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-medium transition-colors"
+              >
+                + {chip}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-1">
+            <input
+              type="text"
+              required
+              value={blockerReason}
+              onChange={(e) => setBlockerReason(e.target.value)}
+              placeholder="Ketik alasan blocker..."
+              className="w-full px-3.5 py-2.5 text-sm bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all"
+              autoFocus
+            />
+          </div>
+
+          <div className="pt-2">
+            <button
+              type="submit"
+              className="w-full h-11 rounded-2xl bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs active:scale-98"
+            >
+              <span>Pindahkan ke Radar Waiting</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* =========================================================================
+          SCREEN: COMPLETED DONE CELEBRATION
+          ========================================================================= */}
+      {currentStep === 'completed_done' && selectedProject && (
+        <div className="bg-white border border-emerald-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 text-center animate-fade-in">
+          <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+            <Sparkles className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-1.5">
+            <h2 className="text-2xl sm:text-3xl font-black text-emerald-950 tracking-tight">
+              Mantap Bro! Project Berhasil Tuntas! 🎉
+            </h2>
+            <p className="text-sm text-emerald-800">
+              <strong>{selectedProject.name}</strong> resmi ditandai selesai dan dipindahkan ke kolom DONE.
+            </p>
+          </div>
+
+          <div className="space-y-2.5 pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playClick();
+                setSelectedProject(null);
+                setCurrentStep('select_project');
+              }}
+              className="w-full h-12 rounded-2xl bg-[#111111] hover:bg-zinc-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-98"
+            >
+              <span>Pilih Project Lain untuk Hari Ini</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          SCREEN: NEW PROJECT FORM
+          ========================================================================= */}
+      {currentStep === 'new_project' && (
+        <form
+          onSubmit={handleCreateNewProject}
+          className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4 animate-fade-in"
+        >
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setCurrentStep('select_project')}
+              className="text-xs font-mono text-zinc-500 hover:text-black flex items-center gap-1 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Batal</span>
+            </button>
+            <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider">
+              TAMBAH PROJECT BARU
+            </span>
+          </div>
+
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl font-black text-[#111111] tracking-tight">
+              Ketik Kerjaan / Klien Baru
+            </h2>
+            <p className="text-xs text-zinc-500">
+              Project ini akan dibuatkan kartu di Kanban board dan langsung jadi fokus hari ini:
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <div className="space-y-1">
               <label className="text-xs font-semibold text-zinc-700 block">
-                Nama Project / Klien
+                Nama Project & Klien
               </label>
               <input
                 type="text"
                 required
-                placeholder="Contoh: Umi Elly - LMS Azhariyah"
+                placeholder="Contoh: Budi - Landing Page Web"
                 value={newProjectName}
                 onChange={(e) => setNewProjectName(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-zinc-50/70 border border-zinc-200 rounded-xl text-zinc-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                className="w-full px-3.5 py-2.5 text-sm bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all"
                 autoFocus
               />
             </div>
 
             <div className="space-y-1">
               <label className="text-xs font-semibold text-zinc-700 block">
-                Estimasi Waktu (Menit)
+                Aksi Konkrit Pertama Hari Ini
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Contoh: Bikin mockup header & sketsa sitemap..."
+                value={newProjectAction}
+                onChange={(e) => setNewProjectAction(e.target.value)}
+                className="w-full px-3.5 py-2.5 text-sm bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-zinc-700 block">
+                Estimasi Waktu Fokus (Menit)
               </label>
               <input
                 type="number"
                 min="5"
                 max="240"
                 step="5"
-                value={newTimebox}
-                onChange={(e) => setNewTimebox(Number(e.target.value) || 45)}
-                className="w-full px-3 py-2 text-sm bg-zinc-50/70 border border-zinc-200 rounded-xl text-zinc-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all"
+                value={newProjectTimebox}
+                onChange={(e) => setNewProjectTimebox(Number(e.target.value) || 45)}
+                className="w-full px-3.5 py-2 text-sm bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all"
               />
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-zinc-700 block">
-              Apa yang Harus Dilakukan Sekarang? (Aksi Konkrit)
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="Contoh: Selesaikan coding modul autentikasi dan review rilis live"
-              value={newAction}
-              onChange={(e) => setNewAction(e.target.value)}
-              className="w-full px-3 py-2 text-sm bg-zinc-50/70 border border-zinc-200 rounded-xl text-zinc-900 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-black transition-all"
-            />
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-xs font-semibold text-zinc-500 block">
-              Catatan / Aturan Khusus (Opsional)
-            </label>
-            <input
-              type="text"
-              placeholder="Contoh: Matikan tab sosmed, fokus 45 menit penuh"
-              value={newRule}
-              onChange={(e) => setNewRule(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs bg-zinc-50/70 border border-zinc-200 rounded-xl text-zinc-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-black transition-all"
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-zinc-100">
-            <button
-              type="button"
-              onClick={() => setIsAdding(false)}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-600 hover:bg-zinc-100 transition-colors"
-            >
-              Batal
-            </button>
+          <div className="pt-2">
             <button
               type="submit"
-              className="px-4 py-1.5 rounded-xl text-xs font-bold bg-[#111111] hover:bg-zinc-800 text-white transition-all shadow-xs active:scale-95"
+              className="w-full h-12 rounded-2xl bg-[#111111] hover:bg-zinc-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-98"
             >
-              Simpan ke Kerjaan Hari Ini
+              <span>Simpan & Kunci Hari Ini</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </form>
       )}
 
-      {/* 3. SECTION UTAMA: DAFTAR KERJAAN BELUM SELESAI */}
-      <section className="space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-600 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
-            <span>TUGAS YANG HARUS DIKERJAKAN HARI INI ({unfinishedBlocks.length})</span>
-          </h2>
-          <span className="text-[11px] font-mono text-zinc-500">
-            Klik tombol Mulai untuk masuk Kamar Fokus
-          </span>
-        </div>
+      {/* =========================================================================
+          SCREEN: SUMMARY LAUNCH PAD
+          ========================================================================= */}
+      {currentStep === 'summary' && displayedBlock && (
+        <div className="bg-white border border-zinc-200/90 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 animate-fade-in text-center">
+          <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
+            <Check className="w-6 h-6 stroke-[3]" />
+          </div>
 
-        {/* JIKA TIDAK ADA TUGAS BELUM SELESAI */}
-        {unfinishedBlocks.length === 0 && (
-          <div className="bg-white border border-dashed border-zinc-300 rounded-2xl p-8 text-center space-y-3">
-            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto">
-              <CheckCircle2 className="w-6 h-6" />
+          <div className="space-y-2">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 inline-block">
+              ✓ FOKUS HARI INI BERHASIL DIKUNCI
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+              {displayedParsed?.title}
+            </h2>
+            {displayedParsed?.client && (
+              <span className="text-xs font-mono font-bold text-zinc-500 block uppercase">
+                // KLIEN: {displayedParsed.client}
+              </span>
+            )}
+          </div>
+
+          <div className="p-4 rounded-2xl bg-[#fefce8]/70 border border-[#fef08a] text-left space-y-1">
+            <span className="text-[10px] font-mono font-bold text-[#854d0e] uppercase tracking-wider block">
+              AKSI UTAMA LO HARI INI:
+            </span>
+            <p className="text-sm sm:text-base font-bold text-[#111111] leading-relaxed">
+              {displayedBlock.action}
+            </p>
+            <div className="flex items-center gap-1 text-xs font-mono text-zinc-500 pt-1">
+              <Clock className="w-3.5 h-3.5" />
+              <span>Target: {displayedBlock.timeboxMinutes} Menit</span>
             </div>
-            <div className="space-y-1">
-              <h3 className="text-base font-bold text-zinc-900">
-                Semua Kerjaan Hari Ini Beres! 🎉
-              </h3>
-              <p className="text-xs text-zinc-600 max-w-md mx-auto leading-relaxed">
-                Nggak ada tanggungan tugas hari ini bro. Lo bebas istirahat atau bisa tarik kerjaan baru dari papan project di bawah.
-              </p>
-            </div>
-            <div className="pt-2">
+          </div>
+
+          <div className="space-y-2.5 pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                soundManager.playClick();
+                onStartFocus(displayedBlock);
+              }}
+              className="w-full h-12 rounded-2xl bg-[#111111] hover:bg-zinc-800 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md active:scale-98 group"
+            >
+              <Flame className="w-4 h-4 text-amber-400 fill-amber-400 group-hover:scale-110 transition-transform" />
+              <span>Langsung Sikat di Kamar Fokus</span>
+              <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-white" />
+            </button>
+
+            <div className="flex items-center justify-center gap-3 pt-1">
               <button
                 type="button"
-                onClick={() => setIsAdding(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#111111] hover:bg-zinc-800 text-white text-xs font-bold transition-all shadow-xs active:scale-95"
+                onClick={() => {
+                  soundManager.playClick();
+                  setCurrentStep('select_project');
+                }}
+                className="text-xs font-mono text-zinc-600 hover:text-black font-semibold"
               >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Tambah Kerjaan Baru</span>
+                📝 Update Project Lain
+              </button>
+              <span className="text-zinc-300">·</span>
+              <button
+                type="button"
+                onClick={() => {
+                  soundManager.playClick();
+                  setCurrentStep('ask_action');
+                }}
+                className="text-xs font-mono text-zinc-600 hover:text-black font-semibold"
+              >
+                ↺ Ubah Aksi
               </button>
             </div>
           </div>
-        )}
-
-        {/* LIST KARTU TUGAS BELUM SELESAI */}
-        <div className="space-y-3.5">
-          {unfinishedBlocks.map((block) => {
-            const parsed = parseProjectTitle(block.projectName);
-
-            return (
-              <div
-                key={block.id}
-                className="bg-white border border-zinc-200/90 hover:border-zinc-300 rounded-2xl p-5 sm:p-6 transition-all shadow-2xs space-y-3.5"
-              >
-                {/* Baris Atas: Kategori / Klien + Timebox */}
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {parsed.client ? (
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-zinc-100 text-zinc-700 border border-zinc-200/70">
-                        {parsed.client}
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200/70">
-                        {block.blockType || 'DEEP WORK'}
-                      </span>
-                    )}
-
-                    {parsed.detail && (
-                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-zinc-50 text-zinc-500 border border-zinc-200/50">
-                        {parsed.detail}
-                      </span>
-                    )}
-                  </div>
-
-                  <span className="text-xs font-mono font-semibold text-zinc-600 flex items-center gap-1 bg-zinc-50 px-2.5 py-0.5 rounded-full border border-zinc-200/70">
-                    <Clock className="w-3 h-3 text-zinc-500" />
-                    <span>{block.timeboxMinutes || 45} Menit</span>
-                  </span>
-                </div>
-
-                {/* Judul Project */}
-                <div>
-                  <h3 className="text-lg sm:text-xl font-black text-[#111111] tracking-tight leading-snug">
-                    {parsed.title}
-                  </h3>
-                </div>
-
-                {/* KOTAK UTAMA: HARUS NGAPAIN SEKARANG (PROMINENT & HIGH VISIBILITY) */}
-                <div className="p-3.5 rounded-xl bg-[#fefce8]/70 border border-[#fef08a] space-y-1">
-                  <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-[#854d0e] uppercase tracking-wider">
-                    <Zap className="w-3 h-3 text-amber-500 fill-amber-500" />
-                    <span>HARUS NGAPAIN SEKARANG:</span>
-                  </div>
-                  <p className="text-sm sm:text-base font-bold text-[#111111] font-sans leading-relaxed">
-                    {block.action}
-                  </p>
-                </div>
-
-                {/* Catatan / Rule Singkat Bila Ada */}
-                {block.rule && (
-                  <div className="text-xs font-mono text-zinc-500 flex items-center gap-1.5 px-1">
-                    <span className="text-emerald-700 font-bold">// CATATAN:</span>
-                    <span className="text-zinc-700">{block.rule}</span>
-                  </div>
-                )}
-
-                {/* Baris Tombol Aksi Langsung */}
-                <div className="pt-3 border-t border-zinc-100 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    {/* Primary CTA: Langsung Bawa ke Kamar Fokus */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        soundManager.playClick();
-                        onStartFocus(block);
-                      }}
-                      className="h-9 px-4 rounded-xl bg-[#111111] hover:bg-zinc-800 text-white font-bold text-xs flex items-center gap-2 transition-all shadow-xs active:scale-95 group/btn"
-                      title="Mulai sesi deep work timer untuk tugas ini"
-                    >
-                      <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400 group-hover/btn:scale-110 transition-transform" />
-                      <span>Mulai di Kamar Fokus</span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover/btn:text-white" />
-                    </button>
-
-                    {/* Secondary Action: Tandai Beres */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        soundManager.playClick();
-                        soundManager.playCompletionChime();
-                        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
-                        onToggleBlock(block.id);
-                      }}
-                      className="h-9 px-3.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 font-semibold text-xs flex items-center gap-1.5 transition-all active:scale-95"
-                      title="Tandai tugas ini sudah selesai"
-                    >
-                      <Check className="w-3.5 h-3.5 text-emerald-700 stroke-[2.5]" />
-                      <span>Tandai Beres</span>
-                    </button>
-                  </div>
-
-                  {/* Tombol Hapus / Singkirkan dari Hari Ini */}
-                  {onDeleteBlock && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (confirm(`Hapus tugas "${block.projectName}" dari daftar hari ini?`)) {
-                          soundManager.playClick();
-                          onDeleteBlock(block.id);
-                        }
-                      }}
-                      className="w-8 h-8 rounded-lg hover:bg-rose-50 text-zinc-400 hover:text-rose-600 flex items-center justify-center transition-colors"
-                      title="Hapus dari daftar kerjaan hari ini"
-                      aria-label="Hapus tugas"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
         </div>
-      </section>
-
-      {/* 4. TARIK CEPAT DARI PROJECT KANBAN (JIKA ADA PROJECT AKTIF BELUM DIJADWALKAN) */}
-      {activeUnscheduledProjects.length > 0 && (
-        <section className="bg-zinc-50/80 border border-zinc-200/80 rounded-2xl p-4 space-y-2.5">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">
-              // TARIK CEPAT DARI PROJECT BERJALAN:
-            </span>
-            <span className="text-[11px] font-mono text-zinc-400">
-              {activeUnscheduledProjects.length} Project Aktif
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {activeUnscheduledProjects.slice(0, 6).map((project) => (
-              <button
-                key={project.id}
-                type="button"
-                onClick={() => handlePullFromBoard(project)}
-                className="px-3 py-1.5 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 text-xs font-semibold border border-zinc-200/90 flex items-center gap-1.5 transition-all shadow-2xs active:scale-95"
-                title={`Tambahkan "${project.name}" ke tugas hari ini`}
-              >
-                <Plus className="w-3 h-3 text-zinc-500" />
-                <span>{project.name}</span>
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* 5. SECTION KERJAAN SUDAH SELESAI (COLLAPSIBLE, CLEAN, NO DISTRACTION) */}
-      {completedBlocks.length > 0 && (
-        <section className="pt-2 border-t border-zinc-200/70">
-          <button
-            type="button"
-            onClick={() => setShowCompleted((prev) => !prev)}
-            className="w-full flex items-center justify-between py-2 text-xs font-mono font-bold text-zinc-500 hover:text-zinc-800 transition-colors"
-          >
-            <div className="flex items-center gap-1.5">
-              {showCompleted ? (
-                <ChevronDown className="w-4 h-4 text-zinc-400" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-zinc-400" />
-              )}
-              <span>SUDAH SELESAI HARI INI ({completedBlocks.length})</span>
-            </div>
-            <span className="text-[11px] text-zinc-400">
-              {showCompleted ? 'Tutup' : 'Lihat'}
-            </span>
-          </button>
-
-          {showCompleted && (
-            <div className="mt-2 space-y-2 animate-fade-in">
-              {completedBlocks.map((block) => (
-                <div
-                  key={block.id}
-                  className="bg-zinc-50/80 border border-zinc-200/70 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 opacity-75 hover:opacity-100 transition-opacity"
-                >
-                  <div className="flex items-start gap-2.5 min-w-0">
-                    <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="text-xs font-bold text-zinc-700 line-through truncate">
-                        {block.projectName}
-                      </h4>
-                      <p className="text-[11px] text-zinc-500 line-through line-clamp-1">
-                        {block.action}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        soundManager.playClick();
-                        onToggleBlock(block.id);
-                      }}
-                      className="px-2.5 py-1 rounded-lg text-[11px] font-mono text-zinc-600 hover:text-black bg-white hover:bg-zinc-100 border border-zinc-200 flex items-center gap-1 transition-colors"
-                      title="Kembalikan ke belum selesai"
-                    >
-                      <RotateCcw className="w-3 h-3" />
-                      <span>Batal Selesai</span>
-                    </button>
-
-                    {onDeleteBlock && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundManager.playClick();
-                          onDeleteBlock(block.id);
-                        }}
-                        className="p-1 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                        title="Hapus permanen dari daftar"
-                        aria-label="Hapus tugas"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
       )}
     </div>
   );

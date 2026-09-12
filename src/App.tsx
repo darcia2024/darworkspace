@@ -232,6 +232,18 @@ export function App() {
     }));
   };
 
+  const handleSetTodayFocusBlock = (block: TodayBlock) => {
+    setState((prev) => {
+      const remaining = prev.todayBlocks.filter(
+        (b) => b.id !== block.id && projectIdFor(b, prev.projects) !== block.projectId
+      );
+      return {
+        ...prev,
+        todayBlocks: [block, ...remaining],
+      };
+    });
+  };
+
   const handleStartFocus = (block: TodayBlock) => {
     if (!block) return;
     setFocusQueue([]);
@@ -542,13 +554,16 @@ export function App() {
             />
           )}
 
-          {/* TAB 1: TODAY SUPER SMALL VIEW (ULTRA-SIMPLE DAILY EXECUTION) */}
+          {/* TAB 1: TODAY INTERACTIVE STANDUP (DAILY WORK UPDATE) */}
           {activeTab === 'today' && (
             <TodaySuperSmallView
               todayBlocks={state.todayBlocks}
               projects={state.projects}
               onToggleBlock={handleToggleBlock}
               onStartFocus={handleStartFocus}
+              onUpdateProject={handleUpdateProject}
+              onSetTodayBlock={handleSetTodayFocusBlock}
+              onAddProject={handleAddProject}
               onAddBlock={handleAddBlock}
               onDeleteBlock={handleDeleteBlock}
               onPullProject={handlePullProjectToToday}
