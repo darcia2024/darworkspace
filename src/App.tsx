@@ -42,6 +42,15 @@ const PGS_PROJECT_REPORT: Partial<ProjectCard> = {
   newsCritique: 'Proyek telah tuntas 100% dan sukses mengudara di production. Seluruh kriteria selesai (DoD) telah terpenuhi tanpa celah bug maupun sertifikat warning. Langkah operasional berikutnya adalah memonitor traffic organik pengunjung dan memastikan customer service siap menyambut prospek yang masuk via website.'
 };
 
+const LATEST_ACCOUNT_BALANCES: Record<string, number> = {
+  'Mandiri': 13056483,
+  'Bank Jago': 58262,
+  'blu by BCA': 68632,
+  'LINE Bank': 39649,
+  'DANA': 47496,
+  'GoPay': 19395,
+};
+
 function ensurePgsProjectInState(currentState: DaruWorkOSState): DaruWorkOSState {
   let updatedProjects = (currentState.projects || []).map((p) => {
     if (p.id === 'p-pgs-tour' || p.name.toLowerCase().includes('pgs tour')) {
@@ -69,7 +78,33 @@ function ensurePgsProjectInState(currentState: DaruWorkOSState): DaruWorkOSState
   const updatedWaiting = (currentState.waitingItems || []).filter(
     (w) => w.id !== 'w-pgs-tour' && w.projectId !== 'p-pgs-tour' && !w.name?.toLowerCase().includes('pgs tour')
   );
-  return deriveState({ ...currentState, projects: updatedProjects, waitingItems: updatedWaiting });
+
+  let financialReport = currentState.financialReport;
+  if (financialReport && financialReport.accounts) {
+    const shouldUpdate = financialReport.accounts.some(
+      (a) => LATEST_ACCOUNT_BALANCES[a.name] !== undefined && a.balance !== LATEST_ACCOUNT_BALANCES[a.name]
+    );
+    if (shouldUpdate) {
+      const updatedAccounts = financialReport.accounts.map((a) => {
+        if (LATEST_ACCOUNT_BALANCES[a.name] !== undefined) {
+          return {
+            ...a,
+            balance: LATEST_ACCOUNT_BALANCES[a.name],
+            isLatest: true,
+            lastUpdated: '12 Sep 2026 (Live)',
+          };
+        }
+        return a;
+      });
+      financialReport = {
+        ...financialReport,
+        accounts: updatedAccounts,
+        asOfDate: '12 Sep 2026',
+      };
+    }
+  }
+
+  return deriveState({ ...currentState, projects: updatedProjects, waitingItems: updatedWaiting, financialReport });
 }
 
 export function App() {
