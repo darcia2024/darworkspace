@@ -11,7 +11,6 @@ import { ExportModal } from './components/ExportModal';
 import { FollowUpModal } from './components/FollowUpModal';
 import { DaruPartnerCopilot } from './components/DaruPartnerCopilot';
 import { BottomFloatingDock } from './components/BottomFloatingDock';
-import { DecisionAnchorBox } from './components/DecisionAnchorBox';
 import { QuickFinanceInputModal } from './components/QuickFinanceInputModal';
 import { InvoiceGeneratorModal } from './components/InvoiceGeneratorModal';
 import { ProjectUpdateView } from './components/ProjectUpdateView';
@@ -191,6 +190,45 @@ export function App() {
     setState((prev) => ({
       ...prev,
       todayBlocks: prev.todayBlocks.map((b) => (b.id === id ? { ...b, isDone: !b.isDone } : b)),
+    }));
+  };
+
+  const handleAddBlock = (block: Omit<TodayBlock, 'id'>) => {
+    const newBlock: TodayBlock = {
+      ...block,
+      id: `tb-${Date.now()}`,
+    };
+    setState((prev) => ({
+      ...prev,
+      todayBlocks: [newBlock, ...prev.todayBlocks],
+    }));
+  };
+
+  const handleDeleteBlock = (id: string) => {
+    setState((prev) => ({
+      ...prev,
+      todayBlocks: prev.todayBlocks.filter((b) => b.id !== id),
+    }));
+  };
+
+  const handlePullProjectToToday = (project: ProjectCard) => {
+    const existing = state.todayBlocks.find(
+      (b) => projectIdFor(b, state.projects) === project.id && !b.isDone
+    );
+    if (existing) return;
+    const newBlock: TodayBlock = {
+      id: `tb-${Date.now()}`,
+      projectId: project.id,
+      projectName: project.name,
+      action: project.nextAction || project.currentGoal || 'Eksekusi deliverable utama',
+      timeboxMinutes: 45,
+      isDone: false,
+      blockType: project.lane === 'maintenance' ? 'Admin/Maintenance' : 'Deep Work 1',
+      rule: project.rule || 'Fokus eksekusi langkah konkrit ini.',
+    };
+    setState((prev) => ({
+      ...prev,
+      todayBlocks: [newBlock, ...prev.todayBlocks],
     }));
   };
 
@@ -490,8 +528,8 @@ export function App() {
         {syncStatus?.error && <div role="alert" className="px-6 py-3 bg-amber-50 text-amber-900 text-sm">{syncStatus.error}</div>}
         <main className={`flex-1 w-full mx-auto ${(activeTab === 'updates' || activeTab === 'lanes') ? 'max-w-none px-3 sm:px-6 lg:px-8 py-4' : 'max-w-6xl px-4 lg:px-8 py-6'} space-y-6 pb-20 lg:pb-6`}>
           
-          {/* Top Quick Status (Only show on Today & Board tabs) */}
-          {(activeTab === 'today' || activeTab === 'lanes') && (
+          {/* Top Quick Status (Only show on Board tab) */}
+          {activeTab === 'lanes' && (
             <TopQuickStats
               todayPursuit={state.todayPursuit}
               onTogglePursuit={handleTogglePursuit}
@@ -504,22 +542,17 @@ export function App() {
             />
           )}
 
-          {/* TAB 1: TODAY SUPER SMALL VIEW */}
+          {/* TAB 1: TODAY SUPER SMALL VIEW (ULTRA-SIMPLE DAILY EXECUTION) */}
           {activeTab === 'today' && (
-            <div className="space-y-6">
-              <TodaySuperSmallView
-                todayBlocks={state.todayBlocks}
-                onToggleBlock={handleToggleBlock}
-                onStartFocus={handleStartFocus}
-                onStartMultiFocus={(blocks) => {
-                  if (!blocks.length) return;
-                  handleStartFocus(blocks[0]);
-                  setFocusQueue(blocks.slice(1));
-                }}
-              />
-
-              <DecisionAnchorBox projects={state.projects} onSelectAction={handleStartFocusOnProject} />
-            </div>
+            <TodaySuperSmallView
+              todayBlocks={state.todayBlocks}
+              projects={state.projects}
+              onToggleBlock={handleToggleBlock}
+              onStartFocus={handleStartFocus}
+              onAddBlock={handleAddBlock}
+              onDeleteBlock={handleDeleteBlock}
+              onPullProject={handlePullProjectToToday}
+            />
           )}
 
           {/* TAB: NEXT SHOULD BE GO (STRATEGIC DIRECTIVE MATRIX) */}
