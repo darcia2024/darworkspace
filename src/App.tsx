@@ -22,6 +22,53 @@ import { soundManager } from './utils/audio';
 import { ChevronRight, Lock, PanelLeft, Plus, Receipt, MessageSquare, Bot } from 'lucide-react';
 import { PinLockScreen, AUTH_STORAGE_KEY } from './components/PinLockScreen';
 
+const PGS_PROJECT_REPORT: Partial<ProjectCard> = {
+  name: 'PGS Tour & Travel (Redesign & Production Deployment)',
+  lane: 'client_delivery',
+  boardColumn: 'WAITING',
+  status: 'Waiting Client',
+  priority: 'P1',
+  paymentStatus: 'Expected',
+  valueText: 'Redesign & Custom Domain (pgstravel.id)',
+  currentGoal: 'Mengaktifkan domain utama pgstravel.id & www.pgstravel.id menggantikan URL default staging Vercel, serta sinkronisasi link rute bot WhatsApp AI.',
+  nextAction: 'Verifikasi status DNS A record @ -> 76.76.21.21 dan CNAME www -> cname.vercel-dns.com di dashboard Hostinger DNS Zone agar SSL Vercel terbit sempurna.',
+  definitionOfDone: 'Domain https://pgstravel.id dapat diakses publik dengan status SSL/TLS aktif tanpa sertifikat warning, rute /perjalanan dan /konsultasi terhubung akurat dari bot WhatsApp, serta tidak ada inkonsistensi klaim bintang/hotel di seluruh halaman.',
+  blocker: 'Menunggu perubahan DNS di Hostinger tersimpan sepenuhnya dan terpropagasi global (masih terdeteksi IP lama Hostinger pada beberapa resolver lokal).',
+  rule: 'Kawal propagasi DNS Hostinger -> Vercel sampai SSL terbit sempurna dan bebas sertifikat warning.',
+  billingMilestone: 'Domain pgstravel.id Live & Handover Final',
+  followUpDeadline: 'Hari ini (Pantau propagasi DNS)',
+  newsHeadline: 'Konten itinerary dan narasi legalitas 100% steril di production; domain custom pgstravel.id siap tahap finalisasi propagasi DNS.',
+  newsArticle: 'Siklus pembaruan terakhir memfokuskan pada akurasi materi perjalanan dan narasi brand PGS Tour. Komponen ItinerarySection.tsx telah dibersihkan secara menyeluruh dari klaim bintang hotel yang tidak terverifikasi (menghapus frasa dekat hotel (*4) pada Day 05–07 dan (*4) pada Day 04). Sebelumnya, landing page juga telah diperkuat dengan testimoni otentik Google Maps berbadge verifikasi serta narasi filosofis "Kami Percaya Bahwa..." pada halaman Tentang Kami.\n\nDari sisi deployment, seluruh commit (bea9a45, 5cc12ab, a0050b9) telah ter-push rapi ke branch master dan main GitHub dengan build Next.js 15 yang lolos uji static generation (15/15 route). Domain kustom pgstravel.id telah didaftarkan ke Vercel project, tinggal menunggu finalisasi binding DNS Hostinger.',
+  newsCritique: 'Perlu diwaspadai kemungkinan kembalinya record ALIAS lama di Hostinger jika fitur auto-redirect Hostinger Website Builder masih aktif, yang berpotensi menimpa A record Vercel (76.76.21.21). Selain itu, integrasi alur chat bot WhatsApp perlu segera disesuaikan agar tidak lagi membagikan link Instagram sebagai pengganti katalog website.'
+};
+
+function ensurePgsProjectInState(currentState: DaruWorkOSState): DaruWorkOSState {
+  let updatedProjects = (currentState.projects || []).map((p) => {
+    if (p.id === 'p-pgs-tour' || p.name.toLowerCase().includes('pgs tour')) {
+      return { ...p, ...PGS_PROJECT_REPORT };
+    }
+    return p;
+  });
+  if (!updatedProjects.some((p) => p.id === 'p-pgs-tour' || p.name.toLowerCase().includes('pgs tour'))) {
+    updatedProjects.push({
+      id: 'p-pgs-tour',
+      lane: 'client_delivery',
+      boardColumn: 'WAITING',
+      status: 'Waiting Client',
+      paymentStatus: 'Expected',
+      valueText: 'Redesign & Custom Domain (pgstravel.id)',
+      nominalNumeric: 0,
+      paidNumeric: 0,
+      unpaidNumeric: 0,
+      priority: 'P1',
+      currentGoal: '',
+      nextAction: '',
+      ...PGS_PROJECT_REPORT,
+    } as ProjectCard);
+  }
+  return deriveState({ ...currentState, projects: updatedProjects });
+}
+
 export function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     try {
@@ -32,7 +79,7 @@ export function App() {
     }
   });
 
-  const [state, setStateValue] = useState<DaruWorkOSState>(loadState);
+  const [state, setStateValue] = useState<DaruWorkOSState>(() => ensurePgsProjectInState(loadState()));
   const [isLoaded, setIsLoaded] = useState(false);
   const [syncStatus, setSyncStatus] = useState<ServerSyncStatus | null>(null);
   const editedDuringLoad = useRef(false);
@@ -110,7 +157,7 @@ export function App() {
     let cancelled = false;
     apiService.loadInitialState().then((serverState) => {
       if (cancelled) return;
-      if (!editedDuringLoad.current) setStateValue(serverState);
+      if (!editedDuringLoad.current) setStateValue(ensurePgsProjectInState(serverState));
       setIsLoaded(true);
     });
     return () => { cancelled = true; };

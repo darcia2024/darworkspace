@@ -430,6 +430,7 @@ const renderFormattedBody = (content: string) => {
 
 export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onSelectTab }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedColumn, setSelectedColumn] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -487,6 +488,13 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
 
   // Active selected project
   const [activeProjectId, setActiveProjectId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      const match = hash.match(/[?&]project=([^&]+)/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
     const doing = allProjects.find((p) => p.boardColumn === 'DOING');
     return doing ? doing.id : allProjects[0]?.id || '';
   });
@@ -496,22 +504,24 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
     return allProjects.find((p) => p.id === activeProjectId) || allProjects[0];
   }, [allProjects, activeProjectId]);
 
-  // Filter projects by category and search
+  // Filter projects by category, column, and search
   const filteredProjects = useMemo(() => {
     return allProjects.filter((p) => {
       const matchCat = selectedCategory === 'all' || p.lane === selectedCategory;
+      const matchCol = selectedColumn === 'all' || p.boardColumn === selectedColumn;
       const matchQuery =
         !searchQuery.trim() ||
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (p.currentGoal && p.currentGoal.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (p.nextAction && p.nextAction.toLowerCase().includes(searchQuery.toLowerCase()));
-      return matchCat && matchQuery;
+        (p.nextAction && p.nextAction.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (p.newsHeadline && p.newsHeadline.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchCat && matchCol && matchQuery;
     });
-  }, [allProjects, selectedCategory, searchQuery]);
+  }, [allProjects, selectedCategory, selectedColumn, searchQuery]);
 
-  // Related projects list (excluding current project)
+  // Related projects list (excluding current project) - show all filtered projects
   const relatedProjects = useMemo(() => {
-    return filteredProjects.filter((p) => p.id !== currentProject?.id).slice(0, 6);
+    return filteredProjects.filter((p) => p.id !== currentProject?.id);
   }, [filteredProjects, currentProject]);
 
   // Copy handler
@@ -694,6 +704,74 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
               <span>Board</span>
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* QUICK STATUS FILTER & PROJECT SELECTOR */}
+      <div className="w-full rounded-2xl border border-zinc-200/80 bg-white p-3 sm:px-5 sm:py-3 shadow-xs mb-6 flex flex-col md:flex-row items-center justify-between gap-3 animate-fade-in">
+        <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+          <span className="text-[11px] font-mono font-bold text-zinc-400 uppercase tracking-wider shrink-0 mr-1">
+            STATUS:
+          </span>
+          {[
+            { key: 'all', label: 'Semua' },
+            { key: 'DOING', label: 'Sedang Digarap' },
+            { key: 'WAITING', label: 'Lagi Nunggu' },
+            { key: 'QUEUE', label: 'Antrean' },
+            { key: 'DONE', label: 'Selesai' },
+          ].map((col) => {
+            const count =
+              col.key === 'all'
+                ? allProjects.length
+                : allProjects.filter((p) => p.boardColumn === col.key).length;
+            const active = selectedColumn === col.key;
+            return (
+              <button
+                key={col.key}
+                type="button"
+                onClick={() => {
+                  soundManager.playClick();
+                  setSelectedColumn(col.key);
+                }}
+                className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                  active
+                    ? 'bg-zinc-900 text-white shadow-xs'
+                    : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200/80 hover:text-zinc-900'
+                }`}
+              >
+                <span>{col.label}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                    active ? 'bg-zinc-700 text-zinc-200' : 'bg-zinc-200 text-zinc-600'
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Dropdown to pick any project immediately */}
+        <div className="w-full md:w-80 flex items-center gap-2 shrink-0">
+          <span className="text-xs font-semibold text-zinc-500 whitespace-nowrap shrink-0">
+            Pilih Proyek:
+          </span>
+          <select
+            value={currentProject.id}
+            onChange={(e) => {
+              soundManager.playClick();
+              setActiveProjectId(e.target.value);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="w-full px-3 py-1.5 text-xs bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 font-bold focus:outline-none focus:ring-2 focus:ring-black transition-all truncate cursor-pointer shadow-2xs"
+          >
+            {allProjects.map((p) => (
+              <option key={p.id} value={p.id}>
+                [{p.boardColumn}] {p.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -945,21 +1023,22 @@ export const ProjectUpdateView: React.FC<ProjectUpdateViewProps> = ({ state, onS
           {/* Column Header matching reference screenshot */}
           <div className="flex items-center justify-between pb-2 border-b border-zinc-200">
             <h2 className="text-base font-bold tracking-tight text-zinc-950">
-              Related <span className="font-light text-zinc-500">News</span>
+              Daftar <span className="font-light text-zinc-500">Laporan</span> ({relatedProjects.length})
             </h2>
             <button
               onClick={() => {
                 setSelectedCategory('all');
+                setSelectedColumn('all');
                 setSearchQuery('');
               }}
               className="text-xs text-zinc-500 hover:text-zinc-900 font-normal transition-colors"
             >
-              See all
+              Reset filter
             </button>
           </div>
 
-          {/* List of Other Projects (Card format matching reference screenshot) */}
-          <div className="space-y-3.5">
+          {/* List of Other Projects with smooth scrolling */}
+          <div className="space-y-3.5 max-h-[78vh] overflow-y-auto pr-1">
             {relatedProjects.map((project) => {
               const pBadge = columnBadgeMap[project.boardColumn] || columnBadgeMap.DOING;
               const pThumb = getProjectVisual(project);
